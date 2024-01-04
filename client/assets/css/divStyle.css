@@ -1,0 +1,11 @@
+.divSolo{
+    height: 80%;
+    width : 80%;
+    margin-top: 560px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 7vh;
+    background:blue ;
+    
+}

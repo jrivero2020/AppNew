@@ -1,0 +1,11 @@
+.ImgBtn {
+	display: flex;
+	margin: auto;
+	transform: scale(1);
+	transition: transform 0.2s;
+ }
+ 
+ .ImgBtn:hover {
+	transform: scale(1.1);
+ }
+ 

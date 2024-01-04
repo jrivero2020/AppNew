@@ -1,0 +1,49 @@
+.active{
+    color: #ff4081;
+    font-weight: bold;
+}
+
+.noactive{
+    color: #ffffff;
+    font-weight: normal;
+}
+
+.btnActive{
+    color: '#ff4081'
+}
+
+.btnNoActive{
+    color:'#ffffff'
+}
+
+img {
+    width: 660;
+    height: 570;
+    border: 1px solid #000;
+    margin: 10px 0;
+  }
+  
+  .narrow {
+    width: 100px;
+    height: 150px;
+  }
+  
+  .fill {
+    object-fit: fill;
+  }
+  
+  .contain {
+    object-fit: contain;
+  }
+  
+  .cover {
+    object-fit: cover;
+  }
+  
+  .none {
+    object-fit: none;
+  }
+  
+  .scale-down {
+    object-fit: scale-down;
+  }
