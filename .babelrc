@@ -8,10 +8,13 @@
                 }
             }
         ],
-        "@babel/preset-react", "@babel/preset-typescript"
+        "@babel/preset-react", 
+        "@babel/preset-typescript"
     ],
     "plugins": [
-        "react-hot-loader/babel",  "@babel/plugin-transform-modules-commonjs"
+        "react-hot-loader/babel",  
+        "@babel/plugin-transform-modules-commonjs",
+        "@babel/plugin-transform-private-methods"
     ]
 }
 
