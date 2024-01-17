@@ -118,7 +118,7 @@ const getDatosMatricula = async (params, signal) => {
     params.al_rut
   );
   try {
-    let response = await fetch("/Matricula/" + params.al_rut, {
+    let response = await fetch("/matricula/" + params.al_rut, {
       method: "GET",
       signal: signal,
     });
@@ -146,26 +146,29 @@ const getParentesco = async () => {
   }
 };
 
-
-
-
-
 const api_getAlumnosNombres = async (params, signal) => {
   try {
-    console.log("api_getAlumnosNombres parametro recibido: ", params )
+    console.log("api_getAlumnosNombres parametro recibido: ", params);
 
     let nomAl = params.al_nombres;
     let apPatAl = params.al_apat;
     let apMatAl = params.al_amat;
 
-    nomAl   = ( nomAl   === '') ? "@": nomAl  
-    apPatAl = ( apPatAl === '') ? "@": apPatAl
-    apMatAl = ( apMatAl === '') ? "@": apMatAl
+    nomAl = nomAl === "" ? "@" : nomAl;
+    apPatAl = apPatAl === "" ? "@" : apPatAl;
+    apMatAl = apMatAl === "" ? "@" : apMatAl;
 
+    console.log(
+      "api_getAlumnosNombres /n /getAlumnoNombres/",
+      nomAl,
+      "/",
+      apPatAl,
+      "/",
+      apMatAl
+    );
 
-    console.log("api_getAlumnosNombres /n /getAlumnoNombres/" , nomAl , "/" , apPatAl , "/" , apMatAl )
-
-    let response = await fetch("/getAlumnoNombres/" + nomAl + "/" + apPatAl + "/" + apMatAl,
+    let response = await fetch(
+      "/getAlumnoNombres/" + nomAl + "/" + apPatAl + "/" + apMatAl,
       {
         method: "GET",
         signal: signal,

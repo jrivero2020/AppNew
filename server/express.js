@@ -7,8 +7,8 @@ import helmet from "helmet";
 
 import usuariosRutas from "./rutas/usuario.rutas.js";
 import docenteRutas from "./rutas/docente.rutas.js";
-
 import autorizadoRutas from "./rutas/autorizado.rutas.js";
+
 import Template from "./../template";
 import path from "path";
 
@@ -34,14 +34,13 @@ import theme from "./../client/theme";
 import "./../client/assets/css/navbar.css";
 // end
 
-import devBundle from "./devBundle.js";
-
 const CURRENT_WORKING_DIR = process.cwd();
 
 const app = express();
 
 // Para desarrollo
-devBundle.compile(app);
+// import devBundle from "./devBundle.js";
+// devBundle.compile(app);
 // Comentar para produccion
 
 app.use(express.json());

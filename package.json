@@ -6,7 +6,7 @@
   "scripts": {
     "development": "nodemon",
     "build": "webpack --config webpack.config.client.production.js && webpack --mode=production --config webpack.config.server.js",
-    "start": "NODE_ENV=production node ./dist/server.generated.js"
+    "start": "set NODE_ENV=production node ./dist/server.generated.js"
   },
   "homepage": ".",
   "mime": {
@@ -46,7 +46,7 @@
     "file-loader": "^6.2.0",
     "helmet": "^5.1.0",
     "mysql2": "^2.3.3",
-    "pdfjs-dist": "^3.6.172",
+    "pdfjs-dist": "3.11.174",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hook-form": "^7.49.2",
