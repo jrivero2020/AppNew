@@ -14,8 +14,7 @@ import HistoriaDetalle from "./assets/data/historiaDetalle";
 import FichaDelAlumno2 from "./Matriculas/FichaDelAlumno2";
 import CertAlumnoRegular from "./print/CertAlumnoRegular";
 import LabTabs from "./Matriculas/LabTabs";
-import VerUtiles from "./core/VerUtiles";
-import VerGrilla from "./core/VerGrilla";
+import VerUtilesEscolares from "./core/VerUtilesEscolares";
 import Alertas from "./assets/mensajes/Alertas";
 import Parent from "./Matriculas/Parent";
 
@@ -41,8 +40,7 @@ const MainRouter = () => {
       <Route path="/menu2" element={<SwipeableTemporaryDrawer />} />
       <Route path="/HistoriaDetalle" element={<HistoriaDetalle />} />
       <Route path="/VisorPdfII" element={<VisorPdfII />} />
-      <Route path="/VerUtiles" element={<VerUtiles />} />
-      <Route path="/VerGrilla" element={<VerGrilla />} />
+      <Route path="/VerUtilesEscolares" element={<VerUtilesEscolares />} />
       <Route path="/DocenteHoras" element={<DocenteHoras />} />
       <Route path="/CertAlumnoRegular" element={<CertAlumnoRegular />} />
       <Route path="/LabTabs" element={<LabTabs />} />

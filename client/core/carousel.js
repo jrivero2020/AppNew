@@ -1,7 +1,7 @@
 import React from "react";
 import Carousel from "react-material-ui-carousel";
 import { Paper } from "@mui/material";
-import Datacol from "./DataCol";
+import InitOpcion from "./InitOpcion";
 import "./../assets/css/myStyle.css";
 // import entrada from "./../assets/images/Entrada1.jpg";
 // import cancha1 from "./../assets/images/Cancha1.jpg";
@@ -85,7 +85,7 @@ function carousel() {
           </Paper>
         ))}
       </Carousel>
-      <Datacol />
+      <InitOpcion />
     </div>
   );
 }

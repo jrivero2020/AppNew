@@ -28,7 +28,7 @@ import createEmotionCache from "./createEmotionCache.js";
 import "./../client/assets/css/StyleMainPageImg.css";
 // fin nuevo de Material
 
-import Menu from "./../client/core/menujr";
+import Menu from "../client/core/menuCLC.js";
 import theme from "./../client/theme";
 
 import "./../client/assets/css/navbar.css";
