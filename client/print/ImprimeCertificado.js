@@ -2,10 +2,12 @@ import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Typography, CardActions, Button, Grid } from "@mui/material";
 import Item from "../core/Item";
-import logo from "./../assets/images/LogoColegio_p.png";
+// import logo from "./../assets/images/LogoColegio_p.png";
 import { FmtoRut } from "../assets/js/FmtoRut";
 import { useLocation } from "react-router";
 import { useReactToPrint } from "react-to-print";
+
+const logo = "dist/images/links/LogoColegio_p.png";
 
 function PrintCertAReg(props) {
   const datoAlumno = props.data;

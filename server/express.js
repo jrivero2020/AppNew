@@ -39,8 +39,8 @@ const CURRENT_WORKING_DIR = process.cwd();
 const app = express();
 
 // Para desarrollo
-// import devBundle from "./devBundle.js";
-// devBundle.compile(app);
+import devBundle from "./devBundle.js";
+devBundle.compile(app);
 // Comentar para produccion
 
 app.use(express.json());

@@ -11,22 +11,79 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PagPendiente from "./PagPendiente";
 
-import nina from "./../assets/images/poster.jpg";
-import fondoPantalla from "./../assets/images/FondoPantalla.jpg";
-import CtaPublica from "./../assets/images/cuentaPublica2023.png";
-import ListaUtiles from "./../assets/images/ListaUtiles.png";
-import manualConvivencia from "./../assets/images/ManualConvivencia.png";
-import campaña_vacuna2023 from "./../assets/images/campaña_vacuna2023.png";
-import ReunionesPA from "./../assets/images/ReunionesPA.png";
-import ResulAcadem from "./../assets/images/ResultadosAcademicos.png";
-import Jornada from "./../assets/images/Jornada.png";
-import Faldas from "./../assets/images/Faldas.png";
-import Galeria from "./../assets/images/GaleriaFotos.png";
-import CertARegular from "./../assets/images/CertificadoARegular.png";
-import { Copyright } from "./../assets/js/CopyRight";
-// import "./../assets/css/StyleMainPageImg.css";
+// import Bienvenidos from "./../assets/images/bienvenidos.jpg";
+// import fondoPantalla from "./../assets/images/FondoPantalla.jpg";
+// import CtaPublica from "./../assets/images/cuentaPublica2023.png";
+// import ListaUtiles from "./../assets/images/ListaUtiles.png";
+// import manualConvivencia from "./../assets/images/ManualConvivencia.png";
+// import campaña_vacuna2023 from "./../assets/images/campaña_vacuna2023.png";
+// import ReunionesPA from "./../assets/images/ReunionesPA.png";
+// import ResulAcadem from "./../assets/images/ResultadosAcademicos.png";
+// import Jornada from "./../assets/images/Jornada.png";
+// import Faldas from "./../assets/images/Faldas.png";
+// import Galeria from "./../assets/images/GaleriaFotos.png";
+// import CertARegular from "./../assets/images/CertificadoARegular.png";
 
-// import './../assets/css/myStyle.css'
+import { Copyright } from "./../assets/js/CopyRight";
+
+const pathImg = "dist/images/links/";
+const imgLinks = [
+  {
+    id: 0,
+    foto: "bienvenidos.jpg",
+    titulo: "bienvenidos",
+  },
+  {
+    id: 1,
+    foto: "FondoPantalla.jpg",
+    titulo: "FondoPantalla",
+  },
+  {
+    id: 2,
+    foto: "cuentaPublica2023.png",
+    titulo: "cuentaPublica2023",
+  },
+  {
+    id: 3,
+    foto: "ListaUtiles.png",
+    titulo: "ListaUtiles",
+  },
+  {
+    id: 4,
+    foto: "ManualConvivencia.png",
+    titulo: "ManualConvivencia",
+  },
+  {
+    id: 5,
+    foto: "CertificadoARegular.png",
+    titulo: "CertificadoARegular",
+  },
+  {
+    id: 6,
+    foto: "campaña_vacuna2023.png",
+    titulo: "campaña_vacuna2023",
+  },
+  {
+    id: 7,
+    foto: "ReunionesPA.png",
+    titulo: "ReunionesPA",
+  },
+  {
+    id: 9,
+    foto: "Jornada.png",
+    titulo: "Jornada",
+  },
+  {
+    id: 10,
+    foto: "Faldas.png",
+    titulo: "Faldas",
+  },
+  {
+    id: 11,
+    foto: "GaleriaFotos.png",
+    titulo: "GaleriaFotos",
+  },
+];
 
 const useStyles = makeStyles({
   marginAutoContainer: {
@@ -64,9 +121,8 @@ export default function BasicGrid() {
 
   const Pendiente = () => {
     setShowPdf(!showPdf);
-  
-      <PagPendiente />;
-  
+
+    <PagPendiente />;
   };
 
   const cargarVisorPdf = (docu) => {
@@ -89,26 +145,15 @@ export default function BasicGrid() {
     navigate(`/Parent`);
   };
 
-
-
-
-  /*
-    xs: false;
-    sm: false;
-    md: false;
-    lg: false;
-    xl: false;
-*/
-
   return (
-    <div style={{ background: `url(${fondoPantalla})` }}>
+    <div style={{ background: `url(${pathImg + "FondoPantalla.jpg"})` }}>
       <Grid container spacing={1} alignItems="center" justifyContent="center">
         <Grid item sm={6} md={4} lg={3} xl={2}>
           <Card sx={{ maxWidth: 300, marginLeft: "20px" }}>
             <CardActionArea onClick={() => cargarVisorPdf(1)}>
               <CardMedia
                 component="img"
-                image={nina}
+                image={pathImg + "bienvenidos.jpg"}
                 className={classes.imgBtn}
               />
             </CardActionArea>
@@ -120,7 +165,7 @@ export default function BasicGrid() {
             <CardActionArea onClick={() => cargarVisorPdf(2)}>
               <CardMedia
                 component="img"
-                image={CtaPublica}
+                image={pathImg + "cuentaPublica2023.png"}
                 className={classes.imgBtn}
               />
             </CardActionArea>
@@ -132,7 +177,7 @@ export default function BasicGrid() {
             <CardActionArea onClick={() => cargarListaUtiles()}>
               <CardMedia
                 component="img"
-                image={ListaUtiles}
+                image={pathImg + "ListaUtiles.png"}
                 className={classes.imgBtn}
               />
             </CardActionArea>
@@ -144,7 +189,7 @@ export default function BasicGrid() {
             <CardActionArea onClick={() => cargarVisorPdf(3)}>
               <CardMedia
                 component="img"
-                image={manualConvivencia}
+                image={pathImg + "ManualConvivencia.png"}
                 className={classes.imgBtn}
               />
             </CardActionArea>
@@ -156,7 +201,7 @@ export default function BasicGrid() {
             <CardActionArea onClick={() => CertAlumnoRegularPrint()}>
               <CardMedia
                 component="img"
-                image={CertARegular}
+                image={pathImg + "CertificadoARegular.png"}
                 className={classes.imgBtn}
               />
             </CardActionArea>
@@ -168,7 +213,7 @@ export default function BasicGrid() {
             <CardActionArea onClick={() => VerParent()}>
               <CardMedia
                 component="img"
-                image={campaña_vacuna2023}
+                image={pathImg + "campaña_vacuna2023.png"}
                 className={classes.imgBtn}
               />
             </CardActionArea>
@@ -179,31 +224,20 @@ export default function BasicGrid() {
             <CardActionArea onClick={() => Pendiente(3)}>
               <CardMedia
                 component="img"
-                image={ReunionesPA}
+                image={pathImg + "ReunionesPA.png"}
                 className={classes.imgBtn}
               />
               {showPdf && "Pronto Disponible"}
             </CardActionArea>
           </Card>
         </Grid>
-        <Grid item sm={6} md={4} lg={3} xl={2}>
-          <Card sx={{ maxWidth: 300, marginLeft: "20px" }}>
-            <CardActionArea onClick={() => Pendiente(3)}>
-              <CardMedia
-                component="img"
-                image={ResulAcadem}
-                className={classes.imgBtn}
-              />
-              {showPdf && "Pronto Disponible"}
-            </CardActionArea>
-          </Card>
-        </Grid>
+
         <Grid item sm={6} md={4} lg={3} xl={2}>
           <Card sx={{ maxWidth: 300, marginLeft: "20px" }}>
             <CardActionArea onClick={() => cargarDocenteHoras()}>
               <CardMedia
                 component="img"
-                image={Jornada}
+                image={pathImg + "Jornada.png"}
                 className={classes.imgBtn}
               />
               {showPdf && "Pronto Disponible"}
@@ -215,7 +249,7 @@ export default function BasicGrid() {
             <CardActionArea onClick={() => Pendiente(3)}>
               <CardMedia
                 component="img"
-                image={Faldas}
+                image={pathImg + "Faldas.png"}
                 className={classes.imgBtn}
               />
               {showPdf && "Pronto Disponible"}
@@ -227,7 +261,7 @@ export default function BasicGrid() {
             <CardActionArea onClick={() => Pendiente(3)}>
               <CardMedia
                 component="img"
-                image={Galeria}
+                image={pathImg + "GaleriaFotos.png"}
                 className={classes.imgBtn}
               />
               {showPdf && "Pronto Disponible"}

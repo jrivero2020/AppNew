@@ -32,25 +32,24 @@ const Home = () => {
 const MainRouter = () => {
   return (
     <Routes>
-      <Route exact path="/" element={<Carousel />} />
-      <Route exact path="/lstusuario" element={<LstUsuarios />} />
-      <Route exact path="/Signup" element={<Signup />} />
-      <Route exact path="/Inscripcion" element={<Inscripcion />} />
-      <Route exact path="/Signin" element={<Signin />} />
-      <Route exact path="/Signout" element={<Signout />} />
-      <Route exact path="/menu2" element={<SwipeableTemporaryDrawer />} />
-      <Route exact path="/Carousel" element={<Carousel />} />
-      <Route exact path="/HistoriaDetalle" element={<HistoriaDetalle />} />
-      <Route exact path="/VisorPdfII" element={<VisorPdfII />} />
-      <Route exact path="/VerUtiles" element={<VerUtiles />} />
-      <Route exact path="/VerGrilla" element={<VerGrilla />} />
-      <Route exact path="/DocenteHoras" element={<DocenteHoras />} />
-      <Route exact path="/CertAlumnoRegular" element={<CertAlumnoRegular />} />
-      <Route exact path="/LabTabs" element={<LabTabs />} />
-      <Route exact path="/FichaDelAlumno2" element={<FichaDelAlumno2 />} />
-      <Route exact path="/Alertas" element={<Alertas />} />
-      <Route exact path="/Parent" element={<Parent />} />
-      <Route exact path="/Home" element={<Home />} />
+      <Route path="/" element={<Carousel />} />
+      <Route path="/lstusuario" element={<LstUsuarios />} />
+      <Route path="/Signup" element={<Signup />} />
+      <Route path="/Inscripcion" element={<Inscripcion />} />
+      <Route path="/Signin" element={<Signin />} />
+      <Route path="/Signout" element={<Signout />} />
+      <Route path="/menu2" element={<SwipeableTemporaryDrawer />} />
+      <Route path="/HistoriaDetalle" element={<HistoriaDetalle />} />
+      <Route path="/VisorPdfII" element={<VisorPdfII />} />
+      <Route path="/VerUtiles" element={<VerUtiles />} />
+      <Route path="/VerGrilla" element={<VerGrilla />} />
+      <Route path="/DocenteHoras" element={<DocenteHoras />} />
+      <Route path="/CertAlumnoRegular" element={<CertAlumnoRegular />} />
+      <Route path="/LabTabs" element={<LabTabs />} />
+      <Route path="/FichaDelAlumno2" element={<FichaDelAlumno2 />} />
+      <Route path="/Alertas" element={<Alertas />} />
+      <Route path="/Parent" element={<Parent />} />
+      <Route path="/Home" element={<Home />} />
       <Route path="*" element={<NoMatch />} />
     </Routes>
   );
