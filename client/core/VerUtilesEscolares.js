@@ -15,23 +15,24 @@ import VisorPdfFinal from "./VisorPdfFinal";
 import { archivoPdf } from "../../config/ConfigPdf";
 
 // Viewer Pdf
-import { Worker, Viewer } from "@react-pdf-viewer/core";
-import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+// import { Worker, Viewer } from "@react-pdf-viewer/core";
+// import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 // ************************************************************************
 
 // import ListaUtiles from "./../assets/images/ListaUtiles.png";
-import "../assets/css/dlCore_index.css";
-import "../assets/css/dlStyles_index.css";
+// import "../assets/css/dlCore_index.css";
+// import "../assets/css/dlStyles_index.css";
 
 const ListaUtiles = "dist/images/links/ListaUtiles.png";
 
-const WorkerMinJs = "dist/pdf.worker.min.js";
-const UtilesDoc = [
-  "dist/pdf/Lut_prekinder23.pdf",
-  "dist/pdf/lut_kinder23.pdf",
-  "dist/pdf/Lut_basica23.pdf",
-];
+// const WorkerMinJs = "dist/pdf.worker.min.js";
+// const UtilesDoc = [
+//   "dist/pdf/Lut_prekinder23.pdf",
+//   "dist/pdf/lut_kinder23.pdf",
+//   "dist/pdf/Lut_basica23.pdf",
+// ];
 
+/* **********************ESTILOS PERSONALES PARA Item y CardMedia con imagenes *** */
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -39,6 +40,12 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
+const StyledCarmedia = styled(CardMedia)({
+  width: "100%",
+  height: "100%",
+  objectFit: "scaleDown",
+});
+/* **********************FIN ESTILOS PERSONALES PARA Item y CardMedia con imagenes *** */
 
 export default function BasicGrid() {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -50,7 +57,8 @@ export default function BasicGrid() {
     setDocu(pdfResult.archivo);
   };
 
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+  // const defaultLayoutPluginInstance = defaultLayoutPlugin();
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={1}>
@@ -62,7 +70,7 @@ export default function BasicGrid() {
         >
           <Item>
             <Typography variant="h3" gutterBottom sx={{ color: "blue" }}>
-              Útiles escolares año 2023
+              Útiles escolares año 2024
             </Typography>
           </Item>
         </Grid>
@@ -71,7 +79,7 @@ export default function BasicGrid() {
           <Item>
             <Card sx={{ maxWidth: 380, marginLeft: "20px" }}>
               <CardActionArea>
-                <CardMedia
+                <StyledCarmedia
                   component="img"
                   height="320"
                   image={ListaUtiles}

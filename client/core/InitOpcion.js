@@ -4,86 +4,14 @@ import {
   Card,
   CardActionArea,
   CardMedia,
-  Typography,
 } from "../assets/data/constantesMui";
 import { makeStyles } from "@mui/styles";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// import PagPendiente from "./PagPendiente";
-// import Bienvenidos from "./../assets/images/bienvenidos.jpg";
-// import fondoPantalla from "./../assets/images/FondoPantalla.jpg";
-// import CtaPublica from "./../assets/images/cuentaPublica2023.png";
-// import ListaUtiles from "./../assets/images/ListaUtiles.png";
-// import manualConvivencia from "./../assets/images/ManualConvivencia.png";
-// import campaña_vacuna2023 from "./../assets/images/campaña_vacuna2023.png";
-// import ReunionesPA from "./../assets/images/ReunionesPA.png";
-// import ResulAcadem from "./../assets/images/ResultadosAcademicos.png";
-// import Jornada from "./../assets/images/Jornada.png";
-// import Faldas from "./../assets/images/Faldas.png";
-// import Galeria from "./../assets/images/GaleriaFotos.png";
-// import CertARegular from "./../assets/images/CertificadoARegular.png";
-
 import { Copyright } from "../assets/js/CopyRight";
 
 const pathImg = "dist/images/links/";
-const imgLinks = [
-  {
-    id: 0,
-    foto: "bienvenidos.jpg",
-    titulo: "bienvenidos",
-  },
-  {
-    id: 1,
-    foto: "FondoPantalla.jpg",
-    titulo: "FondoPantalla",
-  },
-  {
-    id: 2,
-    foto: "cuentaPublica2023.png",
-    titulo: "cuentaPublica2023",
-  },
-  {
-    id: 3,
-    foto: "ListaUtiles.png",
-    titulo: "ListaUtiles",
-  },
-  {
-    id: 4,
-    foto: "ManualConvivencia.png",
-    titulo: "ManualConvivencia",
-  },
-  {
-    id: 5,
-    foto: "CertificadoARegular.png",
-    titulo: "CertificadoARegular",
-  },
-  {
-    id: 6,
-    foto: "campaña_vacuna2023.png",
-    titulo: "campaña_vacuna2023",
-  },
-  {
-    id: 7,
-    foto: "ReunionesPA.png",
-    titulo: "ReunionesPA",
-  },
-  {
-    id: 9,
-    foto: "Jornada.png",
-    titulo: "Jornada",
-  },
-  {
-    id: 10,
-    foto: "Faldas.png",
-    titulo: "Faldas",
-  },
-  {
-    id: 11,
-    foto: "GaleriaFotos.png",
-    titulo: "GaleriaFotos",
-  },
-];
 
 const useStyles = makeStyles({
   marginAutoContainer: {
@@ -108,6 +36,7 @@ const useStyles = makeStyles({
     margin: "auto",
     transform: "scale(1)",
     transition: "transform 0.2s",
+    objectFit: "scaleDown",
     "&:hover": {
       transform: "scale(1.1)",
     },
@@ -124,7 +53,7 @@ export default function BasicGrid() {
   };
 
   // const cargarVisorPdf = (docu) => {
-  //   navigate("/VisorPdfII", { state: { idArchivo: docu } });
+  //   navigate("/VisorPdfII", { state: docu });
   // };
 
   // const cargarDocenteHoras = () => {
@@ -143,7 +72,7 @@ export default function BasicGrid() {
           <Card sx={{ maxWidth: 300, marginLeft: "20px" }}>
             <CardActionArea
               onClick={() => {
-                navigate("/VisorPdfII", { state: 1 });
+                navigate("/MiddlewarePdf", { state: 1 });
               }}
             >
               <CardMedia
@@ -159,7 +88,7 @@ export default function BasicGrid() {
           <Card sx={{ maxWidth: 300, marginLeft: "20px" }}>
             <CardActionArea
               onClick={() => {
-                navigate("/VisorPdfII", { state: 2 });
+                navigate("/MiddlewarePdf", { state: 2 });
               }}
             >
               <CardMedia
@@ -191,7 +120,7 @@ export default function BasicGrid() {
           <Card sx={{ maxWidth: 300, marginLeft: "20px" }}>
             <CardActionArea
               onClick={() => {
-                navigate("/VisorPdfII", { state: 3 });
+                navigate("/MiddlewarePdf", { state: 3 });
               }}
             >
               <CardMedia

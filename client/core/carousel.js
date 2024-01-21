@@ -1,6 +1,6 @@
 import React from "react";
 import Carousel from "react-material-ui-carousel";
-import { Box, Paper } from "@mui/material";
+import { Box, Grid, Paper } from "@mui/material";
 import { styled } from "@mui/system";
 import InitOpcion from "./InitOpcion";
 
@@ -78,29 +78,45 @@ const StyledImage = styled("img")({
 function carousel() {
   return (
     <div style={{ paddingTop: "88px" }}>
-      <Carousel
-        animation="slide"
-        navButtonsAlwaysVisible={true}
-        duration={500}
-        swipe={false}
-        sx={{ bgcolor: "primary.main" }}
-      >
-        {imgCarousel.map((elemento) => (
-          <Paper key={elemento.id}>
-            <Box
-              sx={{
-                width: "100%",
-                height: "70vh",
-                overflow: "hidden",
-                border: "4px solid",
-              }}
-            >
-              {pathImg + elemento.foto}
-              <StyledImage alt="Imagen" src={pathImg + elemento.foto} />
-            </Box>
-          </Paper>
-        ))}
-      </Carousel>
+      <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "98%" }}>
+        <Grid item xs={2}>
+          <Box
+            sx={{
+              width: "100%",
+              height: "70vh",
+              overflow: "hidden",
+              border: "4px solid",
+            }}
+          >
+            aqui viene algo
+          </Box>
+        </Grid>
+        <Grid item xs={10}>
+          <Carousel
+            animation="slide"
+            navButtonsAlwaysVisible={true}
+            duration={500}
+            swipe={false}
+            sx={{ bgcolor: "primary.main" }}
+          >
+            {imgCarousel.map((elemento) => (
+              <Paper key={elemento.id}>
+                <Box
+                  sx={{
+                    width: "100%",
+                    height: "70vh",
+                    overflow: "hidden",
+                    border: "4px solid",
+                  }}
+                >
+                  {pathImg + elemento.foto}
+                  <StyledImage alt="Imagen" src={pathImg + elemento.foto} />
+                </Box>
+              </Paper>
+            ))}
+          </Carousel>
+        </Grid>
+      </Grid>
       <InitOpcion />
     </div>
   );

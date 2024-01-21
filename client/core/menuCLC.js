@@ -26,13 +26,13 @@ const pages = [
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 const navegar = [
-  "/Home",
+  "/",
   "/lstusuario",
   "/Signup",
   "/Inscripcion",
   "/Signin",
   "/FichaDelAlumno2",
-  "Parent",
+  "/Parent",
   "/LabTabs",
   "/Signout",
 ];
