@@ -1,8 +1,10 @@
 import React from "react";
 import Carousel from "react-material-ui-carousel";
-import { Paper } from "@mui/material";
+import { Box, Paper } from "@mui/material";
+import { styled } from "@mui/system";
 import InitOpcion from "./InitOpcion";
-import "./../assets/css/myStyle.css";
+
+//import "./../assets/css/myStyle.css";
 // import entrada from "./../assets/images/Entrada1.jpg";
 // import cancha1 from "./../assets/images/Cancha1.jpg";
 // import pasillo from "./../assets/images/Pasillo.jpg";
@@ -55,7 +57,23 @@ const imgCarousel = [
     foto: "Bienvenidos.png",
     titulo: "Bienvenidos",
   },
+  {
+    id: 9,
+    foto: "Naranjos.jpg",
+    titulo: "Naranjos",
+  },
+  {
+    id: 10,
+    foto: "ComedorPatio1.jpg",
+    titulo: "ComedorPatio",
+  },
 ];
+
+const StyledImage = styled("img")({
+  width: "100%",
+  height: "100%",
+  objectFit: "scaleDown",
+});
 
 function carousel() {
   return (
@@ -69,19 +87,17 @@ function carousel() {
       >
         {imgCarousel.map((elemento) => (
           <Paper key={elemento.id}>
-            <div>
+            <Box
+              sx={{
+                width: "100%",
+                height: "70vh",
+                overflow: "hidden",
+                border: "4px solid",
+              }}
+            >
               {pathImg + elemento.foto}
-              <img
-                alt="Imagen"
-                src={pathImg + elemento.foto}
-                style={{
-                  display: "block",
-                  margin: "auto",
-                  Width: "78vm",
-                  height: "50vh",
-                }}
-              />
-            </div>
+              <StyledImage alt="Imagen" src={pathImg + elemento.foto} />
+            </Box>
           </Paper>
         ))}
       </Carousel>
