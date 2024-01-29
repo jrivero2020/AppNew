@@ -22,9 +22,9 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-function VisorPdf() {
+function VisorPdfMiddleware() {
   const location = useLocation();
-  const idArch = location.state;
+  const idArch = location.state.ptr;
   const pdfResult = archivoPdf.find((pdf) => pdf.id == idArch);
 
   return (
@@ -54,4 +54,4 @@ function VisorPdf() {
   );
 }
 
-export default VisorPdf;
+export default VisorPdfMiddleware;

@@ -1,73 +1,21 @@
 import React from "react";
 import Carousel from "react-material-ui-carousel";
-import { Box, Grid, Paper } from "@mui/material";
-import { styled } from "@mui/system";
+import {
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  Paper,
+  Typography,
+  styled,
+} from "@mui/material";
+
+// import { styled } from "@mui/system";
 import InitOpcion from "./InitOpcion";
 
-//import "./../assets/css/myStyle.css";
-// import entrada from "./../assets/images/Entrada1.jpg";
-// import cancha1 from "./../assets/images/Cancha1.jpg";
-// import pasillo from "./../assets/images/Pasillo.jpg";
-// import pasillo2 from "./../assets/images/pasillo2.jpg";
-// import patioPk from "./../assets/images/Patio_PK.jpg";
-// import patioChico from "./../assets/images/patiochico.jpg";
-// import patioPeques from "./../assets/images/patiopeques.jpg";
-// import nina        from "./../assets/images/ninaLibros.jpg";
-// import Bienvenidos from "./../assets/images/Bienvenidos.png";
-
 const pathImg = "dist/images/fotos/portada/";
-const imgCarousel = [
-  {
-    id: 1,
-    foto: "Entrada1.jpg",
-    titulo: "Entrada",
-  },
-  {
-    id: 2,
-    foto: "Cancha1.jpg",
-    titulo: "Cancha 1",
-  },
-  {
-    id: 3,
-    foto: "Pasillo.jpg",
-    titulo: "pasillo 1",
-  },
-  {
-    id: 4,
-    foto: "pasillo2.jpg",
-    titulo: "pasillo 2",
-  },
-  {
-    id: 5,
-    foto: "Patio_PK.jpg",
-    titulo: "Patio_PK",
-  },
-  {
-    id: 6,
-    foto: "patiochico.jpg",
-    titulo: "pasillo 2",
-  },
-  {
-    id: 7,
-    foto: "patiopeques.jpg",
-    titulo: "pasillo 2",
-  },
-  {
-    id: 8,
-    foto: "Bienvenidos.png",
-    titulo: "Bienvenidos",
-  },
-  {
-    id: 9,
-    foto: "Naranjos.jpg",
-    titulo: "Naranjos",
-  },
-  {
-    id: 10,
-    foto: "ComedorPatio1.jpg",
-    titulo: "ComedorPatio",
-  },
-];
+const ImgFondoP = "dist/images/links/FondoPantalla.jpg";
+import { imgCarousel } from "../../config/ConfigPdf";
 
 const StyledImage = styled("img")({
   width: "100%",
@@ -75,23 +23,83 @@ const StyledImage = styled("img")({
   objectFit: "scaleDown",
 });
 
+const DemoPaper = styled(Paper)(({ theme }) => ({
+  width: "100%",
+  height: "70vh",
+  padding: theme.spacing(2),
+  ...theme.typography.body2,
+  textAlign: "left",
+  backgroundColor: "BlanchedAlmond",
+}));
+
 function carousel() {
   return (
-    <div style={{ paddingTop: "88px" }}>
-      <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "98%" }}>
+    <div style={{ paddingTop: "77px", background: `url(${ImgFondoP})` }}>
+      <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "100%" }}>
         <Grid item xs={2}>
           <Box
             sx={{
               width: "100%",
-              height: "70vh",
+              height: "68vh",
               overflow: "hidden",
-              border: "4px solid",
+              border: "2px solid",
             }}
           >
-            aqui viene algo
+            <Paper elevation={16}>
+              <DemoPaper variant="elevation">
+                <Typography
+                  style={{ fontSize: "16px" }}
+                  variant="h6"
+                  gutterBottom
+                  sx={{ textAlign: "Center" }}
+                >
+                  Colegio Particular subvencionado
+                  <br /> Científico-Humanista.
+                  <br />
+                  Dirección: San José 215, Cerrillos.
+                  <br />
+                  Teléfono: 225386855.
+                  <br />
+                  Directora: Alejandra Echeverría Bocaz.
+                  <br />
+                  Corporación Educacional
+                  <br /> Los Conquistadores de Chile.
+                  <br />
+                  RBD: 9903-1.
+                </Typography>
+                <Box
+                  sx={{
+                    mt: "50px",
+                    width: "100%",
+                    height: "5vh",
+                    overflow: "hidden",
+                    border: "1px solid",
+                    alignItems: "center",
+                  }}
+                >
+                  <CardContent
+                    sx={{ background: "CornflowerBlue" }}
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingTop: "80px",
+                    }}
+                  >
+                    <Typography
+                      sx={{ fontSize: 18, alignItems: "center" }}
+                      color="Azure"
+                      gutterBottom
+                    >
+                      Sitios de Interés
+                    </Typography>
+                  </CardContent>
+                </Box>
+              </DemoPaper>
+            </Paper>
           </Box>
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={8}>
           <Carousel
             animation="slide"
             navButtonsAlwaysVisible={true}
@@ -104,18 +112,18 @@ function carousel() {
                 <Box
                   sx={{
                     width: "100%",
-                    height: "70vh",
+                    height: "68vh",
                     overflow: "hidden",
-                    border: "4px solid",
+                    border: "2px solid",
                   }}
                 >
-                  {pathImg + elemento.foto}
                   <StyledImage alt="Imagen" src={pathImg + elemento.foto} />
                 </Box>
               </Paper>
             ))}
           </Carousel>
         </Grid>
+        <Grid item xs={2}></Grid>
       </Grid>
       <InitOpcion />
     </div>

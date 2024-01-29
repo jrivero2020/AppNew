@@ -5,16 +5,14 @@ import { api_getAlumnosNombres } from "./../docentes/api-docentes";
 import { esES as esESCore } from "@mui/material/locale";
 import { Button } from "@mui/material";
 
-
 function BasicEditingGrid(props) {
-
-  const { datosal, dRut, manejaSetdRut, PanelBusca, setPanelBusca } = props
+  const { datosal, dRut, manejaSetdRut, PanelBusca, setPanelBusca } = props;
 
   const abortController = new AbortController();
   const signal = abortController.signal;
 
   const [AlumnosNombres, setAlumnosNombres] = useState({});
-  const [ShowPanel, setShowPanel] = useState(false)
+  const [ShowPanel, setShowPanel] = useState(false);
 
   const handleCellClick = (row, column) => {
     const nuevodRut = { ...dRut };
@@ -24,7 +22,7 @@ function BasicEditingGrid(props) {
     manejaSetdRut(nuevodRut);
   };
 
-  console.log("datosal en BasicEditingGrid ", datosal)
+  // console.log("datosal en BasicEditingGrid ", datosal)
   React.useEffect(() => {
     api_getAlumnosNombres(datosal, signal).then((data) => {
       if (data && data.error) {
@@ -36,21 +34,21 @@ function BasicEditingGrid(props) {
           results[0] === null ||
           Object.keys(results[0]).length === 0
         ) {
-          alert("**ATENCION** Datos no encontrados en las Matrículas del establecimiento");
+          alert(
+            "**ATENCION** Datos no encontrados en las Matrículas del establecimiento"
+          );
         } else {
           setAlumnosNombres(results);
-          setShowPanel(true)
+          setShowPanel(true);
         }
       }
     });
   }, []);
 
-
-
-
   return (
-    (ShowPanel && (
+    ShowPanel && (
       <>
+        //{" "}
         {console.log("len data alumnos: ", Object.keys(AlumnosNombres).length)}
         <div>Presione doble click para seleccionar</div>
         <DataGrid
@@ -61,7 +59,7 @@ function BasicEditingGrid(props) {
           onCellDoubleClick={handleCellClick}
         />
       </>
-    ))
+    )
   );
 }
 
@@ -108,7 +106,6 @@ const columns = [
     height: 25,
     editable: false,
   },
-
 ];
 
-export default BasicEditingGrid
+export default BasicEditingGrid;

@@ -1,77 +1,82 @@
 import React, { useEffect } from "react";
-import {
-  TextField,
-  Grid,
-  Box,
-  Typography,
-  Paper,
-  Card,
-} from "@mui/material";
+import { TextField, Grid, Box, Typography, Paper, Card } from "@mui/material";
 import { useState } from "react";
 import BasicEditingGrid from "./TablaGrillaAlumno";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
-import BackspaceIcon from '@mui/icons-material/Backspace';
-import Button from '@mui/material/Button';
+import BackspaceIcon from "@mui/icons-material/Backspace";
+import Button from "@mui/material/Button";
 
 export default function GridBuscaAlumnos(props) {
-  const { btnBuscaNombres, setbtnBuscaNombres } = props
+  const { btnBuscaNombres, setbtnBuscaNombres } = props;
   /********************************************************************* */
   const [valores, setValores] = useState({
     al_amat: "",
     al_apat: "",
     al_nombres: "",
   });
-  
+
   const [PanelBusca, setPanelBusca] = useState({
     inputT: true,
     grillaVer: false,
   });
 
-  const [dRut, setdRut] = useState({ rut: 0, dv: '', visitado: false })
+  const [dRut, setdRut] = useState({ rut: 0, dv: "", visitado: false });
 
   /************************************************************************ */
 
   const manejaSetdRut = (objRut) => {
-    setdRut(objRut)
-  }
+    setdRut(objRut);
+  };
 
   const handleChange = (name) => (event) => {
     setValores({ ...valores, [name]: event.target.value });
   };
 
   const switchPanel = () => {
-    setPanelBusca({ ...PanelBusca, inputT: false, grillaVer: true })
+    setPanelBusca({ ...PanelBusca, inputT: false, grillaVer: true });
   };
 
   const switchCancel = () => {
-    setPanelBusca({ ...PanelBusca, inputT: false, grillaVer: false })
-    setbtnBuscaNombres({ ...btnBuscaNombres, btnBusca: true, btnDialog: false });
+    setPanelBusca({ ...PanelBusca, inputT: false, grillaVer: false });
+    setbtnBuscaNombres({
+      ...btnBuscaNombres,
+      btnBusca: true,
+      btnDialog: false,
+    });
   };
 
   if (dRut.visitado) {
-    console.log("dRut.rut =", dRut.rut)
-    console.log("dRut.dv =", dRut.dv)
-    return false
+    // console.log("dRut.rut =", dRut.rut)
+    // console.log("dRut.dv =", dRut.dv)
+    return false;
   }
 
-  const [VerGrilla, setVerGrilla] = useState(false)
-
+  const [VerGrilla, setVerGrilla] = useState(false);
 
   const VerGrillaAlumnos = () => {
-    if (valores.al_apat !== '' || valores.al_amat !== '' || valores.al_nombres !== '') {
-      console.log("Tengo datos y se va a BasicEditingGrid estos son los valores", valores)
-      setVerGrilla(true)
+    if (
+      valores.al_apat !== "" ||
+      valores.al_amat !== "" ||
+      valores.al_nombres !== ""
+    ) {
+      // console.log("Tengo datos y se va a BasicEditingGrid estos son los valores", valores)
+      setVerGrilla(true);
     }
 
     return (
       VerGrilla && (
         <div>
-          <BasicEditingGrid datosal={valores} dRut={dRut} manejaSetdRut={manejaSetdRut} PanelBusca={PanelBusca} setPanelBusca={setPanelBusca} />
+          <BasicEditingGrid
+            datosal={valores}
+            dRut={dRut}
+            manejaSetdRut={manejaSetdRut}
+            PanelBusca={PanelBusca}
+            setPanelBusca={setPanelBusca}
+          />
         </div>
       )
     );
-
-  }
+  };
 
   return (
     <Grid
@@ -93,7 +98,8 @@ export default function GridBuscaAlumnos(props) {
               backgroundColor: "lightgrey",
             }}
           >
-            <Typography style={{ fontSize: '13px' }}
+            <Typography
+              style={{ fontSize: "13px" }}
               variant="h6"
               gutterBottom
               sx={{ color: "blue", textAlign: "center" }}
@@ -108,9 +114,9 @@ export default function GridBuscaAlumnos(props) {
                 justifyContent: "center",
               }}
             >
-
               <Grid item xs={12} md={3}>
-                <TextField style={{ fontSize: '13px' }}
+                <TextField
+                  style={{ fontSize: "13px" }}
                   size="small"
                   label="Nombres"
                   variant="outlined"
@@ -118,7 +124,7 @@ export default function GridBuscaAlumnos(props) {
                   value={valores.al_nombres}
                   onChange={handleChange("al_nombres")}
                   sx={{ backgroundColor: "#E8EAF6" }}
-                  inputProps={{ style: { fontSize: '13px' } }}
+                  inputProps={{ style: { fontSize: "13px" } }}
                 />
               </Grid>
 
@@ -131,7 +137,7 @@ export default function GridBuscaAlumnos(props) {
                   value={valores.al_apat}
                   onChange={handleChange("al_apat")}
                   sx={{ backgroundColor: "#E8EAF6" }}
-                  inputProps={{ style: { fontSize: '13px' } }}
+                  inputProps={{ style: { fontSize: "13px" } }}
                 />
               </Grid>
               <Grid item xs={12} md={3}>
@@ -143,30 +149,31 @@ export default function GridBuscaAlumnos(props) {
                   value={valores.al_amat}
                   onChange={handleChange("al_amat")}
                   sx={{ backgroundColor: "#E8EAF6" }}
-                  inputProps={{ style: { fontSize: '13px' } }}
+                  inputProps={{ style: { fontSize: "13px" } }}
                 />
               </Grid>
               <Grid item xs={6} md={1.5}>
                 <Button
                   variant="contained"
-                  size="small" style={{ fontSize: '9px' }}
+                  size="small"
+                  style={{ fontSize: "9px" }}
                   startIcon={<PersonSearchIcon />}
                   onClick={switchPanel}
                 >
                   Busca
                 </Button>
               </Grid>
-              <Grid item xs={6} md={1.5} >
+              <Grid item xs={6} md={1.5}>
                 <Button
                   variant="contained"
-                  size="small" style={{ fontSize: '9px' }}
+                  size="small"
+                  style={{ fontSize: "9px" }}
                   startIcon={<BackspaceIcon />}
                   onClick={switchCancel}
                 >
                   Cancela
                 </Button>
               </Grid>
-
             </Grid>
           </Paper>
         )}
@@ -181,7 +188,6 @@ export default function GridBuscaAlumnos(props) {
             <VerGrillaAlumnos />
           </Card>
         )}
-
       </Grid>
     </Grid>
   );

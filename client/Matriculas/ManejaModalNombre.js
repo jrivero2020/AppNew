@@ -44,7 +44,7 @@ export default function ManejaModalNombre({
         console.log("*** Error ***", data.error);
       } else {
         const [results, metadata] = data;
-        console.log("Data[0]", data[0]);
+        // console.log("Data[0]", data[0]);
         if (
           results[0] === undefined ||
           results[0] === null ||
@@ -54,20 +54,17 @@ export default function ManejaModalNombre({
             "**ATENCION** Datos no encontrados en las Matrículas del establecimiento"
           );
         } else {
-          console.log("ALumnos encontrados results:", results);
+          // console.log("ALumnos encontrados results:", results);
           setAlumnosNombres(results);
           ModalOffBtnOff();
           OnShowGrid();
-          console.log(
-            "************************************AlumnosNombres:",
-            AlumnosNombres
-          );
+          // console.log( "************************************AlumnosNombres:",  AlumnosNombres      );
         }
       }
     });
   };
 
-  console.log("ManejaModalNombre");
+  // console.log("ManejaModalNombre");
   return (
     <Grid
       container

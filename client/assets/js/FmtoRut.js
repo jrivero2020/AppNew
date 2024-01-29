@@ -14,7 +14,7 @@ const FmtoRut = (value) => {
   let tvalue = QuitaPuntos(value);
   let patt = new RegExp(/^\d{1,10}[kK]?$/);
   let retValue = "";
-  if( tvalue === "") return tvalue
+  if (tvalue === "") return tvalue;
 
   if (patt.test(tvalue)) {
     if (tvalue.length > 1) {
@@ -25,7 +25,7 @@ const FmtoRut = (value) => {
     retValue = tvalue;
   } else retValue = null;
 
-  console.log("FmtoRut retValue===========>:", retValue)
+  // console.log("FmtoRut retValue===========>:", retValue)
   return retValue;
 };
 
@@ -34,12 +34,12 @@ const QuitaPuntos = (rut) => {
 };
 
 const validarRut = (rut) => {
-  console.log("validarRut:", rut);
+  // console.log("validarRut:", rut);
   rut = rut.replace(/[.-]/g, ""); // Elimina los puntos y guión
   rut = rut.replace(/[^\dkK]/g, ""); // Eliminar caracteres no numéricos excepto K/k
   if (!/^\d{4,10}(?:[kK])?$/.test(rut)) {
     // Validar formato
-    console.log("No Cumple formato", rut);
+    // console.log("No Cumple formato", rut);
     return false;
   }
 
@@ -60,7 +60,7 @@ const validarRut = (rut) => {
   var resultado = 11 - (suma % 11); // Calcular dígito verificador esperado (módulo 11)
   resultado =
     resultado === 11 ? "0" : resultado === 10 ? "K" : String(resultado); // Convertir valor 10 a 'K'
-  console.log("Dv: ", dv, " Resultado calc:", resultado);
+  // console.log("Dv: ", dv, " Resultado calc:", resultado);
   return dv === resultado; // Validar si el dígito verificador ingresado es igual al obtenido
 };
 

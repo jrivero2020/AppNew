@@ -112,12 +112,7 @@ export default function FichaDelAlumno() {
   };
 
   const vViveConCambio = (event) => {
-    console.log(
-      "vViveConCambio : ",
-      vViveConCambio,
-      " Valor=",
-      event.target.value
-    );
+    // console.log( "vViveConCambio : ",  vViveConCambio, " Valor=", event.target.value );
     setvViveCon(event.target.value);
   };
 
@@ -130,12 +125,12 @@ export default function FichaDelAlumno() {
   };
 
   const handleChange = (name) => (event) => {
-    console.log(
-      "handleChange name=",
-      name,
-      "  event.target.value:",
-      event.target.value
-    );
+    // console.log(
+    //   "handleChange name=",
+    //   name,
+    //   "  event.target.value:",
+    //   event.target.value
+    // );
     setValores({ ...valores, [name]: event.target.value });
   };
 
@@ -157,7 +152,7 @@ export default function FichaDelAlumno() {
         } else {
           setverBtnBusca(false);
           setbtnBuscaNombres(true);
-          console.log("Rut no es válido");
+          // console.log("Rut no es válido");
           ret = false;
         }
       } else {
@@ -167,24 +162,24 @@ export default function FichaDelAlumno() {
     }
     if (campo !== "al_rut") {
       ret = validarCampo(campo, valores[campo]);
-      if (ret) {
-        console.log("Validado", ret);
-      } else {
-        console.log("no validado", ret);
-      }
+      // if (ret) {
+      //   console.log("Validado", ret);
+      // } else {
+      //   console.log("no validado", ret);
+      // }
     }
 
-    console.log("Se llama a actualizar validations");
-    setValidations({
-      ...validations,
-      [campo]: {
-        ...validations[campo],
-        value: ret,
-      },
-    });
-
-    console.log("*                                   *");
-    console.log("*************************************");
+    // console.log("Se llama a actualizar validations");
+    // setValidations({
+    //   ...validations,
+    //   [campo]: {
+    //     ...validations[campo],
+    //     value: ret,
+    //   },
+    // });
+    //
+    // console.log("*                                   *");
+    // console.log("*************************************");
     return ret;
   };
 
@@ -232,7 +227,7 @@ export default function FichaDelAlumno() {
   //***************************************************/
   //* manejaCambioParentesco
   const manejaCambioParentesco = (event) => {
-    console.log("Parentesco:", event);
+    // console.log("Parentesco:", event);
     setSelectedParentesco(event.target.value);
   };
   //***************************************************/
@@ -258,7 +253,7 @@ export default function FichaDelAlumno() {
         } else {
           const [results] = data;
           setValores(results[0]);
-          console.log("results[0]:", results[0]);
+          // console.log("results[0]:", results[0]);
           setSelectedComuna(results[0].al_id_comuna);
           if (results[0].al_genero === "M") {
             setvSexo("Masculino");
@@ -280,7 +275,7 @@ export default function FichaDelAlumno() {
     if (validations.hasOwnProperty(campo)) {
       const { ty, nn, ml } = validations[campo];
       const valor = valorCampo; //validations[campo].valor;
-      console.log("Campo en validar campo", campo);
+      // console.log("Campo en validar campo", campo);
       if (valor !== "") {
         if (
           campo === "ma_promedionota" &&
@@ -535,9 +530,13 @@ export default function FichaDelAlumno() {
                     display="flex"
                     justifyContent="flex-start"
                     width={1}
-                    sx={{ border: 1, borderRadius: 1, height: "40px", }}
+                    sx={{ border: 1, borderRadius: 1, height: "40px" }}
                   >
-                    <FormLabel id="lSexo" sx={{ mt: 1, ml: 4 }} style={{ fontSize: "12px" }} >
+                    <FormLabel
+                      id="lSexo"
+                      sx={{ mt: 1, ml: 4 }}
+                      style={{ fontSize: "12px" }}
+                    >
                       Sexo :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </FormLabel>
                     <FormControl>
@@ -1021,7 +1020,6 @@ export default function FichaDelAlumno() {
                     onChange={handleChange("ap_emergencia")}
                     onBlur={handleBlur("ap_emergencia")}
                   />
-
                 </Grid>
 
                 <Grid item>
@@ -1229,7 +1227,6 @@ export default function FichaDelAlumno() {
                     onChange={handleChange("apsu_emergencia")}
                     onBlur={handleBlur("apsu_emergencia")}
                   />
-
                 </Grid>
 
                 <Grid item>
@@ -1641,7 +1638,6 @@ export default function FichaDelAlumno() {
           </Grid>
           {/*******************FIN Ingreso del grupo Familiar*********************** */}
         </TabPanel>
-
       </TabContext>
     </ThemeProvider>
   );

@@ -44,7 +44,7 @@ const inscripcionUsuario = async (req, res) => {
     return res.status(200).json({ message: "Inscripción exitosa" });
   } catch (e) {
     const errmsg = verErrorSequelize(e);
-    console.log("Dentro de inscripción de usuario: ", errmsg);
+    // console.log("Dentro de inscripción de usuario: ", errmsg);
     return res.status(500).json({ message: errmsg });
   }
 };

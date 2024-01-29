@@ -3,5 +3,6 @@ dist/server.generated.js
 dist/bundle.js
 yarn.lock
 yarn-error.log
+Token.txt
 
 

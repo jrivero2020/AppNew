@@ -70,7 +70,7 @@ export default function CertAlumnoRegular() {
       return false;
     }
     if (campo === "password" && valores.password.length < 3) {
-      console.log("Password ??: ", valores.password.length);
+      // console.log("Password ??: ", valores.password.length);
       return false;
     }
     return true;

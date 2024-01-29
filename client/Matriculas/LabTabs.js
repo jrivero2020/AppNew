@@ -1,33 +1,138 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
+import {
+  Grid,
+  React,
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  Typography,
+} from "../assets/data/constantesMui";
+import Box from "@mui/material/Box";
+import { makeStyles } from "@mui/styles";
+import { styled } from "@mui/material";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function LabTabs() {
-    const [value, setValue] = React.useState('1');
+import { Copyright } from "../assets/js/CopyRight";
+import { imgLinks } from "../../config/ConfigPdf";
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+const activeImgLinks = imgLinks.filter((link) => link.activo === 1);
+const pathImg = "dist/images/links/";
 
-    return (
-        <Box sx={{ width: '100%', typography: 'body1' }} style={{ paddingTop: '100px' }} >
-            <TabContext value={value}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <TabList onChange={handleChange} aria-label="lab API tabs example">
-                        <Tab label="I Antecedentes del Alumno" value="1" />
-                        <Tab label="II Antecedentes del Apoderado" value="2" />
-                        <Tab label="II Antecedentes del Familiares" value="3" />
-                        <Tab label="IV Compromiso de Responsabilidad" value="4" />
-                    </TabList>
-                </Box>
-                <TabPanel value="1">Item One</TabPanel>
-                <TabPanel value="2">Item Two</TabPanel>
-                <TabPanel value="3">Item Three</TabPanel>
-                <TabPanel value="4">Item Three</TabPanel>
-            </TabContext>
-        </Box>
-    );
+const StyledImage = styled("img")({
+  width: "100%",
+  height: "100%",
+  borderRadius: "13%",
+  transform: "scale(1)",
+  transition: "transform 0.2s",
+  objectFit: "scaleDown",
+  "&:hover": { transform: "scale(1.1)" },
+});
+
+const useStyles = makeStyles({
+  imgBtn: {
+    width: "100%",
+    height: "100%",
+    borderRadius: "13%",
+    transform: "scale(1)",
+    transition: "transform 0.2s",
+    objectFit: "scaleDown",
+    "&:hover": {
+      transform: "scale(1.1)",
+    },
+  },
+});
+
+// display: "flex",
+// margin: "auto",
+
+export default function BasicGrid() {
+  const classes = useStyles();
+  const navigate = useNavigate();
+  const [showPdf, setShowPdf] = useState(false);
+
+  const Pendiente = () => {
+    setShowPdf(!showPdf);
+    navigate("/Pendiente", { state: 1 });
+  };
+
+  return (
+    <div
+      style={{
+        marginTop: "88px",
+        paddingTop: "88px",
+        background: `url(${pathImg + "FondoPantalla.jpg"})`,
+      }}
+    >
+      <Grid container spacing={4} alignItems="center" justifyContent="center">
+        {activeImgLinks.map((ImagenLnk) => (
+          <Grid item sm={6} md={4} lg={3} xl={2} key={ImagenLnk.id}>
+            <Box
+              sx={{
+                ml: "20px",
+                color: "white",
+                height: "20vh",
+                width: "25vh",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img
+                alt="Imagen"
+                src={pathImg + ImagenLnk.foto}
+                className={classes.imgBtn}
+                onClick={() => {
+                  if (ImagenLnk.llamada.param) {
+                    navigate(ImagenLnk.llamada.componente, {
+                      state: ImagenLnk.llamada.param,
+                    });
+                  }
+                }}
+              />
+              <Card>
+                <CardContent>
+                  <Typography
+                    sx={{ fontSize: 14 }}
+                    color="text.secondary"
+                    gutterBottom
+                  >
+                    Word of the Day
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Box>
+          </Grid>
+        ))}
+        <Grid item sm={12}>
+          <Copyright sx={{ mt: 5 }} />
+        </Grid>
+      </Grid>
+    </div>
+  );
 }
+
+/* Modelo
+
+        <Grid item sm={6} md={4} lg={3} xl={2}>
+          <Box
+            onClick={() => {
+              navigate("/MiddlewarePdf", { state: 1 });
+            }}
+            sx={{
+              ml: "20px",
+              color: "white",
+              height: "20vh",
+              width: "25vh",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <img
+              alt="Imagen"
+              src={pathImg + "cuentapublica.png"}
+              className={classes.imgBtn}
+            />
+          </Box>
+        </Grid>
+
+*/

@@ -16,6 +16,7 @@ import LabTabs from "./Matriculas/LabTabs";
 import VerUtilesEscolares from "./core/VerUtilesEscolares";
 import Alertas from "./assets/mensajes/Alertas";
 import Parent from "./Matriculas/Parent";
+import Pendiente from "./core/PagPendiente";
 
 const Signout = () => {
   auth.clearJWT();
@@ -41,6 +42,7 @@ const MainRouter = () => {
       <Route path="/FichaDelAlumno2" element={<FichaDelAlumno2 />} />
       <Route path="/Alertas" element={<Alertas />} />
       <Route path="/Parent" element={<Parent />} />
+      <Route path="/Pendiente" element={<Pendiente />} />
       <Route path="*" element={<NoMatch />} />
     </Routes>
   );

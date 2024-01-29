@@ -37,7 +37,7 @@ const inscribe = async (docente) => {
 
 const docenteListarHoras = async (opcion, signal) => {
   try {
-    console.log("en api-docente, docenteListarHora. opcion", opcion);
+    // console.log("en api-docente, docenteListarHora. opcion", opcion);
     let response = await fetch("/docenteHorarios/" + opcion, {
       method: "GET",
       signal: signal,
@@ -111,12 +111,7 @@ const getDatosCert = async (params, signal) => {
   }
 };
 const getDatosMatricula = async (params, signal) => {
-  console.log(
-    "en api-docente, getDatosMatricula. opcion",
-    params,
-    "   Rut=>",
-    params.al_rut
-  );
+  // console.log("en api-docente, getDatosMatricula. opcion",params,"   Rut=>",params.al_rut);
   try {
     let response = await fetch("/matricula/" + params.al_rut, {
       method: "GET",
@@ -148,7 +143,7 @@ const getParentesco = async () => {
 
 const api_getAlumnosNombres = async (params, signal) => {
   try {
-    console.log("api_getAlumnosNombres parametro recibido: ", params);
+    // console.log("api_getAlumnosNombres parametro recibido: ", params);
 
     let nomAl = params.al_nombres;
     let apPatAl = params.al_apat;
@@ -158,14 +153,7 @@ const api_getAlumnosNombres = async (params, signal) => {
     apPatAl = apPatAl === "" ? "@" : apPatAl;
     apMatAl = apMatAl === "" ? "@" : apMatAl;
 
-    console.log(
-      "api_getAlumnosNombres /n /getAlumnoNombres/",
-      nomAl,
-      "/",
-      apPatAl,
-      "/",
-      apMatAl
-    );
+    // console.log(      "api_getAlumnosNombres /n /getAlumnoNombres/",      nomAl,      "/",      apPatAl,      "/",      apMatAl    );
 
     let response = await fetch(
       "/getAlumnoNombres/" + nomAl + "/" + apPatAl + "/" + apMatAl,

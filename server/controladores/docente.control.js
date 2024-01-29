@@ -142,7 +142,6 @@ const getParentesco = async (req, res) => {
   }
 };
 
-
 const getComunas = async (req, res) => {
   try {
     const datComunas = await Comunas.findAll({
@@ -159,16 +158,16 @@ const getDataAlumnoNombres = async (req, res) => {
     const nomAl = req.params.nomAl;
     const apPatAl = req.params.apPatAl;
     const apMatAl = req.params.apMatAl;
-    console.log(" en getDataAlumnoNombres Control con nomAl=", nomAl," apPatAl=", apPatAl,"apMatAl=", apMatAl );
+    // console.log(" en getDataAlumnoNombres Control con nomAl=", nomAl," apPatAl=", apPatAl,"apMatAl=", apMatAl );
     const dataAlumos = await sequelize.query(
       `CALL sp_buscaAlNombres( ?,?,? )`,
-      
+
       {
         replacements: [nomAl, apPatAl, apMatAl],
-        type: sequelize.QueryTypes.SELECT,        
+        type: sequelize.QueryTypes.SELECT,
       }
     );
-    console.log("dataAlumos", dataAlumos);
+    // console.log("dataAlumos", dataAlumos);
     res.json(dataAlumos);
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -187,6 +186,6 @@ export default {
   listaAlumnosByRut,
   listaMatricula,
   getComunas,
-  getParentesco, 
+  getParentesco,
   getDataAlumnoNombres,
 };
