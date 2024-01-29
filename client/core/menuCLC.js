@@ -15,7 +15,7 @@ import { NavLink } from "react-router-dom";
 // const pages = ['Inicio', 'Sobre Nosotros', 'Documentos', 'História', 'Contacto'];
 const pages = [
   "Inicio",
-  "Lista Usuarios",
+  "História",
   "Registro",
   "Inscripción",
   "Ingresar",
@@ -27,7 +27,7 @@ const pages = [
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 const navegar = [
   "/",
-  "/lstusuario",
+  "/HistoriaDetalle",
   "/Signup",
   "/Inscripcion",
   "/Signin",

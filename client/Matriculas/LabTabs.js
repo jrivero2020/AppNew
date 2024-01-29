@@ -1,138 +1,175 @@
+import React from "react";
+import Carousel from "react-material-ui-carousel";
 import {
-  Grid,
-  React,
+  Box,
   Card,
-  CardActionArea,
-  CardMedia,
   CardContent,
+  Grid,
+  Paper,
   Typography,
-} from "../assets/data/constantesMui";
-import Box from "@mui/material/Box";
-import { makeStyles } from "@mui/styles";
-import { styled } from "@mui/material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+  styled,
+} from "@mui/material";
 
-import { Copyright } from "../assets/js/CopyRight";
-import { imgLinks } from "../../config/ConfigPdf";
+// import { styled } from "@mui/system";
+import InitOpcion from "./../core/InitOpcion";
 
-const activeImgLinks = imgLinks.filter((link) => link.activo === 1);
-const pathImg = "dist/images/links/";
+const pathImg = "dist/images/fotos/portada/";
+const ImgFondoP = "dist/images/links/FondoPantalla.jpg";
+import { imgCarousel } from "../../config/ConfigPdf";
 
 const StyledImage = styled("img")({
   width: "100%",
   height: "100%",
-  borderRadius: "13%",
-  transform: "scale(1)",
-  transition: "transform 0.2s",
   objectFit: "scaleDown",
-  "&:hover": { transform: "scale(1.1)" },
 });
 
-const useStyles = makeStyles({
-  imgBtn: {
-    width: "100%",
-    height: "100%",
-    borderRadius: "13%",
-    transform: "scale(1)",
-    transition: "transform 0.2s",
-    objectFit: "scaleDown",
-    "&:hover": {
-      transform: "scale(1.1)",
-    },
-  },
-});
+const DemoPaper = styled(Paper)(({ theme }) => ({
+  width: "100%",
+  height: "70vh",
+  padding: theme.spacing(2),
+  ...theme.typography.body2,
+  textAlign: "left",
+  backgroundColor: "BlanchedAlmond",
+}));
 
-// display: "flex",
-// margin: "auto",
-
-export default function BasicGrid() {
-  const classes = useStyles();
-  const navigate = useNavigate();
-  const [showPdf, setShowPdf] = useState(false);
-
-  const Pendiente = () => {
-    setShowPdf(!showPdf);
-    navigate("/Pendiente", { state: 1 });
-  };
-
+function carousel() {
   return (
-    <div
-      style={{
-        marginTop: "88px",
-        paddingTop: "88px",
-        background: `url(${pathImg + "FondoPantalla.jpg"})`,
-      }}
-    >
-      <Grid container spacing={4} alignItems="center" justifyContent="center">
-        {activeImgLinks.map((ImagenLnk) => (
-          <Grid item sm={6} md={4} lg={3} xl={2} key={ImagenLnk.id}>
-            <Box
-              sx={{
-                ml: "20px",
-                color: "white",
-                height: "20vh",
-                width: "25vh",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <img
-                alt="Imagen"
-                src={pathImg + ImagenLnk.foto}
-                className={classes.imgBtn}
-                onClick={() => {
-                  if (ImagenLnk.llamada.param) {
-                    navigate(ImagenLnk.llamada.componente, {
-                      state: ImagenLnk.llamada.param,
-                    });
-                  }
-                }}
-              />
-              <Card>
-                <CardContent>
-                  <Typography
-                    sx={{ fontSize: 14 }}
-                    color="text.secondary"
-                    gutterBottom
+    <div style={{ paddingTop: "77px", background: `url(${ImgFondoP})` }}>
+      <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "100%" }}>
+        <Grid item xs={2}>
+          <Box
+            sx={{
+              width: "100%",
+              height: "68vh",
+              overflow: "hidden",
+              border: "2px solid",
+            }}
+          >
+            <Paper elevation={16}>
+              <DemoPaper variant="elevation">
+                <Typography
+                  style={{ fontSize: "16px" }}
+                  variant="h6"
+                  gutterBottom
+                  sx={{ textAlign: "Center" }}
+                >
+                  Colegio Particular subvencionado
+                  <br /> Científico-Humanista.
+                  <br />
+                  Dirección: San José 215, Cerrillos.
+                  <br />
+                  Teléfono: 225386855.
+                  <br />
+                  Directora: Alejandra Echeverría Bocaz.
+                  <br />
+                  Corporación Educacional
+                  <br /> Los Conquistadores de Chile.
+                  <br />
+                  RBD: 9903-1.
+                </Typography>
+                <Box
+                  sx={{
+                    mt: "57px",
+                    width: "100%",
+                    height: "45vh",
+                    overflow: "hidden",
+                    border: "1px solid",
+                    alignItems: "center",
+                    background: "CornflowerBlue",
+                  }}
+                >
+                  <CardContent
+                    sx={{ background: "CornflowerBlue" }}
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
                   >
-                    Word of the Day
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Box>
-          </Grid>
-        ))}
-        <Grid item sm={12}>
-          <Copyright sx={{ mt: 5 }} />
+                    <Typography
+                      sx={{ fontSize: 18, alignItems: "center" }}
+                      color="Azure"
+                      gutterBottom
+                    >
+                      Sitios de Interés
+                    </Typography>
+                  </CardContent>
+                  <CardContent>
+                    <Typography
+                      sx={{ fontSize: 18 }}
+                      color="primary"
+                      gutterBottom
+                    >
+                      <a
+                        href="https://www.mineduc.cl/servicios/informacion-sobre-educacion/"
+                        target="_blank"
+                      >
+                        Información sobre educación
+                      </a>
+                    </Typography>
+                  </CardContent>
+                  <CardContent>
+                    <Typography
+                      sx={{ fontSize: 18 }}
+                      color="primary"
+                      gutterBottom
+                    >
+                      <a
+                        href="https://admision.mineduc.cl/registro/"
+                        target="_blank"
+                      >
+                        Sistema de Admisión Escolar
+                      </a>
+                    </Typography>
+                  </CardContent>
+                  <CardContent>
+                    <Typography
+                      sx={{ fontSize: 18 }}
+                      color="primary"
+                      gutterBottom
+                    >
+                      <a
+                        href="https://www.mineduc.cl/servicios/tramites-subsecretaria-de-educacion/"
+                        target="_blank"
+                      >
+                        Trámites Subsecretaría de Educación
+                      </a>
+                    </Typography>
+                  </CardContent>
+                </Box>
+              </DemoPaper>
+            </Paper>
+          </Box>
         </Grid>
+        <Grid item xs={8}>
+          <Carousel
+            animation="slide"
+            navButtonsAlwaysVisible={true}
+            duration={500}
+            swipe={false}
+            sx={{ bgcolor: "primary.main" }}
+          >
+            {imgCarousel.map((elemento) => (
+              <Paper key={elemento.id}>
+                <Box
+                  sx={{
+                    width: "100%",
+                    height: "68vh",
+                    overflow: "hidden",
+                    border: "2px solid",
+                  }}
+                >
+                  <StyledImage alt="Imagen" src={pathImg + elemento.foto} />
+                </Box>
+              </Paper>
+            ))}
+          </Carousel>
+        </Grid>
+        <Grid item xs={2}></Grid>
       </Grid>
+      <InitOpcion />
     </div>
   );
 }
 
-/* Modelo
-
-        <Grid item sm={6} md={4} lg={3} xl={2}>
-          <Box
-            onClick={() => {
-              navigate("/MiddlewarePdf", { state: 1 });
-            }}
-            sx={{
-              ml: "20px",
-              color: "white",
-              height: "20vh",
-              width: "25vh",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <img
-              alt="Imagen"
-              src={pathImg + "cuentapublica.png"}
-              className={classes.imgBtn}
-            />
-          </Box>
-        </Grid>
-
-*/
+export default carousel;

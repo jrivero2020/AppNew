@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 
 // import { styled } from "@mui/system";
-import InitOpcion from "./InitOpcion";
+import InitOpcion from "./../core/InitOpcion";
 
 const pathImg = "dist/images/fotos/portada/";
 const ImgFondoP = "dist/images/links/FondoPantalla.jpg";
@@ -69,12 +69,13 @@ function carousel() {
                 </Typography>
                 <Box
                   sx={{
-                    mt: "50px",
+                    mt: "57px",
                     width: "100%",
-                    height: "5vh",
+                    height: "45vh",
                     overflow: "hidden",
                     border: "1px solid",
                     alignItems: "center",
+                    background: "CornflowerBlue",
                   }}
                 >
                   <CardContent
@@ -83,7 +84,6 @@ function carousel() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
-                      paddingTop: "80px",
                     }}
                   >
                     <Typography
@@ -92,6 +92,48 @@ function carousel() {
                       gutterBottom
                     >
                       Sitios de Interés
+                    </Typography>
+                  </CardContent>
+                  <CardContent>
+                    <Typography
+                      sx={{ fontSize: 18 }}
+                      color="primary"
+                      gutterBottom
+                    >
+                      <a
+                        href="https://www.mineduc.cl/servicios/informacion-sobre-educacion/"
+                        target="_blank"
+                      >
+                        Información sobre educación
+                      </a>
+                    </Typography>
+                  </CardContent>
+                  <CardContent>
+                    <Typography
+                      sx={{ fontSize: 18 }}
+                      color="primary"
+                      gutterBottom
+                    >
+                      <a
+                        href="https://admision.mineduc.cl/registro/"
+                        target="_blank"
+                      >
+                        Sistema de Admisión Escolar
+                      </a>
+                    </Typography>
+                  </CardContent>
+                  <CardContent>
+                    <Typography
+                      sx={{ fontSize: 18 }}
+                      color="primary"
+                      gutterBottom
+                    >
+                      <a
+                        href="https://www.mineduc.cl/servicios/tramites-subsecretaria-de-educacion/"
+                        target="_blank"
+                      >
+                        Trámites Subsecretaría de Educación
+                      </a>
                     </Typography>
                   </CardContent>
                 </Box>
