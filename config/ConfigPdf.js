@@ -29,6 +29,11 @@ const archivoPdf = [
     archivo: "dist/Pdf/utilesba_2024.pdf",
     titulo: "",
   },
+  {
+    id: 7,
+    archivo: "dist/Pdf/calendarioescolar2024.pdf",
+    titulo: "Calendario Escolar año 2024",
+  },
 ];
 
 const imgLinks = [
@@ -125,6 +130,13 @@ const imgLinks = [
     titulo: "DescuentosMeiggs",
     llamada: "",
     activo: 0,
+  },
+  {
+    id: 13,
+    foto: "calendarioescolar.png",
+    titulo: "Calendario Escolar año 2024",
+    llamada: { componente: "/MiddlewarePdf", param: { ptr: 7 } },
+    activo: 1,
   },
 ];
 

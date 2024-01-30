@@ -24,7 +24,7 @@ const pages = [
   "Lab",
   "Salir",
 ];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+
 const navegar = [
   "/",
   "/HistoriaDetalle",

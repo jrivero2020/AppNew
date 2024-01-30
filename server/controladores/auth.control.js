@@ -1,4 +1,4 @@
-import { Usuarios } from "../modelos/usuario.js";
+import { usuarios } from "../modelos/usuario.js";
 import jwt from "jsonwebtoken";
 import { expressjwt } from "express-jwt";
 import { jwtConfig } from "../../config/config.js";
@@ -6,7 +6,7 @@ import { jwtConfig } from "../../config/config.js";
 const signin = async (req, res) => {
   const { NombreUsuario, password } = req.body;
   try {
-    const usrFind = await Usuarios.findOne({ where: { NombreUsuario } });
+    const usrFind = await usuarios.findOne({ where: { NombreUsuario } });
     if (usrFind === null)
       return res.status(404).json({ message: "Usuario no existe" });
 
@@ -47,7 +47,7 @@ const estaAutorizado = async (req, res, next) => {
   // console.log("*****************estaAutorizado*******************")
   var usrRol = null;
   try {
-    let findUsrRol = await Usuarios.findByPk(req.auth.user._id);
+    let findUsrRol = await usuarios.findByPk(req.auth.user._id);
     if (findUsrRol) {
       usrRol = findUsrRol.rol;
     } else {

@@ -1,22 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
-import {
-  Docentes,
-  Matriculas,
-  Alumnos,
-  Cursos,
-  Parentescos,
-  Apoderados,
-  Vivecon,
-  Salas,
-  Comunas,
-} from "../modelos/modeloCole.js";
+import { docentes, parentescos, comunas } from "../modelos/modeloCole.js";
 
 import { verErrorSequelize } from "../helpers/sequelizeErrores.js";
 import { sequelize } from "../bdatos/bdatos.js";
 
 const listaDocente = async (req, res) => {
   try {
-    const docente = await Docentes.findAll();
+    const docente = await docentes.findAll();
     res.json(docente);
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -38,7 +28,7 @@ const listaDocHorarios = async (req, res) => {
 
 const docenteByID = async (req, res, next, id) => {
   try {
-    const docente = await Docentes.findByPk(id);
+    const docente = await docentes.findByPk(id);
     if (docente === null) {
       res.status(404).json({ mensaje: "docente no encontrado" });
     } else {
@@ -56,7 +46,7 @@ const leerDocente = (req, res) => {
 
 const crearDocente = async (req, res) => {
   try {
-    const newdocente = await Docentes.create(req.body);
+    const newdocente = await docentes.create(req.body);
     return res.status(200).json({ message: "Registro exitoso" });
   } catch (e) {
     return res.status(500).json({ message: verErrorSequelize(e) });
@@ -65,7 +55,7 @@ const crearDocente = async (req, res) => {
 
 const inscripcionDocente = async (req, res) => {
   try {
-    const newdocente = await Docentes.create(req.body);
+    const newdocente = await docentes.create(req.body);
     return res.status(200).json({ message: "Inscripción exitosa" });
   } catch (e) {
     return res.status(500).json({ message: verErrorSequelize(e) });
@@ -74,7 +64,7 @@ const inscripcionDocente = async (req, res) => {
 
 const updateDocente = async (req, res) => {
   try {
-    const docente = await Docentes.findByPk(req.profile.iddocente);
+    const docente = await docentes.findByPk(req.profile.iddocente);
     docente.set(req.body);
     docente.updatedAt = Date.now();
     await docente.save();
@@ -88,7 +78,7 @@ const deleteDocente = async (req, res) => {
   const { id } = req.params;
   let user = req.profile; // lo voy a ver
   try {
-    let alumno = await Docentes.destroy({
+    let alumno = await docentes.destroy({
       where: { iddocente: req.profile.iddocente },
     });
     if (alumno > 0) {
@@ -133,7 +123,7 @@ const listaAlumnosByRut = async (req, res) => {
 
 const getParentesco = async (req, res) => {
   try {
-    const datParentesco = await Parentescos.findAll({
+    const datParentesco = await parentescos.findAll({
       order: [["idparentesco", "ASC"]],
     });
     res.json(datParentesco);
@@ -144,10 +134,10 @@ const getParentesco = async (req, res) => {
 
 const getComunas = async (req, res) => {
   try {
-    const datComunas = await Comunas.findAll({
+    const datcomunas = await comunas.findAll({
       order: [["descripcion", "ASC"]],
     });
-    res.json(datComunas);
+    res.json(datcomunas);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

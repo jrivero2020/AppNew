@@ -2,8 +2,8 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../bdatos/bdatos.js";
 import bcrypt, { hash } from "bcrypt";
 
-export const Usuarios = sequelize.define(
-  "Usuarios",
+export const usuarios = sequelize.define(
+  "usuarios",
   {
     idusuario: {
       type: DataTypes.INTEGER,
@@ -76,7 +76,7 @@ export const Usuarios = sequelize.define(
   { timestamps: true }
 );
 
-Usuarios.prototype.validaPassword = async function (passwordIngresada) {
+usuarios.prototype.validaPassword = async function (passwordIngresada) {
   return await bcrypt.compare(passwordIngresada, this.password);
 };
 
@@ -95,8 +95,8 @@ Usuarios.sync()
   });
 */
 
-export const Docentes = sequelize.define(
-  "Docentes",
+export const docentes = sequelize.define(
+  "docentes",
   {
     id_profesor: {
       type: DataTypes.INTEGER,
@@ -174,8 +174,8 @@ Docentes.sync()
   });
 */
 
-export const Comunas = sequelize.define(
-  "Comunas",
+export const comunas = sequelize.define(
+  "comunas",
   {
     id_comuna: {
       type: DataTypes.INTEGER,
@@ -190,22 +190,22 @@ export const Comunas = sequelize.define(
 );
 
 /*
-Comunas.sync()
+comunas.sync()
   .then(() => {
     console.log(
-      "Modelo Comunas, sincronizado correctamente con la base de datos"
+      "Modelo comunas, sincronizado correctamente con la base de datos"
     );
   })
   .catch((error) => {
     console.error(
-      "Error al sincronizar el modelo de Comunas con la base de datos:",
+      "Error al sincronizar el modelo de comunas con la base de datos:",
       error
     );
   });
 */
 
-export const Parentescos = sequelize.define(
-  "Parentescos",
+export const parentescos = sequelize.define(
+  "parentescos",
   {
     idparentesco: {
       type: DataTypes.INTEGER,
@@ -233,8 +233,8 @@ Parentescos.sync()
   });
 */
 
-export const Vivecon = sequelize.define(
-  "Vivecon",
+export const vivecon = sequelize.define(
+  "vivecon",
   {
     idvivecon: {
       type: DataTypes.INTEGER,
@@ -263,8 +263,8 @@ Vivecon.sync()
   });
 */
 
-export const Salas = sequelize.define(
-  "Salas",
+export const salas = sequelize.define(
+  "salas",
   {
     id_sala: {
       type: DataTypes.INTEGER,
@@ -294,8 +294,8 @@ Salas.sync()
   });
 */
 
-export const Alumnos = sequelize.define(
-  "Alumnos",
+export const alumnos = sequelize.define(
+  "alumnos",
   {
     id_alumno: {
       type: DataTypes.INTEGER,
@@ -314,7 +314,7 @@ export const Alumnos = sequelize.define(
     id_comuna: {
       type: DataTypes.INTEGER,
       references: {
-        model: Comunas,
+        model: comunas,
         key: "id_comuna",
       },
     },
@@ -333,7 +333,7 @@ export const Alumnos = sequelize.define(
   { freezeTableName: true }
 );
 // Alumnos.belongsTo(Vivecon, { foreignKey: 'idvivecon' });
-// Alumnos.belongsTo(Comunas, { foreignKey: 'id_comuna' });
+// Alumnos.belongsTo(comunas, { foreignKey: 'id_comuna' });
 
 /*
 Alumnos.sync()
@@ -351,8 +351,8 @@ Alumnos.sync()
 
   */
 
-export const Apoderados = sequelize.define(
-  "Apoderados",
+export const apoderados = sequelize.define(
+  "apoderados",
   {
     idapoderados: {
       type: DataTypes.INTEGER,
@@ -373,14 +373,14 @@ export const Apoderados = sequelize.define(
     id_comuna: {
       type: DataTypes.INTEGER,
       references: {
-        model: Comunas,
+        model: comunas,
         key: "id_comuna",
       },
     },
   },
   { freezeTableName: true }
 );
-// Apoderados.belongsTo(Comunas, { foreignKey: 'id_comuna' });
+// Apoderados.belongsTo(comunas, { foreignKey: 'id_comuna' });
 
 /*
 Apoderados.sync()
@@ -398,8 +398,8 @@ Apoderados.sync()
 
   */
 
-export const Cursos = sequelize.define(
-  "Cursos",
+export const cursos = sequelize.define(
+  "cursos",
   {
     id_curso: {
       type: DataTypes.INTEGER,
@@ -412,7 +412,7 @@ export const Cursos = sequelize.define(
     id_sala: {
       type: DataTypes.INTEGER,
       references: {
-        model: Salas,
+        model: salas,
         key: "id_sala",
       },
     },
@@ -427,7 +427,7 @@ export const Cursos = sequelize.define(
     id_profesor: {
       type: DataTypes.INTEGER,
       references: {
-        model: Docentes,
+        model: docentes,
         key: "id_profesor",
       },
     },
@@ -453,8 +453,8 @@ Cursos.sync()
 
   */
 
-export const Matriculas = sequelize.define(
-  "Matriculas",
+export const matriculas = sequelize.define(
+  "matriculas",
   {
     idmatricula: {
       type: DataTypes.INTEGER,
@@ -465,7 +465,7 @@ export const Matriculas = sequelize.define(
     id_alumno: {
       type: DataTypes.INTEGER,
       references: {
-        model: Alumnos,
+        model: alumnos,
         key: "id_alumno",
       },
     },
@@ -473,21 +473,21 @@ export const Matriculas = sequelize.define(
     id_curso: {
       type: DataTypes.INTEGER,
       references: {
-        model: Cursos,
+        model: cursos,
         key: "id_curso",
       },
     },
     idapoderado: {
       type: DataTypes.INTEGER,
       references: {
-        model: Apoderados,
+        model: apoderados,
         key: "idapoderados",
       },
     },
     idparentesco: {
       type: DataTypes.INTEGER,
       references: {
-        model: Parentescos,
+        model: parentescos,
         key: "idparentesco",
       },
     },
@@ -496,14 +496,14 @@ export const Matriculas = sequelize.define(
     idapoderadosupl: {
       type: DataTypes.INTEGER,
       references: {
-        model: Apoderados,
+        model: apoderados,
         key: "idapoderados",
       },
     },
     idparentescosupl: {
       type: DataTypes.INTEGER,
       references: {
-        model: Parentescos,
+        model: parentescos,
         key: "idparentesco",
       },
     },
