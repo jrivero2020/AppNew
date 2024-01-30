@@ -14,9 +14,9 @@ import { useNavigate } from "react-router-dom";
 
 import "./../css/myStyle.css";
 const ImgFondoP = "dist/images/links/FondoPantalla.jpg";
-
 export default function HistoriaDetalle() {
   const navigate = useNavigate();
+
   return (
     <div
       id="Aquicomienza"
@@ -116,7 +116,9 @@ export default function HistoriaDetalle() {
                   size="small"
                   variant="contained"
                   color="primary"
-                  onClick={() => navigate(-1)}
+                  onClick={() => {
+                    navigate("/");
+                  }}
                 >
                   Cerrar
                 </Button>
