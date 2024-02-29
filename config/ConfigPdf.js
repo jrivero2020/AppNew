@@ -80,7 +80,7 @@ const imgLinks = [
     foto: "CertificadoARegular.png",
     titulo: "CertificadoARegular",
     llamada: { componente: "/CertAlumnoRegular", param: {} },
-    activo: 1,
+    activo: 0,
   },
   {
     id: 6,
@@ -114,7 +114,12 @@ const imgLinks = [
     id: 10,
     foto: "GaleriaFotos.png",
     titulo: "GaleriaFotos",
-    llamada: { componente: "/Pendiente", param: {} },
+    llamada: {
+      componente: "link",
+      link: {
+        url: "sites.google.com/conquistadores.red-lc.com/colegiolosconquistadores/quienes-somos",
+      },
+    },
     activo: 1,
   },
   {

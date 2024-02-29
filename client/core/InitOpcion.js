@@ -53,7 +53,10 @@ export default function BasicGrid() {
     setShowPdf(!showPdf);
     navigate("/Pendiente", { state: 1 });
   };
-
+  const abrirPaginaExterna = (url) => {
+    console.log("url:", url);
+    window.open("https://" + url, "_blank");
+  };
   return (
     <div
       style={{
@@ -70,6 +73,9 @@ export default function BasicGrid() {
                   navigate(ImagenLnk.llamada.componente, {
                     state: ImagenLnk.llamada.param,
                   });
+                }
+                if (ImagenLnk.llamada.link) {
+                  abrirPaginaExterna(ImagenLnk.llamada.link.url);
                 }
               }}
               sx={{

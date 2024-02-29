@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Carousel from "react-material-ui-carousel";
 import {
   Box,
@@ -33,11 +33,52 @@ const DemoPaper = styled(Paper)(({ theme }) => ({
 }));
 
 function carousel() {
+  const [showOpc, setShowOpc] = useState(false);
+
+  useEffect(() => {
+    setShowOpc(true);
+  }, []);
+
   return (
     <div style={{ paddingTop: "77px", background: `url(${ImgFondoP})` }}>
       <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "100%" }}>
-        <Grid item xs={2}>
-          <Box
+        <Grid item xs={2}></Grid>
+        <Grid item xs={8}>
+          <Carousel
+            animation="slide"
+            navButtonsAlwaysVisible={true}
+            duration={500}
+            swipe={false}
+            sx={{ bgcolor: "primary.main" }}
+          >
+            {imgCarousel.map((elemento) => (
+              <Paper key={elemento.id}>
+                <Box
+                  sx={{
+                    width: "100%",
+                    height: "68vh",
+                    overflow: "hidden",
+                    border: "2px solid",
+                  }}
+                >
+                  <StyledImage alt="Imagen" src={pathImg + elemento.foto} />
+                </Box>
+              </Paper>
+            ))}
+          </Carousel>
+        </Grid>
+        <Grid item xs={2}></Grid>
+      </Grid>
+      {showOpc && <InitOpcion />}
+    </div>
+  );
+}
+
+export default carousel;
+
+/*
+
+         <Box
             sx={{
               width: "100%",
               height: "68vh",
@@ -140,36 +181,5 @@ function carousel() {
               </DemoPaper>
             </Paper>
           </Box>
-        </Grid>
-        <Grid item xs={8}>
-          <Carousel
-            animation="slide"
-            navButtonsAlwaysVisible={true}
-            duration={500}
-            swipe={false}
-            sx={{ bgcolor: "primary.main" }}
-          >
-            {imgCarousel.map((elemento) => (
-              <Paper key={elemento.id}>
-                <Box
-                  sx={{
-                    width: "100%",
-                    height: "68vh",
-                    overflow: "hidden",
-                    border: "2px solid",
-                  }}
-                >
-                  <StyledImage alt="Imagen" src={pathImg + elemento.foto} />
-                </Box>
-              </Paper>
-            ))}
-          </Carousel>
-        </Grid>
-        <Grid item xs={2}></Grid>
-      </Grid>
-      <InitOpcion />
-    </div>
-  );
-}
 
-export default carousel;
+*/

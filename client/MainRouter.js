@@ -43,6 +43,7 @@ const MainRouter = () => {
       <Route path="/Alertas" element={<Alertas />} />
       <Route path="/Parent" element={<Parent />} />
       <Route path="/Pendiente" element={<Pendiente />} />
+
       <Route path="*" element={<NoMatch />} />
     </Routes>
   );

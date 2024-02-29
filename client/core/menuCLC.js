@@ -16,7 +16,7 @@ import { NavLink } from "react-router-dom";
 
 const pages = [
   { menu: "Inicio", urlCall: "/", activo: 1 },
-  { menu: "História", urlCall: "/HistoriaDetalle", activo: 1 },
+  { menu: "Historia", urlCall: "/HistoriaDetalle", activo: 1 },
   { menu: "Registro", urlCall: "/Signup", activo: 0 },
   { menu: "Inscripción", urlCall: "/Inscripcion", activo: 0 },
   { menu: "Ingresar", urlCall: "/Signin", activo: 0 },
