@@ -26,6 +26,8 @@ router
     docenteCtrl.deleteDocente
   );
 
+router.route("/CsvLibroMatricula").get(docenteCtrl.CsvLibroMatricula);
+
 router.route("/listaAlumnosByRut/:rutAl").get(docenteCtrl.listaAlumnosByRut);
 
 router.route("/matricula/:rutAl").get(docenteCtrl.listaMatricula);

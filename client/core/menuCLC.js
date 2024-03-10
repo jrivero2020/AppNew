@@ -20,10 +20,11 @@ const pages = [
   { menu: "Registro", urlCall: "/Signup", activo: 0 },
   { menu: "Inscripción", urlCall: "/Inscripcion", activo: 0 },
   { menu: "Ingresar", urlCall: "/Signin", activo: 0 },
-  { menu: "Ficha Alumno", urlCall: "/FichaDelAlumno2", activo: 0 },
+  { menu: "Ficha Alumno", urlCall: "/FichaDelAlumno2", activo: 1 },
   { menu: "Parent", urlCall: "/Parent", activo: 0 },
   { menu: "Lab", urlCall: "/LabTabs", activo: 0 },
   { menu: "Salir", urlCall: "/Signout", activo: 0 },
+  { menu: "cvs Cert", urlCall: "/CsvLibroMatricula", activo: 1 },
 ];
 
 const logo = "dist/images/links/LogoColegio_p.png";

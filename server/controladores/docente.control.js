@@ -164,6 +164,18 @@ const getDataAlumnoNombres = async (req, res) => {
   }
 };
 
+const CsvLibroMatricula = async (req, res) => {
+  try {
+    const dataLibro = await sequelize.query(`CALL SP_csvLibroMatricula()`, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+
+    res.json(dataLibro);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 export default {
   docenteByID,
   leerDocente,
@@ -178,4 +190,5 @@ export default {
   getComunas,
   getParentesco,
   getDataAlumnoNombres,
+  CsvLibroMatricula,
 };

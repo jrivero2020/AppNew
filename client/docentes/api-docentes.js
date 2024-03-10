@@ -141,6 +141,15 @@ const getParentesco = async () => {
   }
 };
 
+const getcsvLibroMatriculas = async () => {
+  try {
+    let response = await fetch("/CsvLibroMatricula", { method: "GET" });
+    return await response.json();
+  } catch (error) {
+    console.log("**error /CsvLibroMatricula *** ===>", error);
+  }
+};
+
 const api_getAlumnosNombres = async (params, signal) => {
   try {
     // console.log("api_getAlumnosNombres parametro recibido: ", params);
@@ -180,4 +189,5 @@ export {
   getComunas,
   getParentesco,
   api_getAlumnosNombres,
+  getcsvLibroMatriculas,
 };
