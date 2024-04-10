@@ -39,6 +39,7 @@ import ManejaModalNombre from "./ManejaModalNombre";
 import ManejaModalGridNombre from "./ManejaModalGridNombre";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useForm } from "react-hook-form";
+import auth from "./../auth/auth-helper";
 
 const theme = createTheme({
   components: {
@@ -112,7 +113,6 @@ export default function FichaDelAlumno() {
   };
 
   const vViveConCambio = (event) => {
-    // console.log( "vViveConCambio : ",  vViveConCambio, " Valor=", event.target.value );
     setvViveCon(event.target.value);
   };
 
@@ -125,12 +125,6 @@ export default function FichaDelAlumno() {
   };
 
   const handleChange = (name) => (event) => {
-    // console.log(
-    //   "handleChange name=",
-    //   name,
-    //   "  event.target.value:",
-    //   event.target.value
-    // );
     setValores({ ...valores, [name]: event.target.value });
   };
 
@@ -145,49 +139,25 @@ export default function FichaDelAlumno() {
             al_rut: QuitaPuntos(fRut.slice(0, -1)),
             al_dv: fRut.slice(-1),
           });
-          // console.log("RutGrilla==>:", RutGrilla, " rutlocal==>", rutlocal, RutGrilla === rutlocal)
+
           setverBtnBusca(true);
           setbtnBuscaNombres(false);
-          // console.log("Rut ok Validado. valores=", valores);
         } else {
           setverBtnBusca(false);
           setbtnBuscaNombres(true);
-          // console.log("Rut no es válido");
+
           ret = false;
         }
       } else {
-        // console.log("Largo de rut debe ser a lo menos de 8 caracteres");
         ret = false;
       }
     }
     if (campo !== "al_rut") {
       ret = validarCampo(campo, valores[campo]);
-      // if (ret) {
-      //   console.log("Validado", ret);
-      // } else {
-      //   console.log("no validado", ret);
-      // }
     }
-
-    // console.log("Se llama a actualizar validations");
-    // setValidations({
-    //   ...validations,
-    //   [campo]: {
-    //     ...validations[campo],
-    //     value: ret,
-    //   },
-    // });
-    //
-    // console.log("*                                   *");
-    // console.log("*************************************");
     return ret;
   };
 
-  /*
-  const cierreDialog = () => {
-    setValores({ ...valores, open: false });
-  };
-*/
   const handleChangeTabs = (event, newValue) => {
     setValue(newValue);
   };
@@ -202,7 +172,6 @@ export default function FichaDelAlumno() {
     if (tvalue === null) return false;
 
     if (tvalue.length <= 13) {
-      // console.log("length <=13");
       setverBtnBusca(false);
       setbtnBuscaNombres(true);
       setfRut(tvalue);
@@ -227,19 +196,21 @@ export default function FichaDelAlumno() {
   //***************************************************/
   //* manejaCambioParentesco
   const manejaCambioParentesco = (event) => {
-    // console.log("Parentesco:", event);
     setSelectedParentesco(event.target.value);
   };
+
+  const jwt = auth.isAuthenticated();
+
   //***************************************************/
   //***************************************************/
   //* cargaDataFichaAlumno
   const cargaDataFichaAlumno = () => {
     const abortController = new AbortController();
     const signal = abortController.signal;
-    // console.log("cargarDataFichaAlumno...valores=>>>", valores);
-    getDatosMatricula(valores, signal).then((data) => {
+
+    getDatosMatricula(valores, { t: jwt.token }, signal).then((data) => {
       if (data && data.error) {
-        console.log("*** Error ***", data.error);
+        return false;
       } else {
         const [results] = data;
         if (
@@ -253,7 +224,7 @@ export default function FichaDelAlumno() {
         } else {
           const [results] = data;
           setValores(results[0]);
-          // console.log("results[0]:", results[0]);
+
           setSelectedComuna(results[0].al_id_comuna);
           if (results[0].al_genero === "M") {
             setvSexo("Masculino");
@@ -275,35 +246,28 @@ export default function FichaDelAlumno() {
     if (validations.hasOwnProperty(campo)) {
       const { ty, nn, ml } = validations[campo];
       const valor = valorCampo; //validations[campo].valor;
-      // console.log("Campo en validar campo", campo);
       if (valor !== "") {
         if (
           campo === "ma_promedionota" &&
           (!/^\d+(?:[.,]\d+)?$/.test(valor) || valor < 4 || valor > 7)
         ) {
-          // console.log("El campo debe ser numérico no mayor que 4 ni mayor que 7" );
           return false;
         }
         if (ty === "n" && !/^\d+$/.test(valor)) {
-          // console.log("El campo debe ser numérico ");
           return false;
         }
         if (ml > 0 && valor.length > ml) {
-          // console.log(`El campo debe tener máximo ${ml} caracteres`);
           return false;
         }
       } else {
         if (nn && valor === "") {
-          // console.log("El campo no debe ser nulo");
           return false;
         }
       }
     } else {
-      // console.log("El campo no existe en la estructura");
       return false;
     }
 
-    //console.log("El campo es válido");
     return true;
   };
 
@@ -321,17 +285,15 @@ export default function FichaDelAlumno() {
   useEffect(() => {
     getComunas().then((data) => {
       if (data && data.error) {
-        console.log("*** Error ***", data.error);
+        return false;
       } else {
-        // console.log("validations :", validations);
-        // console.log("validations[al_rut].value :", validations["al_rut"].value);
         setComunas(data);
       }
     });
 
     getParentesco().then((data) => {
       if (data && data.error) {
-        console.log("*** Error ***", data.error);
+        return false;
       } else {
         setParentescos(data);
       }

@@ -17,21 +17,17 @@ import path from "path";
 import ReactDOMServer from "react-dom/server";
 import MainRouter from "./../client/MainRouter";
 import { StaticRouter } from "react-router-dom/server";
-
-// Nuevo de material
-//import { CssBaseline } from '@mui/material/CssBaseline'
-import CssBaseline from "@mui/material/CssBaseline";
-import { ServerStyleSheets, ThemeProvider } from "@mui/styles";
-import { CacheProvider } from "@emotion/react";
-import createEmotionServer from "@emotion/server/create-instance";
-import createEmotionCache from "./createEmotionCache.js";
+import { ServerStyleSheets } from "@mui/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import "./../client/assets/css/StyleMainPageImg.css";
+
 // fin nuevo de Material
 
-import Menu from "../client/core/menuCLC.js";
 import theme from "./../client/theme";
 
 import "./../client/assets/css/navbar.css";
+// Para desarrollo
+import devBundle from "./devBundle.js";
 // import "./../client/assets/css/myStyle.css";
 // end
 
@@ -40,7 +36,6 @@ const CURRENT_WORKING_DIR = process.cwd();
 const app = express();
 
 // Para desarrollo
-import devBundle from "./devBundle.js";
 devBundle.compile(app);
 // Comentar para produccion
 
@@ -52,48 +47,33 @@ app.use(helmet());
 app.use(cors());
 app.use("/dist", express.static(path.join(CURRENT_WORKING_DIR, "/dist")));
 
-app.use(usuariosRutas);
-app.use(docenteRutas);
-app.use(autorizadoRutas);
+app.use("/", usuariosRutas);
+app.use("/", docenteRutas);
+app.use("/", autorizadoRutas);
 
 app.get("*", (req, res) => {
+  const sheets = new ServerStyleSheets();
   const context = {};
-  const cache = createEmotionCache();
-  const { extractCriticalToChunks, constructStyleTagsFromChunks } =
-    createEmotionServer(cache);
-  const html = ReactDOMServer.renderToString(
-    <StaticRouter location={req.url} context={context}>
-      <CacheProvider value={cache}>
-        <Menu />
+  const markup = ReactDOMServer.renderToString(
+    sheets.collect(
+      <StaticRouter location={req.url} context={context}>
         <ThemeProvider theme={theme}>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <MainRouter />
         </ThemeProvider>
-        <CssBaseline />
-      </CacheProvider>
-    </StaticRouter>
+      </StaticRouter>
+    )
   );
-
-  // Grab the CSS from emotion
-  const emotionChunks = extractCriticalToChunks(html);
-  const emotionCss = constructStyleTagsFromChunks(emotionChunks);
-
-  //app.get('/', (req, res) => {
   if (context.url) {
     return res.redirect(303, context.url);
   }
-
+  const css = sheets.toString();
   res.status(200).send(
     Template({
-      css: emotionCss,
-      markup: html,
+      markup: markup,
+      css: css,
     })
   );
-  //})
-  // Send the rendered page back to the client.
-  //res.send(renderFullPage(html, emotionCss));
 });
-// *****************************************************************
 
 app.use((err, req, res, next) => {
   if (err.name === "UnauthorizedError") {

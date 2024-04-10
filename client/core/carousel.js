@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Carousel from "react-material-ui-carousel";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import {
   Box,
   Card,
@@ -61,7 +62,7 @@ function carousel() {
                     border: "2px solid",
                   }}
                 >
-                  <StyledImage alt="Imagen" src={pathImg + elemento.foto} />
+                  <LazyLoadImage alt="Imagen" src={pathImg + elemento.foto} />
                 </Box>
               </Paper>
             ))}

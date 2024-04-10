@@ -22,11 +22,10 @@ function BasicEditingGrid(props) {
     manejaSetdRut(nuevodRut);
   };
 
-  // console.log("datosal en BasicEditingGrid ", datosal)
   React.useEffect(() => {
     api_getAlumnosNombres(datosal, signal).then((data) => {
       if (data && data.error) {
-        console.log("*** Error ***", data.error);
+        return false;
       } else {
         const [results, metadata] = data;
         if (
@@ -48,8 +47,6 @@ function BasicEditingGrid(props) {
   return (
     ShowPanel && (
       <>
-        //{" "}
-        {console.log("len data alumnos: ", Object.keys(AlumnosNombres).length)}
         <div>Presione doble click para seleccionar</div>
         <DataGrid
           rowHeight={25}

@@ -70,7 +70,6 @@ export default function CertAlumnoRegular() {
       return false;
     }
     if (campo === "password" && valores.password.length < 3) {
-      // console.log("Password ??: ", valores.password.length);
       return false;
     }
     return true;
@@ -118,7 +117,7 @@ export default function CertAlumnoRegular() {
     const signal = abortController.signal;
     getDatosCert(user, signal).then((data) => {
       if (data && data.error) {
-        console.log("**ERROR** Datos de certificado A.Reg:", data.error);
+        return false;
       } else {
         const [results, metadata] = data;
         if (
@@ -126,9 +125,7 @@ export default function CertAlumnoRegular() {
           results[0] === null ||
           Object.keys(results[0]).length === 0
         ) {
-          console.log(
-            "**ATENCION** Rut no encontrado en las Matrículas del establecimiento"
-          );
+          return false;
         } else {
           setValores({ ...results[0], open: true });
         }
@@ -183,7 +180,6 @@ export default function CertAlumnoRegular() {
 
         {valores.open ? (
           <Card style={{ maxWidth: "90%", margin: "auto", height: "1020px" }}>
-            {console.log("Valores a imprimir:", valores)}
             <PrintHojaImpresa data={valores} />
           </Card>
         ) : null}

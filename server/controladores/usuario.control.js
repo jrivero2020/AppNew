@@ -1,9 +1,9 @@
-import { Usuarios } from "../modelos/modeloCole.js";
+import { usuarios } from "../modelos/modeloCole.js";
 import { verErrorSequelize } from "../helpers/sequelizeErrores.js";
 
 const listaUsuarios = async (req, res) => {
   try {
-    const usuario = await Usuarios.findAll();
+    const usuario = await usuarios.findAll();
     res.json(usuario);
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -12,7 +12,7 @@ const listaUsuarios = async (req, res) => {
 
 const userByID = async (req, res, next, id) => {
   try {
-    const usuario = await Usuarios.findByPk(id);
+    const usuario = await usuarios.findByPk(id);
     if (usuario === null) {
       res.status(404).json({ mensaje: "Usuario no encontrado" });
     } else {
@@ -31,7 +31,7 @@ const leerUsuario = (req, res) => {
 
 const crearUsuario = async (req, res) => {
   try {
-    const newUsuario = await Usuarios.create(req.body);
+    const newUsuario = await usuarios.create(req.body);
     return res.status(200).json({ message: "Registro exitoso" });
   } catch (e) {
     return res.status(500).json({ message: verErrorSequelize(e) });
@@ -39,19 +39,19 @@ const crearUsuario = async (req, res) => {
 };
 
 const inscripcionUsuario = async (req, res) => {
+  console.log("req.body:", req.body);
   try {
-    const newUsuario = await Usuarios.create(req.body);
+    const newUsuario = await usuarios.create(req.body);
     return res.status(200).json({ message: "Inscripción exitosa" });
   } catch (e) {
     const errmsg = verErrorSequelize(e);
-    // console.log("Dentro de inscripción de usuario: ", errmsg);
     return res.status(500).json({ message: errmsg });
   }
 };
 
 const updateUsuario = async (req, res) => {
   try {
-    const usuario = await Usuarios.findByPk(req.profile.idUsuario);
+    const usuario = await usuarios.findByPk(req.profile.idUsuario);
     usuario.set(req.body);
     usuario.updatedAt = Date.now();
     await usuario.save();

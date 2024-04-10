@@ -1,3 +1,8 @@
+import auth from "./../client/auth/auth-helper";
+
+const jwt = auth.isAuthenticated();
+const jwtRol = jwt ? jwt.user._rol : 0;
+
 const archivoPdf = [
   {
     id: 1,
@@ -80,7 +85,7 @@ const imgLinks = [
     foto: "CertificadoARegular.png",
     titulo: "CertificadoARegular",
     llamada: { componente: "/CertAlumnoRegular", param: {} },
-    activo: 0,
+    activo: jwtRol === 1 || jwtRol === 2 ? 1 : 0,
   },
   {
     id: 6,
@@ -212,6 +217,7 @@ const imgCarousel = [
   { id: 24, foto: "kinderpatio1.jpg", titulo: "kinderpatio1" },
   { id: 25, foto: "salacompu.jpg", titulo: "salacompu" },
   { id: 26, foto: "SalaCompu1.jpg", titulo: "SalaCompu1" },
+  { id: 27, foto: "", titulo: "" },
 ];
 
 export { archivoPdf, imgLinks, imgCarousel };

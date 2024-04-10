@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -10,34 +10,84 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { NavLink } from "react-router-dom";
-
+import { AuthContext } from "./../core/AuthProvider";
 // import logo from './../assets/images/LogoColegio_p.png'
 // const pages = ['Inicio', 'Sobre Nosotros', 'Documentos', 'História', 'Contacto'];
 
-const pages = [
-  { menu: "Inicio", urlCall: "/", activo: 1 },
-  { menu: "Historia", urlCall: "/HistoriaDetalle", activo: 1 },
-  { menu: "Registro", urlCall: "/Signup", activo: 0 },
-  { menu: "Inscripción", urlCall: "/Inscripcion", activo: 0 },
-  { menu: "Ingresar", urlCall: "/Signin", activo: 0 },
-  { menu: "Ficha Alumno", urlCall: "/FichaDelAlumno2", activo: 1 },
-  { menu: "Parent", urlCall: "/Parent", activo: 0 },
-  { menu: "Lab", urlCall: "/LabTabs", activo: 0 },
-  { menu: "Salir", urlCall: "/Signout", activo: 0 },
-  { menu: "cvs Cert", urlCall: "/CsvLibroMatricula", activo: 1 },
-];
-
 const logo = "dist/images/links/LogoColegio_p.png";
-const activePages = pages.filter((link) => link.activo === 1);
+
 function ResponsiveAppBar() {
+  const { isAuthenticated, isJwtRol } = useContext(AuthContext);
+  const jwtRol = isJwtRol ? isJwtRol._rol : 0;
+
   const [anchorElNav, setAnchorElNav] = React.useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(false);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
 
-  //       AppBar position="fixed" style={{ backgroundColor: '#fff', color: '#000', position: 'fixed' }}>
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const pages = [
+    { menu: "Inicio", urlCall: "/", activo: 1, autorizado: 1 },
+    { menu: "Historia", urlCall: "/HistoriaDetalle", activo: 1, autorizado: 1 },
+    {
+      menu: "Registro",
+      urlCall: "/Signup",
+      activo: 1,
+      autorizado: isAuthenticated,
+    },
+    {
+      menu: "Inscripción",
+      urlCall: "/Inscripcion",
+      activo: 0,
+      autorizado: isAuthenticated,
+    },
+    {
+      menu: "Ingresar",
+      urlCall: "/Signin",
+      activo: 1,
+      autorizado: !isAuthenticated,
+    },
+    {
+      menu: "Ficha Alumno",
+      urlCall: "/FichaDelAlumno2",
+      activo: 1,
+      autorizado: isAuthenticated && (jwtRol === 1 || jwtRol === 2),
+    },
+    {
+      menu: "Parent",
+      urlCall: "/Parent",
+      activo: 0,
+      autorizado: isAuthenticated,
+    },
+    { menu: "Lab", urlCall: "/LabTabs", activo: 0, autorizado: 0 },
+    {
+      menu: "Salir",
+      urlCall: "/SalidaUsr",
+      activo: 1,
+      autorizado: isAuthenticated,
+    },
+    {
+      menu: "cvs Cert",
+      urlCall: "/CompLibroMatricula",
+      activo: 1,
+      autorizado: isAuthenticated && (jwtRol === 1 || jwtRol === 2),
+    },
+  ];
+  const activePages = pages.filter(
+    (link) => link.activo === 1 && link.autorizado
+  );
 
   return (
     <AppBar>
@@ -88,7 +138,7 @@ function ResponsiveAppBar() {
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
-              onClick={() => setAnchorElNav(true)}
+              onClick={handleOpenNavMenu}
               color="inherit"
               sx={{ marginLeft: "auto", fontSize: "32px", activo: 1 }}
             >
@@ -96,19 +146,21 @@ function ResponsiveAppBar() {
             </IconButton>
             <Menu
               id="menu-appbar"
+              anchorEl={anchorElNav}
               anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
+                vertical: "top",
+                horizontal: "right",
               }}
               keepMounted
               transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
+                vertical: "bottom",
+                horizontal: "right",
               }}
-              open={anchorElNav}
-              onClose={() => setAnchorElNav(false)}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
               sx={{
                 display: { xs: "block", md: "none", activo: 1 },
+                mt: 6,
               }}
             >
               {activePages.map((pagina) => (
@@ -117,7 +169,7 @@ function ResponsiveAppBar() {
                   sx={{ marginleft: "Auto", activo: 1 }}
                   key={pagina.menu}
                 >
-                  <MenuItem onClick={() => setAnchorElNav(false)}>
+                  <MenuItem onClick={handleCloseNavMenu}>
                     <Typography textAlign="center"> {pagina.menu}</Typography>
                   </MenuItem>
                 </NavLink>
@@ -144,7 +196,7 @@ function ResponsiveAppBar() {
                 key={page.menu}
               >
                 <Button
-                  onClick={() => setAnchorElNav(false)}
+                  onClick={handleCloseNavMenu}
                   sx={{
                     my: 2,
                     color: "white",

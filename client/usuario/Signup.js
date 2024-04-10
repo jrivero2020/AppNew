@@ -1,8 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
-  Card,
-  CardContent,
-  Icon,
   TextField,
   Typography,
   CardActions,
@@ -13,7 +10,6 @@ import {
   DialogContentText,
   DialogActions,
   Grid,
-  Box,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -22,11 +18,14 @@ import Item from "../core/Item";
 import { FmtoRut, validarRut, QuitaPuntos } from "../assets/js/FmtoRut";
 import CheckIcon from "@mui/icons-material/Check";
 import GppBadIcon from "@mui/icons-material/GppBad";
+import auth from "./../auth/auth-helper";
 
 export default function Signup() {
+  const isAutorized = auth.isAuthenticated();
+  console.log("isAutorized:", isAutorized);
   const [valores, setValores] = useState({
-    NombreUsuario: "",
-    Correo: "",
+    nombre_usuario: "",
+    correo: "",
     password: "",
     apat: "",
     amat: "",
@@ -38,8 +37,8 @@ export default function Signup() {
     error: "",
   });
   const [validations, setValidations] = useState({
-    NombreUsuario: false,
-    Correo: false,
+    nombre_usuario: false,
+    correo: false,
     password: false,
     apat: false,
     amat: false,
@@ -69,8 +68,8 @@ export default function Signup() {
     // Aquí puedes realizar tus validaciones personalizadas para cada campo
     // Por ejemplo:
     if (
-      (campo === "NombreUsuario" && valores.NombreUsuario.trim() === "") ||
-      valores.NombreUsuario.length < 5
+      (campo === "nombre_usuario" && valores.nombre_usuario.trim() === "") ||
+      valores.nombre_usuario.length < 5
     ) {
       return false;
     }
@@ -99,8 +98,8 @@ export default function Signup() {
     actualizaValores();
 
     const user = {
-      NombreUsuario: valores.NombreUsuario || undefined,
-      Correo: valores.Correo || undefined,
+      nombre_usuario: valores.nombre_usuario || undefined,
+      correo: valores.correo || undefined,
       password: valores.password || undefined,
       apat: valores.apat || undefined,
       amat: valores.amat || undefined,
@@ -111,8 +110,8 @@ export default function Signup() {
     };
     // console.log("Const user====>:", user)
     if (
-      user.NombreUsuario === undefined ||
-      user.Correo === undefined ||
+      user.nombre_usuario === undefined ||
+      user.correo === undefined ||
       user.password === undefined ||
       user.apat === undefined ||
       user.amat === undefined ||
@@ -163,12 +162,12 @@ export default function Signup() {
           variant="outlined"
           fullWidth
           value={valores.name}
-          onChange={handleChange("NombreUsuario")}
-          onBlur={handleBlur("NombreUsuario")}
-          error={!validations.NombreUsuario}
-          //                    helperText={ !validations.NombreUsuario ? 'Este valor debe tener al menos 8 caracteres' : ''}
+          onChange={handleChange("nombre_usuario")}
+          onBlur={handleBlur("nombre_usuario")}
+          error={!validations.nombre_usuario}
+          //                    helperText={ !validations.nombre_usuario ? 'Este valor debe tener al menos 8 caracteres' : ''}
           InputProps={{
-            endAdornment: validations.NombreUsuario ? (
+            endAdornment: validations.nombre_usuario ? (
               <CheckIcon color="success" />
             ) : (
               <GppBadIcon color="error" />
@@ -204,11 +203,11 @@ export default function Signup() {
       </Grid>
       <Grid item xs={12}>
         <TextField
-          label="Correo electrónico"
+          label="correo electrónico"
           variant="outlined"
           fullWidth
-          value={valores.Correo}
-          onChange={handleChange("Correo")}
+          value={valores.correo}
+          onChange={handleChange("correo")}
         />
       </Grid>
       <Grid item xs={4}>

@@ -46,8 +46,6 @@ export default function GridBuscaAlumnos(props) {
   };
 
   if (dRut.visitado) {
-    // console.log("dRut.rut =", dRut.rut)
-    // console.log("dRut.dv =", dRut.dv)
     return false;
   }
 
@@ -59,7 +57,6 @@ export default function GridBuscaAlumnos(props) {
       valores.al_amat !== "" ||
       valores.al_nombres !== ""
     ) {
-      // console.log("Tengo datos y se va a BasicEditingGrid estos son los valores", valores)
       setVerGrilla(true);
     }
 

@@ -9,8 +9,8 @@ const create = async (docente) => {
       body: JSON.stringify(docente),
     });
     return await response.json();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    return { error: err.message, message: err.message };
   }
 };
 
@@ -37,14 +37,13 @@ const inscribe = async (docente) => {
 
 const docenteListarHoras = async (opcion, signal) => {
   try {
-    // console.log("en api-docente, docenteListarHora. opcion", opcion);
     let response = await fetch("/docenteHorarios/" + opcion, {
       method: "GET",
       signal: signal,
     });
     return await response.json();
-  } catch (error) {
-    console.log("Este error me arroja ===>", error);
+  } catch (err) {
+    return { error: err.message, message: err.message };
   }
 };
 
@@ -61,8 +60,8 @@ const leer = async (params, credential, signal) => {
       },
     });
     return await response.json();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    return { error: err.message, message: err.message };
   }
 };
 
@@ -78,8 +77,8 @@ const update = async (params, credential, Docente) => {
       body: JSON.stringify(Docente),
     });
     return await response.json();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    return { error: err.message, message: err.message };
   }
 };
 
@@ -94,8 +93,8 @@ const remove = async (params, credential) => {
       },
     });
     return await response.json();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    return { error: err.message, message: err.message };
   }
 };
 
@@ -106,20 +105,20 @@ const getDatosCert = async (params, signal) => {
       signal: signal,
     });
     return await response.json();
-  } catch (error) {
-    console.log("Este error me arroja ===>", error);
+  } catch (err) {
+    return { error: err.message, message: err.message };
   }
 };
-const getDatosMatricula = async (params, signal) => {
-  // console.log("en api-docente, getDatosMatricula. opcion",params,"   Rut=>",params.al_rut);
+const getDatosMatricula = async (params, credentials, signal) => {
   try {
     let response = await fetch("/matricula/" + params.al_rut, {
       method: "GET",
       signal: signal,
+      headers: { Authorization: "Bearer " + credentials.t },
     });
     return await response.json();
-  } catch (error) {
-    console.log("Este error me arroja ===>", error);
+  } catch (err) {
+    return { error: err.message, message: err.message };
   }
 };
 
@@ -127,8 +126,8 @@ const getComunas = async () => {
   try {
     let response = await fetch("/getComunas", { method: "GET" });
     return await response.json();
-  } catch (error) {
-    console.log("**error Comunas *** ===>", error);
+  } catch (err) {
+    return { error: err.message, message: err.message };
   }
 };
 
@@ -136,24 +135,26 @@ const getParentesco = async () => {
   try {
     let response = await fetch("/getParentesco", { method: "GET" });
     return await response.json();
-  } catch (error) {
-    console.log("**error Parentesco *** ===>", error);
+  } catch (err) {
+    return { error: err.message, message: err.message };
   }
 };
 
-const getcsvLibroMatriculas = async () => {
+const getcsvLibroMatriculas = async (credentials, signal) => {
   try {
-    let response = await fetch("/CsvLibroMatricula", { method: "GET" });
+    let response = await fetch("/CsvLibroMatricula", {
+      method: "GET",
+      signal: signal,
+      headers: { Authorization: "Bearer " + credentials.t },
+    });
     return await response.json();
-  } catch (error) {
-    console.log("**error /CsvLibroMatricula *** ===>", error);
+  } catch (err) {
+    return { error: err.message, message: err.message };
   }
 };
 
 const api_getAlumnosNombres = async (params, signal) => {
   try {
-    // console.log("api_getAlumnosNombres parametro recibido: ", params);
-
     let nomAl = params.al_nombres;
     let apPatAl = params.al_apat;
     let apMatAl = params.al_amat;
@@ -161,8 +162,6 @@ const api_getAlumnosNombres = async (params, signal) => {
     nomAl = nomAl === "" ? "@" : nomAl;
     apPatAl = apPatAl === "" ? "@" : apPatAl;
     apMatAl = apMatAl === "" ? "@" : apMatAl;
-
-    // console.log(      "api_getAlumnosNombres /n /getAlumnoNombres/",      nomAl,      "/",      apPatAl,      "/",      apMatAl    );
 
     let response = await fetch(
       "/getAlumnoNombres/" + nomAl + "/" + apPatAl + "/" + apMatAl,
@@ -172,8 +171,8 @@ const api_getAlumnosNombres = async (params, signal) => {
       }
     );
     return await response.json();
-  } catch (error) {
-    console.log("**error Datos alumnos por nombre *** ===>", error);
+  } catch (err) {
+    return { error: err.message, message: err.message };
   }
 };
 

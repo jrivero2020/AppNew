@@ -26,11 +26,15 @@ router
     docenteCtrl.deleteDocente
   );
 
-router.route("/CsvLibroMatricula").get(docenteCtrl.CsvLibroMatricula);
+router
+  .route("/CsvLibroMatricula")
+  .get(authCtrl.requireSignin, docenteCtrl.CsvLibroMatricula);
 
 router.route("/listaAlumnosByRut/:rutAl").get(docenteCtrl.listaAlumnosByRut);
 
-router.route("/matricula/:rutAl").get(docenteCtrl.listaMatricula);
+router
+  .route("/matricula/:rutAl")
+  .get(authCtrl.requireSignin, docenteCtrl.listaMatricula);
 
 router.param("Id", docenteCtrl.docenteByID);
 

@@ -5,18 +5,17 @@ import bcrypt, { hash } from "bcrypt";
 export const usuarios = sequelize.define(
   "usuarios",
   {
-    idusuario: {
+    id_usuario: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
       allowNull: false,
     },
-    nombreusuario: {
+    nombre_usuario: {
       type: DataTypes.STRING(50),
       unique: { args: true, msg: "Nombre usuario ya existe, utilice otro" },
       allowNull: false,
       validate: {
-        notNull: { args: true, msg: "Debe Ingresar a un Usuario válido" },
         len: {
           args: [4, 25],
           msg: "El largo debe estar entre 4 y 25 caracteres",
@@ -68,7 +67,7 @@ export const usuarios = sequelize.define(
       type: DataTypes.INTEGER(2),
       validate: {
         isNumeric: { args: true, msg: "Debe ingresar solamente números" },
-        len: { args: [2], msg: "El largo máximo 2 dígitos" },
+        len: { args: [1], msg: "El largo del rol máximo 2 dígitos" },
         isInt: true,
       },
     },
@@ -81,7 +80,8 @@ usuarios.prototype.validaPassword = async function (passwordIngresada) {
 };
 
 /*
-Usuarios.sync()
+usuarios
+  .sync()
   .then(() => {
     console.log(
       "Modelo Usuarios, sincronizado correctamente con la base de datos"
@@ -94,7 +94,6 @@ Usuarios.sync()
     );
   });
 */
-
 export const docentes = sequelize.define(
   "docentes",
   {

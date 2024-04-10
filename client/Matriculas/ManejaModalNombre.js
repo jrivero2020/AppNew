@@ -38,13 +38,11 @@ export default function ManejaModalNombre({
     const todosVacios = Object.values(NomBusca).every((valor) => valor === "");
     if (todosVacios) return;
 
-    console.log("NomBusca: ", AlumnoBuscar);
     api_getAlumnosNombres(AlumnoBuscar, signal).then((data) => {
       if (data && data.error) {
-        console.log("*** Error ***", data.error);
+        return false;
       } else {
         const [results, metadata] = data;
-        // console.log("Data[0]", data[0]);
         if (
           results[0] === undefined ||
           results[0] === null ||
@@ -54,17 +52,14 @@ export default function ManejaModalNombre({
             "**ATENCION** Datos no encontrados en las Matrículas del establecimiento"
           );
         } else {
-          // console.log("ALumnos encontrados results:", results);
           setAlumnosNombres(results);
           ModalOffBtnOff();
           OnShowGrid();
-          // console.log( "************************************AlumnosNombres:",  AlumnosNombres      );
         }
       }
     });
   };
 
-  // console.log("ManejaModalNombre");
   return (
     <Grid
       container

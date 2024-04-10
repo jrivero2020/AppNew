@@ -1,4 +1,5 @@
-import { createTheme } from "@mui/material/";
+// import { createTheme } from "@mui/material/";
+import { createTheme } from "@mui/material/styles";
 import { blue, red, green, pink } from "@mui/material/colors";
 import { esES as esESCore } from "@mui/material/locale";
 

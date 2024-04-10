@@ -1,15 +1,9 @@
-import React from "react";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  Redirect,
-} from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -20,14 +14,13 @@ import { signin } from "./api-auth";
 import auth from "./auth-helper";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
-import {
-  FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-} from "@mui/material";
+import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
 import { Copyright } from "./../assets/js/CopyRight";
+import { AuthContext } from "./../core/AuthProvider";
+
+// import Menu from "./../core/menuCLC";
+// import Carousel from "react-material-ui-carousel";
+
 const theme = createTheme({
   error: {
     verticalAlign: "middle",
@@ -50,12 +43,15 @@ const theme = createTheme({
 //const theme = theme();
 
 export default function Signin(props) {
+  const { isAuthenticated, setIsAuthenticated, isJwtRol, setIsJwtRol } =
+    useContext(AuthContext);
+  //const [isJwtRol, setIsJwtRol] = useContext(AuthContext);
+
+  const navigate = useNavigate();
   let { useParam } = useParams();
-  let location = useLocation();
-  let navigate = useNavigate();
 
   const [valores, setValores] = useState({
-    NombreUsuario: "",
+    nombre_usuario: "",
     password: "",
     error: "",
     redirige: false,
@@ -73,26 +69,34 @@ export default function Signin(props) {
     event.preventDefault();
 
     const user = {
-      NombreUsuario: valores.NombreUsuario || undefined,
+      nombre_usuario: valores.nombre_usuario || undefined,
       password: valores.password || undefined,
     };
 
     signin(user).then((data) => {
       if (data.error) {
         setValores({ ...valores, error: data.error });
+        setIsAuthenticated(false);
+        setIsJwtRol(false);
       } else {
         auth.authenticate(data, () => {
           setValores({
             ...valores,
             error: "",
             redirige: true,
-            password: undefined,
+            password: false,
           });
         });
+        setIsAuthenticated(true);
+        setIsJwtRol(data.user);
       }
     });
   };
-
+  useEffect(() => {
+    if (valores.redirige && isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, valores, navigate]);
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -120,10 +124,10 @@ export default function Signin(props) {
                   name="usuario"
                   required
                   fullWidth
-                  id="nombreusuario"
+                  id="nombre_usuario"
                   label="Nombre de Usuario"
                   value={valores.name}
-                  onChange={handleChange("NombreUsuario")}
+                  onChange={handleChange("nombre_usuario")}
                   onFocus={msgErrorNull}
                   autoFocus
                 />

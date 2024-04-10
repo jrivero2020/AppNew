@@ -4,9 +4,9 @@ import { expressjwt } from "express-jwt";
 import { jwtConfig } from "../../config/config.js";
 
 const signin = async (req, res) => {
-  const { NombreUsuario, password } = req.body;
+  const { nombre_usuario, password } = req.body;
   try {
-    const usrFind = await usuarios.findOne({ where: { NombreUsuario } });
+    const usrFind = await usuarios.findOne({ where: { nombre_usuario } });
     if (usrFind === null)
       return res.status(404).json({ message: "Usuario no existe" });
 
@@ -28,7 +28,7 @@ const signin = async (req, res) => {
     // console.log("El Error: ", error)
     return res
       .status(400)
-      .json({ message: "*** No pude encontrar el registro***" });
+      .json({ message: "*** signin No pude encontrar el registro***" });
   }
 };
 
@@ -44,7 +44,7 @@ const requireSignin = expressjwt({
 });
 
 const estaAutorizado = async (req, res, next) => {
-  // console.log("*****************estaAutorizado*******************")
+  console.log("estaAutorizado*********************req", req.auth.user._id);
   var usrRol = null;
   try {
     let findUsrRol = await usuarios.findByPk(req.auth.user._id);
@@ -60,12 +60,8 @@ const estaAutorizado = async (req, res, next) => {
       .status(404)
       .json({ message: "No pude conectar con BD. Usuario " + error });
   }
-  // console.log(req.profile.idUsuario, req.auth.user._id, "usrRol: ", usrRol, "req.auth.user._rol", req.auth.user._rol)
   const autorizado =
-    (req.profile &&
-      req.auth.user &&
-      req.profile.idUsuario == req.auth.user._id) ||
-    usrRol == 1;
+    req.profile && req.auth.user && req.profile.idUsuario == req.auth.user._id;
   if (!autorizado) {
     return res.status(403).json({ message: "Usuario no está autorizado" });
   }
