@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect } from "react";
 import {
   TextField,
@@ -12,12 +13,12 @@ import { useState } from "react";
 import { getDatosCert } from "./../docentes/api-docentes";
 import Item from "../core/Item";
 import { FmtoRut, validarRut, QuitaPuntos } from "../assets/js/FmtoRut";
-import ImprimeCertificado from "./ImprimeCertificado";
+// import ImprimeCertificado from "./ImprimeCertificado";
 import PrintHojaImpresa from "./PrintHojaImpresa";
-import { DataGrid } from "@mui/x-data-grid";
+
 
 export default function CertAlumnoRegular() {
-  const navigate = useNavigate();
+
   // amat: "CONTRERAS"apat: "RAMOS"desc_grado: "4° básico"dv: "7"genero: "M"letra: "A"nombres: "MARIO EDUARDO"nro_matricula: 364rut: 24473677
   const [valores, setValores] = useState({
     amat: "",
@@ -35,44 +36,15 @@ export default function CertAlumnoRegular() {
     parapresentar: "",
   });
 
-  const [validations, setValidations] = useState({
-    apat: false,
-    amat: false,
-    nombres: false,
-    rut: false,
-  });
-
   const [fRut, setfRut] = useState("");
-  /*
-        const handleChange = name => event => {
-            setValores({ ...valores, [name]: event.target.value })
-        }
-        const handleBlur = (campo) => () => {
-            setValidations({ ...validations, [campo]: validateField(campo) });
-        };
-    */
+
   const manejoCambiofRut = (name) => (event) => {
     let tvalue = FmtoRut(event.target.value);
-    if (fRut.length == 1 && tvalue == null) tvalue = "";
+    if (fRut.length === 1 && tvalue === null) tvalue = "";
 
     if (tvalue != null) {
       setfRut(tvalue);
     }
-  };
-
-  const validateField = (campo) => {
-    // Aquí puedes realizar tus validaciones personalizadas para cada campo
-    // Por ejemplo:
-    if (
-      (campo === "NombreUsuario" && valores.NombreUsuario.trim() === "") ||
-      valores.NombreUsuario.length < 5
-    ) {
-      return false;
-    }
-    if (campo === "password" && valores.password.length < 3) {
-      return false;
-    }
-    return true;
   };
 
   const actualizaValores = () => {
@@ -97,19 +69,13 @@ export default function CertAlumnoRegular() {
     actualizaValores();
 
     const user = {
-      apat: valores.apat || "",
-      amat: valores.amat || "",
-      nombres: valores.nombres || "",
       rut: QuitaPuntos(fRut.slice(0, -1)) || "",
     };
 
     if (
-      user.apat === "" &&
-      user.amat === "" &&
-      user.nombres === "" &&
       user.rut === ""
     ) {
-      alert("Por favor, complete a lo menos un campo");
+      alert("Debe ingresar Rut");
       return;
     }
 
@@ -177,9 +143,34 @@ export default function CertAlumnoRegular() {
           ) : null}
         </Grid>
         <br />
-
         {valores.open ? (
-          <Card style={{ maxWidth: "90%", margin: "auto", height: "1020px" }}>
+          <Grid item xs={12}>
+            <Item>
+              <Typography variant="h5" gutterBottom sx={{ color: "blue" }}>
+                {FmtoRut(valores.rut + "-" + valores.dv)} &nbsp;&nbsp;{valores.nombres + " " + valores.apat + " " + valores.amat + "    " + valores.desc_grado + valores.letra}
+              </Typography>
+            </Item>
+          </Grid>
+
+        ) : null}
+        {valores.open ? (
+          <Grid item xs={12}>
+            <Item>
+              <Typography variant="h5" gutterBottom sx={{ color: "blue" }}>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  onClick={cierreDialog}
+                >
+                  Buscar otro Rut
+                </Button>
+              </Typography>
+            </Item>
+          </Grid>
+
+        ) : null}
+        {valores.open ? (
+          <Card style={{ maxWidth: "90%", margin: "auto" }}>
             <PrintHojaImpresa data={valores} />
           </Card>
         ) : null}
@@ -195,21 +186,7 @@ export default function CertAlumnoRegular() {
           maxWidth: "65%",
         }}
       >
-        {valores.open ? (
-          <Grid item xs={12}>
-            <Item>
-              <Typography variant="h5" gutterBottom sx={{ color: "blue" }}>
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  onClick={cierreDialog}
-                >
-                  Buscar otro Rut
-                </Button>
-              </Typography>
-            </Item>
-          </Grid>
-        ) : null}
+
       </Grid>
     </>
   );

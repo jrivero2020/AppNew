@@ -91,7 +91,7 @@ export default function BasicGrid() {
       foto: "CertificadoARegular.png",
       titulo: "CertificadoARegular",
       llamada: { componente: "/CertAlumnoRegular", param: {} },
-      activo: 1,
+      activo: 0,
       autorizado: isAuthenticated && (jwtRol === 1 || jwtRol === 2),
     },
     {
@@ -168,6 +168,7 @@ export default function BasicGrid() {
   const pathImg = "dist/images/links/";
   const pathImgBack = "dist/images/fotos/portada/";
 
+  // eslint-disable-next-line no-unused-vars
   const Pendiente = () => {
     setShowPdf(!showPdf);
     navigate("/Pendiente", { state: 1 });
@@ -189,7 +190,7 @@ export default function BasicGrid() {
     >
       <Grid container spacing={4} alignItems="center" justifyContent="center">
         {activeImgLinks.map((ImagenLnk) => (
-          <Grid item sm={12} md={6} lg={4} xl={3} key={ImagenLnk.id}>
+          <Grid item sm={6} md={4} lg={3} xl={2} key={ImagenLnk.id}>
             <Box
               onClick={() => {
                 if (ImagenLnk.llamada.param) {

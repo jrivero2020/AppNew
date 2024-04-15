@@ -29,6 +29,10 @@ const FmtoRut = (value) => {
 };
 
 const QuitaPuntos = (rut) => {
+
+  if( typeof rut === 'number'){
+    rut = rut.toString();
+  }
   return rut.replace(/[.-]/g, "");
 };
 

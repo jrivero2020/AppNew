@@ -21,26 +21,19 @@ function ResponsiveAppBar() {
   const jwtRol = isJwtRol ? isJwtRol._rol : 0;
 
   const [anchorElNav, setAnchorElNav] = React.useState(false);
-  const [anchorElUser, setAnchorElUser] = React.useState(false);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
 
   const pages = [
     { menu: "Inicio", urlCall: "/", activo: 1, autorizado: 1 },
-    { menu: "Historia", urlCall: "/HistoriaDetalle", activo: 1, autorizado: 1 },
+    { menu: "Historia", urlCall: "/HistoriaDetalle", activo: 1, autorizado: !isAuthenticated },
     {
       menu: "Registro",
       urlCall: "/Signup",
@@ -65,6 +58,13 @@ function ResponsiveAppBar() {
       activo: 1,
       autorizado: isAuthenticated && (jwtRol === 1 || jwtRol === 2),
     },
+    {
+      menu: "Ct.A.Regular",
+      urlCall: "/CertAlumnoRegular",
+      activo: 1,
+      autorizado: isAuthenticated && (jwtRol === 1 || jwtRol === 2),
+    },
+
     {
       menu: "Parent",
       urlCall: "/Parent",

@@ -23,6 +23,7 @@ import Pendiente from "./core/PagPendiente";
 import Menu from "./core/menuCLC";
 import PrivateRoute from "./auth/PrivateRoute";
 import { AuthProvider } from "./core/AuthProvider";
+
 /*
 const Signout = () => {
   auth.clearJWT();
