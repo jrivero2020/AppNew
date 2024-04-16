@@ -13,7 +13,7 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
-  Divider,
+  Paper,
 } from "@mui/material";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -24,9 +24,8 @@ import {
   getComunas,
   getParentesco,
 } from "./../docentes/api-docentes";
-import Item from "../core/Item";
+
 import { FmtoRut, validarRut, QuitaPuntos } from "../assets/js/FmtoRut";
-import StarRateIcon from "@mui/icons-material/StarRate";
 import WarningIcon from "@mui/icons-material/Warning";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import Tab from "@mui/material/Tab";
@@ -34,12 +33,12 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { cFichaAlumno, valAlumno } from "./matriculasCampos";
-// import BasicEditingGrid from "./TablaGrillaAlumno";
 import ManejaModalNombre from "./ManejaModalNombre";
 import ManejaModalGridNombre from "./ManejaModalGridNombre";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useForm } from "react-hook-form";
 import auth from "./../auth/auth-helper";
+import { width } from "@mui/system";
 
 const theme = createTheme({
   components: {
@@ -145,8 +144,8 @@ export default function FichaDelAlumno() {
         } else {
           setverBtnBusca(false);
           setbtnBuscaNombres(true);
-
           ret = false;
+          console.log("Rut erroneo")
         }
       } else {
         ret = false;
@@ -168,7 +167,6 @@ export default function FichaDelAlumno() {
   //* manejoCambiofRut
   const manejoCambiofRut = (name) => (event) => {
     let tvalue = FmtoRut(event.target.value);
-
     if (tvalue === null) return false;
 
     if (tvalue.length <= 13) {
@@ -400,425 +398,395 @@ export default function FichaDelAlumno() {
             sx={{ margin: "auto", maxWidth: "95%", marginTop: "-45px" }}
           >
             <Grid item xs={6}>
-              <Grid container spacing={1.5}>
-                <Grid item>
-                  <TextField
-                    id="idfRutAl"
-                    size="small"
-                    label="R.u.n. Alumno"
-                    variant="outlined"
-                    required
-                    fullWidth
-                    name="alRut"
-                    {...register("alRut")}
-                    value={fRut}
-                    onChange={manejoCambiofRut("fRrut")}
-                    margin="normal"
-                    onBlur={handleBlur("al_rut")}
-                    InputProps={{
-                      endAdornment: verBtnBusca ? (
-                        <>
-                          <Button
-                            color="success"
-                            onClick={cargaDataFichaAlumno}
-                            startIcon={<PersonSearchIcon />}
-                          ></Button>
-                        </>
-                      ) : validations["al_rut"].value === false ? (
-                        <Button
-                          color="warning"
-                          startIcon={<WarningIcon />}
-                        ></Button>
-                      ) : (
-                        ""
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item>
-                  <TextField
-                    id="al_nombres"
-                    size="small"
-                    label="Nombres"
-                    variant="outlined"
-                    fullWidth
-                    value={valores.al_nombres}
-                    onChange={handleChange("al_nombres")}
-                    onBlur={handleBlur("al_nombres")}
-                  />
-                </Grid>
-
-                <Grid item>
-                  <TextField
-                    size="small"
-                    label="Ap. Paterno"
-                    variant="outlined"
-                    fullWidth
-                    value={valores.al_apat}
-                    onChange={handleChange("al_apat")}
-                    onBlur={handleBlur("al_apat")}
-                  />
-                </Grid>
-                <Grid item>
-                  <TextField
-                    size="small"
-                    label="Ap. Materno"
-                    variant="outlined"
-                    fullWidth
-                    value={valores.al_amat}
-                    onChange={handleChange("al_amat")}
-                    onBlur={handleBlur("al_amat")}
-                  />
-                </Grid>
-
-                <Grid item>
-                  <TextField
-                    size="small"
-                    label="Fecha Nacimiento"
-                    variant="outlined"
-                    fullWidth
-                    type="date"
-                    value={valores.al_f_nac}
-                    onChange={handleChange("al_f_nac")}
-                    onBlur={handleBlur("al_f_nac")}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-
-                <Grid item>
-                  <Box
-                    display="flex"
-                    justifyContent="flex-start"
-                    width={1}
-                    sx={{ border: 1, borderRadius: 1, height: "40px" }}
-                  >
-                    <FormLabel
-                      id="lSexo"
-                      sx={{ mt: 1, ml: 4 }}
-                      style={{ fontSize: "12px" }}
-                    >
-                      Sexo :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    </FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        row
-                        aria-labelledby="lSexo"
-                        name="rbGrupo"
-                        value={vSexo}
-                        size="small"
-                        onChange={vSexoCambio}
-                      >
-                        <FormControlLabel
-                          value="Masculino"
-                          control={<Radio size="small" />}
-                          label="Masculino"
-                        />
-                        <FormControlLabel
-                          value="Femenino"
-                          control={<Radio size="small" />}
-                          label="Femenino"
-                        />
-                      </RadioGroup>
-                    </FormControl>
-                  </Box>
-                </Grid>
-
-                <Grid item>
-                  <TextField
-                    size="small"
-                    label="Domicilio"
-                    variant="outlined"
-                    fullWidth
-                    value={valores.al_domicilio}
-                    onChange={handleChange("al_domicilio")}
-                    onBlur={handleBlur("al_domicilio")}
-                  />
-                </Grid>
-
-                <Grid item>
-                  <Box
-                    display="flex"
-                    justifyContent="flex-start"
-                    width={1}
-                    sx={{
-                      border: 1,
-                      borderRadius: 1,
-                      height: "40px",
-                    }}
-                  >
-                    <FormLabel
-                      id="lComuna"
-                      sx={{ mt: 1, ml: 2 }}
-                      style={{ fontSize: "12px" }}
-                    >
-                      Comuna&nbsp;&nbsp;&nbsp;&nbsp;
-                    </FormLabel>
-
-                    <FormControl>
-                      <Select
-                        label="Comunas"
-                        value={selectedComuna}
-                        onChange={manejaCambioComunas}
-                        required
-                        sx={{
-                          minWidth: 230,
-                          height: "35px",
-                          fontSize: "12px",
-                        }}
-                      >
-                        {comunas.map((comuna) => (
-                          <MenuItem
-                            key={comuna.id_comuna}
-                            value={comuna.id_comuna}
-                          >
-                            {comuna.descripcion}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Box>
-                </Grid>
-
-                <Grid item>
-                  <TextField
-                    size="small"
-                    label="Colegio Origen"
-                    variant="outlined"
-                    value={valores.al_procedencia}
-                    fullWidth
-                    onChange={handleChange("al_procedencia")}
-                    onBlur={handleBlur("al_procedencia")}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-
-            <Grid item xs={6}>
-              <Grid container spacing={1.5}>
-                <Grid item>
-                  <TextField
-                    size="small"
-                    fullWidth
-                    label="Promedio de Notas"
-                    variant="outlined"
-                    value={valores.al_promedionota}
-                    margin="normal"
-                    type="number"
-                    onChange={handleChange("al_promedionota")}
-                    onBlur={handleBlur("al_promedionota")}
-                  />
-                </Grid>
-
-                <Grid item>
-                  <Box
-                    display="flex"
-                    justifyContent="flex-start"
-                    width={1}
-                    sx={{
-                      border: 1,
-                      borderRadius: 1,
-                      height: "40px",
-                    }}
-                  >
-                    <FormLabel
-                      id="lcursos"
-                      sx={{ mt: 1, ml: 2 }}
-                      style={{ fontSize: "12px" }}
-                    >
-                      Cursos Repetidos ?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    </FormLabel>
-                    <FormControl size="small">
-                      <RadioGroup
-                        row
-                        aria-labelledby="rCurRepe"
-                        name="rCurRepe"
-                        value={vCurRepe}
-                        size="small"
-                        onChange={vCurRepeCambio}
-                      >
-                        <FormControlLabel
-                          value="Sí"
-                          control={<Radio size="small" />}
-                          label="Sí"
-                        />
-                        <FormControlLabel
-                          value="No"
-                          control={<Radio size="small" />}
-                          label="No"
-                        />
-                      </RadioGroup>
-                    </FormControl>
-                  </Box>
-                </Grid>
-
-                <Grid item>
-                  <Box
-                    display="flex"
-                    justifyContent="flex-start"
-                    width={1}
-                    sx={{
-                      border: 1,
-                      borderRadius: 1,
-                      height: "40px",
-                    }}
-                  >
-                    <FormLabel
-                      id="lViveCon"
-                      sx={{ mt: 1, ml: 2 }}
-                      style={{ fontSize: "12px" }}
-                    >
-                      Con quién vive ?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    </FormLabel>
-                    <FormControl size="small">
-                      <RadioGroup
-                        row
-                        aria-labelledby="rViveCon"
-                        name="rViveCon"
-                        value={vViveCon}
-                        size="small"
-                        onChange={vViveConCambio}
-                      >
-                        <FormControlLabel
-                          value="1"
-                          control={<Radio size="small" />}
-                          label="Ambos Padres"
-                        />
-                        <FormControlLabel
-                          value="2"
-                          control={<Radio size="small" />}
-                          label="Madre"
-                        />
-                        <FormControlLabel
-                          value="3"
-                          control={<Radio size="small" />}
-                          label="Padre"
-                        />
-                        <FormControlLabel
-                          value="4"
-                          control={<Radio size="small" />}
-                          label="Otros"
-                        />
-                      </RadioGroup>
-                    </FormControl>
-                  </Box>
-                </Grid>
-                {vViveCon === "4" && (
-                  <Grid item>
+              <Paper elevation={6} sx={{ px: 1, pb: 2 }}>
+                <Grid container spacing={1.5}>
+                  <Grid item xs={6}>
                     <TextField
-                      sx={{ mt: 1 }}
-                      label="Describa Con quién vive"
+                      id="idfRutAl"
                       size="small"
+                      label="R.u.n. Alumno"
                       variant="outlined"
+                      required
                       fullWidth
-                      value={valores.al_descripcionvivecon}
-                      onChange={handleChange("al_descripcionvivecon")}
-                      onBlur={handleBlur("al_descripcionvivecon")}
+                      name="alRut"
+                      {...register("alRut")}
+                      value={fRut}
+                      onChange={manejoCambiofRut("fRrut")}
+                      margin="normal"
+                      onBlur={handleBlur("al_rut")}
+                      InputProps={{
+                        endAdornment: verBtnBusca ? (
+                          <>
+                            <Button
+                              color="success"
+                              onClick={cargaDataFichaAlumno}
+                              startIcon={<PersonSearchIcon />}
+                            ></Button>
+                          </>
+                        ) : validations["al_rut"].value === false ? (
+                          <Button
+                            color="warning"
+                            startIcon={<WarningIcon />}
+                          ></Button>
+                        ) : (
+                          ""
+                        ),
+                      }}
                     />
                   </Grid>
-                )}
-                <Grid item>
-                  <Box
-                    display="flex"
-                    justifyContent="flex-start"
-                    width={1}
-                    sx={{
-                      border: 1,
-                      borderRadius: 1,
-                      height: "40px",
-                    }}
-                  >
-                    <FormLabel
-                      id="lEnfermedad"
-                      sx={{ mt: 1, ml: 2 }}
-                      style={{ fontSize: "12px" }}
-                    >
-                      Enfermedad Crónica ?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    </FormLabel>
-                    <FormControl size="small">
-                      <RadioGroup
-                        row
-                        aria-labelledby="rCurRepe"
-                        name="rCurRepe"
-                        value={vCurRepe}
+                  <Grid item xs={6}>
+                    <TextField
+                      id="al_nombres"
+                      size="small"
+                      label="Nombres"
+                      variant="outlined"
+                      fullWidth
+                      value={valores.al_nombres}
+                      onChange={handleChange("al_nombres")}
+                      onBlur={handleBlur("al_nombres")}
+                    />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <TextField
+                      size="small"
+                      label="Ap. Paterno"
+                      variant="outlined"
+                      fullWidth
+                      value={valores.al_apat}
+                      onChange={handleChange("al_apat")}
+                      onBlur={handleBlur("al_apat")}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      size="small"
+                      label="Ap. Materno"
+                      variant="outlined"
+                      fullWidth
+                      value={valores.al_amat}
+                      onChange={handleChange("al_amat")}
+                      onBlur={handleBlur("al_amat")}
+                    />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <TextField
+                      size="small"
+                      label="Fecha Nacimiento"
+                      variant="outlined"
+                      fullWidth
+                      type="date"
+                      value={valores.al_f_nac}
+                      onChange={handleChange("al_f_nac")}
+                      onBlur={handleBlur("al_f_nac")}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={6}>
+
+                    <Paper elevation={3} sx={{ px: 2 }}>
+                      <FormControl>
+                        <FormLabel
+                          id="lSexo"
+                          sx={{ mt: 1, ml: 4 }}
+                          style={{ fontSize: "12px" }}
+                        >
+                          Sexo
+                        </FormLabel>
+                        <RadioGroup
+                          row
+                          aria-labelledby="lSexo"
+                          name="rbGrupo"
+                          value={vSexo}
+                          size="small"
+                          onChange={vSexoCambio}
+                        >
+                          <FormControlLabel
+                            value="Masculino"
+                            control={<Radio size="small" />}
+                            label="Masculino"
+                          />
+                          <FormControlLabel
+                            value="Femenino"
+                            control={<Radio size="small" />}
+                            label="Femenino"
+                          />
+                        </RadioGroup>
+                      </FormControl>
+                    </Paper>
+
+                  </Grid>
+
+                  <Grid item>
+                    <TextField
+                      size="small"
+                      label="Domicilio"
+                      variant="outlined"
+                      fullWidth
+                      value={valores.al_domicilio}
+                      onChange={handleChange("al_domicilio")}
+                      onBlur={handleBlur("al_domicilio")}
+                    />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Paper elevation={3} style={{ width: '100%', alignItems: 'center' }} sx={{ mb: 2, pb: 2 }}>
+                      <FormControl size="small" sx={{ ml: 2 }}>
+
+                        <FormLabel
+                          id="lComuna"
+                          sx={{ mt: 1, ml: 2 }}
+                          style={{ fontSize: "12px" }}
+                        >
+                          Comuna
+                        </FormLabel>
+
+
+                        <Select
+                          label="Comunas"
+                          value={selectedComuna}
+                          onChange={manejaCambioComunas}
+                          required
+                          sx={{
+                            minWidth: 200,
+                            height: "35px",
+                            fontSize: "12px",
+                          }}
+                        >
+                          {comunas.map((comuna) => (
+                            <MenuItem
+                              key={comuna.id_comuna}
+                              value={comuna.id_comuna}
+                            >
+                              {comuna.descripcion}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Paper>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <TextField
+                      size="small"
+                      label="Colegio Origen"
+                      variant="outlined"
+                      value={valores.al_procedencia}
+                      fullWidth
+                      onChange={handleChange("al_procedencia")}
+                      onBlur={handleBlur("al_procedencia")}
+                    />
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
+
+            {/* *************************************** */}
+
+            <Grid item xs={6}>
+              <Paper elevation={6} sx={{ px: 1, pb: 2 }}>
+                <Grid container spacing={1.5}>
+                  <Grid item xs={6}>
+                    <TextField style={{ alignItems:'left'}}
+                      inputProps={{ maxLength: 4,  pattern: "[0-9,]*", }}
+                      size="small"                      
+                      label="Promedio de Notas"
+                      variant="outlined"
+                      value={valores.al_promedionota}
+                      margin="normal"
+                      onChange={handleChange("al_promedionota")}                     
+                    />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Paper elevation={3} style={{ width: '100%', alignItems: 'center' }} sx={{ mt:2, mb: 2 }} >
+                      <FormControl size="small" sx={{ ml: 2 }}>
+                        <FormLabel
+                          id="lcursos"
+                          sx={{ mt: 1, ml: 2 }}
+                          style={{ fontSize: "12px" }}
+                        >
+                          Cursos Repetidos
+                        </FormLabel>
+
+                        <RadioGroup
+                          row
+                          aria-labelledby="rCurRepe"
+                          name="rCurRepe"
+                          value={vCurRepe}
+                          size="small"
+                          onChange={vCurRepeCambio}
+                        >
+                          <FormControlLabel
+                            value="Sí"
+                            control={<Radio size="small" />}
+                            label="Sí"
+                          />
+                          <FormControlLabel
+                            value="No"
+                            control={<Radio size="small" />}
+                            label="No"
+                          />
+                        </RadioGroup>
+                      </FormControl>
+                    </Paper>
+                  </Grid>
+
+
+                  <Grid item xs={12}>
+                    <Paper elevation={3} style={{ width: '100%', alignItems: 'center' }} sx={{ pd: 2 }}>
+                      <FormControl size="small" sx={{ ml: 2 }}>
+                        <FormLabel
+                          id="lViveCon"
+                          sx={{ mt: 1, ml: 2 }}
+                          style={{ fontSize: "12px" }}
+                        >
+                          Con quién vive
+                        </FormLabel>
+                        <RadioGroup
+                          row
+                          aria-labelledby="rViveCon"
+                          name="rViveCon"
+                          value={vViveCon}
+                          size="small"
+                          onChange={vViveConCambio}
+                        >
+                          <FormControlLabel
+                            value="1"
+                            control={<Radio size="small" />}
+                            label="Ambos Padres"
+                          />
+                          <FormControlLabel
+                            value="2"
+                            control={<Radio size="small" />}
+                            label="Madre"
+                          />
+                          <FormControlLabel
+                            value="3"
+                            control={<Radio size="small" />}
+                            label="Padre"
+                          />
+                          <FormControlLabel
+                            value="4"
+                            control={<Radio size="small" />}
+                            label="Otros"
+                          />
+                        </RadioGroup>
+
+                      </FormControl>
+                    </Paper>
+                  </Grid>
+                  {vViveCon === "4" && (
+                    <Grid item xs={6}>
+                      <TextField
+                        sx={{ mt: 1 }}
+                        label="Describa Con quién vive"
                         size="small"
-                        onChange={vCurRepeCambio}
-                      >
-                        <FormControlLabel
-                          value="Sí"
-                          control={<Radio size="small" />}
-                          label="Sí"
-                        />
-                        <FormControlLabel
-                          value="No"
-                          control={<Radio size="small" />}
-                          label="No"
-                        />
-                      </RadioGroup>
-                    </FormControl>
-                  </Box>
-                </Grid>
+                        variant="outlined"
+                        fullWidth
+                        value={valores.al_descripcionvivecon}
+                        onChange={handleChange("al_descripcionvivecon")}
+                        onBlur={handleBlur("al_descripcionvivecon")}
+                      />
+                    </Grid>
+                  )}
+                  <Grid item xs={6}>
+                    <Paper elevation={3} style={{ width: '100%', alignItems: 'center' }} >
+                      <FormControl size="small" sx={{ ml: 2 }}>
+                        <FormLabel
+                          id="lEnfermedad"
+                          sx={{ mt: 1, ml: 2, pl: 2 }}
+                          style={{ fontSize: "12px" }}
+                        >
+                          Enfermedad Crónica ?
+                        </FormLabel>
+                        <RadioGroup
+                          row
+                          aria-labelledby="renfermedad"
+                          name="renfermedad"
+                          value={vCurRepe}
+                          size="small"
+                          onChange={vCurRepeCambio}
+                        >
+                          <FormControlLabel
+                            value="Sí"
+                            control={<Radio size="small" />}
+                            label="Sí"
+                          />
+                          <FormControlLabel
+                            value="No"
+                            control={<Radio size="small" />}
+                            label="No"
+                          />
+                        </RadioGroup>
+                      </FormControl>
+                    </Paper>
+                  </Grid>
 
-                <Grid item>
-                  <TextField
-                    size="small"
-                    label="Cuidados especiales"
-                    variant="outlined"
-                    fullWidth
-                    value={valores.al_cuidados}
-                    onChange={handleChange("al_cuidados")}
-                    onBlur={handleBlur("al_cuidados")}
-                  />
-                </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      size="small"
+                      label="Cuidados especiales"
+                      variant="outlined"
+                      fullWidth
+                      value={valores.al_cuidados}
+                      onChange={handleChange("al_cuidados")}
+                      onBlur={handleBlur("al_cuidados")}
+                    />
+                  </Grid>
 
-                <Grid item>
-                  <TextField
-                    size="small"
-                    label="Nº Hermanos"
-                    variant="outlined"
-                    fullWidth
-                    value={valores.al_canthnos}
-                    onChange={handleChange("al_canthnos")}
-                    onBlur={handleBlur("al_canthnos")}
-                  />
-                </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      size="small"
+                      label="Nº Hermanos"
+                      variant="outlined"
+                      fullWidth
+                      value={valores.al_canthnos}
+                      onChange={handleChange("al_canthnos")}
+                      onBlur={handleBlur("al_canthnos")}
+                    />
+                  </Grid>
 
-                <Grid item>
-                  <TextField
-                    size="small"
-                    label="Su Ubicación entre ellos"
-                    variant="outlined"
-                    fullWidth
-                    value={valores.al_nroentrehnos}
-                    onChange={handleChange("al_nroentrehnos")}
-                    onBlur={handleBlur("al_nroentrehnos")}
-                  />
-                </Grid>
-                <Grid item>
-                  <TextField
-                    size="small"
-                    label="Nº Hermanos Estudian aquí"
-                    variant="outlined"
-                    fullWidth
-                    value={valores.al_hnosaca}
-                    onChange={handleChange("al_hnosaca")}
-                    onBlur={handleBlur("al_hnosaca")}
-                  />
-                </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      size="small"
+                      label="Su Ubicación entre ellos"
+                      variant="outlined"
+                      fullWidth
+                      value={valores.al_nroentrehnos}
+                      onChange={handleChange("al_nroentrehnos")}
+                      onBlur={handleBlur("al_nroentrehnos")}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      size="small"
+                      label="Nº Hermanos Estudian aquí"
+                      variant="outlined"
+                      fullWidth
+                      value={valores.al_hnosaca}
+                      onChange={handleChange("al_hnosaca")}
+                      onBlur={handleBlur("al_hnosaca")}
+                    />
+                  </Grid>
 
-                <Grid item>
-                  <TextField
-                    size="small"
-                    label="En qué Cursos estudian"
-                    variant="outlined"
-                    fullWidth
-                    value={valores.al_hnoscursos}
-                    onChange={handleChange("al_hnoscursos")}
-                    onBlur={handleBlur("al_hnoscursos")}
-                  />
+                  <Grid item xs={6}>
+                    <TextField
+                      size="small"
+                      label="En qué Cursos estudian"
+                      variant="outlined"
+                      fullWidth
+                      value={valores.al_hnoscursos}
+                      onChange={handleChange("al_hnoscursos")}
+                      onBlur={handleBlur("al_hnoscursos")}
+                    />
+                  </Grid>
                 </Grid>
-              </Grid>
+              </Paper>
             </Grid>
             {/* **********************************************fin**/}
 

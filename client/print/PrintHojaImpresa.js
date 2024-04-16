@@ -33,8 +33,6 @@ function PrintHojaImpresa(props) {
         return meses[f.getMonth()]
     };
 
-
-
     const componentRef = useRef();
     const navigate = useNavigate();
     //     const nroMatricula = datoAlumno.nro_matricula;
