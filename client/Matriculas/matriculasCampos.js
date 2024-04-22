@@ -43,6 +43,7 @@ export const cFichaAlumno = {
   al_txtparentescosupl: '',
   al_vivienda: 0,
   alcom_comuna: '',
+
   ap_amat: '',
   ap_apat: '',
   ap_domicilio: '',
@@ -71,8 +72,7 @@ export const cFichaAlumno = {
   apsu_rut: 0,
   apsu_sexo: '1',
   apsucom_comuna: '',
-  c_nomcorto: '',
-  
+  c_nomcorto: '',  
   madre_amat: '',
   madre_apat: '',
   madre_dv: '',

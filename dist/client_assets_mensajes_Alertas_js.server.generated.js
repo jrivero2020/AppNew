@@ -1,0 +1,25 @@
+"use strict";
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+exports.id = "client_assets_mensajes_Alertas_js";
+exports.ids = ["client_assets_mensajes_Alertas_js"];
+exports.modules = {
+
+/***/ "./client/assets/mensajes/Alertas.js":
+/*!*******************************************!*\
+  !*** ./client/assets/mensajes/Alertas.js ***!
+  \*******************************************/
+/***/ ((module, exports, __webpack_require__) => {
+
+eval("/* module decorator */ module = __webpack_require__.nmd(module);\n\n\nObject.defineProperty(exports, \"__esModule\", ({\n  value: true\n}));\nexports[\"default\"] = Alertas;\nvar _react = _interopRequireWildcard(__webpack_require__(/*! react */ \"react\"));\nvar _Alert = _interopRequireDefault(__webpack_require__(/*! @mui/material/Alert */ \"@mui/material/Alert\"));\nvar _AlertTitle = _interopRequireDefault(__webpack_require__(/*! @mui/material/AlertTitle */ \"@mui/material/AlertTitle\"));\nvar _Stack = _interopRequireDefault(__webpack_require__(/*! @mui/material/Stack */ \"@mui/material/Stack\"));\nvar _reactRouter = __webpack_require__(/*! react-router */ \"react-router\");\nvar _material = __webpack_require__(/*! @mui/material */ \"@mui/material\");\nvar _reactRouterDom = __webpack_require__(/*! react-router-dom */ \"react-router-dom\");\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\nfunction _getRequireWildcardCache(e) { if (\"function\" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }\nfunction _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || \"object\" != typeof e && \"function\" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if (\"default\" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }\n(function () {\n  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;\n  enterModule && enterModule(module);\n})();\nvar __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {\n  return a;\n};\nfunction Alertas() {\n  const [open, setOpen] = (0, _react.useState)(true);\n  const location = (0, _reactRouter.useLocation)();\n  const aMensajes = location.state.aMensajes;\n  const aTitulo = location.state.aTitulo;\n  const navigate = (0, _reactRouterDom.useNavigate)();\n  console.log(\"Resultado de aMensajes:\", aMensajes);\n  console.log(\"Resultado de aTitulo:\", aTitulo);\n  return /*#__PURE__*/_react.default.createElement(_Stack.default, {\n    sx: {\n      width: \"100%\"\n    },\n    spacing: 2\n  }, /*#__PURE__*/_react.default.createElement(_Alert.default, {\n    variant: \"outlined\",\n    severity: \"error\"\n  }, \"This is an error alert \\u2014 check it out!\"), /*#__PURE__*/_react.default.createElement(_Alert.default, {\n    variant: \"outlined\",\n    severity: \"error\"\n  }, \"This is an error alert \\u2014 check it out!\"), /*#__PURE__*/_react.default.createElement(_material.Collapse, {\n    in: open\n  }, /*#__PURE__*/_react.default.createElement(_Alert.default, {\n    severity: \"warning\",\n    onClose: () => {\n      setOpen(false);\n      navigate(-1);\n    }\n  }, /*#__PURE__*/_react.default.createElement(_AlertTitle.default, null, aTitulo), aMensajes, \" \\u2014 \", /*#__PURE__*/_react.default.createElement(\"strong\", null, \"verifique!\"))));\n}\n__signature__(Alertas, \"useState{[open, setOpen](true)}\\nuseLocation{location}\\nuseNavigate{navigate}\", () => [_reactRouter.useLocation, _reactRouterDom.useNavigate]);\n;\n(function () {\n  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;\n  if (!reactHotLoader) {\n    return;\n  }\n  reactHotLoader.register(Alertas, \"Alertas\", \"C:\\\\clc\\\\AppNew\\\\client\\\\assets\\\\mensajes\\\\Alertas.js\");\n})();\n;\n(function () {\n  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;\n  leaveModule && leaveModule(module);\n})();\n\n//# sourceURL=webpack://setup/./client/assets/mensajes/Alertas.js?");
+
+/***/ })
+
+};
+;
