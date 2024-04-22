@@ -40,6 +40,8 @@ router.param("Id", docenteCtrl.docenteByID);
 
 router.route("/getComunas").get(docenteCtrl.getComunas);
 
+router.route("/getCursos").get(docenteCtrl.getCursos);
+
 router.route("/getParentesco").get(docenteCtrl.getParentesco);
 
 router

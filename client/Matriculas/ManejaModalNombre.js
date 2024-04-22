@@ -42,6 +42,7 @@ export default function ManejaModalNombre({
       if (data && data.error) {
         return false;
       } else {
+        // eslint-disable-next-line no-unused-vars
         const [results, metadata] = data;
         if (
           results[0] === undefined ||
