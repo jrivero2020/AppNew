@@ -48,4 +48,9 @@ router
   .route("/getAlumnoNombres/:nomAl/:apPatAl/:apMatAl")
   .get(docenteCtrl.getDataAlumnoNombres);
 
+  router.route("/getCantAlumnosCurso").get(authCtrl.requireSignin, docenteCtrl.getCantAlumnosCurso);
+  router.route("/getNroMatriculas").get(authCtrl.requireSignin, docenteCtrl.getNroMatriculas);
+
+
+
 export default router;

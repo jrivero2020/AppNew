@@ -194,6 +194,12 @@ export default function FichaDelAlumno() {
       setbtnBuscaNombres(false);
     }
   };
+
+  const manejaCambioEstado = (setter, value) => {
+    setter(value);
+  };
+
+
   //***************************************************/
   //* manejaCambioComunas
   const manejaCambioComunas = (event) => {
@@ -493,7 +499,7 @@ export default function FichaDelAlumno() {
                         <Select
                           label="Curso"
                           value={selectedCurso}
-                          onChange={manejaCambioCursos}
+                          onChange={(e) => manejaCambioEstado( setSelectedCurso,e.target.value )}
                           required
                           sx={{
                             minWidth: 200,
@@ -629,7 +635,7 @@ export default function FichaDelAlumno() {
                         <Select
                           label="Comunas"
                           value={selectedComuna}
-                          onChange={manejaCambioComunas}
+                          onChange={(e) => manejaCambioEstado( setSelectedComuna,e.target.value )}
                           required
                           sx={{
                             minWidth: 200,

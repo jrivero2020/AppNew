@@ -156,7 +156,29 @@ const getCursos = async (req, res) => {
 };
 
 
+const getCantAlumnosCurso = async (req, res) => {
+  try {
+    const dataCursos = await sequelize.query(`CALL sp_getCantAlumnosCurso()`, {
+      type: sequelize.QueryTypes.SELECT,
+    });
 
+    res.json(dataCursos);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+const getNroMatriculas = async (req, res) => {
+  try {
+    const dataCursos = await sequelize.query(`CALL sp_getNroMatriculas()`, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+
+    res.json(dataCursos);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
 
 
 const getDataAlumnoNombres = async (req, res) => {
@@ -208,4 +230,6 @@ export default {
   getParentesco,
   getDataAlumnoNombres,
   CsvLibroMatricula,
+  getCantAlumnosCurso,
+  getNroMatriculas
 };

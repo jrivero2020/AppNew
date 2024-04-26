@@ -22,6 +22,7 @@ import Pendiente from "./core/PagPendiente";
 import Menu from "./core/menuCLC";
 import PrivateRoute from "./auth/PrivateRoute";
 import { AuthProvider } from "./core/AuthProvider";
+import AlumnosCursos from "./Matriculas/AlumnosCursos";
 
 import Signin from "./auth/Signin";
 
@@ -65,6 +66,14 @@ const MainRouter = () => {
             element={
               <PrivateRoute rol={2}>
                 <FichaDelAlumno2 />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/AlumnosCursos"
+            element={
+              <PrivateRoute rol={2}>
+                <AlumnosCursos />
               </PrivateRoute>
             }
           />
