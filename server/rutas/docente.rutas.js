@@ -40,10 +40,17 @@ router.param("Id", docenteCtrl.docenteByID);
 
 router.route("/getComunas").get(docenteCtrl.getComunas);
 
+router.route("/getCursos").get(docenteCtrl.getCursos);
+
 router.route("/getParentesco").get(docenteCtrl.getParentesco);
 
 router
   .route("/getAlumnoNombres/:nomAl/:apPatAl/:apMatAl")
   .get(docenteCtrl.getDataAlumnoNombres);
+
+  router.route("/getCantAlumnosCurso").get(authCtrl.requireSignin, docenteCtrl.getCantAlumnosCurso);
+  router.route("/getNroMatriculas").get(authCtrl.requireSignin, docenteCtrl.getNroMatriculas);
+
+
 
 export default router;

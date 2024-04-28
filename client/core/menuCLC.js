@@ -84,6 +84,12 @@ function ResponsiveAppBar() {
       activo: 1,
       autorizado: isAuthenticated && (jwtRol === 1 || jwtRol === 2),
     },
+    {
+      menu: "Prueba",
+      urlCall: "/AlumnosCursos",
+      activo: 1,
+      autorizado: isAuthenticated && (jwtRol === 1 || jwtRol === 2),
+    },    
   ];
   const activePages = pages.filter(
     (link) => link.activo === 1 && link.autorizado

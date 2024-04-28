@@ -140,6 +140,15 @@ const getParentesco = async () => {
   }
 };
 
+const getCursos = async () => {
+  try {
+    let response = await fetch("/getCursos", { method: "GET" });
+    return await response.json();
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
 const getcsvLibroMatriculas = async (credentials, signal) => {
   try {
     let response = await fetch("/CsvLibroMatricula", {
@@ -176,6 +185,33 @@ const api_getAlumnosNombres = async (params, signal) => {
   }
 };
 
+
+const api_CantAlumnosCurso = async (credentials, signal) => {
+  try {
+    let response = await fetch("/getCantAlumnosCurso", {
+      method: "GET",
+      signal: signal,
+      headers: { Authorization: "Bearer " + credentials.t },
+    });
+    return await response.json();
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
+const api_NroMatriculas = async (credentials, signal) => {
+  try {
+    let response = await fetch("/getNroMatriculas", {
+      method: "GET",
+      signal: signal,
+      headers: { Authorization: "Bearer " + credentials.t },
+    });
+    return await response.json();
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
 export {
   create,
   leer,
@@ -187,6 +223,9 @@ export {
   getDatosMatricula,
   getComunas,
   getParentesco,
+  getCursos,
   api_getAlumnosNombres,
   getcsvLibroMatriculas,
+  api_CantAlumnosCurso,
+  api_NroMatriculas,
 };

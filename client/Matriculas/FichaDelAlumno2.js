@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   TextField,
   Typography,
@@ -23,6 +23,7 @@ import {
   getDatosMatricula,
   getComunas,
   getParentesco,
+  getCursos,
 } from "./../docentes/api-docentes";
 
 import { FmtoRut, validarRut, QuitaPuntos } from "../assets/js/FmtoRut";
@@ -36,9 +37,11 @@ import { cFichaAlumno, valAlumno } from "./matriculasCampos";
 import ManejaModalNombre from "./ManejaModalNombre";
 import ManejaModalGridNombre from "./ManejaModalGridNombre";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { useForm } from "react-hook-form";
-import auth from "./../auth/auth-helper";
-import { width } from "@mui/system";
+import { AuthContext } from "../core/AuthProvider";
+
+// import { useForm } from "react-hook-form";
+//import auth from "./../auth/auth-helper";
+//import { useForm, Form } from './../assets/componentes/useForm'
 
 const theme = createTheme({
   components: {
@@ -80,13 +83,18 @@ export default function FichaDelAlumno() {
 
   const [comunas, setComunas] = React.useState([]);
   const [parentescos, setParentescos] = React.useState([]);
+  const [cursos, setCursos] = React.useState(null);
 
   const [selectedComuna, setSelectedComuna] = React.useState("");
   const [selectedParentesco, setSelectedParentesco] = React.useState(1);
   const [selectedComunaAp, setSelectedComunaAp] = React.useState("");
+  const [selectedCurso, setSelectedCurso] = React.useState("");
+
   const [vSexo, setvSexo] = React.useState("Masculino");
   const [vCurRepe, setvCurRepe] = React.useState("No");
   const [vViveCon, setvViveCon] = React.useState(1);
+  const [vEnfermedad, setvEnfermedad] = React.useState("No");
+
   const [verBtnBusca, setverBtnBusca] = React.useState(false);
   const [ModalBuscaNombre, setModalBuscaNombre] = React.useState(false);
   const [ModalGridNombre, setModalGridNombre] = React.useState(false);
@@ -119,6 +127,10 @@ export default function FichaDelAlumno() {
     setvCurRepe(event.target.value);
   };
 
+  const vEnfermedadCambio = (event) => {
+    setvEnfermedad(event.target.value);
+  };
+
   const vSexoCambio = (event) => {
     setvSexo(event.target.value);
   };
@@ -145,7 +157,7 @@ export default function FichaDelAlumno() {
           setverBtnBusca(false);
           setbtnBuscaNombres(true);
           ret = false;
-          console.log("Rut erroneo")
+          console.log("Rut erroneo");
         }
       } else {
         ret = false;
@@ -180,10 +192,20 @@ export default function FichaDelAlumno() {
       setbtnBuscaNombres(false);
     }
   };
+
+  const manejaCambioEstado = (setter, value) => {
+    setter(value);
+  };
+
   //***************************************************/
   //* manejaCambioComunas
   const manejaCambioComunas = (event) => {
     setSelectedComuna(event.target.value);
+  };
+  //***************************************************/
+  //* manejaCambioCursos
+  const manejaCambioCursos = (event) => {
+    setSelectedCurso(event.target.value);
   };
 
   //***************************************************/
@@ -197,11 +219,13 @@ export default function FichaDelAlumno() {
     setSelectedParentesco(event.target.value);
   };
 
-  const jwt = auth.isAuthenticated();
+  // const jwt = auth.isAuthenticated();
 
   //***************************************************/
   //***************************************************/
   //* cargaDataFichaAlumno
+  const { jwt } = useContext(AuthContext);
+
   const cargaDataFichaAlumno = () => {
     const abortController = new AbortController();
     const signal = abortController.signal;
@@ -230,8 +254,11 @@ export default function FichaDelAlumno() {
             setvSexo("Femenino");
           }
         }
+        setSelectedCurso(results[0].c_nomcorto);
+        setvViveCon(results[0].al_idvivecon);
+        setvCurRepe(results[0].al_cur_repe === "No" ? "No" : "Sí");
+        setvEnfermedad(results[0].al_enfermo === "0" ? "No" : "Sí");
 
-        setvViveCon(results[0].ma_idvivecon);
         setverBtnBusca(false);
         setbtnBuscaNombres(false);
       }
@@ -274,7 +301,7 @@ export default function FichaDelAlumno() {
     setValores(cFichaAlumno);
     setbtnBuscaNombres(true);
     setfRut("");
-    setvViveCon(0);
+    setvViveCon(1);
     //setbtnBuscaNombres(true);
   };
 
@@ -286,6 +313,15 @@ export default function FichaDelAlumno() {
         return false;
       } else {
         setComunas(data);
+      }
+    });
+
+    getCursos().then((data) => {
+      if (data && data.error) {
+        return false;
+      } else {
+        const cursosArray = Object.values(data[0]);
+        setCursos(cursosArray);
       }
     });
 
@@ -318,7 +354,13 @@ export default function FichaDelAlumno() {
     fRutGrilla();
   }, [RutGrilla]);
 
-  const { register, handleSubmit } = useForm();
+  // const { register, handleSubmit } = useForm();
+  //   if (cursos === null) {
+  //     // Muestra un indicador de carga mientras esperas los datos
+  //     return <div>Cargando Cursos...</div>;
+  //   }else{
+  //     console.log("Este es el dato de cursos", cursos)
+  //   }
 
   return (
     <ThemeProvider theme={theme}>
@@ -409,7 +451,6 @@ export default function FichaDelAlumno() {
                       required
                       fullWidth
                       name="alRut"
-                      {...register("alRut")}
                       value={fRut}
                       onChange={manejoCambiofRut("fRrut")}
                       margin="normal"
@@ -434,6 +475,46 @@ export default function FichaDelAlumno() {
                       }}
                     />
                   </Grid>
+
+                  <Grid item xs={6}>
+                    <Paper
+                      elevation={3}
+                      style={{ width: "100%", alignItems: "center" }}
+                      sx={{ mb: 2, pb: 2 }}
+                    >
+                      <FormControl size="small" sx={{ ml: 2 }}>
+                        <FormLabel
+                          id="selCursos"
+                          sx={{ mt: 1, ml: 2 }}
+                          style={{ fontSize: "12px" }}
+                        >
+                          Curso
+                        </FormLabel>
+
+                        <Select
+                          label="Curso"
+                          value={selectedCurso}
+                          onChange={(e) =>
+                            manejaCambioEstado(setSelectedCurso, e.target.value)
+                          }
+                          required
+                          sx={{
+                            minWidth: 200,
+                            height: "35px",
+                            fontSize: "12px",
+                          }}
+                        >
+                          {cursos !== null &&
+                            cursos.map((curso, index) => (
+                              <MenuItem key={index} value={curso.nomcorto}>
+                                {curso.nomlargo}
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      </FormControl>
+                    </Paper>
+                  </Grid>
+
                   <Grid item xs={6}>
                     <TextField
                       id="al_nombres"
@@ -487,7 +568,6 @@ export default function FichaDelAlumno() {
                   </Grid>
 
                   <Grid item xs={6}>
-
                     <Paper elevation={3} sx={{ px: 2 }}>
                       <FormControl>
                         <FormLabel
@@ -518,10 +598,9 @@ export default function FichaDelAlumno() {
                         </RadioGroup>
                       </FormControl>
                     </Paper>
-
                   </Grid>
 
-                  <Grid item>
+                  <Grid item xs={6}>
                     <TextField
                       size="small"
                       label="Domicilio"
@@ -534,9 +613,12 @@ export default function FichaDelAlumno() {
                   </Grid>
 
                   <Grid item xs={6}>
-                    <Paper elevation={3} style={{ width: '100%', alignItems: 'center' }} sx={{ mb: 2, pb: 2 }}>
+                    <Paper
+                      elevation={3}
+                      style={{ width: "100%", alignItems: "center" }}
+                      sx={{ mb: 2, pb: 2 }}
+                    >
                       <FormControl size="small" sx={{ ml: 2 }}>
-
                         <FormLabel
                           id="lComuna"
                           sx={{ mt: 1, ml: 2 }}
@@ -545,11 +627,15 @@ export default function FichaDelAlumno() {
                           Comuna
                         </FormLabel>
 
-
                         <Select
                           label="Comunas"
                           value={selectedComuna}
-                          onChange={manejaCambioComunas}
+                          onChange={(e) =>
+                            manejaCambioEstado(
+                              setSelectedComuna,
+                              e.target.value
+                            )
+                          }
                           required
                           sx={{
                             minWidth: 200,
@@ -591,19 +677,24 @@ export default function FichaDelAlumno() {
               <Paper elevation={6} sx={{ px: 1, pb: 2 }}>
                 <Grid container spacing={1.5}>
                   <Grid item xs={6}>
-                    <TextField style={{ alignItems:'left'}}
-                      inputProps={{ maxLength: 4,  pattern: "[0-9,]*", }}
-                      size="small"                      
+                    <TextField
+                      style={{ alignItems: "left" }}
+                      inputProps={{ maxLength: 4, pattern: "[0-9,]*" }}
+                      size="small"
                       label="Promedio de Notas"
                       variant="outlined"
                       value={valores.al_promedionota}
                       margin="normal"
-                      onChange={handleChange("al_promedionota")}                     
+                      onChange={handleChange("al_promedionota")}
                     />
                   </Grid>
 
                   <Grid item xs={6}>
-                    <Paper elevation={3} style={{ width: '100%', alignItems: 'center' }} sx={{ mt:2, mb: 2 }} >
+                    <Paper
+                      elevation={3}
+                      style={{ width: "100%", alignItems: "center" }}
+                      sx={{ mt: 2, mb: 2 }}
+                    >
                       <FormControl size="small" sx={{ ml: 2 }}>
                         <FormLabel
                           id="lcursos"
@@ -636,9 +727,12 @@ export default function FichaDelAlumno() {
                     </Paper>
                   </Grid>
 
-
                   <Grid item xs={12}>
-                    <Paper elevation={3} style={{ width: '100%', alignItems: 'center' }} sx={{ pd: 2 }}>
+                    <Paper
+                      elevation={3}
+                      style={{ width: "100%", alignItems: "center" }}
+                      sx={{ pd: 2 }}
+                    >
                       <FormControl size="small" sx={{ ml: 2 }}>
                         <FormLabel
                           id="lViveCon"
@@ -676,7 +770,6 @@ export default function FichaDelAlumno() {
                             label="Otros"
                           />
                         </RadioGroup>
-
                       </FormControl>
                     </Paper>
                   </Grid>
@@ -695,7 +788,10 @@ export default function FichaDelAlumno() {
                     </Grid>
                   )}
                   <Grid item xs={6}>
-                    <Paper elevation={3} style={{ width: '100%', alignItems: 'center' }} >
+                    <Paper
+                      elevation={3}
+                      style={{ width: "100%", alignItems: "center" }}
+                    >
                       <FormControl size="small" sx={{ ml: 2 }}>
                         <FormLabel
                           id="lEnfermedad"
@@ -708,9 +804,9 @@ export default function FichaDelAlumno() {
                           row
                           aria-labelledby="renfermedad"
                           name="renfermedad"
-                          value={vCurRepe}
+                          value={vEnfermedad}
                           size="small"
-                          onChange={vCurRepeCambio}
+                          onChange={vEnfermedadCambio}
                         >
                           <FormControlLabel
                             value="Sí"

@@ -5,6 +5,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isJwtRol, setIsJwtRol] = useState(false);
+  const [jwt, setJwt] = useState(false);
 
   /*
   if (isJwtRol) {
@@ -14,7 +15,14 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, setIsAuthenticated, isJwtRol, setIsJwtRol }}
+      value={{
+        isAuthenticated,
+        setIsAuthenticated,
+        isJwtRol,
+        setIsJwtRol,
+        jwt,
+        setJwt,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Carousel from "react-material-ui-carousel";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import {
@@ -10,6 +10,16 @@ import {
   Typography,
   styled,
 } from "@mui/material";
+
+import { AuthContext } from "./../core/AuthProvider";
+
+// import { useContext } from "react";
+// import { AuthContext } from "./../client/core/AuthProvider";
+//
+// // import auth from "./../client/auth/auth-helper";
+// const { isJwtRol } = useContext(AuthContext);
+// //const jwt = auth.isAuthenticated();
+// const jwtRol = isJwtRol ? isJwtRol : 0;
 
 // import { styled } from "@mui/system";
 import InitOpcion from "./../core/InitOpcion";
@@ -35,6 +45,7 @@ const DemoPaper = styled(Paper)(({ theme }) => ({
 
 function carousel() {
   const [showOpc, setShowOpc] = useState(false);
+  const { isJwtRol } = useContext(AuthContext);
 
   useEffect(() => {
     setShowOpc(true);

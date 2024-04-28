@@ -18,11 +18,8 @@ import Item from "../core/Item";
 import { FmtoRut, validarRut, QuitaPuntos } from "../assets/js/FmtoRut";
 import CheckIcon from "@mui/icons-material/Check";
 import GppBadIcon from "@mui/icons-material/GppBad";
-import auth from "./../auth/auth-helper";
 
 export default function Signup() {
-  const isAutorized = auth.isAuthenticated();
-  console.log("isAutorized:", isAutorized);
   const [valores, setValores] = useState({
     nombre_usuario: "",
     correo: "",

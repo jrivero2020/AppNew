@@ -45,7 +45,11 @@ object-assign
  */
 
 /**
+<<<<<<< HEAD
  * @mui/x-data-grid v6.19.11
+=======
+ * @mui/x-data-grid v6.19.10
+>>>>>>> 930317e7648291cb22bac676b8766fc8e44ef9da
  *
  * @license MIT
  * This source code is licensed under the MIT license found in the

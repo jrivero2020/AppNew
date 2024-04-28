@@ -4,19 +4,17 @@ import { Typography, CardActions, Button, Grid } from "@mui/material";
 import { getcsvLibroMatriculas } from "../docentes/api-docentes";
 import Item from "../core/Item";
 import { AuthContext } from "../core/AuthProvider";
-import auth from "./../auth/auth-helper";
 
 export default function CompLibroMatricula() {
   const [csvData, setCsvData] = useState(null);
   const [DataCargada, setDataCargada] = useState(false);
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, jwt } = useContext(AuthContext);
 
   const clickSubmit = (event) => {
     if (isAuthenticated) {
       event.preventDefault();
       const abortController = new AbortController();
       const signal = abortController.signal;
-      const jwt = auth.isAuthenticated();
 
       getcsvLibroMatriculas({ t: jwt.token }, signal).then((data) => {
         if (data && data.error) {

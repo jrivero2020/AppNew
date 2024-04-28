@@ -15,6 +15,7 @@ const auth = {
     if (sessionStorage.getItem("jwt")) {
       return JSON.parse(sessionStorage.getItem("jwt"));
     } else {
+      console.log("No está en sessionStorage");
       return false;
     }
   },

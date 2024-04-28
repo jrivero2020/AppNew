@@ -43,8 +43,14 @@ const theme = createTheme({
 //const theme = theme();
 
 export default function Signin(props) {
-  const { isAuthenticated, setIsAuthenticated, isJwtRol, setIsJwtRol } =
-    useContext(AuthContext);
+  const {
+    isAuthenticated,
+    setIsAuthenticated,
+    isJwtRol,
+    setIsJwtRol,
+    jwt,
+    setJwt,
+  } = useContext(AuthContext);
   //const [isJwtRol, setIsJwtRol] = useContext(AuthContext);
 
   const navigate = useNavigate();
@@ -89,6 +95,7 @@ export default function Signin(props) {
         });
         setIsAuthenticated(true);
         setIsJwtRol(data.user);
+        setJwt(auth.isAuthenticated());
       }
     });
   };

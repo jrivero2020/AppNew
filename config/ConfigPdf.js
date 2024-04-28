@@ -1,8 +1,3 @@
-import auth from "./../client/auth/auth-helper";
-
-const jwt = auth.isAuthenticated();
-const jwtRol = jwt ? jwt.user._rol : 0;
-
 const archivoPdf = [
   {
     id: 1,
@@ -85,7 +80,8 @@ const imgLinks = [
     foto: "CertificadoARegular.png",
     titulo: "CertificadoARegular",
     llamada: { componente: "/CertAlumnoRegular", param: {} },
-    activo: jwtRol === 1 || jwtRol === 2 ? 1 : 0,
+    activo: 0,
+    rol: [1, 2],
   },
   {
     id: 6,
