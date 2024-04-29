@@ -185,7 +185,6 @@ const api_getAlumnosNombres = async (params, signal) => {
   }
 };
 
-
 const api_CantAlumnosCurso = async (credentials, signal) => {
   try {
     let response = await fetch("/getCantAlumnosCurso", {
@@ -212,6 +211,26 @@ const api_NroMatriculas = async (credentials, signal) => {
   }
 };
 
+const api_GetAlumnosCurso = async (params, credentials, signal) => {
+  try {
+    const ense = params.ense;
+    const grado = params.grado;
+    const letra = params.letra;
+    let response = await fetch(
+      "/getAlumnosCurso/" + ense + "/" + grado + "/" + letra,
+      {
+        method: "GET",
+        signal: signal,
+        headers: { Authorization: "Bearer " + credentials.t },
+      }
+    );
+
+    return await response.json();
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
 export {
   create,
   leer,
@@ -228,4 +247,5 @@ export {
   getcsvLibroMatriculas,
   api_CantAlumnosCurso,
   api_NroMatriculas,
+  api_GetAlumnosCurso,
 };

@@ -51,9 +51,7 @@ const estaAutorizado = async (req, res, next) => {
     if (findUsrRol) {
       usrRol = findUsrRol.rol;
     } else {
-      res
-        .status(404)
-        .json({ message: "Usuario que consulta ya no es válido" + error });
+      res.status(404).json({ message: "Usuario que consulta ya no es válido" });
     }
   } catch (error) {
     res
@@ -61,7 +59,7 @@ const estaAutorizado = async (req, res, next) => {
       .json({ message: "No pude conectar con BD. Usuario " + error });
   }
   const autorizado =
-    req.profile && req.auth.user && req.profile.idUsuario == req.auth.user._id;
+    req.profile && req.auth.user && req.profile.idUsuario === req.auth.user._id;
   if (!autorizado) {
     return res.status(403).json({ message: "Usuario no está autorizado" });
   }

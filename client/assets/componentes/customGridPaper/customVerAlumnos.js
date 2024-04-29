@@ -16,7 +16,7 @@ const CustomGridTitulo = ({
   return (
     <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%" }}>
       <Grid item xs={12}>
-        <Stack alignItems="felt">
+        <Stack alignItems="left">
           <Paper
             elevation={3}
             sx={{ pl: 15, backgroundColor: `${backGround}` }}
@@ -57,8 +57,14 @@ const CustomPaper = ({
   setIdCurso,
   idCurso,
 }) => {
-  const MostarTodoElCurso = (cense, cgrado, letra) => {
-    setIdCurso({ ...idCurso, ense: cense, grado: cgrado, letra: letra });
+  const MostarTodoElCurso = (cense, cgrado, letra, curso) => {
+    setIdCurso({
+      ...idCurso,
+      ense: cense,
+      grado: cgrado,
+      letra: letra,
+      curso: curso,
+    });
   };
 
   return (
@@ -94,7 +100,12 @@ const CustomPaper = ({
                 label={elm.nomlargo}
                 alumnos={elm.nroAlumnos}
                 onClick={() =>
-                  MostarTodoElCurso(elm.cod_ense, elm.cod_grado, elm.letra)
+                  MostarTodoElCurso(
+                    elm.cod_ense,
+                    elm.cod_grado,
+                    elm.letra,
+                    elm.nomlargo
+                  )
                 }
               />
             ))}
@@ -147,4 +158,4 @@ const CustomGridItem = ({ anchoGrid, label, alumnos, onClick }) => {
   );
 };
 
-export { CustomGridTitulo, CustomPaper };
+export { CustomGridTitulo, CustomPaper, agregarEspacios };

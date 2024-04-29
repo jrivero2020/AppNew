@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Grid, createTheme, ThemeProvider, Paper, Button } from "@mui/material";
 import { AuthContext } from "../core/AuthProvider";
+import { VerAlumnosDelCurso } from "./../Matriculas/VerAlumnosDelCurso";
 
 import {
   api_CantAlumnosCurso,
@@ -53,12 +54,14 @@ export default function AlumnosCursos() {
     TotalMe: 0,
   });
   const [anchoGrid, setAnchoGrid] = useState({ pk: 6, ki: 6, ba: 1.5, me: 3 });
-  const [wTdodCurso, setwTdodCurso] = useState(false);
-  const [idCurso, setIdCurso] = useState({ ense: "", grado: "", letra: "" });
+
+  const [idCurso, setIdCurso] = useState({
+    ense: "",
+    grado: "",
+    letra: "",
+    curso: "",
+  });
   const [totalAlumnos, setTotalAlumnos] = useState(0);
-  const ResetMostarTodoElCurso = () => {
-    setIdCurso({ ...idCurso, ense: "", grado: "", letra: "" });
-  };
 
   const { jwt } = useContext(AuthContext);
 
@@ -119,25 +122,13 @@ export default function AlumnosCursos() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // nro_matricula,rut,dv, nombres,apat,amat,fincorpora,nroal, activo
+
   return (
     <ThemeProvider theme={theme}>
       <div style={{ paddingTop: "99px" }}>
         {idCurso.ense !== "" && (
-          <Grid container spacing={1}>
-            <Paper elevation={6} sx={{ px: 1, pb: 1, pt: 1 }}>
-              <Button
-                variant="contained"
-                color="success"
-                onClick={() => ResetMostarTodoElCurso()}
-                sx={{ fontSize: "11px" }}
-              >
-                {" "}
-                {idCurso.ense}-{idCurso.grado}-{idCurso.letra} <br />
-                <br />
-                VER PANEL DE CURSOS
-              </Button>
-            </Paper>
-          </Grid>
+          <VerAlumnosDelCurso idCurso={idCurso} setIdCurso={setIdCurso} />
         )}
 
         {idCurso.ense === "" && (

@@ -155,7 +155,6 @@ const getCursos = async (req, res) => {
   }
 };
 
-
 const getCantAlumnosCurso = async (req, res) => {
   try {
     const dataCursos = await sequelize.query(`CALL sp_getCantAlumnosCurso()`, {
@@ -168,28 +167,13 @@ const getCantAlumnosCurso = async (req, res) => {
   }
 };
 
-const getNroMatriculas = async (req, res) => {
-  try {
-    const dataCursos = await sequelize.query(`CALL sp_getNroMatriculas()`, {
-      type: sequelize.QueryTypes.SELECT,
-    });
-
-    res.json(dataCursos);
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-};
-
-
 const getDataAlumnoNombres = async (req, res) => {
   try {
     const nomAl = req.params.nomAl;
     const apPatAl = req.params.apPatAl;
     const apMatAl = req.params.apMatAl;
-    // console.log(" en getDataAlumnoNombres Control con nomAl=", nomAl," apPatAl=", apPatAl,"apMatAl=", apMatAl );
     const dataAlumos = await sequelize.query(
       `CALL sp_buscaAlNombres( ?,?,? )`,
-
       {
         replacements: [nomAl, apPatAl, apMatAl],
         type: sequelize.QueryTypes.SELECT,
@@ -214,6 +198,34 @@ const CsvLibroMatricula = async (req, res) => {
   }
 };
 
+const getNroMatriculas = async (req, res) => {
+  try {
+    const dataCursos = await sequelize.query(`CALL sp_getNroMatriculas()`, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+
+    res.json(dataCursos);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+const getAlumnosCurso = async (req, res) => {
+  try {
+    const dataCurso = await sequelize.query(
+      `CALL colegio.sp_getAlumnosCurso( ?,?,? )`,
+      {
+        replacements: [req.params.ense, req.params.grado, req.params.letra],
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    res.json(dataCurso);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 export default {
   docenteByID,
   leerDocente,
@@ -231,5 +243,6 @@ export default {
   getDataAlumnoNombres,
   CsvLibroMatricula,
   getCantAlumnosCurso,
-  getNroMatriculas
+  getNroMatriculas,
+  getAlumnosCurso,
 };

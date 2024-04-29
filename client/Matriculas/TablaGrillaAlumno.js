@@ -3,7 +3,6 @@ import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { api_getAlumnosNombres } from "./../docentes/api-docentes";
 import { esES as esESCore } from "@mui/material/locale";
-import { Button } from "@mui/material";
 
 function BasicEditingGrid(props) {
   const { datosal, dRut, manejaSetdRut, PanelBusca, setPanelBusca } = props;
@@ -42,6 +41,7 @@ function BasicEditingGrid(props) {
         }
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
