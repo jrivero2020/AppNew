@@ -25,6 +25,7 @@ import { AuthProvider } from "./core/AuthProvider";
 import AlumnosCursos from "./Matriculas/AlumnosCursos";
 
 import Signin from "./auth/Signin";
+import FullFeaturedCrudGrid from "./assets/GrillaExamples/FullFeaturedCrudGrid"
 
 
 /*
@@ -43,6 +44,7 @@ const MainRouter = () => {
 
         <Routes>
           <Route path="/" element={<ReactImageGalery />} />
+          <Route path='/FullFeaturedCrudGrid' element={<FullFeaturedCrudGrid /> } />
           <Route path="/Signup" element={<Signup /> } />
           <Route path="/lstusuario" element={<LstUsuarios />} />
           <Route path="/SalidaUsr" element={<SalidaUsr />} />

@@ -85,12 +85,19 @@ function ResponsiveAppBar() {
       autorizado: isAuthenticated && (jwtRol === 1 || jwtRol === 2),
     },
     {
-      menu: "Prueba",
+      menu: "Alumnos",
       urlCall: "/AlumnosCursos",
       activo: 1,
       autorizado: isAuthenticated && (jwtRol === 1 || jwtRol === 2),
-    },    
+    },
+    {
+      menu: "DataGrid",
+      urlCall: "/FullFeaturedCrudGrid",
+      activo: 1,
+      autorizado: isAuthenticated && (jwtRol === 1 || jwtRol === 2),
+    },        
   ];
+
   const activePages = pages.filter(
     (link) => link.activo === 1 && link.autorizado
   );

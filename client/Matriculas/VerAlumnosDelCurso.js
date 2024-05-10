@@ -2,7 +2,19 @@
 import { Button } from "@mui/base";
 import { Grid, Paper, Stack, Typography } from "@mui/material";
 import React, { useContext, useState, useEffect } from "react";
-import { DataGrid, esES } from "@mui/x-data-grid";
+// import { DataGrid } from "@mui/x-data-grid";
+import {
+  GridRowModes,
+  DataGrid,
+  GridToolbarContainer,
+  GridActionsCellItem,
+  GridRowEditStopReasons,
+} from '@mui/x-data-grid';
+
+
+
+
+import { esES } from '@mui/x-data-grid/locales';
 
 import BotonConHover from "./../assets/Botones/BtnDataAlumnos";
 import { AuthContext } from "./../core/AuthProvider";
@@ -10,9 +22,9 @@ import { api_GetAlumnosCurso } from "../docentes/api-docentes";
 
 import {
   CustomGridTitulo,
-  agregarEspacios,
-  CustomGridItem,
 } from "./../assets/componentes/customGridPaper/customVerAlumnos";
+
+// import {AlCursocolumns} from './../assets/data/columnasGrid/AlumnosDelCurso'
 
 const VerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
   const { jwt } = useContext(AuthContext);
@@ -24,7 +36,6 @@ const VerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
   useEffect(() => {
     api_GetAlumnosCurso(idCurso, { t: jwt.token }, signal).then((data) => {
       if (data && data.error) {
-        console.log("Ocurrió un error :===>", data, data.error);
         return false;
       } else {
         const [results, metadata] = data;
@@ -35,28 +46,26 @@ const VerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
         ) {
           alert("**ATENCION** Alumnos no encotrados en el curso");
         } else {
-          setDataCurso(results);
+          setDataCurso(Object.values(results) );
           setShowPanel(true);
         }
       }
     });
   }, []);
 
-  const columns = [
+
+  const ResetMostarTodoElCurso = () => {
+    setIdCurso({ ...idCurso, ense: "", grado: "", letra: "", curso: "" });
+  };
+
+  const AlCursocolumns = [
     {
       field: "nroal",
       headerName: "Nº Lista",
       width: 80,
       height: 25,
-      editable: false,
-    },
-
-    {
-      field: "nombres",
-      headerName: "Nombres",
-      width: 240,
-      height: 25,
-      editable: false,
+      type: 'number',
+      editable: true,
     },
     {
       field: "apat",
@@ -69,6 +78,13 @@ const VerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
       field: "amat",
       headerName: "Ap. Materno",
       width: 160,
+      height: 25,
+      editable: false,
+    },
+    {
+      field: "nombres",
+      headerName: "Nombres",
+      width: 240,
       height: 25,
       editable: false,
     },
@@ -91,40 +107,28 @@ const VerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
       headerName: "Nº Matrícula",
       width: 95,
       height: 25,
-      editable: false,
+      type: 'number',
+      editable: true,
     },
     {
-      field: "fincorpora",
-      headerName: "F.Ingreso",
-      width: 95,
+      field: "fecharetiro",
+      headerName: "F.Retiro",
+      width: 180,
       height: 25,
-      editable: false,
+      type: 'Date',
+      editable: true,
     },
+
     {
       field: "activo",
       headerName: "activo",
       width: 60,
       height: 25,
-      editable: false,
+      type: 'boolean',
+      editable: true,
     },
   ];
 
-  /*		
-/*
-activo: 1
-amat: "ARRIAGADA"
-apat: "AGUILAR"
-dv: "0"
-fincorpora: "2023-12-27"
-nombres: "IGNACIA ANTONIA"
-nro_matricula: 1
-nroal: 1
-rut: 23497508 
-*/
-
-  const ResetMostarTodoElCurso = () => {
-    setIdCurso({ ...idCurso, ense: "", grado: "", letra: "", curso: "" });
-  };
 
   return (
     <div style={{ paddingTop: "1px" }}>
@@ -146,11 +150,13 @@ rut: 23497508
           >
             <Stack alignItems="center">
               <DataGrid
+                rows={dataCurso}
+                columns={AlCursocolumns}
+                editMode="row"
+
                 rowHeight={25}
                 localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-                rows={Object.values(dataCurso)}
                 getRowId={(row) => row.rut}
-                columns={columns}
               />
             </Stack>
           </Paper>

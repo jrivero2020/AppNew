@@ -1,7 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Grid, createTheme, ThemeProvider, Paper, Button } from "@mui/material";
 import { AuthContext } from "../core/AuthProvider";
-import { VerAlumnosDelCurso } from "./../Matriculas/VerAlumnosDelCurso";
+ //import { VerAlumnosDelCurso } from "./../Matriculas/VerAlumnosDelCurso";
+import {GridVerAlumnosDelCurso} from "./../assets/GrillaExamples/GridVerAlumnosDelCurso"
 
 import {
   api_CantAlumnosCurso,
@@ -66,6 +67,7 @@ export default function AlumnosCursos() {
   const { jwt } = useContext(AuthContext);
 
   useEffect(() => {
+    
     if (jwt === undefined) return;
 
     api_CantAlumnosCurso({ t: jwt.token }, signal).then((data) => {
@@ -128,7 +130,7 @@ export default function AlumnosCursos() {
     <ThemeProvider theme={theme}>
       <div style={{ paddingTop: "99px" }}>
         {idCurso.ense !== "" && (
-          <VerAlumnosDelCurso idCurso={idCurso} setIdCurso={setIdCurso} />
+          <GridVerAlumnosDelCurso idCurso={idCurso} setIdCurso={setIdCurso} />
         )}
 
         {idCurso.ense === "" && (
