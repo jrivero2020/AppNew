@@ -100,7 +100,7 @@ const remove = async (params, credential) => {
 
 const getDatosCert = async (params, signal) => {
   try {
-    let response = await fetch("/listaAlumnosByRut/" + params.rut, {
+    let response = await fetch("/AlumnosByRut/" + params.rut, {
       method: "GET",
       signal: signal,
     });
@@ -109,6 +109,8 @@ const getDatosCert = async (params, signal) => {
     return { error: err.message, message: err.message };
   }
 };
+
+
 const getDatosMatricula = async (params, credentials, signal) => {
   try {
     let response = await fetch("/matricula/" + params.al_rut, {

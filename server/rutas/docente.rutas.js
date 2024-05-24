@@ -30,10 +30,11 @@ router
   .route("/CsvLibroMatricula")
   .get(authCtrl.requireSignin, docenteCtrl.CsvLibroMatricula);
 
-router.route("/listaAlumnosByRut/:rutAl").get(docenteCtrl.listaAlumnosByRut);
+router.route("/AlumnosByRut/:rutAl/:nroAl/:nroMatr/:fretiro/:activo")
+  .get(docenteCtrl.listaAlumnosByRut)
+  .put(authCtrl.requireSignin, docenteCtrl.updateAlumnosByRut)
 
-router
-  .route("/matricula/:rutAl")
+router.route("/matricula/:rutAl")
   .get(authCtrl.requireSignin, docenteCtrl.listaMatricula);
 
 router.param("Id", docenteCtrl.docenteByID);
@@ -51,9 +52,11 @@ router
 router
   .route("/getCantAlumnosCurso")
   .get(authCtrl.requireSignin, docenteCtrl.getCantAlumnosCurso);
+
 router
   .route("/getNroMatriculas")
   .get(authCtrl.requireSignin, docenteCtrl.getNroMatriculas);
+
 router
   .route("/getAlumnosCurso/:ense/:grado/:letra")
   .get(authCtrl.requireSignin, docenteCtrl.getAlumnosCurso);

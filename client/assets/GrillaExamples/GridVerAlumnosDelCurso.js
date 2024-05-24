@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import Button from "@mui/material/Button";
-import { Grid, Paper, Stack, Typography } from "@mui/material";
+import { Alert, AlertTitle, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, Snackbar, Stack, Typography } from "@mui/material";
 
 // import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add';
@@ -51,6 +51,66 @@ function EditToolbar(props) {
   );
 }
 
+function funcDateStr( lafecha ){
+  let localFecha = lafecha
+  if( typeof localFecha === "string"){
+    console.log("Es string localFecha", localFecha)
+    localFecha = funcDateDate( localFecha)
+  }
+
+  console.log("funcDateStr ", localFecha)
+  console.log("Tipo de lafecha ", typeof localFecha)
+
+  return String(localFecha.getDate()).padStart(2, '0') +'/' + String(localFecha.getMonth() + 1).padStart(2, '0') + "/" + localFecha.getFullYear() 
+}
+
+function funcDateDate( lafecha ){
+  const [day, month, year] = lafecha.split('-');
+  const date = new Date(year, month - 1, day);
+  //const formattedDate = date.toLocaleDateString('es-ES'); // '30/03/2024'  
+  return date 
+  //.toLocaleDateString('es-ES');
+}
+
+
+function computeMutation(newRow, oldRow) {
+  let ret = ''
+  let salto = "\n";
+  const fechaNew = funcDateStr( newRow.fecharetiro )
+  const fechaOld = funcDateStr( oldRow.fecharetiro )
+
+  if (newRow.nro_matricula !== oldRow.nro_matricula) {
+    ret = `Nº Matrícula ${oldRow.nro_matricula} por ${newRow.nro_matricula} ${salto}`
+  }
+  if (newRow.nroal !== oldRow.nroal) {
+    ret +=  `Nº Lista ${oldRow.nroal} por ${newRow.nroal} ${salto}` 
+  }
+  if (fechaNew !== fechaOld) {
+    ret +=  `Fecha retiro ${fechaOld} por ${fechaNew} ${salto}`
+  }
+  if (newRow.activo !== oldRow.activo) {
+    ret +=  `Alumno Activo ${oldRow.activo} por ${newRow.activo} ${salto}`
+  }
+  return ret;
+}
+
+const useFakeMutation = () => {
+  return React.useCallback(
+    (user) =>
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
+          console.log("useFakeMutation user", user, "user.name", user.name)
+          if (true) {
+            reject();
+          } else {
+            resolve(user);
+          }
+        }, 200);
+      }),
+    [],
+  );
+};
+
 
 const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
 
@@ -88,18 +148,43 @@ const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
     }
   };
 
-  const processRowUpdate = (newRow) => {
+  const IIprocessRowUpdate = (newRow) => {
     console.log("newRow.fecharetiro:", newRow.fecharetiro)
     const lafecha = newRow.fecharetiro === null ? (new Date('1900-01-01')) : newRow.fecharetiro
     const lafechaFmto = lafecha.getFullYear() + "-" + String(lafecha.getMonth() + 1).padStart(2, '0') + "-" + String(lafecha.getDate()).padStart(2, '0');
     const fechaDate = new Date(lafechaFmto)
     const fechaDateMas = fechaDate.setDate(fechaDate.getDate() + 1);
     const newRowActualizado = { ...newRow, fecharetiro: fechaDateMas }
-    const updatedRow = { ...newRowActualizado, isNew: false, isUpdt:true };
+    const updatedRow = { ...newRowActualizado, isNew: false, isUpdt: true };
 
     setRows(rows.map((row) => (row.rut === newRowActualizado.rut ? updatedRow : row)));
     return updatedRow;
   };
+
+  const mutateRow = useFakeMutation();
+  const noButtonRef = React.useRef(null);
+  const [promiseArguments, setPromiseArguments] = React.useState(null);
+
+  const [snackbar, setSnackbar] = React.useState(null);
+
+  const handleCloseSnackbar = () => setSnackbar(null);
+
+
+
+  const processRowUpdate = React.useCallback(
+    (newRow, oldRow) =>
+      new Promise((resolve, reject) => {
+        const mutation = computeMutation(newRow, oldRow);
+        if (mutation) {
+          // Save the arguments to resolve or reject the promise later
+          setPromiseArguments({ resolve, reject, newRow, oldRow });
+        } else {
+          resolve(oldRow); // Nothing was changed
+        }
+      }),
+    [],
+  );
+
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
@@ -179,8 +264,6 @@ const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
           alert("**ATENCION** Alumnos no encotrados en el curso", metadata);
         } else {
           let arrRet = Object.values(results)
-          // setDataCurso(Object.values(results));
-          // console.log("Alumnos del curso: ", arrRet)
           setRows(arrRet)
           setShowPanel(true);
         }
@@ -198,6 +281,65 @@ const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
     // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario o registrando el error en la consola
     console.error('Error al procesar la actualización de la fila:', error);
   };
+
+
+
+  const handleNo = () => {
+    const { oldRow, resolve } = promiseArguments;
+    resolve(oldRow); // Resolve with the old row to not update the internal state
+    setPromiseArguments(null);
+  };
+
+  const handleYes = async () => {
+    const { newRow, oldRow, reject, resolve } = promiseArguments;
+
+    try {
+      // Make the HTTP request to save in the backend
+      const response = await mutateRow(newRow);
+      setSnackbar({ children: 'Los cambios han sido guardados', severity: 'success', variant: "filled" });
+      resolve(response);
+      setPromiseArguments(null);
+    } catch (error) {
+      setSnackbar({ children: 'No puede grabar datos vacíos', severity: 'error', variant: "filled" });
+      reject(oldRow);
+      setPromiseArguments(null);
+    }
+  };
+
+  const handleEntered = () => {
+    // The `autoFocus` is not used because, if used, the same Enter that saves
+    // the cell triggers "No". Instead, we manually focus the "No" button once
+    // the dialog is fully open.
+    // noButtonRef.current?.focus();
+  };
+  const renderConfirmDialog = () => {
+    if (!promiseArguments) {
+      return null;
+    }
+
+    const { newRow, oldRow } = promiseArguments;
+    const mutation = computeMutation(newRow, oldRow);
+
+    return (
+      <Dialog
+        maxWidth="xs"
+        TransitionProps={{ onEntered: handleEntered }}
+        open={!!promiseArguments}
+      >
+        <DialogTitle sx={{ backgroundColor: 'blue', color: 'white' }}>Está seguro?</DialogTitle>
+        <DialogContent dividers style={{ whiteSpace: "pre-line", fontFamily: "Arial", fontSize: "18px" }}>
+          {`Presione 'Sí' para efectuar los cambios ${'\n'} ${mutation}.`}
+        </DialogContent>
+        <DialogActions>
+          <Button ref={noButtonRef} onClick={handleNo} color="error" variant="contained">
+            No
+          </Button>
+          <Button onClick={handleYes} color="success" variant="contained" >Sí</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+
 
   return (
     <div style={{ paddingTop: "1px" }}>
@@ -218,6 +360,7 @@ const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
             sx={{ pb: 3, pt: 2, backgroundColor: "#efebe9" }}
           >
             <Stack alignItems="center">
+              {renderConfirmDialog()}
               <DataGrid
                 rows={rows}
                 columns={columns}
@@ -237,6 +380,18 @@ const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
                   toolbar: { setRows, setRowModesModel },
                 }}
               />
+              {!!snackbar && (
+
+                <Snackbar open onClose={handleCloseSnackbar} autoHideDuration={4000} >
+
+                  <Alert {...snackbar} onClose={handleCloseSnackbar}>
+                    <AlertTitle>
+                      {snackbar.severity === 'success'? 'Éxito':'Error' }</AlertTitle>
+                    {snackbar.children}
+                  </Alert>
+                </Snackbar>
+
+              )}
 
             </Stack>
           </Paper>
@@ -287,3 +442,17 @@ const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
 };
 
 export { GridVerAlumnosDelCurso };
+
+/*
+delimiter //;
+CREATE PROCEDURE sp_actAlumoCurso( IN prut int, IN pnroal int,IN pnro_matricula int, IN pfecharetiro date, IN pactivo TINYINT(1) )
+BEGIN
+UPDATE alumnos
+SET nroal = pnroal, nro_matricula = pnro_matricula, fecharetiro = pfecharetiro, activo = pactivo
+where rut = prut;
+END//;
+
+delimiter ;
+
+
+*/

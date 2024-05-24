@@ -121,6 +121,23 @@ const listaAlumnosByRut = async (req, res) => {
   }
 };
 
+const updateAlumnosByRut = async (req, res ) => {
+  try {
+    const rutAl = req.params.rutAl;
+    const dataCertificado = await sequelize.query(
+      "CALL sp_actAlumoCurso( ?,?,?,?,? )",
+      {
+        replacements: [rutAl, req.params.nroAl, req.params.nroMatr, req.params.fretiro, req.params.activo],
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+    res.json(dataCertificado);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+
 const getParentesco = async (req, res) => {
   try {
     const datParentesco = await parentescos.findAll({
@@ -236,6 +253,7 @@ export default {
   inscripcionDocente,
   listaDocHorarios,
   listaAlumnosByRut,
+  updateAlumnosByRut,
   listaMatricula,
   getComunas,
   getCursos,
