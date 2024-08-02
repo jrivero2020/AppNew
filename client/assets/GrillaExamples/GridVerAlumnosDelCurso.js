@@ -21,7 +21,7 @@ import { esES } from '@mui/x-data-grid/locales';
 
 import BotonConHover from "./../../assets/Botones/BtnDataAlumnos";
 import { AuthContext } from "./../../core/AuthProvider";
-import { api_GetAlumnosCurso } from "../../docentes/api-docentes";
+import { api_GetAlumnosCurso, api_ActAlumnoCurso } from "../../docentes/api-docentes";
 import { CustomGridTitulo, } from "./../../assets/componentes/customGridPaper/customVerAlumnos";
 import { AlCursocolumns } from './../../assets/data/columnasGrid/AlumnosDelCurso'
 
@@ -51,24 +51,25 @@ function EditToolbar(props) {
   );
 }
 
-function funcDateStr( lafecha ){
-  let localFecha = lafecha
-  if( typeof localFecha === "string"){
+function funcDateStr(lafecha) {
+  let localFecha = (lafecha === null ? '01/01/1900' : lafecha)
+
+  if (typeof localFecha === "string") {
     console.log("Es string localFecha", localFecha)
-    localFecha = funcDateDate( localFecha)
+    localFecha = funcDateDate(localFecha)
   }
 
   console.log("funcDateStr ", localFecha)
   console.log("Tipo de lafecha ", typeof localFecha)
 
-  return String(localFecha.getDate()).padStart(2, '0') +'/' + String(localFecha.getMonth() + 1).padStart(2, '0') + "/" + localFecha.getFullYear() 
+  return String(localFecha.getDate()).padStart(2, '0') + '/' + String(localFecha.getMonth() + 1).padStart(2, '0') + "/" + localFecha.getFullYear()
 }
 
-function funcDateDate( lafecha ){
+function funcDateDate(lafecha) {
   const [day, month, year] = lafecha.split('-');
   const date = new Date(year, month - 1, day);
   //const formattedDate = date.toLocaleDateString('es-ES'); // '30/03/2024'  
-  return date 
+  return date
   //.toLocaleDateString('es-ES');
 }
 
@@ -76,36 +77,35 @@ function funcDateDate( lafecha ){
 function computeMutation(newRow, oldRow) {
   let ret = ''
   let salto = "\n";
-  const fechaNew = funcDateStr( newRow.fecharetiro )
-  const fechaOld = funcDateStr( oldRow.fecharetiro )
+  const fechaNew = funcDateStr(newRow.fecharetiro)
+  const fechaOld = funcDateStr(oldRow.fecharetiro)
 
   if (newRow.nro_matricula !== oldRow.nro_matricula) {
     ret = `Nº Matrícula ${oldRow.nro_matricula} por ${newRow.nro_matricula} ${salto}`
   }
   if (newRow.nroal !== oldRow.nroal) {
-    ret +=  `Nº Lista ${oldRow.nroal} por ${newRow.nroal} ${salto}` 
+    ret += `Nº Lista ${oldRow.nroal} por ${newRow.nroal} ${salto}`
   }
   if (fechaNew !== fechaOld) {
-    ret +=  `Fecha retiro ${fechaOld} por ${fechaNew} ${salto}`
+    ret += `Fecha retiro ${fechaOld} por ${fechaNew} ${salto}`
   }
   if (newRow.activo !== oldRow.activo) {
-    ret +=  `Alumno Activo ${oldRow.activo} por ${newRow.activo} ${salto}`
+    ret += `Alumno Activo ${oldRow.activo} por ${newRow.activo} ${salto}`
   }
   return ret;
 }
 
 const useFakeMutation = () => {
   return React.useCallback(
-    (user) =>
+    (user, jwt) =>
       new Promise((resolve, reject) => {
-        setTimeout(() => {
-          console.log("useFakeMutation user", user, "user.name", user.name)
-          if (true) {
+        api_ActAlumnoCurso({ rutAl: user.rut }, { t: jwt.token }, user).then((data) => {
+          if (data && data.error) {
             reject();
           } else {
             resolve(user);
           }
-        }, 200);
+        })
       }),
     [],
   );
@@ -295,7 +295,7 @@ const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
 
     try {
       // Make the HTTP request to save in the backend
-      const response = await mutateRow(newRow);
+      const response = await mutateRow(newRow, jwt);
       setSnackbar({ children: 'Los cambios han sido guardados', severity: 'success', variant: "filled" });
       resolve(response);
       setPromiseArguments(null);
@@ -386,7 +386,7 @@ const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
 
                   <Alert {...snackbar} onClose={handleCloseSnackbar}>
                     <AlertTitle>
-                      {snackbar.severity === 'success'? 'Éxito':'Error' }</AlertTitle>
+                      {snackbar.severity === 'success' ? 'Éxito' : 'Error'}</AlertTitle>
                     {snackbar.children}
                   </Alert>
                 </Snackbar>

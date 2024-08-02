@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from "react";
 import ImageGallery from "react-image-gallery";
 import { imgCarousel } from "../../config/ConfigPdf";
-import InitOpcion from "./../core/InitOpcion";
+import InitOpcion from "./../core/InitOpcionII";
 import "./../assets/css/image-gallery.css";
-import { Box, Grid, styled } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
 const pathImg = "dist/images/fotos/portada/";
-const pathImgThum = "dist/images/fotos/portada/thum/";
-const ImgFondoP = "dist/images/fotos/portada/formacion1.jpg";
+//const pathImgThum = "dist/images/fotos/portada/thum/";
+//const ImgFondoP = "dist/images/fotos/portada/formacion1.jpg";
 
 const backgrounds = [
-  pathImg + "formacion1.jpg",
-  pathImg + "patiochico.jpg",
-  pathImg + "salacompuprueba.jpg",
+  pathImg + "fondo.jpg",
+  pathImg + "fondo.jpg",
+  pathImg + "fondo.jpg",
 ];
 
-const StyledImage = styled("img")({
-  width: "100%",
-  height: "100%",
-  objectFit: "scaleDown",
-});
+// const StyledImage = styled("img")({
+//   width: "100%",
+//   height: "100%",
+//   objectFit: "scaleDown",
+// });
 
 function ReactImageGalery() {
   const [showOpc, setShowOpc] = useState(false);
@@ -42,17 +42,15 @@ function ReactImageGalery() {
 
     return () => clearInterval(interval);
   }, []);
-
+        // backgroundImage: `url(${backgrounds[currentBackground]})`,
   return (
     <div
       className="App"
       style={{
-        paddingTop: "85px",
-        backgroundImage: `url(${backgrounds[currentBackground]})`,
+        paddingTop: "80px",
+        backgroundColor:"CadetBlue" ,
         backgroundSize: "cover",
-
         height: "100vh",
-
         // Agrega más estilos según tus necesidades
       }}
       sx={{ justify: "center", alignItems: "center" }}
@@ -63,9 +61,7 @@ function ReactImageGalery() {
           <Box
             sx={{
               width: "85%",
-              height: "62vh",
               overflow: "hidden",
-              border: "1px solid",
               justify: "center",
               alignItems: "center",
             }}

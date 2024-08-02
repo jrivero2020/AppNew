@@ -19,14 +19,14 @@ import Alertas from "./assets/mensajes/Alertas";
 import Parent from "./Matriculas/Parent";
 import CompLibroMatricula from "./Matriculas/CompLibroMatriculas";
 import Pendiente from "./core/PagPendiente";
-import Menu from "./core/menuCLC";
+import Menu from "./core/menuCLCII";
 import PrivateRoute from "./auth/PrivateRoute";
 import { AuthProvider } from "./core/AuthProvider";
 import AlumnosCursos from "./Matriculas/AlumnosCursos";
 
 import Signin from "./auth/Signin";
 import FullFeaturedCrudGrid from "./assets/GrillaExamples/FullFeaturedCrudGrid"
-
+import PrincipalGui from './../client/core/PrincipalGui'
 
 /*
 const Signout = () => {
@@ -36,6 +36,7 @@ const Signout = () => {
 };
 */
 
+
 const MainRouter = () => {
   return (
     <>
@@ -43,7 +44,7 @@ const MainRouter = () => {
         <Menu />
 
         <Routes>
-          <Route path="/" element={<ReactImageGalery />} />
+          <Route path="/" element={<PrincipalGui />} />
           <Route path='/FullFeaturedCrudGrid' element={<FullFeaturedCrudGrid /> } />
           <Route path="/Signup" element={<Signup /> } />
           <Route path="/lstusuario" element={<LstUsuarios />} />

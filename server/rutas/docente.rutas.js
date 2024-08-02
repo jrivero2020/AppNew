@@ -30,7 +30,7 @@ router
   .route("/CsvLibroMatricula")
   .get(authCtrl.requireSignin, docenteCtrl.CsvLibroMatricula);
 
-router.route("/AlumnosByRut/:rutAl/:nroAl/:nroMatr/:fretiro/:activo")
+router.route("/AlumnosByRut/:rutAl")
   .get(docenteCtrl.listaAlumnosByRut)
   .put(authCtrl.requireSignin, docenteCtrl.updateAlumnosByRut)
 

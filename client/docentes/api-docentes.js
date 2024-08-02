@@ -110,6 +110,32 @@ const getDatosCert = async (params, signal) => {
   }
 };
 
+const api_ActAlumnoCurso = async (params, credentials, user) => {
+  try {
+    const rutAl = params.rutAl
+    const nroal = user.nroal;
+    const nromat = user.nro_matricula;
+    const fretiro = user.fecha_retiro;
+    const activo = user.activo
+    let response = await fetch("/AlumnosByRut/" + rutAl, {
+        method: "PUT",
+        headers: { 
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + credentials.t            
+          },
+          body: JSON.stringify(user)
+      }
+    );
+
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
+
+
 
 const getDatosMatricula = async (params, credentials, signal) => {
   try {
@@ -250,4 +276,5 @@ export {
   api_CantAlumnosCurso,
   api_NroMatriculas,
   api_GetAlumnosCurso,
+  api_ActAlumnoCurso
 };

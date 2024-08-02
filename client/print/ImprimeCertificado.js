@@ -38,9 +38,10 @@ function PrintCertAReg(props) {
     content: () => componentRef.current,
     documentTitle: "cert-data",
   });
-  let valumno = datoAlumno.genero == "M" ? "El alumno " : "La alumna ";
-  let vmatri = datoAlumno.genero == "M" ? "matriculado " : "matriculada ";
-  let vinscrito = datoAlumno.genero == "M" ? "inscrito " : "inscrita ";
+  console.log( "datoAlumno: ", datoAlumno)
+  let valumno = datoAlumno.genero === "M" ? "El alumno " : "La alumna ";
+  let vmatri = datoAlumno.genero === "M" ? "matriculado " : "matriculada ";
+  let vinscrito = datoAlumno.genero === "M" ? "inscrito " : "inscrita ";
 
   return (
     <>
@@ -113,10 +114,10 @@ function PrintCertAReg(props) {
                   {valumno} {datoAlumno.nombres} {datoAlumno.apat}{" "}
                   {datoAlumno.amat}, cédula de identidad Nº
                   {FmtoRut(datoAlumno.rut + datoAlumno.dv)}, {vinscrito} con el
-                  Nº {datoAlumno.nro_matricula} del Registro, año {agno}, se
+                  Nº {datoAlumno.idmatricula} del Registro, año {agno}, se
                   encuentra {vmatri} y asistiendo regularmente a nuestro
                   establecimiento, cursando actualmente: {datoAlumno.desc_grado}{" "}
-                  {datoAlumno.letra}
+                  {datoAlumno.letra}.
                 </Typography>
                 <br />
                 <br />
@@ -125,7 +126,7 @@ function PrintCertAReg(props) {
                 <br />
                 <Typography align="justify" sx={{ mx: 0.5, fontSize: 14 }}>
                   Se extiende el presente certificado a petición del apoderado
-                  para los fines que estime pertinente
+                  para los fines que estime pertinente.
                 </Typography>
               </Grid>
               <br />

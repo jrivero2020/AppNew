@@ -121,17 +121,33 @@ const listaAlumnosByRut = async (req, res) => {
   }
 };
 
-const updateAlumnosByRut = async (req, res ) => {
+const updateAlumnosByRut = async (req, res) => {
   try {
     const rutAl = req.params.rutAl;
-    const dataCertificado = await sequelize.query(
-      "CALL sp_actAlumoCurso( ?,?,?,?,? )",
+    const body = req.body
+    console.log("Body :", body)
+    console.log("req.params :", req.params, ' Rut :', rutAl)
+    console.log(rutAl,
+      body.nroal,
+      body.nro_matricula,
+      body.fecharetiro.substring(0, 10),
+      body.activo)
+
+    await sequelize.query(
+      "CALL sp_actAlumnoCurso( ?,?,?,?,? )",
       {
-        replacements: [rutAl, req.params.nroAl, req.params.nroMatr, req.params.fretiro, req.params.activo],
-        type: sequelize.QueryTypes.SELECT,
+        replacements: [rutAl,
+          body.nroal,
+          body.nro_matricula,
+          body.fecharetiro.substring(0, 10),
+          body.activo],
+        type: sequelize.QueryTypes.UPDATE,
       }
     );
-    res.json(dataCertificado);
+    return res.status(200).json({
+      message: "Actualización ejecutada"
+    })
+
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -202,10 +218,11 @@ const getDataAlumnoNombres = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
-
+// 
+// SP_csvLibroMatricula
 const CsvLibroMatricula = async (req, res) => {
   try {
-    const dataLibro = await sequelize.query(`CALL SP_csvLibroMatricula()`, {
+    const dataLibro = await sequelize.query(`CALL sp_LibroAsistencia()`, {
       type: sequelize.QueryTypes.SELECT,
     });
 

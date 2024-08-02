@@ -1,0 +1,66 @@
+[
+    { "menu": "Inicio", "urlCall": "/", "activo": 1, "autorizado": 1 },
+    { "menu": "Historia", "urlCall": "/HistoriaDetalle", "activo": 1, "autorizado": "!A" },
+    {
+      "menu": "Registro",
+      "urlCall": "/Signup",
+      "activo": 1,
+      "autorizado": "A1"
+    },
+    {
+      "menu": "Inscripción",
+      "urlCall": "/Inscripcion",
+      "activo": 0,
+      "autorizado": "A1"
+    },
+    {
+      "menu": "Ingresar",
+      "urlCall": "/Signin",
+      "activo": 1,
+      "autorizado": "!A"
+    },
+    {
+      "menu": "Ficha Alumno",
+      "urlCall": "/FichaDelAlumno2",
+      "activo": 1,
+      "autorizado": "A12"
+    },
+    {
+      "menu": "Ct.A.Regular",
+      "urlCall": "/CertAlumnoRegular",
+      "activo": 1,
+      "autorizado": "A12"
+    },
+    {
+      "menu": "Parent",
+      "urlCall": "/Parent",
+      "activo": 0,
+      "autorizado": "A1"
+    },
+    { "menu": "Lab", "urlCall": "/LabTabs", "activo": 0, "autorizado": 0 },
+    {
+      "menu": "Salir",
+      "urlCall": "/SalidaUsr",
+      "activo": 1,
+      "autorizado": "A1"
+    },
+    {
+      "menu": "cvs Cert",
+      "urlCall": "/CompLibroMatricula",
+      "activo": 1,
+      "autorizado": "A12" 
+    },
+    {
+      "menu": "Alumnos",
+      "urlCall": "/AlumnosCursos",
+      "activo": 1,
+      "autorizado": "A12"
+    },
+    {
+      "menu": "DataGrid",
+      "urlCall": "/FullFeaturedCrudGrid",
+      "activo": 1,
+      "autorizado": "A12"
+    }
+  ]
+

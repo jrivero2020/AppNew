@@ -191,3 +191,5 @@ export default function CertAlumnoRegular() {
     </>
   );
 }
+
+//             <ImprimeCertificado data={valores} />            

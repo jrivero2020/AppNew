@@ -1,0 +1,118 @@
+[
+    {
+      "id": 0,
+      "foto": "bienvenidos.jpg",
+      "titulo": "bienvenidos",
+      "llamada": { "componente": "/MiddlewarePdf", "param": { "ptr": 1 } },
+      "activo": 1,
+      "autorizado": 1
+    },
+    {
+      "id": 1,
+      "foto": "FondoPantalla.jpg",
+      "titulo": "FondoPantalla",
+      "llamada": "",
+      "activo": 0,
+      "autorizado": 1
+    },
+    {
+      "id": 2,
+      "foto": "cuentapublica.jpg",
+      "titulo": "cuentapublica",
+      "llamada": {
+      "componente": "/MiddlewarePdf",
+      "param": {"ptr": 2 }
+      },
+      "activo": 1,
+      "autorizado": 1
+    },
+    {
+      "id": 3,
+      "foto": "listautiles.jpg",
+      "titulo": "ListaUtiles",
+      "llamada": { "componente": "/VerUtilesEscolares", "param": {} },
+      "activo": 1,
+      "autorizado": 1
+    },
+    {
+      "id": 4,
+      "foto": "manualconvivencia.jpg",
+      "titulo": "ManualConvivencia",
+      "llamada": { "componente": "/MiddlewarePdf", "param": { "ptr": 3 } },
+      "activo": 1,
+      "autorizado": 1
+    },
+    {
+      "id": 5,
+      "foto": "CertificadoARegular.png",
+      "titulo": "CertificadoARegular",
+      "llamada": { "componente": "/CertAlumnoRegular", "param": {} },
+      "activo": 0,
+      "autorizado": "A12"
+    },
+    {
+      "id": 6,
+      "foto": "campana_vacuna.jpg",
+      "titulo": "Vacunación",
+      "llamada": { "componente": "/Pendiente", "param": {} },
+      "activo": 1,
+      "autorizado": 1
+    },
+    {
+      "id": 7,
+      "foto": "reunionespa.jpg",
+      "titulo": "Reunión Apoderados",
+      "llamada": { "componente": "/Pendiente", "param": {} },
+      "activo": 1,
+      "autorizado": 1
+    },
+    {
+      "id": 8,
+      "foto": "jornada.jpg",
+      "titulo": "Jornada",
+      "llamada": { "componente": "/Pendiente", "param": {} },
+      "activo": 1,
+      "autorizado": 1
+    },
+    {
+      "id": 9,
+      "foto": "Faldas.png",
+      "titulo": "Faldas",
+      "llamada": { "componente": "/Pendiente", "param": {} },
+      "activo": 1,
+      "autorizado": "A"
+    },
+    {
+      "id": 10,
+      "foto": "GaleriaFotos.png",
+      "titulo": "GaleriaFotos",
+      "llamada": {"componente": "link",  "link": {"url": "sites.google.com/conquistadores.red-lc.com/colegiolosconquistadores/quienes-somos"  }
+      },
+      "activo": 1,
+      "autorizado": 1
+    },
+    {
+      "id": 11,
+      "foto": "tiendasm.png",
+      "titulo": "TiendaSm",
+      "llamada": "",
+      "activo": 0,
+      "autorizado": 1
+    },
+    {
+      "id": 12,
+      "foto": "descuentodimeiggs.png",
+      "titulo": "DescuentosMeiggs",
+      "llamada": "",
+      "activo": 0,
+      "autorizado": 1
+    },
+    {
+      "id": 13,
+      "foto": "calendarioescolar.png",
+      "titulo": "Calendario Escolar año 2024",
+      "llamada": { "componente": "/MiddlewarePdf", "param": { "ptr": 7 } },
+      "activo": 1,
+      "autorizado": 1
+    }
+  ]

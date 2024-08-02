@@ -1,5 +1,7 @@
 import * as React from "react";
-import { DataGrid, esES } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
+import { esES } from "@mui/x-data-grid/locales";
+
 import { Button, Grid, Paper, Typography } from "@mui/material";
 import BackspaceIcon from "@mui/icons-material/Backspace";
 import { useState } from "react";
