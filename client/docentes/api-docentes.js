@@ -113,10 +113,12 @@ const getDatosCert = async (params, signal) => {
 const api_ActAlumnoCurso = async (params, credentials, user) => {
   try {
     const rutAl = params.rutAl
+    /*
     const nroal = user.nroal;
     const nromat = user.nro_matricula;
     const fretiro = user.fecha_retiro;
     const activo = user.activo
+    */
     let response = await fetch("/AlumnosByRut/" + rutAl, {
         method: "PUT",
         headers: { 
@@ -259,6 +261,25 @@ const api_GetAlumnosCurso = async (params, credentials, signal) => {
   }
 };
 
+
+const api_GetJsonInitOpcion = async (params, signal) => {
+  try {
+    let response = await fetch("/JsonInitOpcion" , {
+      method: "GET",
+      signal: signal,
+    });
+    return await response.json();    
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
+
+
+
+
+
+
 export {
   create,
   leer,
@@ -276,5 +297,6 @@ export {
   api_CantAlumnosCurso,
   api_NroMatriculas,
   api_GetAlumnosCurso,
-  api_ActAlumnoCurso
+  api_ActAlumnoCurso,
+  api_GetJsonInitOpcion
 };

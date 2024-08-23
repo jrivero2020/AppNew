@@ -218,6 +218,7 @@ const getDataAlumnoNombres = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
+
 // 
 // SP_csvLibroMatricula
 const CsvLibroMatricula = async (req, res) => {
@@ -260,6 +261,21 @@ const getAlumnosCurso = async (req, res) => {
   }
 };
 
+const JsonInitOpcion  = async (req, res) => {
+  try {
+    const dataJson = await sequelize.query(
+      `CALL colegio.sp_getDataJsonInitOpcion()`,
+      {
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+    res.send(JSON.stringify(dataJson));
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+
 export default {
   docenteByID,
   leerDocente,
@@ -280,4 +296,5 @@ export default {
   getCantAlumnosCurso,
   getNroMatriculas,
   getAlumnosCurso,
+  JsonInitOpcion,
 };

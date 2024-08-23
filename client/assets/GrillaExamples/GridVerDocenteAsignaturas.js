@@ -16,14 +16,13 @@ import {
   GridRowEditStopReasons,
 } from '@mui/x-data-grid';
 
-
 import { esES } from '@mui/x-data-grid/locales';
 
-import BotonConHover from "./../../assets/Botones/BtnDataAlumnos";
-import { AuthContext } from "./../../core/AuthProvider";
+import BotonConHover from "../Botones/BtnDataAlumnos";
+import { AuthContext } from "../../core/AuthProvider";
 import { api_GetAlumnosCurso, api_ActAlumnoCurso } from "../../docentes/api-docentes";
-import { CustomGridTitulo, } from "./../../assets/componentes/customGridPaper/customVerAlumnos";
-import { AlCursocolumns } from './../../assets/data/columnasGrid/AlumnosDelCurso'
+import { CustomGridTitulo, } from "../componentes/customGridPaper/customVerAlumnos";
+import { AlCursocolumns } from '../data/columnasGrid/AlumnosDelCurso'
 
 
 function EditToolbar(props) {
@@ -319,7 +318,6 @@ const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
     );
   };
 
-
   return (
     <div style={{ paddingTop: "1px" }}>
       <CustomGridTitulo
@@ -376,62 +374,9 @@ const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
           </Paper>
         </Grid>
       )}
-
-      <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%" }}>
-        <Grid item xs={12}>
-          <Paper
-            elevation={1}
-            sx={{ pb: 1, pt: 1, backgroundColor: "#1976d2" }}
-          >
-            <Stack alignItems="center">
-              <Typography>&nbsp;</Typography>
-              <Grid container spacing={1}>
-                <Grid item xs={10}>
-                  <Stack alignItems="center">
-                    <Paper elevation={2} sx={{ px: 5, pb: 2, pt: 2 }}>
-                      <BotonConHover
-                        render={({
-                          handleMouseEnter,
-                          handleMouseLeave,
-                          buttonStyle,
-                        }) => (
-                          <Button
-                            size="large"
-                            style={buttonStyle}
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            variant="contained"
-                            onClick={ResetMostarTodoElCurso}
-                            sx={{ fontSize: "11px" }}
-                          >
-                            Volver al panel de cursos
-                          </Button>
-                        )}
-                      />
-                    </Paper>
-                  </Stack>
-                </Grid>
-              </Grid>
-            </Stack>
-          </Paper>
-        </Grid>
-      </Grid>
+     
     </div>
   );
 };
 
 export { GridVerAlumnosDelCurso };
-
-/*
-delimiter //;
-CREATE PROCEDURE sp_actAlumoCurso( IN prut int, IN pnroal int,IN pnro_matricula int, IN pfecharetiro date, IN pactivo TINYINT(1) )
-BEGIN
-UPDATE alumnos
-SET nroal = pnroal, nro_matricula = pnro_matricula, fecharetiro = pfecharetiro, activo = pactivo
-where rut = prut;
-END//;
-
-delimiter ;
-
-
-*/

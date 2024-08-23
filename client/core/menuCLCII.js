@@ -48,7 +48,7 @@ function ResponsiveAppBar() {
             src={logo}
             alt="Logo"
             style={{
-              height: "48px",
+              height: "45px",
               marginRight: "8px",
               marginTop: "6px",
               activo: 1,

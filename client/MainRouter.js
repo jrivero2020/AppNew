@@ -7,7 +7,7 @@ import SalidaUsr from "./auth/SignOut";
 import Inscripcion from "./usuario/Inscripcion";
 // import auth from "./auth/auth-helper";
 // import Carousel from "./core/carousel";
-import ReactImageGalery from "./core/ReactimageGalery";
+// import ReactImageGalery from "./core/ReactimageGalery";
 import MiddlewarePdf from "./core/MiddlewarePdf";
 import DocenteHoras from "./core/DocenteHoras";
 import HistoriaDetalle from "./assets/data/historiaDetalle";
@@ -27,7 +27,7 @@ import AlumnosCursos from "./Matriculas/AlumnosCursos";
 import Signin from "./auth/Signin";
 import FullFeaturedCrudGrid from "./assets/GrillaExamples/FullFeaturedCrudGrid"
 import PrincipalGui from './../client/core/PrincipalGui'
-
+import VerJSON from './../client/core/VerJSON'
 /*
 const Signout = () => {
   auth.clearJWT();
@@ -55,6 +55,8 @@ const MainRouter = () => {
           <Route path="/MiddlewarePdf" element={<MiddlewarePdf />} />
           <Route path="/VerUtilesEscolares" element={<VerUtilesEscolares />} />
           <Route path="/DocenteHoras" element={<DocenteHoras />} />
+          <Route path="/VerJSON" element={<VerJSON />} />
+
           <Route
             path="/CertAlumnoRegular"
             element={

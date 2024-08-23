@@ -45,7 +45,7 @@
       "autorizado": "A1"
     },
     {
-      "menu": "cvs Cert",
+      "menu": "cvs Lbr.Asist.",
       "urlCall": "/CompLibroMatricula",
       "activo": 1,
       "autorizado": "A12" 
@@ -61,6 +61,13 @@
       "urlCall": "/FullFeaturedCrudGrid",
       "activo": 1,
       "autorizado": "A12"
+    },
+    {
+      "menu": "VerJSON",
+      "urlCall": "/VerJSON",
+      "activo": 1,
+      "autorizado": "A12"
     }
+
   ]
 

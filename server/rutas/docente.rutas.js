@@ -61,4 +61,7 @@ router
   .route("/getAlumnosCurso/:ense/:grado/:letra")
   .get(authCtrl.requireSignin, docenteCtrl.getAlumnosCurso);
 
+router.route("/JsonInitOpcion")
+.get( docenteCtrl.JsonInitOpcion)
+
 export default router;

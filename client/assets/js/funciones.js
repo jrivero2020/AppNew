@@ -4,7 +4,7 @@
 const chkActivoRolAutentica = (data, isAuthenticated, jwtRol) => {
   let ret = false
   
-  if (data.activo) {
+  if (data.activo === 1) {
     if( data.autorizado === 1)
       ret = true
     if (data.autorizado === "!A" && !isAuthenticated)

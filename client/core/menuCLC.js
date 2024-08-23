@@ -79,7 +79,7 @@ function ResponsiveAppBar() {
       autorizado: isAuthenticated,
     },
     {
-      menu: "cvs Cert",
+      menu: "cvs L.Asistencia",
       urlCall: "/CompLibroMatricula",
       activo: 1,
       autorizado: isAuthenticated && (jwtRol === 1 || jwtRol === 2),
