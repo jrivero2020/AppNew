@@ -111,7 +111,7 @@ const useMutation = () => {
 };
 
 
-const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
+const GridVerManejaDocentes = ({ idCurso, setIdCurso }) => {
 
   const [rows, setRows] = React.useState();
   const [rowModesModel, setRowModesModel] = React.useState({});
@@ -379,4 +379,4 @@ const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
   );
 };
 
-export { GridVerAlumnosDelCurso };
+export { GridVerManejaDocentes };

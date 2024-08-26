@@ -126,14 +126,6 @@ const updateAlumnosByRut = async (req, res) => {
   try {
     const rutAl = req.params.rutAl;
     const body = req.body
-    console.log("Body :", body)
-    console.log("req.params :", req.params, ' Rut :', rutAl)
-    console.log(rutAl,
-      body.nroal,
-      body.nro_matricula,
-      body.fecharetiro.substring(0, 10),
-      body.activo)
-
     await sequelize.query(
       "CALL sp_actAlumnoCurso( ?,?,?,?,? )",
       {
