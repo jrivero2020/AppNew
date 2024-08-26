@@ -98,11 +98,12 @@ const remove = async (params, credential) => {
   }
 };
 
-const getDatosCert = async (params, signal) => {
+const getDatosCert = async (params, signal, credentials) => {
   try {
     let response = await fetch("/AlumnosByRut/" + params.rut, {
       method: "GET",
       signal: signal,
+      headers: { Authorization: "Bearer " + credentials.t },
     });
     return await response.json();
   } catch (err) {
@@ -113,12 +114,6 @@ const getDatosCert = async (params, signal) => {
 const api_ActAlumnoCurso = async (params, credentials, user) => {
   try {
     const rutAl = params.rutAl
-    /*
-    const nroal = user.nroal;
-    const nromat = user.nro_matricula;
-    const fretiro = user.fecha_retiro;
-    const activo = user.activo
-    */
     let response = await fetch("/AlumnosByRut/" + rutAl, {
         method: "PUT",
         headers: { 
@@ -129,15 +124,11 @@ const api_ActAlumnoCurso = async (params, credentials, user) => {
           body: JSON.stringify(user)
       }
     );
-
     return await response.json();
   } catch (err) {
     return { error: 500, message: err.message };
   }
 };
-
-
-
 
 const getDatosMatricula = async (params, credentials, signal) => {
   try {
@@ -275,11 +266,6 @@ const api_GetJsonInitOpcion = async (params, signal) => {
 };
 
 
-
-
-
-
-
 export {
   create,
   leer,
@@ -296,7 +282,7 @@ export {
   getcsvLibroMatriculas,
   api_CantAlumnosCurso,
   api_NroMatriculas,
-  api_GetAlumnosCurso,
-  api_ActAlumnoCurso,
-  api_GetJsonInitOpcion
+  api_GetAlumnosCurso,  
+  api_GetJsonInitOpcion,
+  api_ActAlumnoCurso
 };
