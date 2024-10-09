@@ -17,9 +17,6 @@ export default function PrincipalGui() {
         paddingTop: "80px",
         backgroundColor:"#E1E1E1" ,
         backgroundSize: "cover",
-        // #5F9EA0
-        // height: "100vh",
-        // Agrega más estilos según tus necesidades
       }}
       sx={{ justify: "center", alignItems: "center" }}
     >
@@ -34,18 +31,7 @@ export default function PrincipalGui() {
        
           <img src={pathImg} alt="Img.Fondo"  style={{objectFit: "fill"}}/>
         </Box>
-        {showOpc && <InitOpcion />}
+        { showOpc && <InitOpcion /> }
         </div>
       );
 }
-
-/*
- sx={{
-                ml: "20px",
-                color: "white",
-                height: "20vh",
-                width: "25vh",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-*/

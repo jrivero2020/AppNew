@@ -17,7 +17,7 @@ import { AuthContext } from "./AuthProvider";
 // import activeImgLinks from "./../assets/data/json/CardOpcionesPaginaPrincipal.json"
 import { chkActivoRolAutentica } from "./../assets/js/funciones"
 import { api_GetJsonInitOpcion } from "./../docentes/api-docentes";
-import { CardHeader, Divider } from "@mui/material";
+import { Box, CardHeader, Divider } from "@mui/material";
 // import { borderRadius } from "@mui/system";
 const useStyles = makeStyles({
   imgBtn: {
@@ -33,44 +33,45 @@ const useStyles = makeStyles({
   },
 });
 
-export default function BasicGrid() {
-  const { isAuthenticated, isJwtRol } = useContext(AuthContext);
+export default function BasicGrid() {  
+  const { isAuthenticated, isJwtRol, activeImgLinks, setactiveImgLinks } = useContext(AuthContext);
   const jwtRol = isJwtRol ? isJwtRol._rol : 0;
-  const [activeImgLinks, setData] = useState([]);
-  const [showOpc, setShowOpc] = useState(false);
+
+  const [showOpc, setShowOpc] = useState(true);
   const classes = useStyles();
   const navigate = useNavigate();
   const pathImg = "dist/images/links/";
+  const backgroundFondo = "dist/images/fotos/portada/Principal_gui.jpg";
 
   const abrirPaginaExterna = (url) => {
     window.open("https://" + url, "_blank");
   };
 
-  useEffect(() => {
-    api_GetJsonInitOpcion().then((data) => {
-      if (data && data.error) {
-        return false;
-      } else {
-        const results = Object.values(data[0]);
-        if (
-          results === undefined ||
-          results === null ||
-          Object.keys(results).length === 0
-
-        ) {
-          alert(
-            "**ATENCION** no encuentro JSON inicial"
-          );
-        } else {
-          setData(results);
-          setShowOpc(true);
-        }
-      }
-    });
-  }, []);
-
   return (
     <div >
+ <div
+      className="App" 
+      style={{
+        paddingTop: "80px",
+        backgroundColor:"#E1E1E1" ,
+        backgroundSize: "cover",
+      }}
+      sx={{ justify: "center", alignItems: "center" }}
+    >
+        <Box sx={{
+          width: '100%',
+          height: '48%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+        }}  >
+       
+          <img src={backgroundFondo} alt="Img.Fondo"  style={{objectFit: "fill"}}/>
+        </Box>
+
+        </div>
+
 
       <Card sx={{ backgroundColor: "#E1E1E1" }}>
         <CardHeader

@@ -5,6 +5,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isJwtRol, setIsJwtRol] = useState(false);
   const [jwt, setJwt] = useState(false);
+  const [activeImgLinks, setactiveImgLinks] = useState([]);
   return (
     <AuthContext.Provider
       value={{
@@ -14,6 +15,8 @@ export const AuthProvider = ({ children }) => {
         setIsJwtRol,
         jwt,
         setJwt,
+        activeImgLinks, 
+        setactiveImgLinks
       }}
     >
       {children}

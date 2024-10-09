@@ -26,8 +26,10 @@ import AlumnosCursos from "./Matriculas/AlumnosCursos";
 
 import Signin from "./auth/Signin";
 import FullFeaturedCrudGrid from "./assets/GrillaExamples/FullFeaturedCrudGrid"
-import PrincipalGui from './../client/core/PrincipalGui'
+// import PrincipalGui from './../client/core/PrincipalGui'
+import PrincipalGui from "./core/InitOpcionII";
 import VerJSON from './../client/core/VerJSON'
+
 /*
 const Signout = () => {
   auth.clearJWT();
@@ -44,7 +46,7 @@ const MainRouter = () => {
         <Menu />
 
         <Routes>
-          <Route path="/" element={<PrincipalGui />} />
+        <Route path="/" element={<PrincipalGui />} />
           <Route path='/FullFeaturedCrudGrid' element={<FullFeaturedCrudGrid /> } />
           <Route path="/Signup" element={<Signup /> } />
           <Route path="/lstusuario" element={<LstUsuarios />} />
@@ -103,3 +105,4 @@ const MainRouter = () => {
 export default MainRouter;
 
 //             <Route exact path="/ImprimeCertificado" element={<ImprimeCertificado />} />
+//  

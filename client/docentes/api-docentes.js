@@ -99,6 +99,7 @@ const remove = async (params, credential) => {
 };
 
 const getDatosCert = async (params, signal, credentials) => {
+  console.log('dentro de getDatosCert')
   try {
     let response = await fetch("/AlumnosByRut/" + params.rut, {
       method: "GET",

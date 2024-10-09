@@ -75,7 +75,7 @@ function funcDateDate(lafecha) {
 
 function computeMutation(newRow, oldRow) {
   let ret = ''
-  let salto = "\n";
+  const salto = "\n";
   const fechaNew = funcDateStr(newRow.fecharetiro)
   const fechaOld = funcDateStr(oldRow.fecharetiro)
 

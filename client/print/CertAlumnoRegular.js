@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect } from "react";
+import React, { useContext, useState } from "react";
+
 import {
   TextField,
   Typography,
@@ -9,8 +10,9 @@ import {
   Card,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { getDatosCert } from "./../docentes/api-docentes";
+import { AuthContext } from "./../core/AuthProvider";
+
 import Item from "../core/Item";
 import { FmtoRut, validarRut, QuitaPuntos } from "../assets/js/FmtoRut";
 // import ImprimeCertificado from "./ImprimeCertificado";
@@ -53,11 +55,13 @@ export default function CertAlumnoRegular() {
       rut: QuitaPuntos(fRut.slice(0, -1)),
       dv: fRut.slice(-1),
     });
+    console.log("Saliendo de actualizaValores")
   };
 
   const cierreDialog = () => {
     setValores({ ...valores, open: false });
   };
+  const { jwt } = useContext(AuthContext);
 
   const clickSubmit = (event) => {
     event.preventDefault();
@@ -81,8 +85,10 @@ export default function CertAlumnoRegular() {
 
     const abortController = new AbortController();
     const signal = abortController.signal;
-    getDatosCert(user, signal).then((data) => {
+    console.log('voy a getDatosCert')
+    getDatosCert(user,signal,  { t: jwt.token }).then((data) => { 
       if (data && data.error) {
+        console.log('er4ror en traer datos :', data)
         return false;
       } else {
         const [results, metadata] = data;
