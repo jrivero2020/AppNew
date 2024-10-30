@@ -1,4 +1,6 @@
 import React, { createContext, useState } from "react";
+import { cFichaAlumno } from "./../Matriculas/matriculasCampos"
+
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -6,6 +8,8 @@ export const AuthProvider = ({ children }) => {
   const [isJwtRol, setIsJwtRol] = useState(false);
   const [jwt, setJwt] = useState(false);
   const [activeImgLinks, setactiveImgLinks] = useState([]);
+  const [dataBuscaAl, setDataBuscaAl] = useState(cFichaAlumno);
+
   return (
     <AuthContext.Provider
       value={{
@@ -16,7 +20,9 @@ export const AuthProvider = ({ children }) => {
         jwt,
         setJwt,
         activeImgLinks, 
-        setactiveImgLinks
+        setactiveImgLinks,
+        dataBuscaAl,
+        setDataBuscaAl
       }}
     >
       {children}

@@ -54,7 +54,7 @@ function ResponsiveAppBar() {
     },
     {
       menu: "Ficha Alumno",
-      urlCall: "/FichaDelAlumno2",
+      urlCall: "/BuscarAlumno",
       activo: 1,
       autorizado: isAuthenticated && (jwtRol === 1 || jwtRol === 2),
     },

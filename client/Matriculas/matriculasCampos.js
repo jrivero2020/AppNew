@@ -91,6 +91,10 @@ export const cFichaAlumno = {
   vivec_descripcion: '',
   open: false,
   error: "",
+  abort: false,
+  nuevo: false,
+  datagrid:false,
+  buscando:true
 };
 
 export const valAlumno = {

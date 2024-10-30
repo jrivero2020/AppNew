@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-const { Grid, Stack, Paper, Typography, Button } = require("@mui/material");
+import { Grid, Stack, Paper, Typography, Button } from "@mui/material";
 
 const agregarEspacios = (cantidad) => {
   return "\u00A0".repeat(cantidad); // Espacio en blanco no rompible
@@ -158,4 +158,25 @@ const CustomGridItem = ({ anchoGrid, label, alumnos, onClick }) => {
   );
 };
 
-export { CustomGridTitulo, CustomPaper, agregarEspacios };
+const PaperBuscaAlumno = ({ anchocol = 6, titulo = "No titulo", BuscarX }) => {
+  // if (typeof BuscarX !== "function") {
+  //   throw new Error("PaperBuscaAlumno====> BuscarX no es una función");
+  // }
+  return (
+    <Grid item xs={anchocol}>
+      <Paper elevation={8} sx={{ pb: 3, pt: 2, backgroundColor: "#efebe9" }}>
+        <Stack alignItems="center">
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: "bold", color: "#000000" }}
+          >
+            {titulo !== undefined ? <>{titulo}</> : ""}
+          </Typography>
+          <BuscarX />
+        </Stack>
+      </Paper>
+    </Grid>
+  );
+};
+
+export { CustomGridTitulo, CustomPaper, agregarEspacios, PaperBuscaAlumno };

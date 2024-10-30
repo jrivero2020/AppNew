@@ -8,6 +8,7 @@ export default function PrincipalGui() {
   const [showOpc, setShowOpc] = useState(false);
   useEffect(() => {
     setShowOpc(true);
+    console.log("Estoy pasando por aquí****")
   }, []);
 
     return (
@@ -28,7 +29,7 @@ export default function PrincipalGui() {
           alignItems: 'center',
           flexDirection: 'column',
         }}  >
-       
+
           <img src={pathImg} alt="Img.Fondo"  style={{objectFit: "fill"}}/>
         </Box>
         { showOpc && <InitOpcion /> }

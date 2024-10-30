@@ -133,7 +133,7 @@ const api_ActAlumnoCurso = async (params, credentials, user) => {
 
 const getDatosMatricula = async (params, credentials, signal) => {
   try {
-    let response = await fetch("/matricula/" + params.al_rut, {
+    let response = await fetch("/matricula/" + params, {
       method: "GET",
       signal: signal,
       headers: { Authorization: "Bearer " + credentials.t },

@@ -14,6 +14,9 @@ const FmtoRut = (value) => {
   let tvalue = QuitaPuntos(value);
   let patt = new RegExp(/^\d{1,10}[kK]?$/);
   let retValue = "";
+  console.log("FmtoRut value", value)
+  console.log("FmtoRut tvalue", tvalue)
+
   if (tvalue === "") return tvalue;
 
   if (patt.test(tvalue)) {
@@ -63,4 +66,15 @@ const validarRut = (rut) => {
   return dv === resultado; // Validar si el dígito verificador ingresado es igual al obtenido
 };
 
-export { FmtoRut, validarRut, QuitaPuntos };
+const manejoCambiofRut = (name, fRut, setfRut) => (event) => {
+  console.log('name: ', name)
+  console.log( 'event.target.value: ', event.target.value)
+  let tvalue = FmtoRut(event.target.value);
+  if (fRut.length === 1 && tvalue === null) tvalue = "";
+
+  if (tvalue != null) {
+    setfRut(tvalue);
+  }
+};
+
+export { FmtoRut, validarRut, QuitaPuntos, manejoCambiofRut };

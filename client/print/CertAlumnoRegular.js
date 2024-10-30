@@ -55,7 +55,7 @@ export default function CertAlumnoRegular() {
       rut: QuitaPuntos(fRut.slice(0, -1)),
       dv: fRut.slice(-1),
     });
-    console.log("Saliendo de actualizaValores")
+    
   };
 
   const cierreDialog = () => {
@@ -133,7 +133,7 @@ export default function CertAlumnoRegular() {
               id="rut"
               label="Rut del Alumno"
               value={fRut}
-              onChange={manejoCambiofRut("fRrut")}
+              onChange={manejoCambiofRut("fRut")}
               margin="normal"
             />
           ) : null}

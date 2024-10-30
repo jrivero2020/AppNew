@@ -23,6 +23,7 @@ import Menu from "./core/menuCLCII";
 import PrivateRoute from "./auth/PrivateRoute";
 import { AuthProvider } from "./core/AuthProvider";
 import AlumnosCursos from "./Matriculas/AlumnosCursos";
+import BuscarAlumno from "./FichaAlumnos/BuscarAlumno";
 
 import Signin from "./auth/Signin";
 import FullFeaturedCrudGrid from "./assets/GrillaExamples/FullFeaturedCrudGrid"
@@ -69,10 +70,10 @@ const MainRouter = () => {
           />
           <Route path="/LabTabs" element={<LabTabs />} />
           <Route
-            path="/FichaDelAlumno2"
+            path="/BuscarAlumno"
             element={
               <PrivateRoute rol={2}>
-                <FichaDelAlumno2 />
+                <BuscarAlumno />
               </PrivateRoute>
             }
           />

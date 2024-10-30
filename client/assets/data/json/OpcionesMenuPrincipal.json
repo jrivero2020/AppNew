@@ -21,7 +21,7 @@
     },
     {
       "menu": "Ficha Alumno",
-      "urlCall": "/FichaDelAlumno2",
+      "urlCall": "/BuscarAlumno",
       "activo": 1,
       "autorizado": "A12"
     },

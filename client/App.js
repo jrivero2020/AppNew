@@ -6,10 +6,10 @@ import { hot } from "react-hot-loader";
 // import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 // import { CacheProvider } from "@emotion/react";
-import createEmotionCache from "../server/createEmotionCache";
+// import createEmotionCache from "../server/createEmotionCache";
 // import Menu from "./core/menuCLC";
 
-const cache = createEmotionCache();
+//const cache = createEmotionCache();
 
 const App = () => {
   React.useEffect(() => {

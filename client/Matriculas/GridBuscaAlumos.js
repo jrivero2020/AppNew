@@ -21,6 +21,7 @@ export default function GridBuscaAlumnos(props) {
   });
 
   const [dRut, setdRut] = useState({ rut: 0, dv: "", visitado: false });
+  const [VerGrilla, setVerGrilla] = useState(false);
 
   /************************************************************************ */
 
@@ -49,8 +50,7 @@ export default function GridBuscaAlumnos(props) {
     return false;
   }
 
-  const [VerGrilla, setVerGrilla] = useState(false);
-
+  
   const VerGrillaAlumnos = () => {
     if (
       valores.al_apat !== "" ||

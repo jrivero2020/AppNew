@@ -1,3 +1,4 @@
+import { color } from "@mui/system";
 import { useState } from "react";
 
 function BotonConHover({ render }) {
@@ -12,7 +13,7 @@ function BotonConHover({ render }) {
   };
 
   const buttonStyle = {
-    backgroundColor: "#efebe9",
+    backgroundColor: "#D7CCC8",
     color: "#004D40",
     cursor: "zoom-in",
     transform: isHover ? "scale(1.3)" : "scale(1)",
