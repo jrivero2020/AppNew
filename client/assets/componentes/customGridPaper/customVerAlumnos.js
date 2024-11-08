@@ -158,10 +158,10 @@ const CustomGridItem = ({ anchoGrid, label, alumnos, onClick }) => {
   );
 };
 
-const PaperBuscaAlumno = ({ anchocol = 6, titulo = "No titulo", BuscarX }) => {
-  // if (typeof BuscarX !== "function") {
-  //   throw new Error("PaperBuscaAlumno====> BuscarX no es una función");
-  // }
+const PaperBuscaAlumno = ({ anchocol = 6, titulo = "No titulo", BuscarX, resultado, setResultado }) => {
+  //  setValores({ ...valores, [name]: event.target.value });
+  // resultado={resultado}
+  // setResultado={setResultado}
   return (
     <Grid item xs={anchocol}>
       <Paper elevation={8} sx={{ pb: 3, pt: 2, backgroundColor: "#efebe9" }}>
@@ -172,7 +172,7 @@ const PaperBuscaAlumno = ({ anchocol = 6, titulo = "No titulo", BuscarX }) => {
           >
             {titulo !== undefined ? <>{titulo}</> : ""}
           </Typography>
-          <BuscarX />
+          <BuscarX resultado={resultado} setResultado={setResultado}/>
         </Stack>
       </Paper>
     </Grid>

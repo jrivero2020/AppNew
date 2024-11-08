@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Grid, Button, Stack, TextField } from "@mui/material";
-import { AuthContext } from "./../../core/AuthProvider"
-
+import { AuthContext } from "./../../core/AuthProvider";
 
 import BotonConHover from "./../Botones/BtnDataAlumnos";
 import { manejoCambiofRut, validarRut, QuitaPuntos } from "./../js/FmtoRut";
@@ -9,24 +8,28 @@ import {
   api_getAlumnosNombres,
   getDatosMatricula,
 } from "./../../docentes/api-docentes";
-import { cFichaAlumno } from "./../../Matriculas/matriculasCampos"
+import { cFichaAlumno } from "./../../Matriculas/matriculasCampos";
 
-export const FBuscaRut = (
-  frut,
-  setfRut,
-  modo,
-  dataBuscaAl,
-  setDataBuscaAl,
-  jwt
-) => {
-  const abortController = new AbortController();
-  const signal = abortController.signal;
-
-  if (frut === undefined || frut === "") return;
+export const FBuscaRut = (resultado, setResultado) => {
+  const frut = resultado.fRut;
+  if (frut === undefined || frut === "") {
+    return false;
+  }
   if (validarRut(frut)) {
     let rutBuscar = QuitaPuntos(frut.slice(0, -1));
-    setfRut(rutBuscar);
+    setResultado({ ...resultado, fRut: rutBuscar, result: 2 });
     //   Cargar las variables de data alumno con sp getDatosMatricula
+    return true;
+    //
+    // setDataBuscaAl({ ...dataBuscaAl, abort: false, nuevo: false, buscando: false });
+  }
+  setResultado({ ...resultado, result: 3 });
+  return false;
+};
+
+/*
+const abortController = new AbortController();
+  const signal = abortController.signal;
     getDatosMatricula(rutBuscar, { t: jwt.token }, signal).then((data) => {
       if (data && data.error) {
         return false;
@@ -37,23 +40,15 @@ export const FBuscaRut = (
           results[0] === null ||
           Object.keys(results[0]).length === 0
         ) {
+          setResultado({...resultado, result:3});
           alert(
             "**ATENCION** Rut no encontrado en las Matrículas del establecimiento"
           );
         } else {
           const [results] = data;
-          setDataBuscaAl(results[0]);
+          // setDataBuscaAl(results[0]);
           console.log("results[0]:==>", results[0]);
-          /*
-          setValores(results[0]);
-
-          setSelectedComuna(results[0].al_id_comuna);
-          if (results[0].al_genero === "M") {
-            setvSexo("Masculino");
-          } else {
-            setvSexo("Femenino");
-          }
-            */
+          setResultado({...resultado, result:5});
         }
         // setSelectedCurso(results[0].c_nomcorto);
         // setvViveCon(results[0].al_idvivecon);
@@ -61,41 +56,36 @@ export const FBuscaRut = (
         // setvEnfermedad(results[0].al_enfermo === "0" ? "No" : "Sí");
       }
     });
+  
+*/
 
-    setDataBuscaAl({ ...dataBuscaAl, abort: false, nuevo: false, buscando: false });
+const handleChange = (name, resultado, setResultado) => (event) => {
+  console.log("handleChange");
+  console.log("name: ", name, "dataBuscaAl: ", resultado);
+  setResultado({ ...resultado, [name]: event.target.value });
+};
+
+const fBuscaNombres = (resultado, setResultado, jwt) => {
+  const { al_nombres, al_apat, al_amat } = resultado;
+  const resultadoLocal = { al_nombres, al_apat, al_amat };
+  const todosVacios = Object.values(resultadoLocal).every(
+    (valor) => valor === ""
+  );
+
+  console.log("todosVacios :", todosVacios);
+  if (todosVacios) {
+    setResultado({ ...resultado, result: 0 });
+    return false;
   }
+  setResultado({ ...resultado, result: 6 });
   return;
 };
 
-const handleChange = (name, dataBuscaAl, setDataBuscaAl) => (event) => {
-  console.log("handleChange");
-  console.log("name: ", name, "dataBuscaAl: ", dataBuscaAl);
-  setDataBuscaAl({ ...dataBuscaAl, [name]: event.target.value });
-};
-
-const fBuscaNombres = (
-  fRut,
-  setfRut,
-  modo,
-  dataBuscaAl,
-  setDataBuscaAl,
-  jwt
-) => {
-  // console.log("fBuscaNombres:", dataBuscaAl);
+export const GetApiData = ({ resultado, setResultado, alumnosGetApi, SetAlumnosGetApi }) => {
   const abortController = new AbortController();
   const signal = abortController.signal;
-  const AlumnoBuscar = {
-    ...dataBuscaAl,
-    al_amat: dataBuscaAl.al_apat,
-    al_apat: dataBuscaAl.al_amat,
-    al_nombres: dataBuscaAl.al_nombres,
-  };
-  const todosVacios = Object.values(AlumnoBuscar).every(
-    (valor) => valor === ""
-  );
-  if (todosVacios) return false;
-
-  api_getAlumnosNombres(AlumnoBuscar, signal).then((data) => {
+  
+  api_getAlumnosNombres(resultado, signal).then((data) => {
     if (data && data.error) {
       return false;
     } else {
@@ -106,12 +96,12 @@ const fBuscaNombres = (
         results[0] === null ||
         Object.keys(results[0]).length === 0
       ) {
-        alert(
-          "**ATENCION** Datos no encontrados en las Matrículas del establecimiento"
-        );
+        setResultado({ ...resultado, result: 7 });
       } else {
-        console.log("Cargar Datagrid:" )
-        setDataBuscaAl({ ...dataBuscaAl, datagrid: true, buscando:false });
+        console.log("Datos de b.dato: ", results);
+        setResultado({ ...resultado, result: 8 });
+
+        SetAlumnosGetApi(results)
       }
     }
   });
@@ -126,19 +116,24 @@ const fIngresoNuevoAlumno = (
   setDataBuscaAl,
   jwt
 ) => {
-  setDataBuscaAl({ ...dataBuscaAl, abort: false, nuevo: true, buscando:false  });
+  setDataBuscaAl({
+    ...dataBuscaAl,
+    abort: false,
+    nuevo: true,
+    buscando: false,
+  });
   return;
 };
 
 const BotonBuscar = ({
   label = "Sin label",
   FBusca,
-  fRut,
-  setfRut,
+  resultado,
+  setResultado,
   modo = "",
 }) => {
-  const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
-  const { jwt } = useContext(AuthContext);
+  // const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
+  // const { jwt } = useContext(AuthContext);
 
   if (modo === "" || modo === undefined) return "";
   return (
@@ -152,11 +147,9 @@ const BotonBuscar = ({
             onMouseLeave={handleMouseLeave}
             variant="contained"
             sx={{ fontSize: "11px", mt: "10px" }}
-            onClick={() =>
-              FBusca(fRut, setfRut, modo, dataBuscaAl, setDataBuscaAl, jwt)
-            }
+            onClick={() => FBusca(resultado, setResultado)}
           >
-            <> {label} </>
+            {label}
           </Button>
         )}
       />
@@ -208,11 +201,8 @@ export const fNuevoAlumno = () => {
   );
 };
 
-export const BuscaRut = () => {
-  const [fRut, setfRut] = useState("");
-  if (typeof FBuscaRut !== "function") {
-    throw new Error("BuscaRut====> FBuscaRut no es una función");
-  }
+export const BuscaRut = ({ resultado, setResultado }) => {
+  // const [fRut, setfRut] = useState("");
 
   return (
     <Grid
@@ -232,8 +222,8 @@ export const BuscaRut = () => {
           label="Rut"
           variant="outlined"
           fullWidth
-          value={fRut}
-          onChange={manejoCambiofRut("fRut", fRut, setfRut)}
+          value={resultado.fRut}
+          onChange={manejoCambiofRut("fRut", resultado, setResultado)}
           sx={{ backgroundColor: "#E8EAF6" }}
           inputProps={{ style: { fontSize: "13px" } }}
         />
@@ -252,8 +242,8 @@ export const BuscaRut = () => {
           <BotonBuscar
             label="Buscar"
             FBusca={FBuscaRut}
-            fRut={fRut}
-            setfRut={setfRut}
+            resultado={resultado}
+            setResultado={setResultado}
             modo="rut"
           />
         </Grid>
@@ -262,14 +252,14 @@ export const BuscaRut = () => {
   );
 };
 
-export const BuscaNombre = () => {
-  const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
+export const BuscaNombre = ({ resultado, setResultado }) => {
+  //   const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
 
   // useEffect(() => {
   //     setDataBuscaAl({ ...dataBuscaAl, abort: true, nuevo: true });
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
- 
+
   // console.log("BuscaNombre: debería llamar a fbuscanombre ", dataBuscaAl);
   return (
     <Grid
@@ -287,10 +277,10 @@ export const BuscaNombre = () => {
           style={{ fontSize: "13px" }}
           size="small"
           label="Nombres"
-          value={dataBuscaAl.al_nombres}
+          value={resultado.al_nombres}
           variant="outlined"
           fullWidth
-          onChange={handleChange("al_nombres", dataBuscaAl, setDataBuscaAl)}
+          onChange={handleChange("al_nombres", resultado, setResultado)}
           sx={{ backgroundColor: "#E8EAF6" }}
           inputProps={{ style: { fontSize: "13px" } }}
         />
@@ -299,10 +289,10 @@ export const BuscaNombre = () => {
         <TextField
           size="small"
           label="Ap. Paterno"
-          value={dataBuscaAl.al_apat}
+          value={resultado.al_apat}
           variant="outlined"
           fullWidth
-          onChange={handleChange("al_apat", dataBuscaAl, setDataBuscaAl)}
+          onChange={handleChange("al_apat", resultado, setResultado)}
           sx={{ backgroundColor: "#E8EAF6" }}
           inputProps={{ style: { fontSize: "13px" } }}
         />
@@ -311,16 +301,22 @@ export const BuscaNombre = () => {
         <TextField
           size="small"
           label="Ap. Materno"
-          value={dataBuscaAl.al_amat}
+          value={resultado.al_amat}
           variant="outlined"
           fullWidth
-          onChange={handleChange("al_amat", dataBuscaAl, setDataBuscaAl)}
+          onChange={handleChange("al_amat", resultado, setResultado)}
           sx={{ backgroundColor: "#E8EAF6" }}
           inputProps={{ style: { fontSize: "13px" } }}
         />
       </Grid>
       <Grid item xs={6}>
-        <BotonBuscar label="Buscar" FBusca={fBuscaNombres} modo="nombres" />
+        <BotonBuscar
+          label="Buscar"
+          FBusca={fBuscaNombres}
+          modo="nombres"
+          resultado={resultado}
+          setResultado={setResultado}
+        />
       </Grid>
     </Grid>
   );

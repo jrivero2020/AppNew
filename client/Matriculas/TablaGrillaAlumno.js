@@ -60,6 +60,7 @@ function BasicEditingGrid(props) {
   );
 }
 
+
 const columns = [
   {
     field: "al_rut",

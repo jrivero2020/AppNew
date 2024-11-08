@@ -94,7 +94,8 @@ export const cFichaAlumno = {
   abort: false,
   nuevo: false,
   datagrid:false,
-  buscando:true
+  buscando:true,
+  encontrado:false
 };
 
 export const valAlumno = {

@@ -66,14 +66,14 @@ const validarRut = (rut) => {
   return dv === resultado; // Validar si el dígito verificador ingresado es igual al obtenido
 };
 
-const manejoCambiofRut = (name, fRut, setfRut) => (event) => {
+const manejoCambiofRut = (name, resultado, setResultado) => (event) => {
   console.log('name: ', name)
   console.log( 'event.target.value: ', event.target.value)
   let tvalue = FmtoRut(event.target.value);
-  if (fRut.length === 1 && tvalue === null) tvalue = "";
+  if (resultado.fRut.length === 1 && tvalue === null) tvalue = "";
 
   if (tvalue != null) {
-    setfRut(tvalue);
+    setResultado({ ...resultado, [name]: tvalue });
   }
 };
 
