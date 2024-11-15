@@ -14,8 +14,6 @@ const FmtoRut = (value) => {
   let tvalue = QuitaPuntos(value);
   let patt = new RegExp(/^\d{1,10}[kK]?$/);
   let retValue = "";
-  console.log("FmtoRut value", value)
-  console.log("FmtoRut tvalue", tvalue)
 
   if (tvalue === "") return tvalue;
 
@@ -67,8 +65,6 @@ const validarRut = (rut) => {
 };
 
 const manejoCambiofRut = (name, resultado, setResultado) => (event) => {
-  console.log('name: ', name)
-  console.log( 'event.target.value: ', event.target.value)
   let tvalue = FmtoRut(event.target.value);
   if (resultado.fRut.length === 1 && tvalue === null) tvalue = "";
 

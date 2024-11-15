@@ -158,7 +158,7 @@ export default function FichaDelAlumno() {
   //* manejoCambiofRut
   const manejoCambiofRut = (name) => (event) => {
     let tvalue = FmtoRut(event.target.value);
-    console.log("manejoCambiofRut : despues de fmtorut tvalue=", tvalue);
+    
     if (fRut.length === 1 && tvalue == null) tvalue = "";
 
     if (tvalue.length <= 13) setfRut(tvalue);
@@ -170,7 +170,7 @@ export default function FichaDelAlumno() {
       setverBtnBusca(false);
       setbtnBuscaNombres({ ...btnBuscaNombres, btnBusca: true, btnDialog: false });
     }
-    console.log("manejoCambiofRut : ", tvalue, "Largo = ", tvalue.length);
+    
   };
   //***************************************************/
 

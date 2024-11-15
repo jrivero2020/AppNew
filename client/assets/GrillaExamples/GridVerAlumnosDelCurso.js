@@ -55,12 +55,12 @@ function funcDateStr(lafecha) {
   let localFecha = (lafecha === null ? '01/01/1900' : lafecha)
 
   if (typeof localFecha === "string") {
-    console.log("Es string localFecha", localFecha)
+    // console.log("Es string localFecha", localFecha)
     localFecha = funcDateDate(localFecha)
   }
 
-  console.log("funcDateStr ", localFecha)
-  console.log("Tipo de lafecha ", typeof localFecha)
+  // console.log("funcDateStr ", localFecha)
+  // console.log("Tipo de lafecha ", typeof localFecha)
 
   return String(localFecha.getDate()).padStart(2, '0') + '/' + String(localFecha.getMonth() + 1).padStart(2, '0') + "/" + localFecha.getFullYear()
 }
@@ -252,7 +252,7 @@ const GridVerAlumnosDelCurso = ({ idCurso, setIdCurso }) => {
   }, []);
 
   const ResetMostarTodoElCurso = () => {
-    console.log("rows con y sin modificaciones :", rows)
+    //console.log("rows con y sin modificaciones :", rows)
     setIdCurso({ ...idCurso, ense: "", grado: "", letra: "", curso: "" });
   };
 

@@ -99,7 +99,7 @@ const remove = async (params, credential) => {
 };
 
 const getDatosCert = async (params, signal, credentials) => {
-  console.log('dentro de getDatosCert')
+  // console.log('dentro de getDatosCert')
   try {
     let response = await fetch("/AlumnosByRut/" + params.rut, {
       method: "GET",
@@ -130,8 +130,10 @@ const api_ActAlumnoCurso = async (params, credentials, user) => {
     return { error: 500, message: err.message };
   }
 };
+ 
 
 const getDatosMatricula = async (params, credentials, signal) => {
+  
   try {
     let response = await fetch("/matricula/" + params, {
       method: "GET",

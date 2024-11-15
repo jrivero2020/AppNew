@@ -158,7 +158,7 @@ const CustomGridItem = ({ anchoGrid, label, alumnos, onClick }) => {
   );
 };
 
-const PaperBuscaAlumno = ({ anchocol = 6, titulo = "No titulo", BuscarX, resultado, setResultado }) => {
+const PaperBuscaAlumno = ({ anchocol = 6, titulo = "No titulo", BuscarX, resultado, setResultado, valorOk }) => {
   //  setValores({ ...valores, [name]: event.target.value });
   // resultado={resultado}
   // setResultado={setResultado}
@@ -172,7 +172,7 @@ const PaperBuscaAlumno = ({ anchocol = 6, titulo = "No titulo", BuscarX, resulta
           >
             {titulo !== undefined ? <>{titulo}</> : ""}
           </Typography>
-          <BuscarX resultado={resultado} setResultado={setResultado}/>
+          <BuscarX resultado={resultado} setResultado={setResultado} valorOk={valorOk}/>
         </Stack>
       </Paper>
     </Grid>

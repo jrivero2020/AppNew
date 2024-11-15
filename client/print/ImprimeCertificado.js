@@ -38,7 +38,7 @@ function PrintCertAReg(props) {
     content: () => componentRef.current,
     documentTitle: "cert-data",
   });
-  console.log( "datoAlumno: ", datoAlumno)
+  // console.log( "datoAlumno: ", datoAlumno)
   let valumno = datoAlumno.genero === "M" ? "El alumno " : "La alumna ";
   let vmatri = datoAlumno.genero === "M" ? "matriculado " : "matriculada ";
   let vinscrito = datoAlumno.genero === "M" ? "inscrito " : "inscrita ";

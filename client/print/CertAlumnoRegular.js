@@ -84,11 +84,10 @@ export default function CertAlumnoRegular() {
     }
 
     const abortController = new AbortController();
-    const signal = abortController.signal;
-    console.log('voy a getDatosCert')
+    const signal = abortController.signal;    
     getDatosCert(user,signal,  { t: jwt.token }).then((data) => { 
       if (data && data.error) {
-        console.log('er4ror en traer datos :', data)
+        // console.log('er4ror en traer datos :', data)
         return false;
       } else {
         const [results, metadata] = data;

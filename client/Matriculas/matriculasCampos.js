@@ -1,5 +1,5 @@
 export const cFichaAlumno = {
-  al_rut: 0,  
+  al_rut: '',  
   al_dv: '',
   al_activo: 1,
   al_agno_matricula: '',

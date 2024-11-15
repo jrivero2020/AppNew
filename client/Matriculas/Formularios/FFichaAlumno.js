@@ -1,85 +1,44 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useContext } from "react";
 import {
-  TextField,
-  Typography,
-  Button,
-  Grid,
   Box,
-  MenuItem,
+  Button,
+  createTheme,
   FormControl,
-  Select,
-  FormLabel,
   FormControlLabel,
-  RadioGroup,
-  Radio,
+  FormLabel,
+  Grid,
+  MenuItem,
   Paper,
+  Radio,
+  RadioGroup,
+  Select,
+  TextField,
+  ThemeProvider,
+  Typography,
 } from "@mui/material";
-
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-// import { useNavigate } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import Tab from "@mui/material/Tab";
+import TabPanel from "@mui/lab/TabPanel";
+import { cFichaAlumno } from "./../../Matriculas/matriculasCampos";
+import { AuthContext } from "./../../core/AuthProvider";
 import {
-  getDatosMatricula,
   getComunas,
   getParentesco,
   getCursos,
-} from "./../docentes/api-docentes";
-
-import { FmtoRut, validarRut, QuitaPuntos } from "../assets/js/FmtoRut";
-import WarningIcon from "@mui/icons-material/Warning";
-import PersonSearchIcon from "@mui/icons-material/PersonSearch";
-import Tab from "@mui/material/Tab";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
-import { cFichaAlumno, valAlumno } from "./matriculasCampos";
-import ManejaModalNombre from "./ManejaModalNombre";
-import ManejaModalGridNombre from "./ManejaModalGridNombre";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { AuthContext } from "../core/AuthProvider";
-
-// import { useForm } from "react-hook-form";
-//import auth from "./../auth/auth-helper";
-//import { useForm, Form } from './../assets/componentes/useForm'
+} from "./../../docentes/api-docentes";
 
 const theme = createTheme({
-  components: {
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          "& label": {
-            fontSize: "12px",
-          },
-        },
-      },
-    },
-    MuiFormControlLabel: {
-      styleOverrides: {
-        label: {
-          fontSize: "11px",
-        },
-      },
-    },
-    MuiGrid: {
-      defaultProps: {
-        item: true,
-        xs: 12,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      },
+  palette: {
+    secondary: {
+      main: "#LightSeaGreen", // Cambia esto al color deseado
     },
   },
 });
 
-export default function FichaDelAlumno() {
-  /********************************************************************* */
-  // const navigate = useNavigate();
-  const [valores, setValores] = useState(cFichaAlumno);
-  const [validations, setValidations] = useState(valAlumno);
-  const [fRut, setfRut] = useState("");
-  const [fRutAp, setfRutAp] = useState("");
+export const FFichaAlumno = ({ resultado, setResultado }) => {
+  const [value, setValue] = React.useState("1");
+  const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
 
   const [comunas, setComunas] = React.useState([]);
   const [parentescos, setParentescos] = React.useState([]);
@@ -87,7 +46,11 @@ export default function FichaDelAlumno() {
 
   const [selectedComuna, setSelectedComuna] = React.useState("");
   const [selectedParentesco, setSelectedParentesco] = React.useState(1);
+  const [selectedParentescoSup, setSelectedParentescoSup] = React.useState(1);
+
   const [selectedComunaAp, setSelectedComunaAp] = React.useState("");
+  const [selectedComunaApSup, setSelectedComunaApSup] = React.useState("");
+
   const [selectedCurso, setSelectedCurso] = React.useState("");
 
   const [vSexo, setvSexo] = React.useState("Masculino");
@@ -95,28 +58,12 @@ export default function FichaDelAlumno() {
   const [vViveCon, setvViveCon] = React.useState(1);
   const [vEnfermedad, setvEnfermedad] = React.useState("No");
 
-  const [verBtnBusca, setverBtnBusca] = React.useState(false);
-  const [ModalBuscaNombre, setModalBuscaNombre] = React.useState(false);
-  const [ModalGridNombre, setModalGridNombre] = React.useState(false);
-  const [btnBuscaNombres, setbtnBuscaNombres] = useState(true);
-  const [AlumnosNombres, setAlumnosNombres] = useState({});
-  const [RutGrilla, setRutGrilla] = useState(0);
-  //Nueva rama ficha-alumno-v2
-  //
-  /************************************************************************ */
-  const ModalOffBtnOn = () => {
-    setModalBuscaNombre(false); // cierra modal para buscar nombres
-    setbtnBuscaNombres(true); // activa Botón para Buscar por nombre
+  const alNuevo = 1;
+  const handleChangeTabs = (event, newValue) => {
+    setValue(newValue);
   };
-
-  const ModalOnBtnOff = () => {
-    setModalBuscaNombre(true); // abre modal para buscar nombres
-    setbtnBuscaNombres(false); // cierr Botón para Buscar por nombre
-  };
-
-  const ModalOffBtnOff = () => {
-    setModalBuscaNombre(false); // cierra modal para buscar nombres
-    setbtnBuscaNombres(false); // cierra Botón para Buscar por nombre
+  const handleChange = (name) => (event) => {
+    setDataBuscaAl({ ...dataBuscaAl, [name]: event.target.value });
   };
 
   const vViveConCambio = (event) => {
@@ -135,179 +82,20 @@ export default function FichaDelAlumno() {
     setvSexo(event.target.value);
   };
 
-  const handleChange = (name) => (event) => {
-    setValores({ ...valores, [name]: event.target.value });
+  const cambioComunaAP = (valor) => {
+    setSelectedComunaAp(valor);
   };
 
-  const handleBlur = (campo) => () => {
-    let ret = true;
-    // let rutlocal = QuitaPuntos(fRut.slice(0, -1)) + fRut.slice(-1);
-    if (campo === "al_rut") {
-      if (fRut.length >= 8) {
-        if (validarRut(fRut)) {
-          setValores({
-            ...valores,
-            al_rut: QuitaPuntos(fRut.slice(0, -1)),
-            al_dv: fRut.slice(-1),
-          });
-
-          setverBtnBusca(true);
-          setbtnBuscaNombres(false);
-        } else {
-          setverBtnBusca(false);
-          setbtnBuscaNombres(true);
-          ret = false;
-          console.log("Rut erroneo");
-        }
-      } else {
-        ret = false;
-      }
-    }
-    if (campo !== "al_rut") {
-      ret = validarCampo(campo, valores[campo]);
-    }
-    return ret;
+  const cambioComunaAPSUP = (valor) => {
+    setSelectedComunaApSup(valor);
   };
 
-  const handleChangeTabs = (event, newValue) => {
-    setValue(newValue);
+  const EsVacio = (valor) => {
+    return valor === 0 || valor === "" || valor === null || valor === undefined;
   };
 
-  const [value, setValue] = React.useState("1");
-
-  //***************************************************/
-  //* manejoCambiofRut
-  const manejoCambiofRut = (name) => (event) => {
-    let tvalue = FmtoRut(event.target.value);
-    if (tvalue === null) return false;
-
-    if (tvalue.length <= 13) {
-      setverBtnBusca(false);
-      setbtnBuscaNombres(true);
-      setfRut(tvalue);
-    }
-
-    if (tvalue.length >= 12) {
-      setverBtnBusca(true);
-      setbtnBuscaNombres(false);
-    }
-  };
-
-  const manejaCambioEstado = (setter, value) => {
-    setter(value);
-  };
-
-  //***************************************************/
-  //* manejaCambioComunas
-  const manejaCambioComunas = (event) => {
-    setSelectedComuna(event.target.value);
-  };
-  //***************************************************/
-  //* manejaCambioCursos
-  const manejaCambioCursos = (event) => {
-    setSelectedCurso(event.target.value);
-  };
-
-  //***************************************************/
-  //* manejaCambioComunas Apoderado
-  const manejaCambioComunasAp = (event) => {
-    setSelectedComunaAp(event.target.value);
-  };
-  
-  //***************************************************/
-  //* manejaCambioParentesco
-  const manejaCambioParentesco = (event) => {
-    setSelectedParentesco(event.target.value);
-  };
-
-  // const jwt = auth.isAuthenticated();
-
-  //***************************************************/
-  //***************************************************/
-  //* cargaDataFichaAlumno
-  const { jwt } = useContext(AuthContext);
-
-  const cargaDataFichaAlumno = () => {
-    const abortController = new AbortController();
-    const signal = abortController.signal;
-
-    getDatosMatricula(valores, { t: jwt.token }, signal).then((data) => {
-      if (data && data.error) {
-        return false;
-      } else {
-        const [results] = data;
-        if (
-          results[0] === undefined ||
-          results[0] === null ||
-          Object.keys(results[0]).length === 0
-        ) {
-          alert(
-            "**ATENCION** Rut no encontrado en las Matrículas del establecimiento"
-          );
-        } else {
-          const [results] = data;
-          setValores(results[0]);
-
-          setSelectedComuna(results[0].al_id_comuna);
-          if (results[0].al_genero === "M") {
-            setvSexo("Masculino");
-          } else {
-            setvSexo("Femenino");
-          }
-        }
-        setSelectedCurso(results[0].c_nomcorto);
-        setvViveCon(results[0].al_idvivecon);
-        setvCurRepe(results[0].al_cur_repe === "No" ? "No" : "Sí");
-        setvEnfermedad(results[0].al_enfermo === "0" ? "No" : "Sí");
-
-        setverBtnBusca(false);
-        setbtnBuscaNombres(false);
-      }
-    });
-  };
-
-  //********************************************************************* */
-  //    Validar campo
-  const validarCampo = (campo, valorCampo) => {
-    if (validations.hasOwnProperty(campo)) {
-      const { ty, nn, ml } = validations[campo];
-      const valor = valorCampo; //validations[campo].valor;
-      if (valor !== "") {
-        if (
-          campo === "ma_promedionota" &&
-          (!/^\d+(?:[.,]\d+)?$/.test(valor) || valor < 4 || valor > 7)
-        ) {
-          return false;
-        }
-        if (ty === "n" && !/^\d+$/.test(valor)) {
-          return false;
-        }
-        if (ml > 0 && valor.length > ml) {
-          return false;
-        }
-      } else {
-        if (nn && valor === "") {
-          return false;
-        }
-      }
-    } else {
-      return false;
-    }
-
-    return true;
-  };
-
-  const Inicializar = () => {
-    //setRutGrilla(0);
-    setValores(cFichaAlumno);
-    setbtnBuscaNombres(true);
-    setfRut("");
-    setvViveCon(1);
-    //setbtnBuscaNombres(true);
-  };
-
-  //************************************************************** */
-  // useEffect Inicio Componente
+  // ************************************************
+  // Inicializa select y data alumnos
   useEffect(() => {
     getComunas().then((data) => {
       if (data && data.error) {
@@ -333,36 +121,63 @@ export default function FichaDelAlumno() {
         setParentescos(data);
       }
     });
-  }, []);
+    if (resultado.result !== alNuevo) {
+      if (EsVacio(dataBuscaAl.al_idparentesco)) {
+        setSelectedParentesco(8);
+      } else {
+        setSelectedParentesco(dataBuscaAl.al_idparentesco);
+      }
+      if (EsVacio(dataBuscaAl.al_idparentescosupl)) {
+        setSelectedParentesco(8);
+      } else {
+        setSelectedParentescoSup(dataBuscaAl.al_idparentescosupl);
+      }
+      if (dataBuscaAl.al_genero === "M") {
+        setvSexo("Masculino");
+      } else {
+        setvSexo("Femenino");
+      }
 
-  const setRutlAlpadre = (rutdesdsehijo) => {
-    setRutGrilla(rutdesdsehijo);
-    setfRut(FmtoRut(rutdesdsehijo));
-    setValores({
-      ...valores,
-      al_rut: QuitaPuntos(rutdesdsehijo.slice(0, -1)),
-      al_dv: rutdesdsehijo.slice(-1),
-    });
-  };
+      setvViveCon(dataBuscaAl.al_idvivecon);
+      setvCurRepe(dataBuscaAl.al_cur_repe === "No" ? "No" : "Sí");
+      setvEnfermedad(dataBuscaAl.al_enfermo === "0" ? "No" : "Sí");
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataBuscaAl]);
 
   useEffect(() => {
-    async function fRutGrilla() {
-      if (RutGrilla !== 0) {
-        cargaDataFichaAlumno();
-        document.getElementById("al_nombres").focus();
+    if (comunas && comunas.length > 0 && resultado.result !== alNuevo) {
+      if (EsVacio(dataBuscaAl.al_id_comuna)) {
+        setSelectedComuna(13102);
+      } else {
+        setSelectedComuna(dataBuscaAl.al_id_comuna);
+      }
+
+      if (EsVacio(dataBuscaAl.ap_id_comuna)) {
+        setSelectedComunaAp(13102);
+      } else {
+        setSelectedComunaAp(dataBuscaAl.ap_id_comuna);
+      }
+      if (EsVacio(dataBuscaAl.apsu_id_comuna)) {
+        setSelectedComunaApSup(13102);
+      } else {
+        setSelectedComunaApSup(dataBuscaAl.apsu_id_comuna);
       }
     }
-    fRutGrilla();
-  }, [RutGrilla]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [comunas]);
 
-  // const { register, handleSubmit } = useForm();
-  //   if (cursos === null) {
-  //     // Muestra un indicador de carga mientras esperas los datos
-  //     return <div>Cargando Cursos...</div>;
-  //   }else{
-  //     console.log("Este es el dato de cursos", cursos)
-  //   }
+  useEffect(() => {
+    if (cursos && cursos.length > 0 && resultado.result !== alNuevo)
+      setSelectedCurso(dataBuscaAl.c_nomcorto);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cursos]);
+
+  if (!dataBuscaAl) {
+    return <div>Cargando datos del alumno...</div>;
+  }
   return (
     <ThemeProvider theme={theme}>
       <Grid
@@ -392,48 +207,6 @@ export default function FichaDelAlumno() {
           <Tab label="II.- Del Apoderado" value="2" />
           <Tab label="II.- Familiares" value="3" />
         </TabList>
-        <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%" }}>
-          {btnBuscaNombres && value === "1" && (
-            <Grid
-              item
-              mt={"-10px"}
-              sx={{
-                alignItems: "left",
-                marginLeft: "25px",
-                justifyContent: "left",
-              }}
-            >
-              <Button
-                variant="contained"
-                size="small"
-                style={{ fontSize: "9px" }}
-                startIcon={<PersonSearchIcon />}
-                onClick={ModalOnBtnOff}
-              >
-                Busca por nombres
-              </Button>
-            </Grid>
-          )}
-          {ModalBuscaNombre && (
-            <ManejaModalNombre
-              OnShowGrid={() => setModalGridNombre(true)}
-              ModalOffBtnOff={() => ModalOffBtnOff()}
-              AlumnosNombres={AlumnosNombres}
-              setAlumnosNombres={setAlumnosNombres}
-              ModalOffBtnOn={() => ModalOffBtnOn()}
-            />
-          )}
-
-          {ModalGridNombre && (
-            <ManejaModalGridNombre
-              AlumnosNombres={AlumnosNombres}
-              OffShowGrid={() => setModalGridNombre(false)}
-              ModalOffBtnOn={() => ModalOffBtnOn()}
-              setRutlAlpadre={setRutlAlpadre}
-            />
-          )}
-          {/************************************************** 6*/}
-        </Grid>
         <TabPanel value="1">
           <Grid
             container
@@ -451,29 +224,11 @@ export default function FichaDelAlumno() {
                       variant="outlined"
                       required
                       fullWidth
-                      name="alRut"
-                      value={fRut}
-                      onChange={manejoCambiofRut("fRrut")}
+                      name="al_Rut"
+                      value={dataBuscaAl.al_rut}
                       margin="normal"
-                      onBlur={handleBlur("al_rut")}
-                      InputProps={{
-                        endAdornment: verBtnBusca ? (
-                          <>
-                            <Button
-                              color="success"
-                              onClick={cargaDataFichaAlumno}
-                              startIcon={<PersonSearchIcon />}
-                            ></Button>
-                          </>
-                        ) : validations["al_rut"].value === false ? (
-                          <Button
-                            color="warning"
-                            startIcon={<WarningIcon />}
-                          ></Button>
-                        ) : (
-                          ""
-                        ),
-                      }}
+                      disabled={resultado.result === !alNuevo}
+                      onChange={handleChange("al_rut")}
                     />
                   </Grid>
 
@@ -495,9 +250,7 @@ export default function FichaDelAlumno() {
                         <Select
                           label="Curso"
                           value={selectedCurso}
-                          onChange={(e) =>
-                            manejaCambioEstado(setSelectedCurso, e.target.value)
-                          }
+                          onChange={(e) => setSelectedCurso(e.target.value)}
                           required
                           sx={{
                             minWidth: 200,
@@ -523,9 +276,8 @@ export default function FichaDelAlumno() {
                       label="Nombres"
                       variant="outlined"
                       fullWidth
-                      value={valores.al_nombres}
+                      value={dataBuscaAl.al_nombres}
                       onChange={handleChange("al_nombres")}
-                      onBlur={handleBlur("al_nombres")}
                     />
                   </Grid>
 
@@ -535,9 +287,8 @@ export default function FichaDelAlumno() {
                       label="Ap. Paterno"
                       variant="outlined"
                       fullWidth
-                      value={valores.al_apat}
+                      value={dataBuscaAl.al_apat}
                       onChange={handleChange("al_apat")}
-                      onBlur={handleBlur("al_apat")}
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -546,9 +297,8 @@ export default function FichaDelAlumno() {
                       label="Ap. Materno"
                       variant="outlined"
                       fullWidth
-                      value={valores.al_amat}
+                      value={dataBuscaAl.al_amat}
                       onChange={handleChange("al_amat")}
-                      onBlur={handleBlur("al_amat")}
                     />
                   </Grid>
 
@@ -559,9 +309,8 @@ export default function FichaDelAlumno() {
                       variant="outlined"
                       fullWidth
                       type="date"
-                      value={valores.al_f_nac}
+                      value={dataBuscaAl.al_f_nac}
                       onChange={handleChange("al_f_nac")}
-                      onBlur={handleBlur("al_f_nac")}
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -607,9 +356,8 @@ export default function FichaDelAlumno() {
                       label="Domicilio"
                       variant="outlined"
                       fullWidth
-                      value={valores.al_domicilio}
+                      value={dataBuscaAl.al_domicilio}
                       onChange={handleChange("al_domicilio")}
-                      onBlur={handleBlur("al_domicilio")}
                     />
                   </Grid>
 
@@ -631,18 +379,13 @@ export default function FichaDelAlumno() {
                         <Select
                           label="Comunas"
                           value={selectedComuna}
-                          onChange={(e) =>
-                            manejaCambioEstado(
-                              setSelectedComuna,
-                              e.target.value
-                            )
-                          }
+                          onChange={(e) => setSelectedComuna(e.target.value)}
                           required
                           sx={{
                             minWidth: 200,
                             height: "35px",
                             fontSize: "12px",
-                          }}
+                          }} // Comunas del alumnos
                         >
                           {comunas.map((comuna) => (
                             <MenuItem
@@ -662,10 +405,9 @@ export default function FichaDelAlumno() {
                       size="small"
                       label="Colegio Origen"
                       variant="outlined"
-                      value={valores.al_procedencia}
+                      value={dataBuscaAl.al_procedencia}
                       fullWidth
                       onChange={handleChange("al_procedencia")}
-                      onBlur={handleBlur("al_procedencia")}
                     />
                   </Grid>
                 </Grid>
@@ -684,7 +426,7 @@ export default function FichaDelAlumno() {
                       size="small"
                       label="Promedio de Notas"
                       variant="outlined"
-                      value={valores.al_promedionota}
+                      value={dataBuscaAl.al_promedionota}
                       margin="normal"
                       onChange={handleChange("al_promedionota")}
                     />
@@ -782,9 +524,8 @@ export default function FichaDelAlumno() {
                         size="small"
                         variant="outlined"
                         fullWidth
-                        value={valores.al_descripcionvivecon}
+                        value={dataBuscaAl.al_descripcionvivecon}
                         onChange={handleChange("al_descripcionvivecon")}
-                        onBlur={handleBlur("al_descripcionvivecon")}
                       />
                     </Grid>
                   )}
@@ -830,9 +571,8 @@ export default function FichaDelAlumno() {
                       label="Cuidados especiales"
                       variant="outlined"
                       fullWidth
-                      value={valores.al_cuidados}
+                      value={dataBuscaAl.al_cuidados}
                       onChange={handleChange("al_cuidados")}
-                      onBlur={handleBlur("al_cuidados")}
                     />
                   </Grid>
 
@@ -842,9 +582,8 @@ export default function FichaDelAlumno() {
                       label="Nº Hermanos"
                       variant="outlined"
                       fullWidth
-                      value={valores.al_canthnos}
+                      value={dataBuscaAl.al_canthnos}
                       onChange={handleChange("al_canthnos")}
-                      onBlur={handleBlur("al_canthnos")}
                     />
                   </Grid>
 
@@ -854,9 +593,8 @@ export default function FichaDelAlumno() {
                       label="Su Ubicación entre ellos"
                       variant="outlined"
                       fullWidth
-                      value={valores.al_nroentrehnos}
+                      value={dataBuscaAl.al_nroentrehnos}
                       onChange={handleChange("al_nroentrehnos")}
-                      onBlur={handleBlur("al_nroentrehnos")}
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -865,9 +603,8 @@ export default function FichaDelAlumno() {
                       label="Nº Hermanos Estudian aquí"
                       variant="outlined"
                       fullWidth
-                      value={valores.al_hnosaca}
+                      value={dataBuscaAl.al_hnosaca}
                       onChange={handleChange("al_hnosaca")}
-                      onBlur={handleBlur("al_hnosaca")}
                     />
                   </Grid>
 
@@ -877,31 +614,14 @@ export default function FichaDelAlumno() {
                       label="En qué Cursos estudian"
                       variant="outlined"
                       fullWidth
-                      value={valores.al_hnoscursos}
+                      value={dataBuscaAl.al_hnoscursos}
                       onChange={handleChange("al_hnoscursos")}
-                      onBlur={handleBlur("al_hnoscursos")}
                     />
                   </Grid>
                 </Grid>
               </Paper>
             </Grid>
             {/* **********************************************fin**/}
-
-            {!btnBuscaNombres && value === "1" && (
-              <Grid item mt={"-6px"}>
-                <Button
-                  variant="contained"
-                  size="small"
-                  style={{ fontSize: "11px" }}
-                  startIcon={<PersonAddIcon />}
-                  onClick={() => {
-                    Inicializar();
-                  }}
-                >
-                  Nueva Busqueda
-                </Button>
-              </Grid>
-            )}
           </Grid>
         </TabPanel>
 
@@ -935,10 +655,9 @@ export default function FichaDelAlumno() {
                     variant="outlined"
                     required
                     fullWidth
-                    value={valores.ap_rut}
+                    value={dataBuscaAl.ap_rut}
                     onChange={handleChange("ap_rut")}
                     margin="normal"
-                    onBlur={handleBlur("ap_rut")}
                   />
                 </Grid>
                 <Grid item>
@@ -948,9 +667,8 @@ export default function FichaDelAlumno() {
                     label="Nombres"
                     variant="outlined"
                     fullWidth
-                    value={valores.ap_nombres}
+                    value={dataBuscaAl.ap_nombres}
                     onChange={handleChange("ap_nombres")}
-                    onBlur={handleBlur("ap_nombres")}
                   />
                 </Grid>
                 <Grid item>
@@ -959,9 +677,8 @@ export default function FichaDelAlumno() {
                     label="Ap. Paterno"
                     variant="outlined"
                     fullWidth
-                    value={valores.ap_apat}
+                    value={dataBuscaAl.ap_apat}
                     onChange={handleChange("ap_apat")}
-                    onBlur={handleBlur("ap_apat")}
                   />
                 </Grid>
                 <Grid item>
@@ -970,9 +687,8 @@ export default function FichaDelAlumno() {
                     label="Ap. Materno"
                     variant="outlined"
                     fullWidth
-                    value={valores.ap_amat}
+                    value={dataBuscaAl.ap_amat}
                     onChange={handleChange("ap_amat")}
-                    onBlur={handleBlur("ap_amat")}
                   />
                 </Grid>
                 <Grid item>
@@ -998,7 +714,7 @@ export default function FichaDelAlumno() {
                       <Select
                         label="idParentesco"
                         value={selectedParentesco}
-                        onChange={manejaCambioParentesco}
+                        onChange={(e) => setSelectedParentesco(e.target.value)}
                         required
                         sx={{
                           minWidth: 130,
@@ -1025,27 +741,24 @@ export default function FichaDelAlumno() {
                     label="Teléfono 1"
                     variant="outlined"
                     fullWidth
-                    value={valores.ap_fono1}
+                    value={dataBuscaAl.ap_fono1}
                     onChange={handleChange("ap_fono1")}
-                    onBlur={handleBlur("ap_fono1")}
                   />
                   <TextField
                     size="small"
                     label="Teléfono 2"
                     variant="outlined"
                     fullWidth
-                    value={valores.ap_fono2}
+                    value={dataBuscaAl.ap_fono2}
                     onChange={handleChange("ap_fono2")}
-                    onBlur={handleBlur("ap_fono2")}
                   />
                   <TextField
                     size="small"
                     label="Emergencias"
                     variant="outlined"
                     fullWidth
-                    value={valores.ap_emergencia}
+                    value={dataBuscaAl.ap_emergencia}
                     onChange={handleChange("ap_emergencia")}
-                    onBlur={handleBlur("ap_emergencia")}
                   />
                 </Grid>
 
@@ -1055,9 +768,8 @@ export default function FichaDelAlumno() {
                     label="email"
                     variant="outlined"
                     fullWidth
-                    value={valores.ap_email}
+                    value={dataBuscaAl.ap_email}
                     onChange={handleChange("ap_email")}
-                    onBlur={handleBlur("ap_email")}
                   />
                 </Grid>
                 <Grid item>
@@ -1066,9 +778,8 @@ export default function FichaDelAlumno() {
                     label="Domicilio"
                     variant="outlined"
                     fullWidth
-                    value={valores.ap_domicilio}
+                    value={dataBuscaAl.ap_domicilio}
                     onChange={handleChange("ap_domicilio")}
-                    onBlur={handleBlur("ap_domicilio")}
                   />
                 </Grid>
                 <Grid item>
@@ -1085,16 +796,16 @@ export default function FichaDelAlumno() {
                     <FormLabel
                       id="aptComuna"
                       sx={{ mt: 1, ml: 2 }}
-                      style={{ fontSize: "12px" }}
+                      style={{ fontSize: "12px" }} // Comuna del apoderado
                     >
                       Comuna&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </FormLabel>
 
                     <FormControl>
                       <Select
-                        label="Comunas"
+                        label="ComunasAp"
                         value={selectedComunaAp}
-                        onChange={manejaCambioComunasAp}
+                        onChange={(e) => cambioComunaAP(e.target.value)}
                         required
                         sx={{
                           minWidth: 230,
@@ -1142,10 +853,9 @@ export default function FichaDelAlumno() {
                     variant="outlined"
                     required
                     fullWidth
-                    value={valores.apsu_rut}
+                    value={dataBuscaAl.apsu_rut}
                     onChange={handleChange("apsu_rut")}
                     margin="normal"
-                    onBlur={handleBlur("apsu_rut")}
                   />
                 </Grid>
                 <Grid item>
@@ -1155,9 +865,8 @@ export default function FichaDelAlumno() {
                     label="Nombres"
                     variant="outlined"
                     fullWidth
-                    value={valores.apsu_nombres}
+                    value={dataBuscaAl.apsu_nombres}
                     onChange={handleChange("apsu_nombres")}
-                    onBlur={handleBlur("apsu_nombres")}
                   />
                 </Grid>
                 <Grid item>
@@ -1166,9 +875,8 @@ export default function FichaDelAlumno() {
                     label="Ap. Paterno"
                     variant="outlined"
                     fullWidth
-                    value={valores.apsu_apat}
+                    value={dataBuscaAl.apsu_apat}
                     onChange={handleChange("apsu_apat")}
-                    onBlur={handleBlur("apsu_apat")}
                   />
                 </Grid>
                 <Grid item>
@@ -1177,9 +885,8 @@ export default function FichaDelAlumno() {
                     label="Ap. Materno"
                     variant="outlined"
                     fullWidth
-                    value={valores.apsu_amat}
+                    value={dataBuscaAl.apsu_amat}
                     onChange={handleChange("apsu_amat")}
-                    onBlur={handleBlur("apsu_amat")}
                   />
                 </Grid>
                 <Grid item>
@@ -1204,8 +911,10 @@ export default function FichaDelAlumno() {
                     <FormControl>
                       <Select
                         label="idParentesco"
-                        value={selectedParentesco}
-                        onChange={manejaCambioParentesco}
+                        value={selectedParentescoSup}
+                        onChange={(e) =>
+                          setSelectedParentescoSup(e.target.value)
+                        }
                         required
                         sx={{
                           minWidth: 130,
@@ -1232,27 +941,24 @@ export default function FichaDelAlumno() {
                     label="Teléfono 1"
                     variant="outlined"
                     fullWidth
-                    value={valores.apsu_fono1}
+                    value={dataBuscaAl.apsu_fono1}
                     onChange={handleChange("apsu_fono1")}
-                    onBlur={handleBlur("apsu_fono1")}
                   />
                   <TextField
                     size="small"
                     label="Teléfono 2"
                     variant="outlined"
                     fullWidth
-                    value={valores.apsu_fono2}
+                    value={dataBuscaAl.apsu_fono2}
                     onChange={handleChange("apsu_fono2")}
-                    onBlur={handleBlur("apsu_fono2")}
                   />
                   <TextField
                     size="small"
                     label="Emergencia"
                     variant="outlined"
                     fullWidth
-                    value={valores.apsu_emergencia}
+                    value={dataBuscaAl.apsu_emergencia}
                     onChange={handleChange("apsu_emergencia")}
-                    onBlur={handleBlur("apsu_emergencia")}
                   />
                 </Grid>
 
@@ -1262,9 +968,8 @@ export default function FichaDelAlumno() {
                     label="email"
                     variant="outlined"
                     fullWidth
-                    value={valores.apsu_email}
+                    value={dataBuscaAl.apsu_email}
                     onChange={handleChange("apsu_email")}
-                    onBlur={handleBlur("apsu_email")}
                   />
                 </Grid>
                 <Grid item>
@@ -1273,9 +978,8 @@ export default function FichaDelAlumno() {
                     label="Domicilio"
                     variant="outlined"
                     fullWidth
-                    value={valores.apsu_domicilio}
+                    value={dataBuscaAl.apsu_domicilio}
                     onChange={handleChange("apsu_domicilio")}
-                    onBlur={handleBlur("apsu_domicilio")}
                   />
                 </Grid>
                 <Grid item>
@@ -1292,15 +996,15 @@ export default function FichaDelAlumno() {
                     <FormLabel
                       id="apsComuna"
                       sx={{ mt: 1, ml: 2 }}
-                      style={{ fontSize: "12px" }}
+                      style={{ fontSize: "12px" }} // Comuna ap. suplente
                     >
                       Comuna&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </FormLabel>
                     <FormControl>
                       <Select
-                        label="Comunas"
-                        value={selectedComunaAp}
-                        onChange={manejaCambioComunasAp}
+                        label="ComunasApsU"
+                        value={selectedComunaApSup}
+                        onChange={(e) => cambioComunaAPSUP(e.target.value)}
                         required
                         sx={{
                           minWidth: 230,
@@ -1355,10 +1059,9 @@ export default function FichaDelAlumno() {
                     variant="outlined"
                     required
                     fullWidth
-                    value={valores.padre_rut}
+                    value={dataBuscaAl.padre_rut}
                     onChange={handleChange("padre_rut")}
                     margin="normal"
-                    onBlur={handleBlur("padre_rut")}
                   />
                 </Grid>
 
@@ -1369,9 +1072,8 @@ export default function FichaDelAlumno() {
                     label="Nombres"
                     variant="outlined"
                     fullWidth
-                    value={valores.padre_nombres}
+                    value={dataBuscaAl.padre_nombres}
                     onChange={handleChange("padre_nombres")}
-                    onBlur={handleBlur("padre_nombres")}
                   />
                 </Grid>
                 <Grid item>
@@ -1380,9 +1082,8 @@ export default function FichaDelAlumno() {
                     label="Ap. Paterno"
                     variant="outlined"
                     fullWidth
-                    value={valores.padre_apat}
+                    value={dataBuscaAl.padre_apat}
                     onChange={handleChange("padre_apat")}
-                    onBlur={handleBlur("padre_apat")}
                   />
                 </Grid>
                 <Grid item>
@@ -1391,9 +1092,8 @@ export default function FichaDelAlumno() {
                     label="Ap. Materno"
                     variant="outlined"
                     fullWidth
-                    value={valores.padre_amat}
+                    value={dataBuscaAl.padre_amat}
                     onChange={handleChange("padre_amat")}
-                    onBlur={handleBlur("padre_amat")}
                   />
                 </Grid>
 
@@ -1403,9 +1103,8 @@ export default function FichaDelAlumno() {
                     label="Estudios"
                     variant="outlined"
                     fullWidth
-                    value={valores.padre_estudios}
+                    value={dataBuscaAl.padre_estudios}
                     onChange={handleChange("padre_estudios")}
-                    onBlur={handleBlur("padre_estudios")}
                   />
                 </Grid>
                 <Grid item>
@@ -1414,9 +1113,8 @@ export default function FichaDelAlumno() {
                     label="Ocupación"
                     variant="outlined"
                     fullWidth
-                    value={valores.padre_ocupacion}
+                    value={dataBuscaAl.padre_ocupacion}
                     onChange={handleChange("padre_ocupacion")}
-                    onBlur={handleBlur("padre_ocupacion")}
                   />
                 </Grid>
               </Grid>
@@ -1446,10 +1144,9 @@ export default function FichaDelAlumno() {
                     variant="outlined"
                     required
                     fullWidth
-                    value={valores.madre_rut}
+                    value={dataBuscaAl.madre_rut}
                     onChange={handleChange("madre_rut")}
                     margin="normal"
-                    onBlur={handleBlur("madre_rut")}
                   />
                 </Grid>
 
@@ -1460,9 +1157,8 @@ export default function FichaDelAlumno() {
                     label="Nombres"
                     variant="outlined"
                     fullWidth
-                    value={valores.madre_nombres}
+                    value={dataBuscaAl.madre_nombres}
                     onChange={handleChange("madre_nombres")}
-                    onBlur={handleBlur("madre_nombres")}
                   />
                 </Grid>
                 <Grid item>
@@ -1471,9 +1167,8 @@ export default function FichaDelAlumno() {
                     label="Ap. Paterno"
                     variant="outlined"
                     fullWidth
-                    value={valores.madre_apat}
+                    value={dataBuscaAl.madre_apat}
                     onChange={handleChange("madre_apat")}
-                    onBlur={handleBlur("madre_apat")}
                   />
                 </Grid>
                 <Grid item>
@@ -1482,9 +1177,8 @@ export default function FichaDelAlumno() {
                     label="Ap. Materno"
                     variant="outlined"
                     fullWidth
-                    value={valores.madre_amat}
+                    value={dataBuscaAl.madre_amat}
                     onChange={handleChange("madre_amat")}
-                    onBlur={handleBlur("madre_amat")}
                   />
                 </Grid>
 
@@ -1494,9 +1188,8 @@ export default function FichaDelAlumno() {
                     label="Estudios"
                     variant="outlined"
                     fullWidth
-                    value={valores.madre_estudios}
+                    value={dataBuscaAl.madre_estudios}
                     onChange={handleChange("madre_estudios")}
-                    onBlur={handleBlur("madre_estudios")}
                   />
                 </Grid>
                 <Grid item>
@@ -1505,9 +1198,8 @@ export default function FichaDelAlumno() {
                     label="Ocupación"
                     variant="outlined"
                     fullWidth
-                    value={valores.madre_ocupacion}
+                    value={dataBuscaAl.madre_ocupacion}
                     onChange={handleChange("madre_ocupacion")}
-                    onBlur={handleBlur("madre_ocupacion")}
                   />
                 </Grid>
               </Grid>
@@ -1559,10 +1251,9 @@ export default function FichaDelAlumno() {
                       variant="outlined"
                       required
                       fullWidth
-                      value={valores.al_ingresogrupofamiliar}
+                      value={dataBuscaAl.al_ingresogrupofamiliar}
                       onChange={handleChange("al_ingresogrupofamiliar")}
                       margin="normal"
-                      onBlur={handleBlur("al_ingresogrupofamiliar")}
                     />
                   </Grid>
                 </Grid>
@@ -1668,9 +1359,4 @@ export default function FichaDelAlumno() {
       </TabContext>
     </ThemeProvider>
   );
-}
-
-/*
-
-
-*/
+};

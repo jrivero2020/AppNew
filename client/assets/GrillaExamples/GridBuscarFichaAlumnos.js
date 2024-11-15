@@ -1,67 +1,30 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Grid, Button, Stack, TextField } from "@mui/material";
-import { AuthContext } from "./../../core/AuthProvider";
+
 
 import BotonConHover from "./../Botones/BtnDataAlumnos";
 import { manejoCambiofRut, validarRut, QuitaPuntos } from "./../js/FmtoRut";
-import {
-  api_getAlumnosNombres,
-  getDatosMatricula,
-} from "./../../docentes/api-docentes";
-import { cFichaAlumno } from "./../../Matriculas/matriculasCampos";
+import { api_getAlumnosNombres} from "./../../docentes/api-docentes";
+
 
 export const FBuscaRut = (resultado, setResultado) => {
   const frut = resultado.fRut;
+  const [RutNumero, RutDv] = frut.split('-');
+
   if (frut === undefined || frut === "") {
     return false;
   }
+  console.log("FBuscaRut==> frut", frut)
   if (validarRut(frut)) {
     let rutBuscar = QuitaPuntos(frut.slice(0, -1));
-    setResultado({ ...resultado, fRut: rutBuscar, result: 2 });
-    //   Cargar las variables de data alumno con sp getDatosMatricula
+    setResultado({ ...resultado, fRut: frut, dv:RutDv, result: 2 });
     return true;
-    //
-    // setDataBuscaAl({ ...dataBuscaAl, abort: false, nuevo: false, buscando: false });
   }
   setResultado({ ...resultado, result: 3 });
   return false;
 };
 
-/*
-const abortController = new AbortController();
-  const signal = abortController.signal;
-    getDatosMatricula(rutBuscar, { t: jwt.token }, signal).then((data) => {
-      if (data && data.error) {
-        return false;
-      } else {
-        const [results] = data;
-        if (
-          results[0] === undefined ||
-          results[0] === null ||
-          Object.keys(results[0]).length === 0
-        ) {
-          setResultado({...resultado, result:3});
-          alert(
-            "**ATENCION** Rut no encontrado en las Matrículas del establecimiento"
-          );
-        } else {
-          const [results] = data;
-          // setDataBuscaAl(results[0]);
-          console.log("results[0]:==>", results[0]);
-          setResultado({...resultado, result:5});
-        }
-        // setSelectedCurso(results[0].c_nomcorto);
-        // setvViveCon(results[0].al_idvivecon);
-        // setvCurRepe(results[0].al_cur_repe === "No" ? "No" : "Sí");
-        // setvEnfermedad(results[0].al_enfermo === "0" ? "No" : "Sí");
-      }
-    });
-  
-*/
-
 const handleChange = (name, resultado, setResultado) => (event) => {
-  console.log("handleChange");
-  console.log("name: ", name, "dataBuscaAl: ", resultado);
   setResultado({ ...resultado, [name]: event.target.value });
 };
 
@@ -71,8 +34,6 @@ const fBuscaNombres = (resultado, setResultado, jwt) => {
   const todosVacios = Object.values(resultadoLocal).every(
     (valor) => valor === ""
   );
-
-  console.log("todosVacios :", todosVacios);
   if (todosVacios) {
     setResultado({ ...resultado, result: 0 });
     return false;
@@ -98,9 +59,7 @@ export const GetApiData = ({ resultado, setResultado, alumnosGetApi, SetAlumnosG
       ) {
         setResultado({ ...resultado, result: 7 });
       } else {
-        console.log("Datos de b.dato: ", results);
         setResultado({ ...resultado, result: 8 });
-
         SetAlumnosGetApi(results)
       }
     }
@@ -108,20 +67,8 @@ export const GetApiData = ({ resultado, setResultado, alumnosGetApi, SetAlumnosG
   return;
 };
 
-const fIngresoNuevoAlumno = (
-  fRut = 0,
-  setfRut = "",
-  modo = "",
-  dataBuscaAl,
-  setDataBuscaAl,
-  jwt
-) => {
-  setDataBuscaAl({
-    ...dataBuscaAl,
-    abort: false,
-    nuevo: true,
-    buscando: false,
-  });
+const fIngresoNuevoAlumno = (resultado, setResultado) => {  
+  setResultado({ ...resultado, result: 1 });
   return;
 };
 
@@ -157,7 +104,7 @@ const BotonBuscar = ({
   );
 };
 
-export const fNuevoAlumno = () => {
+export const fNuevoAlumno = ({ resultado, setResultado }) => {
   return (
     <Grid
       container
@@ -193,7 +140,9 @@ export const fNuevoAlumno = () => {
           <BotonBuscar
             label="Ingresar"
             FBusca={fIngresoNuevoAlumno}
-            modo="ingreso"
+            resultado={resultado}
+            setResultado={setResultado}
+             modo="nuevo"
           />
         </Grid>
       </Grid>
@@ -201,9 +150,16 @@ export const fNuevoAlumno = () => {
   );
 };
 
+/*
+    label="Buscar"
+            FBusca={FBuscaRut}
+            resultado={resultado}
+            setResultado={setResultado}
+            modo="rut"
+*/
+
 export const BuscaRut = ({ resultado, setResultado }) => {
   // const [fRut, setfRut] = useState("");
-
   return (
     <Grid
       container
@@ -253,14 +209,7 @@ export const BuscaRut = ({ resultado, setResultado }) => {
 };
 
 export const BuscaNombre = ({ resultado, setResultado }) => {
-  //   const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
-
-  // useEffect(() => {
-  //     setDataBuscaAl({ ...dataBuscaAl, abort: true, nuevo: true });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  // console.log("BuscaNombre: debería llamar a fbuscanombre ", dataBuscaAl);
+ 
   return (
     <Grid
       container

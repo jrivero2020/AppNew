@@ -12,8 +12,8 @@ export default function Alertas() {
   const aTitulo = location.state.aTitulo;
   const navigate = useNavigate();
 
-  console.log("Resultado de aMensajes:", aMensajes);
-  console.log("Resultado de aTitulo:", aTitulo);
+  // console.log("Resultado de aMensajes:", aMensajes);
+  // console.log("Resultado de aTitulo:", aTitulo);
   return (
     <Stack sx={{ width: "100%" }} spacing={2}>
       <Alert variant="outlined" severity="error">

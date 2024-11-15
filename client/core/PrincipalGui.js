@@ -8,7 +8,7 @@ export default function PrincipalGui() {
   const [showOpc, setShowOpc] = useState(false);
   useEffect(() => {
     setShowOpc(true);
-    console.log("Estoy pasando por aquí****")
+    // console.log("Estoy pasando por aquí****")
   }, []);
 
     return (
