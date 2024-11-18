@@ -1,58 +1,43 @@
 import React from "react";
+import { Grid, Paper, Typography, Button } from "@mui/material";
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import BackspaceIcon from "@mui/icons-material/Backspace";
+import { colBuscaNombre } from "../columnasGrid/AlumnosDelCurso";
 import { esES } from "@mui/x-data-grid/locales";
 import { DataGrid } from "@mui/x-data-grid";
 
-import PersonSearchIcon from "@mui/icons-material/PersonSearch";
-import BackspaceIcon from "@mui/icons-material/Backspace";
-
-import { Grid, Paper, Typography, Button } from "@mui/material";
-
-import { ColBuscaAlumnos } from "./../../data/columnasGrid/ColBuscaAlumnos";
-
-export const ListaNombresGrilla = ({
+export const LstNombresEncontradoGrilla = ({
   alumnosGetApi,
   resultado,
   setResultado,
 }) => {
-  const columns = [
-    ...ColBuscaAlumnos,
-    {
-      field: "seleccionar",
-      headerName: "Seleccionar",
-      width: 140,
-      sortable: false,
-      renderCell: (params) => (
-        <PersonSearchIcon
-          style={{ cursor: "pointer", color: "green" }}
-          onClick={() => handleSelect(params.row.al_rut)}
-        />
-      ),
-    },
-  ];
-
   const handleSelect = (rut) => {
-    //    setResultado({ ...resultado, fRut: rut, result: 2 });
-    setResultado({
-      ...resultado,
-      fRut: rut,
-      result: 2,
-      RutBuscar: rut,
-    });
+    setResultado({ ...resultado, fRut: rut, result: 2 });
   };
   const handleCellClick = (row, column) => {
     const rut = row.row.al_rut;
-    //      setResultado({ ...resultado, fRut: rut, result: 2 });
-    setResultado({
-      ...resultado,
-      fRut: rut,
-      result: 2,
-      RutBuscar: rut,
-    });
+    setResultado({ ...resultado, fRut: rut, result: 2 });
   };
 
   const GridCancela = () => {
     setResultado({ ...resultado, fRut: 0, result: 0 });
   };
+
+  const columns = [
+    ...colBuscaNombre,
+    {
+      field: "seleccionar", // Nombre del campo
+      headerName: "Seleccionar",
+      width: 140,
+      sortable: false, // Evita que esta columna sea ordenable
+      renderCell: (params) => (
+        <PersonSearchIcon
+          style={{ cursor: "pointer", color: "green" }}
+          onClick={() => handleSelect(params.row.al_rut)} // Llama a la función con el RUT de la fila ( params.row.al_rut)
+        />
+      ),
+    },
+  ];
 
   return (
     <div style={{ paddingTop: "99px" }}>
@@ -108,14 +93,8 @@ export const ListaNombresGrilla = ({
                 onCellDoubleClick={handleCellClick}
                 sx={{
                   backgroundColor: "lightgrey", // Fondo para el cuerpo del DataGrid
-                  "& .MuiDataGrid-columnHeaderTitleContainer": {
+                  "& .MuiDataGrid-columnHeaders": {
                     backgroundColor: "lightgrey", // Fondo para los encabezados de columna
-                  },
-                  "& .MuiDataGrid-columnHeader--sortable": {
-                    backgroundColor: "lightgrey", // Fondo para el espacio de clasificación en los encabezados
-                  },
-                  "& .MuiDataGrid-columnHeader--last": {
-                    backgroundColor: "lightgrey", // Fondo para el espacio de clasificación en los encabezados agregados
                   },
                 }}
               />

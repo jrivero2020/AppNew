@@ -1,23 +1,27 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Grid, Button, Stack, TextField } from "@mui/material";
 
-
 import BotonConHover from "./../Botones/BtnDataAlumnos";
 import { manejoCambiofRut, validarRut, QuitaPuntos } from "./../js/FmtoRut";
-import { api_getAlumnosNombres} from "./../../docentes/api-docentes";
-
+import { api_getAlumnosNombres } from "./../../docentes/api-docentes";
 
 export const FBuscaRut = (resultado, setResultado) => {
   const frut = resultado.fRut;
-  const [RutNumero, RutDv] = frut.split('-');
+  const [RutNumero, RutDv] = frut.split("-");
 
   if (frut === undefined || frut === "") {
     return false;
   }
-  console.log("FBuscaRut==> frut", frut)
+
   if (validarRut(frut)) {
     let rutBuscar = QuitaPuntos(frut.slice(0, -1));
-    setResultado({ ...resultado, fRut: frut, dv:RutDv, result: 2 });
+    setResultado({
+      ...resultado,
+      fRut: frut,
+      dv: RutDv,
+      result: 2,
+      RutBuscar: rutBuscar,
+    });
     return true;
   }
   setResultado({ ...resultado, result: 3 });
@@ -42,10 +46,15 @@ const fBuscaNombres = (resultado, setResultado, jwt) => {
   return;
 };
 
-export const GetApiData = ({ resultado, setResultado, alumnosGetApi, SetAlumnosGetApi }) => {
+export const GetApiData = ({
+  resultado,
+  setResultado,
+  alumnosGetApi,
+  SetAlumnosGetApi,
+}) => {
   const abortController = new AbortController();
   const signal = abortController.signal;
-  
+
   api_getAlumnosNombres(resultado, signal).then((data) => {
     if (data && data.error) {
       return false;
@@ -60,14 +69,14 @@ export const GetApiData = ({ resultado, setResultado, alumnosGetApi, SetAlumnosG
         setResultado({ ...resultado, result: 7 });
       } else {
         setResultado({ ...resultado, result: 8 });
-        SetAlumnosGetApi(results)
+        SetAlumnosGetApi(results);
       }
     }
   });
   return;
 };
 
-const fIngresoNuevoAlumno = (resultado, setResultado) => {  
+const fIngresoNuevoAlumno = (resultado, setResultado) => {
   setResultado({ ...resultado, result: 1 });
   return;
 };
@@ -142,7 +151,7 @@ export const fNuevoAlumno = ({ resultado, setResultado }) => {
             FBusca={fIngresoNuevoAlumno}
             resultado={resultado}
             setResultado={setResultado}
-             modo="nuevo"
+            modo="nuevo"
           />
         </Grid>
       </Grid>
@@ -209,7 +218,6 @@ export const BuscaRut = ({ resultado, setResultado }) => {
 };
 
 export const BuscaNombre = ({ resultado, setResultado }) => {
- 
   return (
     <Grid
       container

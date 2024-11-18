@@ -30,14 +30,17 @@ const FmtoRut = (value) => {
 };
 
 const QuitaPuntos = (rut) => {
-
-  if( typeof rut === 'number'){
+  if (typeof rut === "number") {
     rut = rut.toString();
   }
   return rut.replace(/[.-]/g, "");
 };
 
 const validarRut = (rut) => {
+  const rutnulos = [
+    11111111, 22222222, 33333333, 44444444, 55555555, 66666666, 77777777,
+    88888888, 99999999,
+  ];
   rut = rut.replace(/[.-]/g, ""); // Elimina los puntos y guión
   rut = rut.replace(/[^\dkK]/g, ""); // Eliminar caracteres no numéricos excepto K/k
   if (!/^\d{4,10}(?:[kK])?$/.test(rut)) {
@@ -51,6 +54,8 @@ const validarRut = (rut) => {
 
   var suma = 0;
   var multiplo = 2;
+
+  if (rutnulos.includes(Number(cuerpo))) return false;
 
   // Calcular suma ponderada del cuerpo del RUT de derecha a izquierda
   for (var i = cuerpo.length - 1; i >= 0; i--) {

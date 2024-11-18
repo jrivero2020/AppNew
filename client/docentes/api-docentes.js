@@ -114,35 +114,35 @@ const getDatosCert = async (params, signal, credentials) => {
 
 const api_ActAlumnoCurso = async (params, credentials, user) => {
   try {
-    const rutAl = params.rutAl
+    const rutAl = params.rutAl;
     let response = await fetch("/AlumnosByRut/" + rutAl, {
-        method: "PUT",
-        headers: { 
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + credentials.t            
-          },
-          body: JSON.stringify(user)
-      }
-    );
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify(user),
+    });
     return await response.json();
   } catch (err) {
     return { error: 500, message: err.message };
   }
 };
- 
 
 const getDatosMatricula = async (params, credentials, signal) => {
-  
   try {
     let response = await fetch("/matricula/" + params, {
       method: "GET",
       signal: signal,
       headers: { Authorization: "Bearer " + credentials.t },
     });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
     return await response.json();
   } catch (err) {
-    return { error: err.message, message: err.message };
+    return { error: 500, message: err.message };
   }
 };
 
@@ -255,19 +255,17 @@ const api_GetAlumnosCurso = async (params, credentials, signal) => {
   }
 };
 
-
 const api_GetJsonInitOpcion = async (params, signal) => {
   try {
-    let response = await fetch("/JsonInitOpcion" , {
+    let response = await fetch("/JsonInitOpcion", {
       method: "GET",
       signal: signal,
     });
-    return await response.json();    
+    return await response.json();
   } catch (err) {
     return { error: err.message, message: err.message };
   }
 };
-
 
 export {
   create,
@@ -285,7 +283,7 @@ export {
   getcsvLibroMatriculas,
   api_CantAlumnosCurso,
   api_NroMatriculas,
-  api_GetAlumnosCurso,  
+  api_GetAlumnosCurso,
   api_GetJsonInitOpcion,
-  api_ActAlumnoCurso
+  api_ActAlumnoCurso,
 };

@@ -14,16 +14,30 @@ const CustomGridTitulo = ({
   variant = "body1",
 }) => {
   return (
-    <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%" }}>
+    <Grid
+      container
+      spacing={2}
+      sx={{ margin: "auto", maxWidth: "95%", justifyContent: "center" }}
+    >
       <Grid item xs={12}>
         <Stack alignItems="left">
           <Paper
             elevation={3}
-            sx={{ pl: 15, backgroundColor: `${backGround}` }}
+            sx={{
+              backgroundColor: `${backGround}`,
+              display: "flex", // Activa flexbox en el contenedor
+              justifyContent: "center", // Centra el contenido horizontalmente
+              alignItems: "center", // Centra el contenido verticalmente
+            }}
           >
             <Typography
               variant={variant}
-              sx={{ fontWeight: "bold", color: `${color}` }}
+              sx={{
+                fontWeight: "bold",
+                color: `${color}`,
+                textAlign: "center", // Centra el texto dentro de Typography
+                mt: 1,
+              }}
             >
               {titulo}{" "}
               {titTotales !== undefined ? (
@@ -158,10 +172,14 @@ const CustomGridItem = ({ anchoGrid, label, alumnos, onClick }) => {
   );
 };
 
-const PaperBuscaAlumno = ({ anchocol = 6, titulo = "No titulo", BuscarX, resultado, setResultado, valorOk }) => {
-  //  setValores({ ...valores, [name]: event.target.value });
-  // resultado={resultado}
-  // setResultado={setResultado}
+const PaperBuscaAlumno = ({
+  anchocol = 6,
+  titulo = "No titulo",
+  BuscarX,
+  resultado,
+  setResultado,
+  valorOk,
+}) => {
   return (
     <Grid item xs={anchocol}>
       <Paper elevation={8} sx={{ pb: 3, pt: 2, backgroundColor: "#efebe9" }}>
@@ -172,7 +190,11 @@ const PaperBuscaAlumno = ({ anchocol = 6, titulo = "No titulo", BuscarX, resulta
           >
             {titulo !== undefined ? <>{titulo}</> : ""}
           </Typography>
-          <BuscarX resultado={resultado} setResultado={setResultado} valorOk={valorOk}/>
+          <BuscarX
+            resultado={resultado}
+            setResultado={setResultado}
+            valorOk={valorOk}
+          />
         </Stack>
       </Paper>
     </Grid>

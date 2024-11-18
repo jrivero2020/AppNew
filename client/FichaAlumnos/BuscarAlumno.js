@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Grid, createTheme, ThemeProvider } from "@mui/material";
 
 import { AuthContext } from "../core/AuthProvider";
@@ -19,7 +19,7 @@ import { ListaNombresGrilla } from "./../assets/componentes/DataGrid/Lst-selNomb
 import { MsgMuestraError } from "./../assets/dialogs/MuestraError";
 import { CargaDataFichaAlumno } from "./CargaDataRutAlumno";
 import { FFichaAlumno } from "./../Matriculas/Formularios/FFichaAlumno";
-
+import { cFichaAlumno } from "./../Matriculas/matriculasCampos";
 const theme = createTheme({
   palette: {
     secondary: {
@@ -33,11 +33,15 @@ export default function BuscarAlumno() {
   // const handleCloseSnackbar = () => setSnackbar(null);
   const [resultado, setResultado] = useState({
     fRut: "",
-    dv:"",
+    dv: "",
     result: 0,
     al_amat: "",
     al_apat: "",
     al_nombres: "",
+    RutBuscar: "",
+    GrbAlumno: 0,
+    GrbApode: 0,
+    GrabFamilia: 0,
   });
 
   const [alumnosGetApi, SetAlumnosGetApi] = useState([]);
@@ -50,14 +54,15 @@ export default function BuscarAlumno() {
   const openGridAlumno = 8;
   const RutNotFound = 9;
   const DataFichaCargada = 10;
-
+  const ErrorServidor = 11;
   const MsgRut = 0;
   const MsgNombre = 1;
   const MsgRutNotFound = 2;
+  const MsgServerError = 3;
 
   const rutMalo = 3;
 
-  const { setDataBuscaAl } = useContext(AuthContext);
+  const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
   const { jwt } = useContext(AuthContext);
 
   const MsgError = (ptrMsg) => {
@@ -65,6 +70,7 @@ export default function BuscarAlumno() {
       "Rut ingresado no es válido",
       "Alumno no existe en B.Datos",
       "Alumno no existe en B.Datos",
+      "Error interno del servidor",
     ];
 
     setSnackbar({
@@ -72,11 +78,11 @@ export default function BuscarAlumno() {
       severity: "error",
       variant: "filled",
     });
-    setResultado({ ...resultado, fRut: "", dv:"", result: 0 });
+    setResultado({ ...resultado, fRut: "", dv: "", result: 0 });
   };
 
   const AlertaRut = ({ resultado, setResultado }) => {
-    const title = "Rut no está en Base de Datos!!";
+    const title = `Rut (${resultado.fRut}) no está en Base de Datos!!`;
     const message = "Desea ingresarlo como alumno nuevo ?";
     const open = true;
 
@@ -97,6 +103,11 @@ export default function BuscarAlumno() {
       />
     );
   };
+  useEffect(() => {
+    if (gridBusca.includes(resultado.result)) setDataBuscaAl(cFichaAlumno);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resultado.result]);
 
   return (
     <>
@@ -104,7 +115,7 @@ export default function BuscarAlumno() {
         <ThemeProvider theme={theme}>
           <div style={{ paddingTop: "99px" }}>
             <CustomGridTitulo
-              titulo={"Busca alumno por ..."}
+              titulo={"BUSCAR ALUMNO POR..."}
               color={"#FFFFFF"}
               backGround={"#1976d2"}
             />
@@ -123,7 +134,7 @@ export default function BuscarAlumno() {
               />
               */}
               <PaperBuscaAlumno
-                anchocol={3}
+                anchocol={6}
                 titulo="Rut"
                 BuscarX={BuscaRut}
                 resultado={resultado}
@@ -149,8 +160,16 @@ export default function BuscarAlumno() {
           SetAlumnosGetApi,
         })}
       {resultado.result === rutOk &&
-        CargaDataFichaAlumno({ resultado, setResultado, jwt, setDataBuscaAl })}
+        CargaDataFichaAlumno({
+          resultado,
+          setResultado,
+          jwt,
+          dataBuscaAl,
+          setDataBuscaAl,
+        })}
       {resultado.result === NombreNotFound && MsgError(MsgNombre)}
+      {resultado.result === ErrorServidor && MsgError(MsgServerError)}
+
       {resultado.result === rutMalo && MsgError(MsgRut)}
 
       {resultado.result === RutNotFound &&
