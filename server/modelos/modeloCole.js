@@ -79,21 +79,6 @@ usuarios.prototype.validaPassword = async function (passwordIngresada) {
   return await bcrypt.compare(passwordIngresada, this.password);
 };
 
-/*
-usuarios
-  .sync()
-  .then(() => {
-    console.log(
-      "Modelo Usuarios, sincronizado correctamente con la base de datos"
-    );
-  })
-  .catch((error) => {
-    console.error(
-      "Error al sincronizar el modelo de Usuarios con la base de datos:",
-      error
-    );
-  });
-*/
 export const docentes = sequelize.define(
   "docentes",
   {
@@ -158,20 +143,6 @@ export const docentes = sequelize.define(
   },
   { freezeTableName: true, timestamps: false }
 );
-/*
-Docentes.sync()
-  .then(() => {
-    console.log(
-      "Modelo Docentes, sincronizado correctamente con la base de datos"
-    );
-  })
-  .catch((error) => {
-    console.error(
-      "Error al sincronizar el modelo de Docentes con la base de datos:",
-      error
-    );
-  });
-*/
 
 export const comunas = sequelize.define(
   "comunas",
@@ -188,21 +159,6 @@ export const comunas = sequelize.define(
   { freezeTableName: true }
 );
 
-/*
-comunas.sync()
-  .then(() => {
-    console.log(
-      "Modelo comunas, sincronizado correctamente con la base de datos"
-    );
-  })
-  .catch((error) => {
-    console.error(
-      "Error al sincronizar el modelo de comunas con la base de datos:",
-      error
-    );
-  });
-*/
-
 export const parentescos = sequelize.define(
   "parentescos",
   {
@@ -216,21 +172,6 @@ export const parentescos = sequelize.define(
   },
   { freezeTableName: true }
 );
-
-/*
-Parentescos.sync()
-  .then(() => {
-    console.log(
-      "Modelo Parentescos, sincronizado correctamente con la base de datos"
-    );
-  })
-  .catch((error) => {
-    console.error(
-      "Error al sincronizar el modelo de Parentescos con la base de datos:",
-      error
-    );
-  });
-*/
 
 export const vivecon = sequelize.define(
   "vivecon",
@@ -247,21 +188,6 @@ export const vivecon = sequelize.define(
   { freezeTableName: true }
 );
 
-/*
-Vivecon.sync()
-  .then(() => {
-    console.log(
-      "Modelo Vivecon, sincronizado correctamente con la base de datos"
-    );
-  })
-  .catch((error) => {
-    console.error(
-      "Error al sincronizar el modelo de Vivecon con la base de datos:",
-      error
-    );
-  });
-*/
-
 export const salas = sequelize.define(
   "salas",
   {
@@ -277,125 +203,6 @@ export const salas = sequelize.define(
   },
   { freezeTableName: true }
 );
-
-/*
-Salas.sync()
-  .then(() => {
-    console.log(
-      "Modelo Salas, sincronizado correctamente con la base de datos"
-    );
-  })
-  .catch((error) => {
-    console.error(
-      "Error al sincronizar el modelo de Salas con la base de datos:",
-      error
-    );
-  });
-*/
-
-export const alumnos = sequelize.define(
-  "alumnos",
-  {
-    id_alumno: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: false,
-      allowNull: false,
-    },
-    rut: DataTypes.INTEGER,
-    dv: DataTypes.STRING(1),
-    apat: DataTypes.STRING(80),
-    amat: DataTypes.STRING(80),
-    nombres: DataTypes.STRING(80),
-    f_nac: DataTypes.DATE,
-    genero: DataTypes.STRING(1),
-    domicilio: DataTypes.STRING(200),
-    id_comuna: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: comunas,
-        key: "id_comuna",
-      },
-    },
-    cur_repe: DataTypes.STRING(45),
-    canthnos: DataTypes.INTEGER,
-    nroentrehnos: DataTypes.INTEGER,
-    hnosaca: DataTypes.INTEGER,
-    hnoscursos: DataTypes.STRING(45),
-    enfermo: DataTypes.INTEGER,
-    cuidados: DataTypes.STRING(300),
-    fecharetiro: DataTypes.DATE,
-    motivoretiro: DataTypes.STRING(400),
-    agnoegreso: DataTypes.INTEGER,
-    activo: DataTypes.BOOLEAN,
-  },
-  { freezeTableName: true }
-);
-// Alumnos.belongsTo(Vivecon, { foreignKey: 'idvivecon' });
-// Alumnos.belongsTo(comunas, { foreignKey: 'id_comuna' });
-
-/*
-Alumnos.sync()
-  .then(() => {
-    console.log(
-      "Modelo Alumnos, sincronizado correctamente con la base de datos"
-    );
-  })
-  .catch((error) => {
-    console.error(
-      "Error al sincronizar el modelo de Alumnos con la base de datos:",
-      error
-    );
-  });
-
-  */
-
-export const apoderados = sequelize.define(
-  "apoderados",
-  {
-    idapoderados: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: false,
-      allowNull: false,
-    },
-    rut: DataTypes.INTEGER,
-    dv: DataTypes.STRING(1),
-    nombres: DataTypes.STRING(200),
-    apat: DataTypes.STRING(80),
-    amat: DataTypes.STRING(80),
-    sexo: DataTypes.STRING(1),
-    fono1: DataTypes.STRING(120),
-    fono2: DataTypes.STRING(300),
-    email: DataTypes.STRING(45),
-    domicilio: DataTypes.STRING(200),
-    id_comuna: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: comunas,
-        key: "id_comuna",
-      },
-    },
-  },
-  { freezeTableName: true }
-);
-// Apoderados.belongsTo(comunas, { foreignKey: 'id_comuna' });
-
-/*
-Apoderados.sync()
-  .then(() => {
-    console.log(
-      "Modelo Apoderados, sincronizado correctamente con la base de datos"
-    );
-  })
-  .catch((error) => {
-    console.error(
-      "Error al sincronizar el modelo de Apoderados con la base de datos:",
-      error
-    );
-  });
-
-  */
 
 export const cursos = sequelize.define(
   "cursos",
@@ -420,7 +227,6 @@ export const cursos = sequelize.define(
     id_ciclo: DataTypes.INTEGER,
     cod_ense: DataTypes.INTEGER,
     cod_grado: DataTypes.INTEGER,
-    desc_Grado: DataTypes.STRING(40),
     letra: DataTypes.STRING(1),
     nivel: DataTypes.INTEGER,
     id_profesor: {
@@ -430,119 +236,178 @@ export const cursos = sequelize.define(
         key: "id_profesor",
       },
     },
+    desc_Grado: DataTypes.STRING(40),
+    activo: DataTypes.BOOLEAN,
   },
   { freezeTableName: true }
 );
-//Cursos.belongsTo(Salas, { foreignKey: 'id_sala' });
-//Cursos.belongsTo(Docentes, { foreignKey: 'id_profesor' });
 
-/*
-Cursos.sync()
-  .then(() => {
-    console.log(
-      "Modelo Cursos, sincronizado correctamente con la base de datos"
-    );
-  })
-  .catch((error) => {
-    console.error(
-      "Error al sincronizar el modelo de Cursos con la base de datos:",
-      error
-    );
-  });
 
-  */
-
-export const matriculas = sequelize.define(
-  "matriculas",
+export const apoderados = sequelize.define(
+  "apoderados",
   {
-    idmatricula: {
+    id_ap: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
+      autoIncrement: false,
       allowNull: false,
     },
+    rut: DataTypes.INTEGER,
+    dv: DataTypes.STRING(1),
+    nombres: DataTypes.STRING(200),
+    apat: DataTypes.STRING(80),
+    amat: DataTypes.STRING(80),
+    sexo: DataTypes.STRING(1),
+    fono1: DataTypes.STRING(120),
+    fono2: DataTypes.STRING(300),
+    emergencia: DataTypes.STRING(80),
+    email: DataTypes.STRING(45),
+    domicilio: DataTypes.STRING(200),
+    id_comuna: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: comunas,
+        key: "id_comuna",
+      },
+    },
+    estudios: DataTypes.STRING(100),
+    ocupacion: DataTypes.STRING(100),
+    id_alumno: DataTypes.INTEGER,
+  },
+  { freezeTableName: true }
+);
+
+export const alumnos = sequelize.define(
+  "alumnos",
+  {
     id_alumno: {
       type: DataTypes.INTEGER,
-      references: {
-        model: alumnos,
-        key: "id_alumno",
-      },
+      primaryKey: true,
+      autoIncrement: false,
+      allowNull: false,
+      unique: true,
     },
-    f_matricula: DataTypes.DATE,
-    id_curso: {
+    rut: DataTypes.INTEGER,
+    dv: DataTypes.STRING(1),
+    nombres: DataTypes.STRING(80),
+    apat: DataTypes.STRING(80),
+    amat: DataTypes.STRING(80),
+    f_nac: DataTypes.DATE,
+    genero: DataTypes.STRING(1),
+    domicilio: DataTypes.STRING(200),
+    id_comuna: {
       type: DataTypes.INTEGER,
       references: {
-        model: cursos,
-        key: "id_curso",
+        model: comunas,
+        key: "id_comuna",
       },
     },
+    cur_repe: DataTypes.STRING(45),
+    canthnos: DataTypes.INTEGER,
+    nroentrehnos: DataTypes.INTEGER,
+    hnosaca: DataTypes.INTEGER,
+    hnoscursos: DataTypes.STRING(45),
+    nrofamiliar: DataTypes.INTEGER,
+    enfermo: DataTypes.INTEGER,
+    cuidados: DataTypes.STRING(300),
+    fincorpora: DataTypes.DATE,
+    fecharetiro: DataTypes.DATE,
+    motivoretiro: DataTypes.STRING(400),
+    procedencia: DataTypes.STRING(100),
+    promedionotas: { type: DataTypes.DECIMAL(2, 1), defaultValue: 0.0 },
+    agnoegreso: DataTypes.INTEGER,
     idapoderado: {
       type: DataTypes.INTEGER,
+      allowNull: true,
       references: {
-        model: apoderados,
-        key: "idapoderados",
+        model: "apoderados",
+        key: "id_ap",
       },
     },
     idparentesco: {
       type: DataTypes.INTEGER,
       references: {
-        model: parentescos,
+        model: "parentescos",
         key: "idparentesco",
       },
     },
-    txtparentesco: DataTypes.INTEGER,
-
+    txtparentesco: DataTypes.STRING(100),
     idapoderadosupl: {
       type: DataTypes.INTEGER,
+      allowNull: true,
       references: {
-        model: apoderados,
-        key: "idapoderados",
+        model: "apoderados",
+        key: "id_ap",
       },
     },
-    idparentescosupl: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: parentescos,
-        key: "idparentesco",
-      },
-    },
+    idparentescosupl: DataTypes.INTEGER,
     txtparentescosupl: DataTypes.STRING(100),
-    agno_matricula: DataTypes.INTEGER,
-    pagado: DataTypes.BOOLEAN,
-    cole_origen: DataTypes.STRING(200),
-    promedionota: DataTypes.DECIMAL(3, 1),
-    activo: DataTypes.BOOLEAN,
-    idvivecon: DataTypes.INTEGER,
-    descripcionviveconotros: DataTypes.STRING(100),
-    ingresofamiliar: DataTypes.INTEGER,
-    tpvivienda: DataTypes.INTEGER,
+    idvivecon: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "vivecon",
+        key: "idvivecon",
+      },
+    },
+    descripcionvivecon: DataTypes.STRING(100),
     evaluareligion: DataTypes.BOOLEAN,
-    fecharetiro: DataTypes.DATE,
-    motivoretiro: DataTypes.STRING(400),
-    idpadres: DataTypes.INTEGER,
+    idpadre: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "apoderados",
+        key: "id_ap",
+      },
+    },
+    idmadre: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "apoderados",
+        key: "id_ap",
+      },
+    },
+
+    idcurso: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "cursos",
+        key: "id_curso",
+      },
+    },
+    idmatricula: DataTypes.INTEGER,
+    ingresogrupofamiliar: DataTypes.INTEGER,
+    vivienda: DataTypes.INTEGER,
+    cod_ense: DataTypes.INTEGER,
+    cod_grado: DataTypes.INTEGER,
+    letra: DataTypes.STRING(10),
+    nro_matricula: DataTypes.INTEGER,
+    agno_matricula: DataTypes.STRING(100),
+    educ_madre: DataTypes.STRING(100),
+    educ_padre: DataTypes.STRING(100),
+    activo: DataTypes.BOOLEAN,
+    nroal: DataTypes.INTEGER,
+    alumnoscol: DataTypes.INTEGER,
   },
   { freezeTableName: true }
 );
+// Relación con apoderados (idmadre, idpadre, idapoderado, etc.)
+alumnos.belongsTo(apoderados, { foreignKey: "idmadre", as: "madre" });
+alumnos.belongsTo(apoderados, { foreignKey: "idpadre", as: "padre" });
+alumnos.belongsTo(apoderados, { foreignKey: "idapoderado", as: "apoderado" });
+alumnos.belongsTo(apoderados, { foreignKey: "idapoderadosupl", as: "apoderadoSuplente" });
 
-/*
-Matriculas.belongsTo(Alumnos, { foreignKey: 'id_alumno' });
-Matriculas.belongsTo(Cursos, { foreignKey: 'id_curso' });
-Matriculas.belongsTo(Parentescos, { foreignKey: 'idparentesco' });
-Matriculas.belongsTo(Parentescos, { foreignKey: 'idparentescosupl' });
-Matriculas.belongsTo(Apoderados, { foreignKey: 'idapoderado' });
-Matriculas.belongsTo(Apoderados, { foreignKey: 'idapoderadosupl' });
+// Relación con parentescos
+alumnos.belongsTo(parentescos, { foreignKey: "idparentesco", as: "parentesco" });
+alumnos.belongsTo(parentescos, { foreignKey: "idparentescosupl", as: "parentescoSuplente" });
 
+// Relación con vivecon
+alumnos.belongsTo(vivecon, { foreignKey: "idvivecon", as: "viveCon" });
 
-Matriculas.sync()
-  .then(() => {
-    console.log(
-      "Modelo Matriculas, sincronizado correctamente con la base de datos"
-    );
-  })
-  .catch((error) => {
-    console.error(
-      "Error al sincronizar el modelo de Matriculas con la base de datos:",
-      error
-    );
-  });
-*/
+// Relación con cursos
+alumnos.belongsTo(cursos, { foreignKey: "idcurso", as: "curso" });
+
+// Relación con comunas
+alumnos.belongsTo(comunas, { foreignKey: "id_comuna", as: "comuna" });

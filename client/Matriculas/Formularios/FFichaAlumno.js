@@ -15,7 +15,7 @@ import {
   Tabs,
   Tab,
 } from "@mui/material";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 // import TabContext from "@mui/lab/TabContext";
 // import TabList from "@mui/lab/TabList";
 // import Tab from "@mui/material/Tab";
@@ -41,27 +41,27 @@ const theme = createTheme({
 });
 
 export const FFichaAlumno = ({ resultado, setResultado }) => {
-  const [value, setvalue] = React.useState(0);
+  const [value, setvalue] = useState(0);
   const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
 
-  const [comunas, setComunas] = React.useState([]);
-  const [parentescos, setParentescos] = React.useState([]);
-  const [cursos, setCursos] = React.useState(null);
+  const [comunas, setComunas] = useState([]);
+  const [parentescos, setParentescos] = useState([]);
+  const [cursos, setCursos] = useState(null);
 
-  const [selectedComuna, setSelectedComuna] = React.useState("");
-  const [selectedParentesco, setSelectedParentesco] = React.useState(1);
-  const [selectedParentescoSup, setSelectedParentescoSup] = React.useState(1);
+  const [selectedComuna, setSelectedComuna] = useState("");
+  const [selectedParentesco, setSelectedParentesco] = useState(1);
+  const [selectedParentescoSup, setSelectedParentescoSup] = useState(1);
 
-  const [selectedComunaAp, setSelectedComunaAp] = React.useState("");
-  const [selectedComunaApSup, setSelectedComunaApSup] = React.useState("");
+  const [selectedComunaAp, setSelectedComunaAp] = useState("");
+  const [selectedComunaApSup, setSelectedComunaApSup] = useState("");
 
-  const [selectedCurso, setSelectedCurso] = React.useState("");
+  const [selectedCurso, setSelectedCurso] = useState("");
 
-  const [vSexo, setvSexo] = React.useState("Masculino");
-  const [vCurRepe, setvCurRepe] = React.useState("No");
-  const [vViveCon, setvViveCon] = React.useState(1);
-  const [vEnfermedad, setvEnfermedad] = React.useState("No");
-
+  const [vSexo, setvSexo] = useState("");
+  const [vCurRepe, setvCurRepe] = useState("No");
+  const [vViveCon, setvViveCon] = useState(1);
+  const [vEnfermedad, setvEnfermedad] = useState("No");
+  const [iniciado, setIniciado] = useState(false);
   const alNuevo = 1;
   const handleChangeTabs = (event, newValue) => {
     setvalue(newValue);
@@ -102,54 +102,42 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
   // ************************************************
   // Inicializa select y data alumnos
   useEffect(() => {
-    getComunas().then((data) => {
-      if (data && data.error) {
-        return false;
-      } else {
-        setComunas(data);
-      }
-    });
+//     if (!iniciado && resultado.result !== alNuevo && dataBuscaAl) {
+      getComunas().then((data) => {
+        if (data && data.error) {
+          return false;
+        } else {
+          setComunas(data);
+        }
+      });
 
-    getCursos().then((data) => {
-      if (data && data.error) {
-        return false;
-      } else {
-        const cursosArray = Object.values(data[0]);
-        setCursos(cursosArray);
-      }
-    });
+      getCursos().then((data) => {
+        if (data && data.error) {
+          return false;
+        } else {
+          const cursosArray = Object.values(data[0]);
+          setCursos(cursosArray);
+        }
+      });
 
-    getParentesco().then((data) => {
-      if (data && data.error) {
-        return false;
-      } else {
-        setParentescos(data);
+      getParentesco().then((data) => {
+        if (data && data.error) {
+          return false;
+        } else {
+          setParentescos(data);
+        }
+      });
+    }, []);
+/*
+    useEffect( () => {
+      if (resultado.result !== alNuevo && !iniciado) {
+ 
+        setIniciado(true);
       }
-    });
-    if (resultado.result !== alNuevo) {
-      if (EsVacio(dataBuscaAl.al_idparentesco)) {
-        setSelectedParentesco(8);
-      } else {
-        setSelectedParentesco(dataBuscaAl.al_idparentesco);
-      }
-      if (EsVacio(dataBuscaAl.al_idparentescosupl)) {
-        setSelectedParentesco(8);
-      } else {
-        setSelectedParentescoSup(dataBuscaAl.al_idparentescosupl);
-      }
-      if (dataBuscaAl.al_genero === "M") {
-        setvSexo("Masculino");
-      } else {
-        setvSexo("Femenino");
-      }
-
-      setvViveCon(dataBuscaAl.al_idvivecon);
-      setvCurRepe(dataBuscaAl.al_cur_repe === "No" ? "No" : "Sí");
-      setvEnfermedad(dataBuscaAl.al_enfermo === "0" ? "No" : "Sí");
-    }
+//     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  }, [iniciado]);
+*/
   useEffect(() => {
     if (comunas && comunas.length > 0 && resultado.result !== alNuevo) {
       if (EsVacio(dataBuscaAl.al_id_comuna)) {
@@ -168,6 +156,25 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
       } else {
         setSelectedComunaApSup(dataBuscaAl.apsu_id_comuna);
       }
+      if (EsVacio(dataBuscaAl.al_idparentesco)) {
+        setSelectedParentesco(8);
+      } else {
+        setSelectedParentesco(dataBuscaAl.al_idparentesco);
+      }
+      if (EsVacio(dataBuscaAl.al_idparentescosupl)) {
+        setSelectedParentesco(8);
+      } else {
+        setSelectedParentescoSup(dataBuscaAl.al_idparentescosupl);
+      }
+      console.log("dataBuscaAl.al_genero ===>", dataBuscaAl.al_genero, " iniciado ===>", iniciado);
+      if (dataBuscaAl.al_genero === "M") {
+        setvSexo("Masculino");
+      } else {
+        setvSexo("Femenino");
+      }
+      setvViveCon(dataBuscaAl.al_idvivecon);
+      setvCurRepe(dataBuscaAl.al_cur_repe === "No" ? "No" : "Sí");
+      setvEnfermedad(dataBuscaAl.al_enfermo === "0" ? "No" : "Sí");      
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comunas]);
@@ -187,7 +194,7 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
     <ThemeProvider theme={theme}>
       <div style={{ paddingTop: "68px" }}>
         <CustomGridTitulo
-          titulo={"FICHA INDIVIDUAL DEL ALUMNO"}
+          titulo={"FICHA INDIVIDUAL DEL ALUMNO" }
           color={"#FFFFFF"}
           backGround={"#1976d2"}
         />

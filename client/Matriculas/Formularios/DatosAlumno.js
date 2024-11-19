@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { FmtoRut } from "./../../assets/js/FmtoRut";
 
+
 export const DatosAlumno = ({
   dataBuscaAl,
   selectedCurso,
