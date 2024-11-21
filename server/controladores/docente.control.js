@@ -1,6 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/no-anonymous-default-export */
-import { docentes, parentescos, comunas } from "../modelos/modeloCole.js";
+import {
+  docentes,
+  parentescos,
+  comunas,
+  alumnos,
+} from "../modelos/modeloCole.js";
 
 import { verErrorSequelize } from "../helpers/sequelizeErrores.js";
 import { sequelize } from "../bdatos/bdatos.js";
@@ -125,27 +130,24 @@ const listaAlumnosByRut = async (req, res) => {
 const updateAlumnosByRut = async (req, res) => {
   try {
     const rutAl = req.params.rutAl;
-    const body = req.body
-    await sequelize.query(
-      "CALL sp_actAlumnoCurso( ?,?,?,?,? )",
-      {
-        replacements: [rutAl,
-          body.nroal,
-          body.nro_matricula,
-          body.fecharetiro.substring(0, 10),
-          body.activo],
-        type: sequelize.QueryTypes.UPDATE,
-      }
-    );
+    const body = req.body;
+    await sequelize.query("CALL sp_actAlumnoCurso( ?,?,?,?,? )", {
+      replacements: [
+        rutAl,
+        body.nroal,
+        body.nro_matricula,
+        body.fecharetiro.substring(0, 10),
+        body.activo,
+      ],
+      type: sequelize.QueryTypes.UPDATE,
+    });
     return res.status(200).json({
-      message: "Actualización ejecutada"
-    })
-
+      message: "Actualización ejecutada",
+    });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 };
-
 
 const getParentesco = async (req, res) => {
   try {
@@ -212,7 +214,7 @@ const getDataAlumnoNombres = async (req, res) => {
   }
 };
 
-// 
+//
 // SP_csvLibroMatricula
 const CsvLibroMatricula = async (req, res) => {
   try {
@@ -254,7 +256,7 @@ const getAlumnosCurso = async (req, res) => {
   }
 };
 
-const JsonInitOpcion  = async (req, res) => {
+const JsonInitOpcion = async (req, res) => {
   try {
     const dataJson = await sequelize.query(
       `CALL colegio.sp_getDataJsonInitOpcion()`,
@@ -268,6 +270,54 @@ const JsonInitOpcion  = async (req, res) => {
   }
 };
 
+const CreaAlumnoRut = async (req, res) => {
+  try {
+    const rutAl = req.params.rutAl;
+    const body = req.body;
+    
+
+    const camposRep = [
+      body.al_rut,
+      body.al_dv,
+      body.al_nombres,
+      body.al_apat,
+      body.al_amat,
+      body.al_f_nac,
+      body.al_genero,
+      body.al_domicilio,
+      body.al_id_comuna,
+      body.al_cur_repe,
+      body.al_canthnos,
+      body.al_nroentrehnos,
+      body.al_hnosaca,
+      body.al_hnoscursos,
+      body.al_enfermo,
+      body.al_cuidados,
+      body.al_procedencia,
+      body.al_promedionota,
+      body.al_idvivecon,
+      body.al_descripcionvivecon,
+      body.al_idcurso,      
+    ]
+    console.log("control=========> CreaAlumnoRut , req.params:", req.params)
+    console.log("control=========> CreaAlumnoRut , camposRep:", camposRep)
+
+    const idAlumno = await sequelize.query(`CALL colegio.sp_CreaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      {
+        replacements: camposRep,
+        type: sequelize.QueryTypes.INSERT,
+      }
+    );
+    
+    console.log("control=> CreaAlumnoRut , idAlumno:", idAlumno)
+
+
+    res.json(idAlumno);
+  } catch (err) {
+    console.log(" Saliendo por catch err:", err)
+    return res.status(500).json({ message: err.message });
+  }
+};
 
 export default {
   docenteByID,
@@ -290,4 +340,217 @@ export default {
   getNroMatriculas,
   getAlumnosCurso,
   JsonInitOpcion,
+  CreaAlumnoRut,
 };
+
+/*
+[ al_rut,
+ al_dv,
+al_nombres,
+al_apat,
+al_amat,
+al_f_nac,
+al_genero,
+al_domicilio,
+al_id_comuna,
+al_cur_repe,
+al_canthnos,
+al_nroentrehnos,
+al_hnosaca,
+al_hnoscursos,
+al_enfermo,
+al_cuidados,
+al_procedencia,
+al_promedionota,
+al_idvivecon,
+al_descripcionvivecon,
+al_idcurso
+]
+
+
+
+
+rut
+dv    
+nombres
+apat
+amat
+f_nac
+genero
+domicilio
+id_comuna
+cur_repe
+canthnos
+nroentrehnos
+hnosaca
+hnoscursos
+enfermo
+cuidados
+procedencia
+promedionotas
+idvivecon
+descripcionvivecon
+idcurso
+
+
+CREATE  PROCEDURE sp_buscaAlNombres(IN nombres_alumno varchar(80), in apPat_Alumno varchar(80), in apMat_Alumno varchar(80) )
+begin		
+	set nombres_alumno = trim( nombres_alumno );
+	set apPat_Alumno = trim( apPat_Alumno );
+	set apMat_Alumno = trim( apMat_Alumno );
+	
+	IF nombres_alumno = '@' THEN
+        SET nombres_alumno = '';
+    END IF;	
+	IF apPat_Alumno = '@' THEN
+        SET apPat_Alumno = '';
+    END IF;	
+	IF apMat_Alumno = '@' THEN
+        SET apMat_Alumno = '';
+    END IF;	
+	
+    SELECT al_rut as id,al_rut,al_dv, al_nombres ,al_apat ,al_amat, c_nomcorto as curso 
+    FROM view_matriculas vm 
+    WHERE vm.al_activo = 1 and vm.al_nombres COLLATE utf8mb4_unicode_520_ci like concat('%', nombres_alumno COLLATE utf8mb4_unicode_520_ci, '%') 
+    and vm.al_apat COLLATE utf8mb4_unicode_520_ci like concat('%', apPat_Alumno COLLATE utf8mb4_unicode_520_ci, '%') 
+    and al_amat COLLATE utf8mb4_unicode_520_ci like concat('%', apMat_Alumno COLLATE utf8mb4_unicode_520_ci, '%')
+    order by al_apat COLLATE utf8mb4_unicode_520_ci,
+    al_amat COLLATE utf8mb4_unicode_520_ci, 
+    al_nombres COLLATE utf8mb4_unicode_520_ci;
+END
+
+
+prut,
+pdv,
+pnombres,
+papat,
+pamat,
+pfnac,
+pgenero,
+pdomicilio,
+pidcomuna,
+pcurrepe,
+pcanthnos,
+pnroentrehnos,
+phnosaca,
+phnoscursos,
+penfermo,
+pcuidados,
+pprocedencia,
+ppromedionota,
+pidvivecon,
+pdescripcionvivecon,
+pidcurso
+
+[
+          body.al_rut,
+          body.al_dv,
+          body.al_nombres,
+          body.al_apat,
+          body.al_amat,
+          body.al_f_nac,
+          body.al_genero,
+          body.al_domicilio,
+          body.al_id_comuna,
+          body.al_cur_repe,
+          body.al_canthnos,
+          body.al_nroentrehnos,
+          body.al_hnosaca,
+          body.al_hnoscursos,
+          body.al_enfermo,
+          body.al_cuidados,
+          body.al_procedencia,
+          body.al_promedionota,
+          body.al_idvivecon,
+          body.al_descripcionvivecon,
+          body.al_idcurso,
+          nroparam,
+        ]
+
+
+
+const updateAlumnosByRut = async (req, res) => {
+  try {
+    const rutAl = req.params.rutAl;
+    const body = req.body;
+    await sequelize.query("CALL sp_actAlumnoCurso( ?,?,?,?,? )", {
+      replacements: [
+        rutAl,
+        body.nroal,
+        body.nro_matricula,
+        body.fecharetiro.substring(0, 10),
+        body.activo,
+      ],
+      type: sequelize.QueryTypes.UPDATE,
+    });
+    return res.status(200).json({
+      message: "Actualización ejecutada",
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+
+const CreaAlumnoRut = async (req, res) => {
+  try {
+    const rutAl = req.params.rutAl;
+    const body = req.body;
+    let nroparam = 0;
+    const query = `
+    SET @salida = 0;
+    CALL sp_CreaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,@salida);
+    SELECT @salida AS oidalumno;
+ `;
+
+    const camposRep = [
+      body.al_rut,
+      body.al_dv,
+      body.al_nombres,
+      body.al_apat,
+      body.al_amat,
+      body.al_f_nac,
+      body.al_genero,
+      body.al_domicilio,
+      body.al_id_comuna,
+      body.al_cur_repe,
+      body.al_canthnos,
+      body.al_nroentrehnos,
+      body.al_hnosaca,
+      body.al_hnoscursos,
+      body.al_enfermo,
+      body.al_cuidados,
+      body.al_procedencia,
+      body.al_promedionota,
+      body.al_idvivecon,
+      body.al_descripcionvivecon,
+      body.al_idcurso,
+      nroparam,
+    ]
+    console.log("control=========> CreaAlumnoRut , req.params:", req.params)
+    console.log("control=========> CreaAlumnoRut , camposRep:", camposRep)
+
+    const idAlumno = await sequelize.query(query,{
+        replacements: camposRep,
+        type: sequelize.QueryTypes.INSERT,
+      }
+    );
+    console.log("**** ID generado:****", idAlumno[2][0].oidalumno);
+    console.log("control=> CreaAlumnoRut , idAlumno:", idAlumno)
+
+
+    res.send(JSON.stringify(idAlumno));
+    return res.status(200).json({
+      message: "Ingreso ejecutado",
+    });
+  } catch (err) {
+    console.log(" Saliendo por catch err:", err)
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+
+*/
+
+
+

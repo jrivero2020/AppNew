@@ -111,7 +111,7 @@ const getDatosCert = async (params, signal, credentials) => {
     return { error: err.message, message: err.message };
   }
 };
-
+ 
 const api_ActAlumnoCurso = async (params, credentials, user) => {
   try {
     const rutAl = params.rutAl;
@@ -267,6 +267,30 @@ const api_GetJsonInitOpcion = async (params, signal) => {
   }
 };
 
+
+const api_CreaModificaAlumno = async (params, credentials, alumno) => {
+  try {
+    const al_rut = params.al_rut
+    console.log("api_CreaModificaAlumno => alumno:", alumno)
+    console.log("api_CreaModificaAlumno => params.al_rut:", params.al_rut)
+    let response = await fetch("/UpdateInsertAlumno/" + al_rut, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify(alumno),
+    });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
 export {
   create,
   leer,
@@ -286,4 +310,58 @@ export {
   api_GetAlumnosCurso,
   api_GetJsonInitOpcion,
   api_ActAlumnoCurso,
+  api_CreaModificaAlumno
 };
+
+
+
+
+/*
+
+ api_ActAlumnoCurso({ rutAl: user.rut }, { t: jwt.token }, user).then((data) => {
+const api_ActAlumnoCurso = async (params, credentials, user) => {
+  try {
+    const rutAl = params.rutAl;
+    let response = await fetch("/AlumnosByRut/" + rutAl, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify(user),
+    });
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
+api_CreaModificaAlumno({al_rut:dataBuscaAl.al_rut}, { t: jwt.token }, dataBuscaAl).then((data) => {
+const api_CreaModificaAlumno = async (params, credentials, alumno) => {
+  try {
+    const al_rut = params.al_rut
+    console.log("api_CreaModificaAlumno => params:", params)
+    console.log("api_CreaModificaAlumno => params.al_rut:", params.al_rut)
+    let response = await fetch("/UpdateInsertAlumno/" + al_rut, {
+      method: "PUT",
+      signal: signal,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify(params),
+    });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
+
+
+*/

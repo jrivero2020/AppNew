@@ -18,6 +18,7 @@ const userByID = async (req, res, next, id) => {
     } else {
       usuario.dataValues.password = undefined;
       req.profile = usuario.dataValues;
+      console.log("Usuario.control,req.profile = ", usuario.dataValues)
       next();
     }
   } catch (err) {

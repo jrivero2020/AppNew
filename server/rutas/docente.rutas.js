@@ -64,4 +64,8 @@ router
 router.route("/JsonInitOpcion")
 .get( docenteCtrl.JsonInitOpcion)
 
+router.route("/UpdateInsertAlumno/:al_rut")
+.put( authCtrl.requireSignin, docenteCtrl.CreaAlumnoRut)
+
+
 export default router;

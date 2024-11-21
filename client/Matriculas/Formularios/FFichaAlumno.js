@@ -57,7 +57,7 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
 
   const [selectedCurso, setSelectedCurso] = useState("");
 
-  const [vSexo, setvSexo] = useState("");
+  const [vSexo, setvSexo] = useState("M");
   const [vCurRepe, setvCurRepe] = useState("No");
   const [vViveCon, setvViveCon] = useState(1);
   const [vEnfermedad, setvEnfermedad] = useState("No");
@@ -84,6 +84,7 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
   };
 
   const vSexoCambio = (event) => {
+    console.log("vSexoCambio ", event.target.value)
     setvSexo(event.target.value);
   };
 
@@ -141,6 +142,7 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
   useEffect(() => {
     if (comunas && comunas.length > 0 && resultado.result !== alNuevo) {
       if (EsVacio(dataBuscaAl.al_id_comuna)) {
+        setDataBuscaAl({ ...dataBuscaAl, al_id_comuna: 13102 });
         setSelectedComuna(13102);
       } else {
         setSelectedComuna(dataBuscaAl.al_id_comuna);
@@ -181,7 +183,7 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
 
   useEffect(() => {
     if (cursos && cursos.length > 0 && resultado.result !== alNuevo)
-      setSelectedCurso(dataBuscaAl.c_nomcorto);
+      setSelectedCurso(dataBuscaAl.id_curso);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cursos]);

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SaveIcon from "@mui/icons-material/Save";
 import { AuthContext } from "../../core/AuthProvider";
@@ -16,7 +16,7 @@ import {
   TextField,
 } from "@mui/material";
 import { FmtoRut } from "./../../assets/js/FmtoRut";
-
+import { api_CreaModificaAlumno } from "./../../docentes/api-docentes"; 
 
 export const DatosAlumno = ({
   dataBuscaAl,
@@ -39,47 +39,21 @@ export const DatosAlumno = ({
   vEnfermedadCambio,
   CampoAlumo,
 }) => {
+  const { jwt } = useContext(AuthContext);
   const verRut = FmtoRut(dataBuscaAl.al_rut + dataBuscaAl.al_dv);
-  /*
-  const GrabarAlumno = (resultado, setResultado) => {
-    const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
-    const { jwt } = useContext(AuthContext);
-    const abortController = new AbortController();
-    const signal = abortController.signal;
-    ApiGrabarAlumno(dataBuscaAl, { t: jwt.token }, signal).then((data) => {
-      console.log(
-        "getDatosMatricula resultado.RutBuscar ===>",
-        resultado.RutBuscar
-      );
+  const GrabarAlumno = (resultado, setResultado) => { 
+      api_CreaModificaAlumno({al_rut:dataBuscaAl.al_rut}, { t: jwt.token }, dataBuscaAl).then((data) => {      
+      console.log(  "api_CreaModificaAlumno, retorno en data ===>",data );
       if (data && data.error) {
         setResultado({ ...resultado, result: 11 });
         return false;
       } else {
-        const [results] = data;
-        if (
-          results[0] === undefined ||
-          results[0] === null ||
-          Object.keys(results[0]).length === 0
-        ) {
-          setResultado({ ...resultado, result: 9 }); // No está en base de datos
-          setDataBuscaAl({
-            ...dataBuscaAl,
-            al_rut: resultado.RutBuscar,
-            al_dv: resultado.dv,
-          });
-          console.log("getDatosMatricula resultado) :", resultado);
-        } else {
-          console.log("(results[0] :", results[0]);
-
-          setResultado({ ...resultado, result: 10 }); // Ficha Cargada
-          setDataBuscaAl(results[0]);
-          // setDataBuscaAl({ ...dataBuscaAl, al_rut: resultado.fRut });
-        }
+        console.log(  "api_CreaModificaAlumno, todo ok ===>" );
       }
     });
     return;
   };
-*/
+
   return (
     <>
       <Grid
@@ -156,8 +130,8 @@ export const DatosAlumno = ({
 
                     <Select
                       label="Curso"
-                      value={selectedCurso}
-                      onChange={(e) => setSelectedCurso(e.target.value)}
+                      value={dataBuscaAl.al_idcurso}
+                      onChange={handleChange("al_idcurso")}
                       required
                       sx={{
                         minWidth: 200,
@@ -167,7 +141,7 @@ export const DatosAlumno = ({
                     >
                       {cursos !== null &&
                         cursos.map((curso, index) => (
-                          <MenuItem key={index} value={curso.nomcorto}>
+                          <MenuItem key={index} value={curso.id_curso}>
                             {curso.nomlargo}
                           </MenuItem>
                         ))}
@@ -205,17 +179,17 @@ export const DatosAlumno = ({
                       row
                       aria-labelledby="lSexo"
                       name="rbGrupo"
-                      value={vSexo}
+                      value={dataBuscaAl.al_genero}                      
                       size="small"
-                      onChange={vSexoCambio}
+                      onChange={handleChange("al_genero")}
                     >
                       <FormControlLabel
-                        value="Masculino"
+                        value="M"
                         control={<Radio size="small" />}
                         label="Masculino"
                       />
                       <FormControlLabel
-                        value="Femenino"
+                        value="F"
                         control={<Radio size="small" />}
                         label="Femenino"
                       />
@@ -252,8 +226,8 @@ export const DatosAlumno = ({
 
                     <Select
                       label="Comunas"
-                      value={selectedComuna}
-                      onChange={(e) => setSelectedComuna(e.target.value)}
+                      value={dataBuscaAl.al_id_comuna}
+                      onChange={handleChange("al_id_comuna")}
                       required
                       sx={{
                         minWidth: 200,
@@ -315,17 +289,17 @@ export const DatosAlumno = ({
                       row
                       aria-labelledby="rCurRepe"
                       name="rCurRepe"
-                      value={vCurRepe}
                       size="small"
-                      onChange={vCurRepeCambio}
+                      value={dataBuscaAl.al_cur_repe}
+                      onChange={handleChange("al_cur_repe")}
                     >
                       <FormControlLabel
-                        value="Sí"
+                        value="1"
                         control={<Radio size="small" />}
                         label="Sí"
                       />
                       <FormControlLabel
-                        value="No"
+                        value="2"
                         control={<Radio size="small" />}
                         label="No"
                       />
@@ -352,9 +326,9 @@ export const DatosAlumno = ({
                       row
                       aria-labelledby="rViveCon"
                       name="rViveCon"
-                      value={vViveCon}
                       size="small"
-                      onChange={vViveConCambio}
+                      value={dataBuscaAl.al_idvivecon}
+                      onChange={handleChange("al_idvivecon")}
                     >
                       <FormControlLabel
                         value="1"
@@ -380,7 +354,7 @@ export const DatosAlumno = ({
                   </FormControl>
                 </Paper>
               </Grid>
-              {vViveCon === "4" && (
+              {dataBuscaAl.al_idvivecon === "4" && (
                 <Grid item xs={3}>
                   <TextField
                     sx={{ mt: 1 }}
@@ -411,17 +385,17 @@ export const DatosAlumno = ({
                       row
                       aria-labelledby="renfermedad"
                       name="renfermedad"
-                      value={vEnfermedad}
                       size="small"
-                      onChange={vEnfermedadCambio}
+                      value={dataBuscaAl.al_enfermo}
+                      onChange={handleChange("al_enfermo")}
                     >
                       <FormControlLabel
-                        value="Sí"
+                        value="1"
                         control={<Radio size="small" />}
                         label="Sí"
                       />
                       <FormControlLabel
-                        value="No"
+                        value="2"
                         control={<Radio size="small" />}
                         label="No"
                       />
@@ -528,7 +502,7 @@ export const DatosAlumno = ({
             }}
             startIcon={<SaveIcon />}
             onClick={() =>
-              setResultado({ ...resultado, result: 0, fRut: "", dv: "" })
+              GrabarAlumno({resultado, setResultado })
             }
           >
             Grabar datos Alumno

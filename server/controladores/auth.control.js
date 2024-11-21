@@ -23,6 +23,8 @@ const signin = async (req, res) => {
     const token = jwt.sign({ user }, jwtConfig.jwtSecret);
     res.cookie("t", token, { expire: new Date() + 20 });
     // console.log( 'Token: ', token)
+    req.profile = usrFind.dataValues;
+    console.log("Enlogeo signin usrFind.dataValues==>", usrFind.dataValues)
     return res.json({ token, user });
   } catch (error) {
     // console.log("El Error: ", error)
@@ -58,6 +60,9 @@ const estaAutorizado = async (req, res, next) => {
       .status(404)
       .json({ message: "No pude conectar con BD. Usuario " + error });
   }
+console.log("estaAutorizado req.profile ", req.profile )
+// , " req.auth.user :", req.auth.user, " req.profile.idUsuario =>", req.profile.idUsuario, "usrRol : ", usrRol)
+
   const autorizado =
     req.profile && req.auth.user && req.profile.idUsuario === req.auth.user._id;
   if (!autorizado) {
