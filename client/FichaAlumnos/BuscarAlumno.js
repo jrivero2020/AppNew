@@ -55,6 +55,7 @@ export default function BuscarAlumno() {
   const RutNotFound = 9;
   const DataFichaCargada = 10;
   const ErrorServidor = 11;
+  
   const MsgRut = 0;
   const MsgNombre = 1;
   const MsgRutNotFound = 2;

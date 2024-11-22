@@ -231,24 +231,10 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
         </Tabs>
         {value === 0 && (
           <DatosAlumno
-            dataBuscaAl={dataBuscaAl}
-            selectedCurso={selectedCurso}
             resultado={resultado}
             setResultado={setResultado}
-            setSelectedCurso={setSelectedCurso}
-            handleChange={handleChange}
             cursos={cursos}
-            vSexo={vSexo}
-            vSexoCambio={vSexoCambio}
-            selectedComuna={selectedComuna}
-            setSelectedComuna={setSelectedComuna}
             comunas={comunas}
-            vCurRepe={vCurRepe}
-            vCurRepeCambio={vCurRepeCambio}
-            vViveCon={vViveCon}
-            vViveConCambio={vViveConCambio}
-            vEnfermedad={vEnfermedad}
-            vEnfermedadCambio={vEnfermedadCambio}
           />
         )}
 

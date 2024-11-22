@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SaveIcon from "@mui/icons-material/Save";
 import { AuthContext } from "../../core/AuthProvider";
@@ -14,44 +14,112 @@ import {
   RadioGroup,
   Select,
   TextField,
+  FormHelperText,
 } from "@mui/material";
 import { FmtoRut } from "./../../assets/js/FmtoRut";
-import { api_CreaModificaAlumno } from "./../../docentes/api-docentes"; 
+import { api_CreaModificaAlumno } from "./../../docentes/api-docentes";
+import { ValidaFichaAlumno } from "./helpers/ValidaFichaAlumno";
+import { MsgMuestraError } from "./../../assets/dialogs/MuestraError";
 
-export const DatosAlumno = ({
-  dataBuscaAl,
-  selectedCurso,
-  resultado,
-  setResultado,
-  setSelectedCurso,
-  handleChange,
-  cursos,
-  vSexo,
-  vSexoCambio,
-  selectedComuna,
-  setSelectedComuna,
-  comunas,
-  vCurRepe,
-  vCurRepeCambio,
-  vViveCon,
-  vViveConCambio,
-  vEnfermedad,
-  vEnfermedadCambio,
-  CampoAlumo,
-}) => {
+export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
+  const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
   const { jwt } = useContext(AuthContext);
+  const [errors, setErrors] = useState({});
+  const [snackbar, setSnackbar] = useState(null);
+
   const verRut = FmtoRut(dataBuscaAl.al_rut + dataBuscaAl.al_dv);
-  const GrabarAlumno = (resultado, setResultado) => { 
-      api_CreaModificaAlumno({al_rut:dataBuscaAl.al_rut}, { t: jwt.token }, dataBuscaAl).then((data) => {      
-      console.log(  "api_CreaModificaAlumno, retorno en data ===>",data );
-      if (data && data.error) {
-        setResultado({ ...resultado, result: 11 });
-        return false;
-      } else {
-        console.log(  "api_CreaModificaAlumno, todo ok ===>" );
-      }
-    });
-    return;
+
+  const handleChange = useCallback(
+    (name) => (event) => {
+      const { value } = event.target;
+      // Validar el campo
+      const error = ValidaFichaAlumno(name, value);
+      setDataBuscaAl((prev) => ({ ...prev, [name]: value }));
+      setErrors({ ...errors, [name]: error });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  const validateFormAlumno = () => {
+    const camposExcluidos = [
+      "al_rut",
+      "al_dv",
+      "al_activo",
+      "al_agno_matricula",
+      "al_cod_ense",
+      "al_cod_grado",
+      "al_evaluareligion",
+      "al_fecharetiro",
+      "al_fincorpora",
+      "al_id_alumno",
+      "al_ingresogrupofamiliar",
+      "al_letra",
+      "al_motivoretiro",
+      "al_nro_matricula",
+      "al_nrofamiliar",
+    ];
+
+    /*
+Object.keys(dataBuscaAl)
+  .filter((key) => key.startsWith("al_") && !camposExcluidos.includes(key))
+  .forEach((key) => {
+    const error = validateField(key, dataBuscaAl[key]);
+    console.log(`Campo: ${key}, Error: ${error}`);
+  });
+*/
+
+    const newErrors = {};
+    Object.keys(dataBuscaAl)
+      .filter((key) => key.startsWith("al_") && !camposExcluidos.includes(key))
+      .forEach((key) => {
+        const error = ValidaFichaAlumno(key, dataBuscaAl[key]);
+        console.log(
+          "Recorriendo databuscaal key",
+          key,
+          " dataBuscaAl[",
+          key,
+          "]  =>",
+          dataBuscaAl[key]
+        );
+        if (error) {
+          newErrors[key] = error;
+        }
+      });
+
+    setErrors(newErrors);
+
+    // Retornar verdadero si no hay errores
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const GrabarAlumno = (resultado, setResultado) => {
+    console.log("estoy en grabaralumno");
+    if (validateFormAlumno()) {
+      api_CreaModificaAlumno(
+        { al_rut: dataBuscaAl.al_rut },
+        { t: jwt.token },
+        dataBuscaAl
+      ).then((data) => {
+        console.log("api_CreaModificaAlumno, retorno en data ===>", data);
+        if (data && data.error) {
+          setResultado({ ...resultado, result: 11 });
+          return false;
+        } else {
+          setSnackbar({
+            mensaje: "Datos se grabaron",
+            severity: "success",
+            variant: "filled",
+          });
+        }
+      });
+    } else {
+      setSnackbar({
+        mensaje: "Hay Errores en el formulario",
+        severity: "error",
+        variant: "filled",
+      });
+    }
   };
 
   return (
@@ -75,7 +143,6 @@ export const DatosAlumno = ({
                   fullWidth
                   value={verRut}
                   disabled={true}
-                  onChange={handleChange("al_rut")}
                 />
               </Grid>
               <Grid item xs={3}>
@@ -86,6 +153,8 @@ export const DatosAlumno = ({
                   fullWidth
                   value={dataBuscaAl.al_nombres}
                   onChange={handleChange("al_nombres")}
+                  error={!!errors.al_nombres}
+                  helperText={errors.al_nombres}
                 />
               </Grid>
 
@@ -97,6 +166,8 @@ export const DatosAlumno = ({
                   fullWidth
                   value={dataBuscaAl.al_apat}
                   onChange={handleChange("al_apat")}
+                  error={!!errors.al_apat}
+                  helperText={errors.al_apat}
                 />
               </Grid>
               <Grid item xs={3}>
@@ -107,6 +178,8 @@ export const DatosAlumno = ({
                   fullWidth
                   value={dataBuscaAl.al_amat}
                   onChange={handleChange("al_amat")}
+                  error={!!errors.al_amat}
+                  helperText={errors.al_amat}
                 />
               </Grid>
               <Grid item xs={3}>
@@ -146,6 +219,9 @@ export const DatosAlumno = ({
                           </MenuItem>
                         ))}
                     </Select>
+                    {errors.al_idcurso && (
+                      <FormHelperText>{errors.al_idcurso}</FormHelperText>
+                    )}
                   </FormControl>
                 </Paper>
               </Grid>
@@ -159,6 +235,8 @@ export const DatosAlumno = ({
                   type="date"
                   value={dataBuscaAl.al_f_nac}
                   onChange={handleChange("al_f_nac")}
+                  error={!!errors.al_f_nac}
+                  helperText={errors.al_f_nac}
                   InputLabelProps={{
                     shrink: true,
                   }}
@@ -179,7 +257,7 @@ export const DatosAlumno = ({
                       row
                       aria-labelledby="lSexo"
                       name="rbGrupo"
-                      value={dataBuscaAl.al_genero}                      
+                      value={dataBuscaAl.al_genero}
                       size="small"
                       onChange={handleChange("al_genero")}
                     >
@@ -501,14 +579,31 @@ export const DatosAlumno = ({
               },
             }}
             startIcon={<SaveIcon />}
-            onClick={() =>
-              GrabarAlumno({resultado, setResultado })
-            }
+            onClick={() => GrabarAlumno({ resultado, setResultado })}
           >
             Grabar datos Alumno
           </Button>
         </Grid>
       </Grid>
+      {snackbar && MsgMuestraError({ snackbar, setSnackbar })}
     </>
   );
 };
+
+/*
+al_rut,
+al_dv,
+al_activo,
+al_agno_matricula,
+al_cod_ense,
+al_cod_grado,
+al_evaluareligion,
+al_fecharetiro,
+al_fincorpora,
+al_id_alumno,
+al_ingresogrupofamiliar,
+al_letra,
+al_motivoretiro,
+al_nro_matricula,
+al_nrofamiliar,
+*/
