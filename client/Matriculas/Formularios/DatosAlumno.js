@@ -286,6 +286,8 @@ Object.keys(dataBuscaAl)
                   fullWidth
                   value={dataBuscaAl.al_domicilio}
                   onChange={handleChange("al_domicilio")}
+                  error={!!errors.al_domicilio}
+                  helperText={errors.al_domicilio}
                 />
               </Grid>
 

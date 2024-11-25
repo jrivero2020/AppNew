@@ -1,0 +1,437 @@
+import React, { useCallback, useContext, useState } from "react";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import SaveIcon from "@mui/icons-material/Save";
+import { AuthContext } from "../../core/AuthProvider";
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Grid,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  FormHelperText,
+  Typography,
+  Divider,
+} from "@mui/material";
+import { FmtoRut } from "./../../assets/js/FmtoRut";
+// import { api_CreaModificaAlumno } from "./../../docentes/api-docentes";
+import { ValidaFichaAlumno } from "./helpers/ValidaFichaAlumno";
+// import { MsgMuestraError } from "./../../assets/dialogs/MuestraError";
+import { Box } from "@mui/system";
+
+export const DatosApoderado = ({
+  resultado,
+  setResultado,
+  cursos,
+  comunas,
+  parentescos,
+}) => {
+  const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
+  const { jwt } = useContext(AuthContext);
+  const [errors, setErrors] = useState({});
+  const [snackbar, setSnackbar] = useState(null);
+
+  const handleChange = useCallback(
+    (name, curso) => (event) => {
+      const { value } = event.target;
+      // Validar el campo
+      const error = ValidaFichaAlumno(name, value, curso);
+      setDataBuscaAl((prev) => ({ ...prev, [name]: value }));
+      setErrors({ ...errors, [name]: error });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  return (
+    <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}>
+      <Grid item xs={12}>
+        <Paper elevation={9} sx={{ px: 1, pb: 2, backgroundColor: "#efebe9" }}>
+          <Grid container spacing={1.5}>
+            <Grid item xs={12}>
+              <Typography
+                sx={{
+                  fontWeight: "bold",
+                  mx: 0.5,
+                  fontSize: 14,
+                  textAlign: "center",
+                  color: "blue",
+                  justifyContent: "center",
+                }}
+              >
+                Apoderado Titular
+              </Typography>
+            </Grid>
+
+            <Grid item xs={3}>
+              <TextField
+                id="idfRutAp"
+                size="small"
+                label="R.u.n. Apoderado Titular"
+                variant="outlined"
+                required
+                fullWidth
+                value={dataBuscaAl.ap_rut}
+                onChange={handleChange("ap_rut")}
+                error={!!errors.ap_rut}
+                helperText={errors.ap_rut}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                id="ap_nombres"
+                size="small"
+                label="Nombres"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.ap_nombres}
+                onChange={handleChange("ap_nombres")}
+                error={!!errors.ap_nombres}
+                helperText={errors.ap_nombres}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="Ap. Paterno"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.ap_apat}
+                onChange={handleChange("ap_apat")}
+                error={!!errors.ap_apat}
+                helperText={errors.ap_apat}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="Ap. Materno"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.ap_amat}
+                onChange={handleChange("ap_amat")}
+                error={!!errors.ap_amat}
+                helperText={errors.ap_amat}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <Paper
+                elevation={3}
+                style={{ width: "100%", alignItems: "center" }}
+                sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
+              >
+                <FormControl size="small" sx={{ ml: 2 }}>
+                  <FormLabel
+                    id="lCParentescos"
+                    sx={{ mt: 1, ml: 2 }}
+                    style={{ fontSize: "12px" }}
+                  >
+                    Parentesco
+                  </FormLabel>
+
+                  <Select
+                    label="idParentesco"
+                    value={dataBuscaAl.al_idparentesco}
+                    onChange={handleChange("al_idparentesco")}
+                    required
+                    sx={{
+                      minWidth: 200,
+                      height: "35px",
+                      fontSize: "12px",
+                    }}
+                  >
+                    {parentescos.map((parentesco) => (
+                      <MenuItem
+                        key={parentesco.idparentesco}
+                        value={parentesco.idparentesco}
+                      >
+                        {parentesco.descripcion}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Paper>
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="Teléfono 1"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.ap_fono1}
+                onChange={handleChange("ap_fono1")}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="Teléfono 2"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.ap_fono2}
+                onChange={handleChange("ap_fono2")}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="Emergencias"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.ap_emergencia}
+                onChange={handleChange("ap_emergencia")}
+              />
+            </Grid>
+
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="email"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.ap_email}
+                onChange={handleChange("ap_email")}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="Domicilio"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.ap_domicilio}
+                onChange={handleChange("ap_domicilio")}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <Paper
+                elevation={3}
+                style={{ width: "100%", alignItems: "center" }}
+                sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
+              >
+                <FormControl size="small" sx={{ ml: 2 }}>
+                  <FormLabel
+                    id="aptComuna"
+                    sx={{ mt: 1, ml: 2 }}
+                    style={{ fontSize: "12px" }} // Comuna del apoderado
+                  >
+                    Comuna
+                  </FormLabel>
+
+                  <Select
+                    label="ComunasAp"
+                    value={dataBuscaAl.ap_id_comuna}
+                    onChange={handleChange("ap_id_comuna")}
+                    required
+                    sx={{
+                      minWidth: 200,
+                      height: "35px",
+                      fontSize: "12px",
+                    }}
+                  >
+                    {comunas.map((comuna) => (
+                      <MenuItem key={comuna.id_comuna} value={comuna.id_comuna}>
+                        {comuna.descripcion}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Paper>
+            </Grid>
+            <Divider
+              sx={{
+                borderBottomWidth: "2px", // Grosor de la línea
+                borderColor: "blue", // Color de la línea
+                marginY: 2,
+              }}
+            />
+            <Grid item xs={12}>
+              <Typography
+                sx={{
+                  fontWeight: "bold",
+                  mx: 0.5,
+                  fontSize: 14,
+                  textAlign: "center",
+                  color: "blue",
+                  justifyContent: "center",
+                }}
+              >
+                Apoderado Suplente
+              </Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                id="apSupRut"
+                size="small"
+                label="R.u.n. Apoderado Suplente"
+                variant="outlined"
+                required
+                fullWidth
+                value={dataBuscaAl.apsu_rut}
+                onChange={handleChange("apsu_rut")}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                id="apsup_nombres"
+                size="small"
+                label="Nombres"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.apsu_nombres}
+                onChange={handleChange("apsu_nombres")}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="Ap. Paterno"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.apsu_apat}
+                onChange={handleChange("apsu_apat")}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="Ap. Materno"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.apsu_amat}
+                onChange={handleChange("apsu_amat")}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <Paper
+                elevation={3}
+                style={{ width: "100%", alignItems: "center" }}
+                sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
+              >
+                <FormControl size="small" sx={{ ml: 2 }}>
+                  <FormLabel
+                    id="Aparentesco"
+                    sx={{ mt: 1, ml: 2 }}
+                    style={{ fontSize: "12px" }}
+                  >
+                    Parentesco
+                  </FormLabel>
+
+                  <Select
+                    label="idParentesco"
+                    value={dataBuscaAl.apsu_parentesco}
+                    onChange={handleChange("apsu_parentesco")}
+                    required
+                    sx={{
+                      minWidth: 200,
+                      height: "35px",
+                      fontSize: "12px",
+                    }}
+                  >
+                    {parentescos.map((parentesco) => (
+                      <MenuItem
+                        key={parentesco.idparentesco}
+                        value={parentesco.idparentesco}
+                      >
+                        {parentesco.descripcion}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Paper>
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="Teléfono 1"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.apsu_fono1}
+                onChange={handleChange("apsu_fono1")}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="Teléfono 2"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.apsu_fono2}
+                onChange={handleChange("apsu_fono2")}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="Emergencia"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.apsu_emergencia}
+                onChange={handleChange("apsu_emergencia")}
+              />
+            </Grid>
+
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="email"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.apsu_email}
+                onChange={handleChange("apsu_email")}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size="small"
+                label="Domicilio"
+                variant="outlined"
+                fullWidth
+                value={dataBuscaAl.apsu_domicilio}
+                onChange={handleChange("apsu_domicilio")}
+              />
+            </Grid>
+
+            <Grid item xs={3}>
+              <Paper
+                elevation={3}
+                style={{ width: "100%", alignItems: "center" }}
+                sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
+              >
+                <FormControl size="small" sx={{ ml: 2 }}>
+                  <FormLabel
+                    id="apsComuna"
+                    sx={{ mt: 1, ml: 2 }}
+                    style={{ fontSize: "12px" }} // Comuna ap. suplente
+                  >
+                    Comuna
+                  </FormLabel>
+
+                  <Select
+                    label="ComunasApsU"
+                    value={dataBuscaAl.apsu_id_comuna}
+                    onChange={handleChange("apsu_id_comuna")}
+                    required
+                    sx={{
+                      minWidth: 200,
+                      height: "35px",
+                      fontSize: "12px",                      
+                    }}
+                  >
+                    {comunas.map((comuna) => (
+                      <MenuItem key={comuna.id_comuna} value={comuna.id_comuna}>
+                        {comuna.descripcion}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Paper>
+      </Grid>
+    </Grid>
+  );
+};

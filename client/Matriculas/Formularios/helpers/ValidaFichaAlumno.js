@@ -44,6 +44,15 @@ export const ValidaFichaAlumno = (name, value, curso) => {
       }
       break;
 
+      case "al_domicilio":
+        if (!value.trim()) {
+          error = "El domicilio es obligatorio.";
+        } else if (value.length < 3) {
+          error = "El domicilio debe tener al menos 3 caracteres.";
+        }
+        break;
+              
+
     default:
       break;
   }
@@ -71,6 +80,11 @@ export const validaFechaAlumno = (fecha, curso, anioMatricula = 2025) => {
 
     const fechaNacimiento = convertirFecha(fecha);
 
+
+    /*************************************************** */
+    /*   Falta Implementar                               */
+    /*
+    
     // Fecha de referencia: 31 de marzo del año de matrícula
     const referencia = new Date(anioMatricula, 2, 31);
 
@@ -90,15 +104,17 @@ export const validaFechaAlumno = (fecha, curso, anioMatricula = 2025) => {
     const edad = calcularEdad(fechaNacimiento, referencia);
 
     // Aplicar reglas de validación según el curso
-    if (curso === 1 && edad > 4) {
-      error = `La fecha no es válida: la edad no puede ser mayor a 4 años al 31 de marzo de ${anioMatricula}.`;
-    } else if (curso === 2 && edad > 5) {
+    if (( curso === 1 || curso === 2 ) && edad < 4) {
+      error = `La fecha no es válida: la edad no puede ser menor a 4 años al 31 de marzo de ${anioMatricula}.`;
+    } else if (curso === 3 && edad > 5) {
       error = `La fecha no es válida: la edad no puede ser mayor a 5 años al 31 de marzo de ${anioMatricula}.`;
     } else if (curso > 9 && edad > 18) {
       error = `La fecha no es válida: la edad no puede ser mayor a 18 años al 31 de marzo de ${anioMatricula}.`;
     }
+      */
   } catch (e) {
     error = e.message;
+
   }
 
   return error; // Si no hay error, retorna una cadena vacía
