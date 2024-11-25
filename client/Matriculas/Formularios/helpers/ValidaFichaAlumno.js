@@ -1,4 +1,4 @@
-export const ValidaFichaAlumno = (name, value) => {
+export const ValidaFichaAlumno = (name, value, curso) => {
   let error = "";
 
   switch (name) {
@@ -36,7 +36,7 @@ export const ValidaFichaAlumno = (name, value) => {
       }
       break;
     case "al_f_nac":
-      error = validaFechaAlumno(value);
+      error = validaFechaAlumno(value, curso);
       if (error) {
         console.log(error); // Mensaje de error en caso de no pasar la validación
       } else {
@@ -51,53 +51,55 @@ export const ValidaFichaAlumno = (name, value) => {
   return error;
 };
 
-export const validaFechaAlumno = (value) => {
+export const validaFechaAlumno = (fecha, curso, anioMatricula = 2025) => {
   let error = "";
 
-  // Validar formato dd-mm-aaaa
-  const regex = /^\d{2}-\d{2}-\d{4}$/;
-  if (!regex.test(value)) {
-    return "El formato debe ser dd-mm-aaaa.";
+  try {
+    // Detectar el formato de la fecha automáticamente
+    const convertirFecha = (fecha) => {
+      if (/^\d{2}-\d{2}-\d{4}$/.test(fecha)) {
+        // Formato dd-mm-aaaa
+        const [dia, mes, anio] = fecha.split("-").map(Number);
+        return new Date(anio, mes - 1, dia);
+      } else if (/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+        // Formato aaaa-mm-dd
+        const [anio, mes, dia] = fecha.split("-").map(Number);
+        return new Date(anio, mes - 1, dia);
+      }
+      throw new Error("Formato de fecha no válido");
+    };
+
+    const fechaNacimiento = convertirFecha(fecha);
+
+    // Fecha de referencia: 31 de marzo del año de matrícula
+    const referencia = new Date(anioMatricula, 2, 31);
+
+    // Calcular la diferencia de años
+    const calcularEdad = (nacimiento, referencia) => {
+      let edad = referencia.getFullYear() - nacimiento.getFullYear();
+      if (
+        referencia.getMonth() < nacimiento.getMonth() ||
+        (referencia.getMonth() === nacimiento.getMonth() &&
+          referencia.getDate() < nacimiento.getDate())
+      ) {
+        edad--;
+      }
+      return edad;
+    };
+
+    const edad = calcularEdad(fechaNacimiento, referencia);
+
+    // Aplicar reglas de validación según el curso
+    if (curso === 1 && edad > 4) {
+      error = `La fecha no es válida: la edad no puede ser mayor a 4 años al 31 de marzo de ${anioMatricula}.`;
+    } else if (curso === 2 && edad > 5) {
+      error = `La fecha no es válida: la edad no puede ser mayor a 5 años al 31 de marzo de ${anioMatricula}.`;
+    } else if (curso > 9 && edad > 18) {
+      error = `La fecha no es válida: la edad no puede ser mayor a 18 años al 31 de marzo de ${anioMatricula}.`;
+    }
+  } catch (e) {
+    error = e.message;
   }
 
-  // Separar componentes de la fecha
-  const [day, month, year] = value.split("-").map(Number);
-
-  // Crear objeto Date
-  const fechaIngresada = new Date(year, month - 1, day);
-  if (
-    fechaIngresada.getDate() !== day ||
-    fechaIngresada.getMonth() !== month - 1 ||
-    fechaIngresada.getFullYear() !== year
-  ) {
-    return "La fecha no es válida.";
-  }
-
-  // Obtener fechas límite
-  const fechaHoy = new Date();
-
-  // Calcular hace 4 años considerando marzo
-  const marzoReferencia =
-    fechaHoy.getMonth() >= 10 // Noviembre (10) o Diciembre (11)
-      ? new Date(fechaHoy.getFullYear() + 1, 2, 1) // Marzo del año siguiente
-      : new Date(fechaHoy.getFullYear(), 2, 1); // Marzo del año actual
-  const hace4Anios = new Date(marzoReferencia);
-  hace4Anios.setFullYear(hace4Anios.getFullYear() - 4);
-
-  // Calcular diciembre para 18 años
-  const diciembreAnio =
-    fechaHoy.getMonth() >= 10 // Noviembre (10) o Diciembre (11)
-      ? new Date(fechaHoy.getFullYear() + 1, 11, 31) // Diciembre del próximo año
-      : new Date(fechaHoy.getFullYear(), 11, 31); // Diciembre del año actual
-  const hace18Anios = new Date(diciembreAnio);
-  hace18Anios.setFullYear(hace18Anios.getFullYear() - 18);
-
-  // Validar rango
-  if (fechaIngresada < hace4Anios) {
-    error = "La fecha no puede ser menor a 4 años respecto a marzo.";
-  } else if (fechaIngresada > hace18Anios) {
-    error = "La fecha no puede ser mayor a 18 años respecto a diciembre.";
-  }
-
-  return error;
+  return error; // Si no hay error, retorna una cadena vacía
 };

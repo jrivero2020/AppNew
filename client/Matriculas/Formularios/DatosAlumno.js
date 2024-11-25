@@ -30,10 +30,10 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
   const verRut = FmtoRut(dataBuscaAl.al_rut + dataBuscaAl.al_dv);
 
   const handleChange = useCallback(
-    (name) => (event) => {
+    (name, curso) => (event) => {
       const { value } = event.target;
       // Validar el campo
-      const error = ValidaFichaAlumno(name, value);
+      const error = ValidaFichaAlumno(name, value, curso);
       setDataBuscaAl((prev) => ({ ...prev, [name]: value }));
       setErrors({ ...errors, [name]: error });
     },
@@ -219,9 +219,11 @@ Object.keys(dataBuscaAl)
                           </MenuItem>
                         ))}
                     </Select>
+                    {/*
                     {errors.al_idcurso && (
                       <FormHelperText>{errors.al_idcurso}</FormHelperText>
                     )}
+                    */}
                   </FormControl>
                 </Paper>
               </Grid>
@@ -234,7 +236,7 @@ Object.keys(dataBuscaAl)
                   fullWidth
                   type="date"
                   value={dataBuscaAl.al_f_nac}
-                  onChange={handleChange("al_f_nac")}
+                  onChange={handleChange("al_f_nac", dataBuscaAl.al_idcurso)}
                   error={!!errors.al_f_nac}
                   helperText={errors.al_f_nac}
                   InputLabelProps={{
@@ -591,6 +593,8 @@ Object.keys(dataBuscaAl)
 };
 
 /*
+  const GrabarAlumno = (resultado, setResultado, dataBuscaAl.al_idcurso) => {
+
 al_rut,
 al_dv,
 al_activo,
