@@ -135,7 +135,7 @@ Object.keys(dataBuscaAl)
             sx={{ px: 1, pb: 2, backgroundColor: "#efebe9" }}
           >
             <Grid container spacing={1.5}>
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
                   label="R.u.n. Alumno"
@@ -145,7 +145,7 @@ Object.keys(dataBuscaAl)
                   disabled={true}
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
                   label="Nombres"
@@ -158,7 +158,7 @@ Object.keys(dataBuscaAl)
                 />
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
                   label="Ap. Paterno"
@@ -170,7 +170,7 @@ Object.keys(dataBuscaAl)
                   helperText={errors.al_apat}
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
                   label="Ap. Materno"
@@ -182,7 +182,7 @@ Object.keys(dataBuscaAl)
                   helperText={errors.al_amat}
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Paper
                   elevation={3}
                   style={{
@@ -228,7 +228,7 @@ Object.keys(dataBuscaAl)
                 </Paper>
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
                   label="Fecha Nacimiento"
@@ -245,7 +245,7 @@ Object.keys(dataBuscaAl)
                 />
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Paper elevation={3} sx={{ px: 2, backgroundColor: "#efebe9" }}>
                   <FormControl>
                     <FormLabel
@@ -278,7 +278,7 @@ Object.keys(dataBuscaAl)
                 </Paper>
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
                   label="Domicilio"
@@ -291,7 +291,7 @@ Object.keys(dataBuscaAl)
                 />
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Paper
                   elevation={3}
                   style={{ width: "100%", alignItems: "center" }}
@@ -330,7 +330,7 @@ Object.keys(dataBuscaAl)
                 </Paper>
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
                   label="Colegio Origen"
@@ -341,7 +341,7 @@ Object.keys(dataBuscaAl)
                 />
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
                   label="Promedio de Notas"
@@ -352,7 +352,7 @@ Object.keys(dataBuscaAl)
                 />
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Paper
                   elevation={3}
                   style={{ width: "100%", alignItems: "center" }}
@@ -390,7 +390,7 @@ Object.keys(dataBuscaAl)
                 </Paper>
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Paper
                   elevation={3}
                   style={{ width: "100%", alignItems: "center" }}
@@ -437,7 +437,7 @@ Object.keys(dataBuscaAl)
                 </Paper>
               </Grid>
               {dataBuscaAl.al_idvivecon === "4" && (
-                <Grid item xs={3}>
+                <Grid item xs={12} sm={6} md={4} lg={3}>
                   <TextField
                     sx={{ mt: 1 }}
                     label="Describa Con quién vive"
@@ -449,7 +449,7 @@ Object.keys(dataBuscaAl)
                   />
                 </Grid>
               )}
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Paper
                   elevation={3}
                   sx={{ pd: 2, backgroundColor: "#efebe9" }}
@@ -486,7 +486,7 @@ Object.keys(dataBuscaAl)
                 </Paper>
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
                   label="Cuidados especiales"
@@ -497,7 +497,7 @@ Object.keys(dataBuscaAl)
                 />
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
                   label="Nº Hermanos"
@@ -508,7 +508,7 @@ Object.keys(dataBuscaAl)
                 />
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
                   label="Su Ubicación entre ellos"
@@ -518,7 +518,7 @@ Object.keys(dataBuscaAl)
                   onChange={handleChange("al_nroentrehnos")}
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
                   label="Nº Hermanos Estudian aquí"
@@ -529,7 +529,7 @@ Object.keys(dataBuscaAl)
                 />
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
                   label="En qué Cursos estudian"
@@ -555,7 +555,7 @@ Object.keys(dataBuscaAl)
           justifyContent: "center",
         }}
       >
-        <Grid item xs={6} sx={{ textAlign: "center" }}>
+        <Grid item xs={12} sm={6} sx={{ textAlign: "center" }}>
           <Button
             size="large"
             variant="contained"
@@ -568,7 +568,7 @@ Object.keys(dataBuscaAl)
             Nueva Búsqueda
           </Button>
         </Grid>
-        <Grid item xs={6} sx={{ textAlign: "center" }}>
+        <Grid item xs={12} sm={6} sx={{ textAlign: "center" }}>
           <Button
             size="large"
             variant="contained"

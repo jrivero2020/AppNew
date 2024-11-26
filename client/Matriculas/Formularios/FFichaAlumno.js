@@ -208,33 +208,41 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
         />
       </div>
       <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%" }}>
-        <Tabs
-          value={value}
-          onChange={handleChangeTabs}
-          aria-label="Carpetas de datos"
-          sx={{
-            ml: 8,
-            borderBottom: 1,
-            borderColor: "divider",
-            "& .MuiTab-root": {
-              textTransform: "none", // Mantén el texto como está
-              fontWeight: "bold",
-              borderTopLeftRadius: "8px", // Bordes para el efecto de carpeta
-              borderTopRightRadius: "8px",
-              border: "1px solid #ddd",
-              borderBottom: "none",
-              "&.Mui-selected": {
-                backgroundColor: "#1976d2",
-                color: "#fff",
-                borderBottom: "1px solid transparent",
+        <Grid item xs={12}>
+          <Tabs
+            value={value}
+            onChange={handleChangeTabs}
+            aria-label="Carpetas de datos"
+            variant="scrollable" // Habilita el desplazamiento
+            scrollButtons="auto" // Botones de desplazamiento automáticos
+            TabIndicatorProps={{ sx: { display: "none" } }} // Oculta el indicador si se usa flexWrap
+            sx={{
+              ml: 8,
+              borderBottom: 1,
+              borderColor: "divider",
+              "& .MuiTab-root": {
+                textTransform: "none", // Mantén el texto como está
+                fontWeight: "bold",
+                borderTopLeftRadius: "8px", // Bordes para el efecto de carpeta
+                borderTopRightRadius: "8px",
+                border: "1px solid #ddd",
+                borderBottom: "none",
+                "&.Mui-selected": {
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                  borderBottom: "1px solid transparent",
+                },
               },
-            },
-          }}
-        >
-          <Tab label="I.- Del Alumno" value={0} />
-          <Tab label="II.- Del Apoderado" value={1} />
-          <Tab label="II.- Familiares" value={2} />
-        </Tabs>
+              "& .MuiTabs-flexContainer": {
+                flexWrap: "wrap", // Permite que los tabs se ajusten
+              },
+            }}
+          >
+            <Tab label="I.- Del Alumno" value={0} />
+            <Tab label="II.- Del Apoderado" value={1} />
+            <Tab label="II.- Familiares" value={2} />
+          </Tabs>
+        </Grid>
         {value === 0 && (
           <DatosAlumno
             resultado={resultado}

@@ -65,7 +65,7 @@ export const DatosApoderado = ({
               </Typography>
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 id="idfRutAp"
                 size="small"
@@ -79,7 +79,7 @@ export const DatosApoderado = ({
                 helperText={errors.ap_rut}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 id="ap_nombres"
                 size="small"
@@ -92,7 +92,7 @@ export const DatosApoderado = ({
                 helperText={errors.ap_nombres}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Ap. Paterno"
@@ -104,7 +104,7 @@ export const DatosApoderado = ({
                 helperText={errors.ap_apat}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Ap. Materno"
@@ -116,7 +116,7 @@ export const DatosApoderado = ({
                 helperText={errors.ap_amat}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <Paper
                 elevation={3}
                 style={{ width: "100%", alignItems: "center" }}
@@ -154,7 +154,7 @@ export const DatosApoderado = ({
                 </FormControl>
               </Paper>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Teléfono 1"
@@ -164,7 +164,7 @@ export const DatosApoderado = ({
                 onChange={handleChange("ap_fono1")}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Teléfono 2"
@@ -174,7 +174,7 @@ export const DatosApoderado = ({
                 onChange={handleChange("ap_fono2")}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Emergencias"
@@ -185,7 +185,7 @@ export const DatosApoderado = ({
               />
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="email"
@@ -195,7 +195,7 @@ export const DatosApoderado = ({
                 onChange={handleChange("ap_email")}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Domicilio"
@@ -205,7 +205,7 @@ export const DatosApoderado = ({
                 onChange={handleChange("ap_domicilio")}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <Paper
                 elevation={3}
                 style={{ width: "100%", alignItems: "center" }}
@@ -261,7 +261,7 @@ export const DatosApoderado = ({
                 Apoderado Suplente
               </Typography>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 id="apSupRut"
                 size="small"
@@ -273,7 +273,7 @@ export const DatosApoderado = ({
                 onChange={handleChange("apsu_rut")}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 id="apsup_nombres"
                 size="small"
@@ -284,7 +284,7 @@ export const DatosApoderado = ({
                 onChange={handleChange("apsu_nombres")}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Ap. Paterno"
@@ -294,7 +294,7 @@ export const DatosApoderado = ({
                 onChange={handleChange("apsu_apat")}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Ap. Materno"
@@ -304,7 +304,7 @@ export const DatosApoderado = ({
                 onChange={handleChange("apsu_amat")}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <Paper
                 elevation={3}
                 style={{ width: "100%", alignItems: "center" }}
@@ -342,7 +342,7 @@ export const DatosApoderado = ({
                 </FormControl>
               </Paper>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Teléfono 1"
@@ -352,7 +352,7 @@ export const DatosApoderado = ({
                 onChange={handleChange("apsu_fono1")}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Teléfono 2"
@@ -362,7 +362,7 @@ export const DatosApoderado = ({
                 onChange={handleChange("apsu_fono2")}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Emergencia"
@@ -373,7 +373,7 @@ export const DatosApoderado = ({
               />
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="email"
@@ -383,7 +383,7 @@ export const DatosApoderado = ({
                 onChange={handleChange("apsu_email")}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Domicilio"
@@ -394,7 +394,7 @@ export const DatosApoderado = ({
               />
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <Paper
                 elevation={3}
                 style={{ width: "100%", alignItems: "center" }}
@@ -417,7 +417,7 @@ export const DatosApoderado = ({
                     sx={{
                       minWidth: 200,
                       height: "35px",
-                      fontSize: "12px",                      
+                      fontSize: "12px",
                     }}
                   >
                     {comunas.map((comuna) => (
