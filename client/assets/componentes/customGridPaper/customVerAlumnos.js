@@ -201,4 +201,22 @@ const PaperBuscaAlumno = ({
   );
 };
 
-export { CustomGridTitulo, CustomPaper, agregarEspacios, PaperBuscaAlumno };
+const CustomGridSubtitulo = ({texto}) => {
+  return (
+    <Grid item xs={12}>
+      <Typography
+        sx={{
+          fontWeight: "bold",
+          mx: 0.5,
+          fontSize: 14,
+          textAlign: "center",
+          color: "blue",
+          justifyContent: "center",
+        }}
+      >
+        {texto}
+      </Typography>
+    </Grid>
+  );
+};
+export { CustomGridTitulo, CustomPaper, agregarEspacios, PaperBuscaAlumno, CustomGridSubtitulo };

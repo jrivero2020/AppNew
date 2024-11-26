@@ -121,7 +121,10 @@ Object.keys(dataBuscaAl)
       });
     }
   };
-
+  if (!comunas || !cursos) {
+    return ( <div>Cargando...</div>); 
+  }
+  
   return (
     <>
       <Grid
@@ -129,12 +132,11 @@ Object.keys(dataBuscaAl)
         spacing={2}
         sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}
       >
-        <Grid item xs={12}>
           <Paper
             elevation={9}
             sx={{ px: 1, pb: 2, backgroundColor: "#efebe9" }}
           >
-            <Grid container spacing={1.5}>
+            <Grid container spacing={1.5}  sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}>
               <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   size="small"
@@ -541,7 +543,7 @@ Object.keys(dataBuscaAl)
               </Grid>
             </Grid>
           </Paper>
-        </Grid>
+
         {/* **********************************************fin**/}
       </Grid>
 

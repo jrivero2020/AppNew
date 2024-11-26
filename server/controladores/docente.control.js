@@ -154,6 +154,8 @@ const getParentesco = async (req, res) => {
     const datParentesco = await parentescos.findAll({
       order: [["idparentesco", "ASC"]],
     });
+
+    console.log( "datParentesco :", datParentesco)
     res.json(datParentesco);
   } catch (err) {
     return res.status(500).json({ message: err.message });

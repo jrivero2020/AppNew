@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SaveIcon from "@mui/icons-material/Save";
 import { AuthContext } from "../../core/AuthProvider";
@@ -20,11 +20,11 @@ import { FmtoRut } from "./../../assets/js/FmtoRut";
 import { ValidaFichaAlumno } from "./helpers/ValidaFichaAlumno";
 // import { MsgMuestraError } from "./../../assets/dialogs/MuestraError";
 import { Box } from "@mui/system";
+import { CustomGridSubtitulo } from "./../../assets/componentes/customGridPaper/customVerAlumnos";
 
 export const DatosApoderado = ({
   resultado,
   setResultado,
-  cursos,
   comunas,
   parentescos,
 }) => {
@@ -45,26 +45,38 @@ export const DatosApoderado = ({
     []
   );
 
+
+
+  if (
+    !comunas.length ||
+    !parentescos.length ||
+    !dataBuscaAl.ap_id_comuna ||
+    !dataBuscaAl.apsu_id_comuna ||
+    !dataBuscaAl.ap_parentesco ||
+    !dataBuscaAl.apsu_parentesco
+  ) {
+    console.log(
+      "comunas:",
+      comunas,
+      " Parentescos: ",
+      parentescos,
+      "dataBuscaAl.ap_id_comuna :",
+      dataBuscaAl.ap_id_comuna,
+      "dataBuscaAl.apsu_id_comuna :",
+      dataBuscaAl.apsu_id_comuna
+
+    );
+    console.log( "dataBuscaAl.ap_parentesco : ",  dataBuscaAl.ap_parentesco, "dataBuscaAl.apsu_parentesco :", dataBuscaAl.apsu_parentesco )
+
+    return <div>Cargando...</div>;
+  }
+
   return (
     <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}>
       <Grid item xs={12}>
         <Paper elevation={9} sx={{ px: 1, pb: 2, backgroundColor: "#efebe9" }}>
           <Grid container spacing={1.5}>
-            <Grid item xs={12}>
-              <Typography
-                sx={{
-                  fontWeight: "bold",
-                  mx: 0.5,
-                  fontSize: 14,
-                  textAlign: "center",
-                  color: "blue",
-                  justifyContent: "center",
-                }}
-              >
-                Apoderado Titular
-              </Typography>
-            </Grid>
-
+            <CustomGridSubtitulo texto={"Apoderado Titular"} />
             <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 id="idfRutAp"
@@ -124,7 +136,7 @@ export const DatosApoderado = ({
               >
                 <FormControl size="small" sx={{ ml: 2 }}>
                   <FormLabel
-                    id="lCParentescos"
+                    id="ap_parentesco"
                     sx={{ mt: 1, ml: 2 }}
                     style={{ fontSize: "12px" }}
                   >
@@ -132,9 +144,9 @@ export const DatosApoderado = ({
                   </FormLabel>
 
                   <Select
-                    label="idParentesco"
-                    value={dataBuscaAl.al_idparentesco}
-                    onChange={handleChange("al_idparentesco")}
+                    label="ap_parentesco"
+                    value={dataBuscaAl.ap_parentesco}
+                    onChange={handleChange("ap_parentesco")}
                     required
                     sx={{
                       minWidth: 200,
@@ -247,20 +259,7 @@ export const DatosApoderado = ({
                 marginY: 2,
               }}
             />
-            <Grid item xs={12}>
-              <Typography
-                sx={{
-                  fontWeight: "bold",
-                  mx: 0.5,
-                  fontSize: 14,
-                  textAlign: "center",
-                  color: "blue",
-                  justifyContent: "center",
-                }}
-              >
-                Apoderado Suplente
-              </Typography>
-            </Grid>
+            <CustomGridSubtitulo texto={"Apoderado Suplente"} />
             <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 id="apSupRut"
@@ -312,7 +311,7 @@ export const DatosApoderado = ({
               >
                 <FormControl size="small" sx={{ ml: 2 }}>
                   <FormLabel
-                    id="Aparentesco"
+                    id="apsu_parentesco"
                     sx={{ mt: 1, ml: 2 }}
                     style={{ fontSize: "12px" }}
                   >
@@ -320,7 +319,7 @@ export const DatosApoderado = ({
                   </FormLabel>
 
                   <Select
-                    label="idParentesco"
+                    label="apsu_parentesco"
                     value={dataBuscaAl.apsu_parentesco}
                     onChange={handleChange("apsu_parentesco")}
                     required

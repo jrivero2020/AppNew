@@ -21,7 +21,7 @@ const webpackConfig = {
       {
         test: /\.(js|tsx|ts|jsx)?$/,
         exclude: /node_modules/,
-        use: ["babel-loader"],
+        use: ["babel-loader", 'react-hot-loader/webpack'],
       },
       {
         test: /\.(ttf|eot|svg|gif|jpg|png|pdf)(\?[\s\S]+)?$/,
@@ -36,7 +36,12 @@ const webpackConfig = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.HotModuleReplacementPlugin()
   ],
+  devServer: {
+    hot: true,
+    // ... otras configuraciones
+  },
   resolve: {
     alias: {
       "react-dom": "@hot-loader/react-dom",
