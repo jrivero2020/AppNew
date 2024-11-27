@@ -155,7 +155,7 @@ const getParentesco = async (req, res) => {
       order: [["idparentesco", "ASC"]],
     });
 
-    console.log( "datParentesco :", datParentesco)
+    // console.log( "datParentesco :", datParentesco)
     res.json(datParentesco);
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -276,7 +276,6 @@ const CreaAlumnoRut = async (req, res) => {
   try {
     const rutAl = req.params.rutAl;
     const body = req.body;
-    
 
     const camposRep = [
       body.al_rut,
@@ -299,24 +298,24 @@ const CreaAlumnoRut = async (req, res) => {
       body.al_promedionota,
       body.al_idvivecon,
       body.al_descripcionvivecon,
-      body.al_idcurso,      
-    ]
-    console.log("control=========> CreaAlumnoRut , req.params:", req.params)
-    console.log("control=========> CreaAlumnoRut , camposRep:", camposRep)
+      body.al_idcurso,
+    ];
+    console.log("control=========> CreaAlumnoRut , req.params:", req.params);
+    console.log("control=========> CreaAlumnoRut , camposRep:", camposRep);
 
-    const idAlumno = await sequelize.query(`CALL colegio.sp_CreaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+    const idAlumno = await sequelize.query(
+      `CALL colegio.sp_CreaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
       {
         replacements: camposRep,
         type: sequelize.QueryTypes.INSERT,
       }
     );
-    
-    console.log("control=> CreaAlumnoRut , idAlumno:", idAlumno)
 
+    console.log("control=> CreaAlumnoRut , idAlumno:", idAlumno);
 
     res.json(idAlumno);
   } catch (err) {
-    console.log(" Saliendo por catch err:", err)
+    console.log(" Saliendo por catch err:", err);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -553,6 +552,3 @@ const CreaAlumnoRut = async (req, res) => {
 
 
 */
-
-
-

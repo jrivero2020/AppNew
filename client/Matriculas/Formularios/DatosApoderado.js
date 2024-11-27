@@ -45,8 +45,11 @@ export const DatosApoderado = ({
     []
   );
 
+  if (!comunas || !parentescos || !dataBuscaAl) {
+    return <div>Cargando...</div>;
+  }
 
-
+  /*
   if (
     !comunas.length ||
     !parentescos.length ||
@@ -70,6 +73,7 @@ export const DatosApoderado = ({
 
     return <div>Cargando...</div>;
   }
+*/
 
   return (
     <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}>
@@ -136,7 +140,7 @@ export const DatosApoderado = ({
               >
                 <FormControl size="small" sx={{ ml: 2 }}>
                   <FormLabel
-                    id="ap_parentesco"
+                    id="apparentesco"
                     sx={{ mt: 1, ml: 2 }}
                     style={{ fontSize: "12px" }}
                   >
@@ -144,9 +148,9 @@ export const DatosApoderado = ({
                   </FormLabel>
 
                   <Select
-                    label="ap_parentesco"
-                    value={dataBuscaAl.ap_parentesco}
-                    onChange={handleChange("ap_parentesco")}
+                    label="apparentesco"
+                    value={dataBuscaAl.al_idparentesco}
+                    onChange={handleChange("al_idparentesco")}
                     required
                     sx={{
                       minWidth: 200,
@@ -320,8 +324,8 @@ export const DatosApoderado = ({
 
                   <Select
                     label="apsu_parentesco"
-                    value={dataBuscaAl.apsu_parentesco}
-                    onChange={handleChange("apsu_parentesco")}
+                    value={dataBuscaAl.al_idparentescosupl}
+                    onChange={handleChange("al_idparentescosupl")}
                     required
                     sx={{
                       minWidth: 200,
