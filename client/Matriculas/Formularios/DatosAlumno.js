@@ -60,15 +60,6 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
       "al_nrofamiliar",
     ];
 
-    /*
-Object.keys(dataBuscaAl)
-  .filter((key) => key.startsWith("al_") && !camposExcluidos.includes(key))
-  .forEach((key) => {
-    const error = validateField(key, dataBuscaAl[key]);
-    console.log(`Campo: ${key}, Error: ${error}`);
-  });
-*/
-
     const newErrors = {};
     Object.keys(dataBuscaAl)
       .filter((key) => key.startsWith("al_") && !camposExcluidos.includes(key))
@@ -192,7 +183,7 @@ Object.keys(dataBuscaAl)
                     alignItems: "center",
                     backgroundColor: "#efebe9",
                   }}
-                  sx={{ mb: 2, pb: 2 }}
+                  sx={{ mb: 1, pb: 1 }}
                 >
                   <FormControl size="small" sx={{ ml: 2 }}>
                     <FormLabel
@@ -297,7 +288,7 @@ Object.keys(dataBuscaAl)
                 <Paper
                   elevation={3}
                   style={{ width: "100%", alignItems: "center" }}
-                  sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
+                  sx={{ mb: 1, pb: 1, backgroundColor: "#efebe9" }}
                 >
                   <FormControl size="small" sx={{ ml: 2 }}>
                     <FormLabel
@@ -358,7 +349,7 @@ Object.keys(dataBuscaAl)
                 <Paper
                   elevation={3}
                   style={{ width: "100%", alignItems: "center" }}
-                  sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
+                  sx={{ mb: 1, pb: 1, backgroundColor: "#efebe9" }}
                 >
                   <FormControl size="small" sx={{ ml: 2 }}>
                     <FormLabel

@@ -7,8 +7,7 @@ import {
   PaperBuscaAlumno,
 } from "./../assets/componentes/customGridPaper/customVerAlumnos";
 
-import {
-  fNuevoAlumno,
+import {  
   BuscaRut,
   BuscaNombre,
   GetApiData,
@@ -125,15 +124,6 @@ export default function BuscarAlumno() {
               spacing={2}
               sx={{ margin: "auto", maxWidth: "95%" }}
             >
-              {/*   
-              <PaperBuscaAlumno
-                anchocol={3}
-                titulo="Nuevo Alumno"
-                BuscarX={fNuevoAlumno}
-                resultado={resultado}
-                setResultado={setResultado}
-              />
-              */}
               <PaperBuscaAlumno
                 anchocol={6}
                 titulo="Rut"

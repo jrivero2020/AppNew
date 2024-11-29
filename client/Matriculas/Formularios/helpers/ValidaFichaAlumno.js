@@ -56,6 +56,7 @@ export const ValidaFichaAlumno = (name, value, curso) => {
     default:
       break;
   }
+  
   console.log("validando :", name, " Valor: ", value);
   return error;
 };

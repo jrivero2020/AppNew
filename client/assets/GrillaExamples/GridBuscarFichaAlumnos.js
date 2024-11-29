@@ -159,13 +159,6 @@ export const fNuevoAlumno = ({ resultado, setResultado }) => {
   );
 };
 
-/*
-    label="Buscar"
-            FBusca={FBuscaRut}
-            resultado={resultado}
-            setResultado={setResultado}
-            modo="rut"
-*/
 
 export const BuscaRut = ({ resultado, setResultado }) => {
   // const [fRut, setfRut] = useState("");
