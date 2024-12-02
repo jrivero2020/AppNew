@@ -205,7 +205,6 @@ export const DatosFamiliares = ({
                   fullWidth
                   value={dataBuscaAl.al_ingresogrupofamiliar}
                   onChange={handleChange("al_ingresogrupofamiliar")}
-                  margin="normal"
                 />
               </Grid>
 

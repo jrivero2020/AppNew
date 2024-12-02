@@ -71,11 +71,22 @@ const validarRut = (rut) => {
 
 const manejoCambiofRut = (name, resultado, setResultado) => (event) => {
   let tvalue = FmtoRut(event.target.value);
-  if (resultado.fRut.length === 1 && tvalue === null) tvalue = "";
+  if (resultado[name].length === 1 && tvalue === null) tvalue = "";
 
   if (tvalue != null) {
     setResultado({ ...resultado, [name]: tvalue });
   }
 };
+
+export const FValidarOtrosRut = (name, resultado, setResultado) => {
+  let tvalue = FmtoRut(resultado[name]);
+  if (resultado[name].length === 1 && tvalue === null) tvalue = "";
+  if (tvalue != null) {
+    return( validarRut(resultado[name] ) )
+  }else {
+  return false;
+  }
+};
+
 
 export { FmtoRut, validarRut, QuitaPuntos, manejoCambiofRut };

@@ -44,18 +44,19 @@ export const ValidaFichaAlumno = (name, value, curso) => {
       }
       break;
 
-    case "al_domicilio":
-      if (!value.trim()) {
-        error = "El domicilio es obligatorio.";
-      } else if (value.length < 3) {
-        error = "El domicilio debe tener al menos 3 caracteres.";
-      }
-      break;
+      case "al_domicilio":
+        if (!value.trim()) {
+          error = "El domicilio es obligatorio.";
+        } else if (value.length < 3) {
+          error = "El domicilio debe tener al menos 3 caracteres.";
+        }
+        break;
+              
 
     default:
       break;
   }
-
+  
   console.log("validando :", name, " Valor: ", value);
   return error;
 };
@@ -80,9 +81,11 @@ export const validaFechaAlumno = (fecha, curso, anioMatricula = 2025) => {
 
     const fechaNacimiento = convertirFecha(fecha);
 
+
     /*************************************************** */
     /*   Falta Implementar                               */
-
+    /*
+    
     // Fecha de referencia: 31 de marzo del año de matrícula
     const referencia = new Date(anioMatricula, 2, 31);
 
@@ -100,76 +103,20 @@ export const validaFechaAlumno = (fecha, curso, anioMatricula = 2025) => {
     };
 
     const edad = calcularEdad(fechaNacimiento, referencia);
-    if (edad < 4) {
-      error = `La fecha no es válida: la edad no puede ser menor a 4 años al 31 de marzo de ${anioMatricula}.`;
-    } else if (edad > 18) {
-      error = `La fecha no es válida: la edad no puede ser mayor a 18 años al 31 de marzo de ${anioMatricula}.`;
-    }
 
     // Aplicar reglas de validación según el curso
-    //    if (( curso === 1 || curso === 2 ) && edad < 4) {
-    //      error = `La fecha no es válida: la edad no puede ser menor a 4 años al 31 de marzo de ${anioMatricula}.`;
-    //    } else if (curso === 3 && edad > 5) {
-    //      error = `La fecha no es válida: la edad no puede ser mayor a 5 años al 31 de marzo de ${anioMatricula}.`;
-    //    } else if (curso > 9 && edad > 18) {
-    //      error = `La fecha no es válida: la edad no puede ser mayor a 18 años al 31 de marzo de ${anioMatricula}.`;
-    //    }
+    if (( curso === 1 || curso === 2 ) && edad < 4) {
+      error = `La fecha no es válida: la edad no puede ser menor a 4 años al 31 de marzo de ${anioMatricula}.`;
+    } else if (curso === 3 && edad > 5) {
+      error = `La fecha no es válida: la edad no puede ser mayor a 5 años al 31 de marzo de ${anioMatricula}.`;
+    } else if (curso > 9 && edad > 18) {
+      error = `La fecha no es válida: la edad no puede ser mayor a 18 años al 31 de marzo de ${anioMatricula}.`;
+    }
+      */
   } catch (e) {
     error = e.message;
+
   }
 
   return error; // Si no hay error, retorna una cadena vacía
-};
-
-export const validateFormAlumno = (dataBuscaAl) => {
-  const camposExcluidos = [
-    "al_rut",
-    "al_dv",
-    "al_activo",
-    "al_agno_matricula",
-    "al_cod_ense",
-    "al_cod_grado",
-    "al_evaluareligion",
-    "al_fecharetiro",
-    "al_fincorpora",
-    "al_id_alumno",
-    "al_ingresogrupofamiliar",
-    "al_letra",
-    "al_motivoretiro",
-    "al_nro_matricula",
-    "al_nrofamiliar",
-  ];
-
-  const newErrors = {};
-  let retornaError = true;
-  Object.keys(dataBuscaAl)
-    .filter((key) => key.startsWith("al_") && !camposExcluidos.includes(key))
-    .forEach((key) => {
-      const error = ValidaFichaAlumno(key, dataBuscaAl[key]);
-      //      console.log(
-      //        "Recorriendo databuscaal key",
-      //        key,
-      //        " dataBuscaAl[",
-      //        key,
-      //        "]  =>",
-      //        dataBuscaAl[key]
-      //      );
-      if (error) {
-        newErrors[key] = error;
-      }
-    });
-  retornaError = Object.keys(newErrors).length === 0;
-  console.log("retornaError 1:", retornaError);
-  if (
-    dataBuscaAl.ap_rut === 0 ||
-    dataBuscaAl.apsu_rut === 0 ||
-    dataBuscaAl.madre_rut === 0 ||
-    dataBuscaAl.padre_rut === 0
-  ) {
-    retornaError = false;
-  }
-  console.log("retornaError 2:", retornaError);
-  console.log("dataBuscaAl :", dataBuscaAl);
-
-  return retornaError;
 };

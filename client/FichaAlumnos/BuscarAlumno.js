@@ -41,6 +41,14 @@ export default function BuscarAlumno() {
     GrbAlumno: 0,
     GrbApode: 0,
     GrabFamilia: 0,
+    ApRut:"",
+    ApDv:"",
+    ApsuRut:"",
+    ApsuDv:"",
+    PadRut:"",
+    PadDv:"",
+    MadRut:"",
+    MadDv:""
   });
 
   const [alumnosGetApi, SetAlumnosGetApi] = useState([]);

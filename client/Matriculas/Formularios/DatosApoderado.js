@@ -14,13 +14,19 @@ import {
   FormHelperText,
   Typography,
   Divider,
+  Stack,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
-import { FmtoRut } from "./../../assets/js/FmtoRut";
+import { manejoCambiofRut, FValidarOtrosRut } from "./../../assets/js/FmtoRut";
 // import { api_CreaModificaAlumno } from "./../../docentes/api-docentes";
 import { ValidaFichaAlumno } from "./helpers/ValidaFichaAlumno";
 // import { MsgMuestraError } from "./../../assets/dialogs/MuestraError";
 import { Box } from "@mui/system";
 import { CustomGridSubtitulo } from "./../../assets/componentes/customGridPaper/customVerAlumnos";
+
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import Tooltip from "@mui/material/Tooltip";
 
 export const DatosApoderado = ({
   resultado,
@@ -44,36 +50,15 @@ export const DatosApoderado = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-
-  if (!comunas || !parentescos || !dataBuscaAl) {
-    return <div>Cargando...</div>;
+  const validaRutApoderado = (name, resultado, setResultado ) => {
+    if( FValidarOtrosRut( name,resultado,setResultado)){
+      console.log( "Rut Validado y hay que buscar apoderado")
+    }
   }
 
-  /*
-  if (
-    !comunas.length ||
-    !parentescos.length ||
-    !dataBuscaAl.ap_id_comuna ||
-    !dataBuscaAl.apsu_id_comuna ||
-    !dataBuscaAl.ap_parentesco ||
-    !dataBuscaAl.apsu_parentesco
-  ) {
-    console.log(
-      "comunas:",
-      comunas,
-      " Parentescos: ",
-      parentescos,
-      "dataBuscaAl.ap_id_comuna :",
-      dataBuscaAl.ap_id_comuna,
-      "dataBuscaAl.apsu_id_comuna :",
-      dataBuscaAl.apsu_id_comuna
-
-    );
-    console.log( "dataBuscaAl.ap_parentesco : ",  dataBuscaAl.ap_parentesco, "dataBuscaAl.apsu_parentesco :", dataBuscaAl.apsu_parentesco )
-
+  if (!comunas || !parentescos || !dataBuscaAl || !resultado) {
     return <div>Cargando...</div>;
   }
-*/
 
   return (
     <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}>
@@ -89,12 +74,24 @@ export const DatosApoderado = ({
                 variant="outlined"
                 required
                 fullWidth
-                value={dataBuscaAl.ap_rut}
-                onChange={handleChange("ap_rut")}
+                value={resultado.ApRut}
+                onChange={manejoCambiofRut("ApRut", resultado, setResultado)}
                 error={!!errors.ap_rut}
                 helperText={errors.ap_rut}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Tooltip title="Buscar Apoderado por el RUT">
+                        <IconButton onClick={() => validaRutApoderado("ApRut", resultado, setResultado)}>
+                          <PersonSearchIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
+
             <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 id="ap_nombres"
@@ -274,6 +271,17 @@ export const DatosApoderado = ({
                 fullWidth
                 value={dataBuscaAl.apsu_rut}
                 onChange={handleChange("apsu_rut")}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Tooltip title="Buscar Apoderado suplente por el RUT">
+                        <IconButton onClick={validaRutApoderado("apsu_rut", resultado, setResultado)}>
+                          <PersonSearchIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4} lg={3}>

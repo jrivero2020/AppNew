@@ -215,7 +215,7 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
               })
             }
           >
-            Grabar datos Alumno
+            Grabar Ficha del Alumno
           </Button>
         </Grid>
       </Grid>
