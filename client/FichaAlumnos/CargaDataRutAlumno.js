@@ -15,10 +15,7 @@ export const CargaDataFichaAlumno = ({
 
   getDatosMatricula(resultado.RutBuscar, { t: jwt.token }, signal).then(
     (data) => {
-      console.log(
-        "getDatosMatricula resultado.RutBuscar ===>",
-        resultado.RutBuscar
-      );
+      // console.log("getDatosMatricula resultado.RutBuscar ===>", resultado.RutBuscar );
       if (data && data.error) {
         setResultado({ ...resultado, result: 11 });
         return false;
@@ -40,8 +37,7 @@ export const CargaDataFichaAlumno = ({
           console.log("(results[0] :", results[0]);
 
           setResultado({ ...resultado, result: 10 }); // Ficha Cargada
-          setDataBuscaAl(results[0]);
-          // setDataBuscaAl({ ...dataBuscaAl, al_rut: resultado.fRut });
+          setDataBuscaAl(results[0]); // Datos de la vista cargados
         }
       }
     }

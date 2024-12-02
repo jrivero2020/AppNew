@@ -274,9 +274,10 @@ const JsonInitOpcion = async (req, res) => {
 
 const CreaAlumnoRut = async (req, res) => {
   try {
+    const alNuevo = 1;
     const rutAl = req.params.rutAl;
+    const resul = req.params.resul;
     const body = req.body;
-
     const camposRep = [
       body.al_rut,
       body.al_dv,
@@ -300,22 +301,38 @@ const CreaAlumnoRut = async (req, res) => {
       body.al_descripcionvivecon,
       body.al_idcurso,
     ];
+
+    const MyQuery =
+      resul === alNuevo
+        ? `CALL colegio.sp_CreaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+        : `CALL colegio.sp_ActualizaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
     console.log("control=========> CreaAlumnoRut , req.params:", req.params);
     console.log("control=========> CreaAlumnoRut , camposRep:", camposRep);
 
-    const idAlumno = await sequelize.query(
-      `CALL colegio.sp_CreaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-      {
-        replacements: camposRep,
-        type: sequelize.QueryTypes.INSERT,
-      }
-    );
-
-    console.log("control=> CreaAlumnoRut , idAlumno:", idAlumno);
+    const idAlumno = await sequelize.query(MyQuery, {
+      replacements: camposRep,
+      type: sequelize.QueryTypes.INSERT,
+    });
+    if (resul === alNuevo) {
+      console.log("control=> CreaAlumnoRut , idAlumno:", idAlumno);
+    } else {
+      console.log("control=> Actualiza alumno , idAlumno:", idAlumno);
+    }
 
     res.json(idAlumno);
   } catch (err) {
+    if (err.name === "SequelizeUniqueConstraintError") {
+      console.log("details; ", err.errors[0].message);
+      console.log("value; ", err.errors[0].value);
+
+      return res.status(409).json({
+        message: "El alumno ya existe con el RUT proporcionado.",
+        details: err.errors[0].message, // Mensaje detallado del error
+        value: err.errors[0].value, // El valor que causó el conflicto
+      });
+    }
     console.log(" Saliendo por catch err:", err);
+    console.log(" Saliendo por catch err:", err.message);
     return res.status(500).json({ message: err.message });
   }
 };

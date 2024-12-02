@@ -111,7 +111,7 @@ const getDatosCert = async (params, signal, credentials) => {
     return { error: err.message, message: err.message };
   }
 };
- 
+
 const api_ActAlumnoCurso = async (params, credentials, user) => {
   try {
     const rutAl = params.rutAl;
@@ -267,12 +267,13 @@ const api_GetJsonInitOpcion = async (params, signal) => {
   }
 };
 
-
 const api_CreaModificaAlumno = async (params, credentials, alumno) => {
   try {
-    const al_rut = params.al_rut
-    console.log("api_CreaModificaAlumno => alumno:", alumno)
-    console.log("api_CreaModificaAlumno => params.al_rut:", params.al_rut)
+    const al_rut = params.al_rut;
+    const result = params.result;
+
+    console.log("api_CreaModificaAlumno => alumno:", alumno);
+    console.log("api_CreaModificaAlumno => params.al_rut:", params.al_rut);
     let response = await fetch("/UpdateInsertAlumno/" + al_rut, {
       method: "PUT",
       headers: {
@@ -280,9 +281,13 @@ const api_CreaModificaAlumno = async (params, credentials, alumno) => {
         "Content-Type": "application/json",
         Authorization: "Bearer " + credentials.t,
       },
-      body: JSON.stringify(alumno),
+      body: JSON.stringify(alumno, result),
     });
     if (!response.ok) {
+      console.log(
+        "api_CreaModificaAlumno ===> !response.ok valor de response:==>",
+        response
+      );
       return { error: response.status, message: response.statusText };
     }
     return await response.json();
@@ -310,11 +315,8 @@ export {
   api_GetAlumnosCurso,
   api_GetJsonInitOpcion,
   api_ActAlumnoCurso,
-  api_CreaModificaAlumno
+  api_CreaModificaAlumno,
 };
-
-
-
 
 /*
 
