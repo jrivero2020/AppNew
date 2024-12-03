@@ -45,10 +45,10 @@ export const cFichaAlumno = {
   alcom_comuna: "",
 
   ap_rut: 0,
+  ap_dv: "",
   ap_amat: "",
   ap_apat: "",
   ap_domicilio: "",
-  ap_dv: "",
   ap_email: "",
   ap_emergencia: "",
   ap_fono1: "",
@@ -60,10 +60,10 @@ export const cFichaAlumno = {
   apcom_comuna: "",
 
   apsu_rut: 0,
+  apsu_dv: "",
   apsu_amat: "",
   apsu_apat: "",
   apsu_domicilio: "",
-  apsu_dv: "",
   apsu_email: "",
   apsu_emergencia: "",
   apsu_fono1: "",
@@ -73,6 +73,7 @@ export const cFichaAlumno = {
   apsu_parentesco: "",
   apsu_sexo: "1",
   apsucom_comuna: "",
+  
   c_nomcorto: "",
 
   madre_rut: 0,

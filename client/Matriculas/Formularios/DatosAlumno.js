@@ -219,7 +219,11 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                 }}
                 sx={{ mb: 1, pb: 1 }}
               >
-                <FormControl size="small" sx={{ ml: 2 }}>
+                <FormControl
+                  size="small"
+                  sx={{ ml: 2 }}
+                  error={!!errors.al_idcurso}
+                >
                   <FormLabel
                     id="selCursos"
                     sx={{ mt: 1, ml: 2 }}
@@ -246,11 +250,8 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                         </MenuItem>
                       ))}
                   </Select>
-                  {/*
-                    {errors.al_idcurso && (
-                      <FormHelperText>{errors.al_idcurso}</FormHelperText>
-                    )}
-                    */}
+
+                  <FormHelperText>{errors.al_idcurso}</FormHelperText>
                 </FormControl>
               </Paper>
             </Grid>
@@ -263,7 +264,7 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                 fullWidth
                 type="date"
                 value={dataBuscaAl.al_f_nac}
-                onChange={handleChange("al_f_nac", dataBuscaAl.al_idcurso)}
+                onChange={handleChange("al_f_nac")}
                 error={!!errors.al_f_nac}
                 helperText={errors.al_f_nac}
                 InputLabelProps={{
@@ -274,7 +275,7 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
 
             <Grid item xs={12} sm={6} md={4} lg={3}>
               <Paper elevation={3} sx={{ px: 2, backgroundColor: "#efebe9" }}>
-                <FormControl>
+                <FormControl  error={!!errors.al_cur_repe}>
                   <FormLabel
                     id="lSexo"
                     sx={{ mt: 1, ml: 4 }}
@@ -301,6 +302,7 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                       label="Femenino"
                     />
                   </RadioGroup>
+                  <FormHelperText>{errors.al_genero}</FormHelperText>
                 </FormControl>
               </Paper>
             </Grid>
@@ -324,7 +326,11 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                 style={{ width: "100%", alignItems: "center" }}
                 sx={{ mb: 1, pb: 1, backgroundColor: "#efebe9" }}
               >
-                <FormControl size="small" sx={{ ml: 2 }}>
+                <FormControl
+                  size="small"
+                  sx={{ ml: 2 }}
+                  error={!!errors.al_id_comuna}
+                >
                   <FormLabel
                     id="lComuna"
                     sx={{ mt: 1, ml: 2 }}
@@ -350,6 +356,7 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                       </MenuItem>
                     ))}
                   </Select>
+                  <FormHelperText>{errors.id_comuna}</FormHelperText>
                 </FormControl>
               </Paper>
             </Grid>
@@ -382,7 +389,11 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                 style={{ width: "100%", alignItems: "center" }}
                 sx={{ mb: 1, pb: 1, backgroundColor: "#efebe9" }}
               >
-                <FormControl size="small" sx={{ ml: 2 }}>
+                <FormControl
+                  size="small"
+                  sx={{ ml: 2 }}
+                  error={!!errors.al_cur_repe}
+                >
                   <FormLabel
                     id="lcursos"
                     sx={{ mt: 1, ml: 2 }}
@@ -410,6 +421,7 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                       label="No"
                     />
                   </RadioGroup>
+                  <FormHelperText>{errors.al_cur_repe}</FormHelperText>
                 </FormControl>
               </Paper>
             </Grid>
@@ -420,7 +432,11 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                 style={{ width: "100%", alignItems: "center" }}
                 sx={{ pd: 2, backgroundColor: "#efebe9" }}
               >
-                <FormControl size="small" sx={{ ml: 2 }}>
+                <FormControl
+                  size="small"
+                  sx={{ ml: 2 }}
+                  error={!!errors.al_idvivecon}
+                >
                   <FormLabel
                     id="lViveCon"
                     sx={{ mt: 1, ml: 2 }}
@@ -457,10 +473,11 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                       label="Otros"
                     />
                   </RadioGroup>
+                  <FormHelperText>{errors.al_idvivecon}</FormHelperText>
                 </FormControl>
               </Paper>
             </Grid>
-            {dataBuscaAl.al_idvivecon == "4" && (
+            {dataBuscaAl.al_idvivecon === "4" && (
               <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   sx={{ mt: 1 }}
@@ -479,7 +496,11 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                 sx={{ pd: 2, backgroundColor: "#efebe9" }}
                 style={{ width: "100%", alignItems: "center" }}
               >
-                <FormControl size="small" sx={{ ml: 2 }}>
+                <FormControl
+                  size="small"
+                  sx={{ ml: 2 }}
+                  error={!!errors.al_enfermo}
+                >
                   <FormLabel
                     id="lEnfermedad"
                     sx={{ mt: 1, ml: 2, pl: 2 }}
@@ -506,6 +527,7 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                       label="No"
                     />
                   </RadioGroup>
+                  <FormHelperText>{errors.al_enfermo}</FormHelperText>
                 </FormControl>
               </Paper>
             </Grid>

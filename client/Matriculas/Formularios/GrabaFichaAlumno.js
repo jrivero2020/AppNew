@@ -1,5 +1,5 @@
 // import { useContext } from "react";
-import { validateFormAlumno } from "./helpers/ValidaFichaAlumno";
+import { ValidaFichaAlumno, validateFormAlumno } from "./helpers/ValidaFichaAlumno";
 // import { AuthContext } from "./../../core/AuthProvider";
 import { api_CreaModificaAlumno } from "./../../docentes/api-docentes";
 
@@ -12,9 +12,11 @@ export const GrabarAlumno = ({
 }) => {
   // const { dataBuscaAl } = useContext(AuthContext);
   // const { jwt } = useContext(AuthContext);
-
+let validaForm = validateFormAlumno(dataBuscaAl);
+  console.log( "**********Valor de validaForm********** ", validaForm)
   console.log("estoy en grabaralumno valor de resultado : ", resultado);
-  if (validateFormAlumno(dataBuscaAl)) {
+
+  if ( validaForm.length === 0) {
     api_CreaModificaAlumno(
       { al_rut: dataBuscaAl.al_rut, resul: resultado.resul },
       { t: jwt.token },
@@ -64,17 +66,18 @@ export const GrabarAlumno = ({
         }
       });
   } else {
-    let msg = "";
-    if (dataBuscaAl.ap_rut === 0 || dataBuscaAl.apsu_rut === 0) {
-      msg = "Hay Errores en el formulario II.- Del Apoderado";
-    } else if (dataBuscaAl.madre_rut === 0 || dataBuscaAl.padre_rut === 0) {
-      msg = "Hay Errores en el formulario III.- Familiares";
-    } else {
-      msg = "Hay Errores en el formulario I.- Del Alumno";
-    }
+
+    // let msg = "";
+    // if (dataBuscaAl.ap_rut === 0 || dataBuscaAl.apsu_rut === 0) {
+    //   msg = "Hay Errores en el formulario II.- Del Apoderado";
+    // } else if (dataBuscaAl.madre_rut === 0 || dataBuscaAl.padre_rut === 0) {
+    //   msg = "Hay Errores en el formulario III.- Familiares";
+    // } else {
+    //   msg = "Hay Errores en el formulario I.- Del Alumno";
+    // }
 
     setSnackbar({
-      mensaje: msg,
+      mensaje: validaForm,
       severity: "error",
       variant: "filled",
     });

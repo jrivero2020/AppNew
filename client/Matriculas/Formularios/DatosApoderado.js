@@ -50,16 +50,28 @@ export const DatosApoderado = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-  const validaRutApoderado = (name, resultado, setResultado ) => {
-    if( FValidarOtrosRut( name,resultado,setResultado)){
-      console.log( "Rut Validado y hay que buscar apoderado")
+  const validaRutApoderado = (name, resultado, setResultado) => {
+    console.log(
+      "validaRutApoderado : name, resultado, setResultado",
+      name,
+      resultado,
+      setResultado
+    );
+    console.log("valor de resultado[name] ", resultado[name]);
+
+    if (resultado[name] === undefined || resultado[name] === "") {
+      return false;
     }
-  }
+
+    if (FValidarOtrosRut(name, resultado, setResultado)) {
+      console.log("Rut Validado y hay que buscar apoderado");
+    }
+  };
 
   if (!comunas || !parentescos || !dataBuscaAl || !resultado) {
     return <div>Cargando...</div>;
   }
-
+console.log(" dataBuscaAl =>:", dataBuscaAl )
   return (
     <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}>
       <Grid item xs={12}>
@@ -82,7 +94,15 @@ export const DatosApoderado = ({
                   endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip title="Buscar Apoderado por el RUT">
-                        <IconButton onClick={() => validaRutApoderado("ApRut", resultado, setResultado)}>
+                        <IconButton
+                          onClick={() => {
+                            validaRutApoderado(
+                              "ApRut",
+                              resultado,
+                              setResultado
+                            );
+                          }}
+                        >
                           <PersonSearchIcon />
                         </IconButton>
                       </Tooltip>
@@ -135,7 +155,7 @@ export const DatosApoderado = ({
                 style={{ width: "100%", alignItems: "center" }}
                 sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
               >
-                <FormControl size="small" sx={{ ml: 2 }}>
+                <FormControl size="small" sx={{ ml: 2 }} error={!!errors.al_idparentesco}>
                   <FormLabel
                     id="apparentesco"
                     sx={{ mt: 1, ml: 2 }}
@@ -164,6 +184,7 @@ export const DatosApoderado = ({
                       </MenuItem>
                     ))}
                   </Select>
+                  <FormHelperText>{errors.al_idparentesco}</FormHelperText>
                 </FormControl>
               </Paper>
             </Grid>
@@ -224,7 +245,7 @@ export const DatosApoderado = ({
                 style={{ width: "100%", alignItems: "center" }}
                 sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
               >
-                <FormControl size="small" sx={{ ml: 2 }}>
+                <FormControl size="small" sx={{ ml: 2 }}  error={!!errors.ap_id_comuna} >
                   <FormLabel
                     id="aptComuna"
                     sx={{ mt: 1, ml: 2 }}
@@ -250,6 +271,7 @@ export const DatosApoderado = ({
                       </MenuItem>
                     ))}
                   </Select>
+                  <FormHelperText>{errors.ap_id_comuna}</FormHelperText>
                 </FormControl>
               </Paper>
             </Grid>
@@ -269,13 +291,21 @@ export const DatosApoderado = ({
                 variant="outlined"
                 required
                 fullWidth
-                value={dataBuscaAl.apsu_rut}
-                onChange={handleChange("apsu_rut")}
+                value={resultado.ApsuRut}
+                onChange={manejoCambiofRut("ApsuRut", resultado, setResultado)}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip title="Buscar Apoderado suplente por el RUT">
-                        <IconButton onClick={validaRutApoderado("apsu_rut", resultado, setResultado)}>
+                        <IconButton
+                          onClick={() => {
+                            validaRutApoderado(
+                              "ApsuRut",
+                              resultado,
+                              setResultado
+                            );
+                          }}
+                        >
                           <PersonSearchIcon />
                         </IconButton>
                       </Tooltip>
@@ -321,7 +351,7 @@ export const DatosApoderado = ({
                 style={{ width: "100%", alignItems: "center" }}
                 sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
               >
-                <FormControl size="small" sx={{ ml: 2 }}>
+                <FormControl size="small" sx={{ ml: 2 }} error={!!errors.al_idparentescosupl} >
                   <FormLabel
                     id="apsu_parentesco"
                     sx={{ mt: 1, ml: 2 }}
@@ -350,6 +380,7 @@ export const DatosApoderado = ({
                       </MenuItem>
                     ))}
                   </Select>
+                  <FormHelperText>{errors.al_idparentescosupl}</FormHelperText>
                 </FormControl>
               </Paper>
             </Grid>
@@ -411,7 +442,7 @@ export const DatosApoderado = ({
                 style={{ width: "100%", alignItems: "center" }}
                 sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
               >
-                <FormControl size="small" sx={{ ml: 2 }}>
+                <FormControl size="small" sx={{ ml: 2 }} error={!!errors.apsu_id_comuna}>
                   <FormLabel
                     id="apsComuna"
                     sx={{ mt: 1, ml: 2 }}
@@ -437,6 +468,8 @@ export const DatosApoderado = ({
                       </MenuItem>
                     ))}
                   </Select>
+                  <FormHelperText>{errors.apsu_id_comuna}</FormHelperText>
+
                 </FormControl>
               </Paper>
             </Grid>
