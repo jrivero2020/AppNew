@@ -33,6 +33,9 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
     (name, curso) => (event) => {
       const { value } = event.target;
       // Validar el campo
+      if( name === "al_canthnos"){
+        console.log("al_canthnos => ", value)
+      }
       const error = ValidaFichaAlumno(name, value, curso);
       setDataBuscaAl((prev) => ({ ...prev, [name]: value }));
       setErrors({ ...errors, [name]: error });

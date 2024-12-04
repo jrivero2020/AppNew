@@ -1,3 +1,5 @@
+import DOMPurify from "dompurify";
+
 const validarNroFono = (numero) => {
   // Expresión regular para celular chileno
   const regexCelular = /^(?:\+56|56|0)?9\d{8}$/;
@@ -34,9 +36,18 @@ const validarEmail = (email) => {
   return tld.length >= 2 && tld.length <= 63; // Verifica que el TLD sea válido
 };
 
-
 export const ValidaFichaAlumno = (name, value, curso) => {
+  const camposExcluidosDeSanitizacion = ["al_idcurso", "al_id_comuna","al_canthnos","al_cur_repe"];
+
   let error = "";
+
+  if (!camposExcluidosDeSanitizacion.includes(name)) {
+    const sanitizedInput = DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [], });
+    if (value !== sanitizedInput) {
+      return "Intento de contenido malicioso detectado!!, name = " + name + "  value =" + value;
+    }
+  
+  }
 
   switch (name) {
     case "al_nombres":
@@ -67,7 +78,7 @@ export const ValidaFichaAlumno = (name, value, curso) => {
         error = "El RUT del alumno debe tener un formato válido.";
       }
       break;
-      
+
     case "al_idcurso":
       if (value === "" || value === 0) {
         error = "Debe seleccionar un curso de la lista para el alumno";
@@ -103,13 +114,7 @@ export const ValidaFichaAlumno = (name, value, curso) => {
 
     case "al_f_nac":
       error = validaFechaAlumno(value, curso);
-      if (!error)
-         error = ""
-      // if (error) {
-      //   console.log(error); // Mensaje de error en caso de no pasar la validación
-      // } else {
-      //   console.log("Fecha válida");
-      // }
+      if (!error) error = "";
       break;
 
     case "al_domicilio":
@@ -178,34 +183,20 @@ export const ValidaFichaAlumno = (name, value, curso) => {
         error = "Correo apoderado no es válido";
       }
       break;
-      case "ap_domicilio":
-        if (!value.trim()) {
-          error = "El domicilio apoderado es obligatorio.";
-        } else if (value.length < 3) {
-          error = "El domicilio apoderado debe tener al menos 3 caracteres.";
-        }
-        break;
-        case "ap_id_comuna":
-          if (value === "" || value === 0) {
-            error = "Debe seleccionar una comuna de la lista para el apoderado";
-          }
-          break;
+    case "ap_domicilio":
+      if (!value.trim()) {
+        error = "El domicilio apoderado es obligatorio.";
+      } else if (value.length < 3) {
+        error = "El domicilio apoderado debe tener al menos 3 caracteres.";
+      }
+      break;
+    case "ap_id_comuna":
+      if (value === "" || value === 0) {
+        error = "Debe seleccionar una comuna de la lista para el apoderado";
+      }
+      break;
     // ***********************************************
     // Datos del apoderado Suplente
-    /*
-    apsu_amat
-
-    apsu_domicilio
-    apsu_email
-    apsu_emergencia
-    apsu_fono1
-    apsu_fono2
-    apsu_id_comuna
-    
-    apsu_parentesco
-    
-    apsu_sexo
-*/
 
     case "apsu_rut":
       if (!/^\d{7,8}-[\dkK]$/.test(value)) {
@@ -232,7 +223,8 @@ export const ValidaFichaAlumno = (name, value, curso) => {
       if (!value.trim()) {
         error = "Apellido materno Apod.Suplente es obligatorio.";
       } else if (value.length < 3) {
-        error = "Apellido materno Apod.Suplente debe tener al menos 3 caracteres.";
+        error =
+          "Apellido materno Apod.Suplente debe tener al menos 3 caracteres.";
       }
       break;
     case "al_idparentescosupl":
@@ -263,25 +255,84 @@ export const ValidaFichaAlumno = (name, value, curso) => {
         error = "Correo Apod.Suplente no es válido";
       }
       break;
-      case "apsu_domicilio":
+    case "apsu_domicilio":
+      if (!value.trim()) {
+        error = "El domicilio Apod.Suplente es obligatorio.";
+      } else if (value.length < 3) {
+        error = "El domicilio Apod.Suplente debe tener al menos 3 caracteres.";
+      }
+      break;
+    case "apsu_id_comuna":
+      if (value === "" || value === 0) {
+        error = "Debe seleccionar una comuna de la lista para el Apod.Suplente";
+      }
+      break;
+//*************************************************************** */
+// atecedentes de padre y madre
+case "madre_rut":
+  if (!/^\d{7,8}-[\dkK]$/.test(value)) {
+    error = "El RUT de madre, debe tener un formato válido.";
+  }
+  break;
+
+  case "madre_nombres":
+    if (!value.trim()) {
+      error = "Nombre madre es obligatorio.";
+    } else if (value.length < 3) {
+      error = "El nombre madre debe tener al menos 3 caracteres.";
+    }
+    break;
+
+  case "madre_apat":
+    if (!value.trim()) {
+      error = "Apellido paterno madre es obligatorio.";
+    } else if (value.length < 3) {
+      error = "El apellido madre debe tener al menos 3 caracteres.";
+    }
+    break;
+  case "madre_amat":
+    if (!value.trim()) {
+      error = "Apellido materno madre es obligatorio.";
+    } else if (value.length < 3) {
+      error =
+        "Apellido materno madre debe tener al menos 3 caracteres.";
+    }
+    break;
+    case "padre_rut":
+      if (!/^\d{7,8}-[\dkK]$/.test(value)) {
+        error = "El RUT de padre, debe tener un formato válido.";
+      }
+      break;
+    
+      case "padre_nombres":
         if (!value.trim()) {
-          error = "El domicilio Apod.Suplente es obligatorio.";
+          error = "Nombre padre es obligatorio.";
         } else if (value.length < 3) {
-          error = "El domicilio Apod.Suplente debe tener al menos 3 caracteres.";
+          error = "El nombre padre debe tener al menos 3 caracteres.";
         }
         break;
-        case "apsu_id_comuna":
-          if (value === "" || value === 0) {
-            error = "Debe seleccionar una comuna de la lista para el Apod.Suplente";
-          }
-          break;
+    
+      case "padre_apat":
+        if (!value.trim()) {
+          error = "Apellido paterno padre es obligatorio.";
+        } else if (value.length < 3) {
+          error = "El apellido padre debe tener al menos 3 caracteres.";
+        }
+        break;
+      case "mpadre_amat":
+        if (!value.trim()) {
+          error = "Apellido materno padre es obligatorio.";
+        } else if (value.length < 3) {
+          error =
+            "Apellido materno padre debe tener al menos 3 caracteres.";
+        }
+        break;
 
-
+/**************************************************************** */
     default:
       break;
   }
 
-  // console.log("validando :", name, " Valor: ", value, " error: ", error);
   return error;
 };
 
@@ -339,7 +390,7 @@ export const validaFechaAlumno = (fecha, curso, anioMatricula = 2025) => {
   } catch (e) {
     error = e.message;
   }
-console.log( "Validando fecha error = ", error)
+  console.log("Validando fecha error = ", error);
   return error; // Si no hay error, retorna una cadena vacía
 };
 
@@ -364,86 +415,54 @@ export const validateFormAlumno = (dataBuscaAl) => {
     "ap_parentesco",
     "ap_sexo",
     "apsu_dv",
-    "apsu_parentesco"
+    "apsu_parentesco",
   ];
+  const prefijos = ["al_", "ap_", "apsu_", "padre_", "madre_"]; // Primero "al_", luego "ap_", después "apsu_"
 
-  console.log("Entre a rutina validateFormAlumno ")
-  // const newErrors = {};
-  /*
-  Object.keys(dataBuscaAl)
-    .filter((key) => key.startsWith("al_") && !camposExcluidos.includes(key))
-    .forEach((key) => {
-      console.log("Recorriendo databuscal key", key," dataBuscaAl[", key, "]  =>",
-        dataBuscaAl[key]
-      );
-
+  const validarCampos = (prefijo) => {
+    for (const key of Object.keys(dataBuscaAl).filter(
+      (key) => key.startsWith(prefijo) && !camposExcluidos.includes(key)
+    )) {
+      if( key === "al_canthnos"){
+        console.log(" al_canthnos :", dataBuscaAl[key])
+      }
       const error = ValidaFichaAlumno(key, dataBuscaAl[key]);
       if (error) {
-        newErrors[key] = error;
-        console.log("newErrors[key] ====>:", newErrors[key] , "Key = ", key)
-      }        
-    });
-*/
-for (const key of Object.keys(dataBuscaAl).filter((key) => key.startsWith("al_") && !camposExcluidos.includes(key))) {
-  // console.log("Recorriendo databuscal key", key, " dataBuscaAl[", key, "]  =>", dataBuscaAl[key]);
+        return error; // Retorna el error y detiene la validación para este prefijo
+      }
+    }
+    return null; // No hay errores en este prefijo
+  };
 
-  const error = ValidaFichaAlumno(key, dataBuscaAl[key]);
-  if (error) {
-    // console.log("Error encontrado en key:", key, "=>", error);
-    return error; // Retorna el error y detiene el bucle
+  for (const prefijo of prefijos) {
+    const error = validarCampos(prefijo);
+    if (error) {
+      console.log(`Error encontrado para el prefijo "${prefijo}":`, error);
+      return error; // Detener el proceso si se encuentra un error
+    }
   }
-}
-for (const key of Object.keys(dataBuscaAl).filter((key) => key.startsWith("ap_") && !camposExcluidos.includes(key))) {
- //  console.log("Recorriendo databuscal key", key, " dataBuscaAl[", key, "]  =>", dataBuscaAl[key]);
 
-  const error = ValidaFichaAlumno(key, dataBuscaAl[key]);
-  if (error) {
-    // console.log("Error encontrado en key:", key, "=>", error);
-    return error; // Retorna el error y detiene el bucle
+  // Validar campos específicos en la etapa de "madre_" y "padre_"
+  const prefijosValidacionAdicional = ["madre_", "padre_"];
+  const camposAdicionales = [
+    "al_ingresogrupofamiliar",
+    "al_vivienda",
+    "al_evaluareligion",
+  ];
+  for (const prefijo of prefijosValidacionAdicional) {
+    if (prefijos.includes(prefijo)) {
+      for (const key of camposAdicionales) {
+        if (dataBuscaAl[key] !== undefined) {
+          // Solo validar si el campo existe en el objeto
+          const error = ValidaFichaAlumno(key, dataBuscaAl[key]);
+          if (error) {
+            console.log(`Error encontrado en campo adicional "${key}":`, error);
+            return error; // Detener si hay error en campos adicionales
+          }
+        }
+      }
+    }
   }
-}
-
-for (const key of Object.keys(dataBuscaAl).filter((key) => key.startsWith("apsu_") && !camposExcluidos.includes(key))) {
-  //  console.log("Recorriendo databuscal key", key, " dataBuscaAl[", key, "]  =>", dataBuscaAl[key]);
- 
-   const error = ValidaFichaAlumno(key, dataBuscaAl[key]);
-   if (error) {
-     // console.log("Error encontrado en key:", key, "=>", error);
-     return error; // Retorna el error y detiene el bucle
-   }
- }
- 
- 
-
 
   return "";
 };
-
-/*
-ap_amat
-ap_apat
-ap_domicilio
-ap_email
-ap_emergencia
-ap_fono1
-ap_fono2
-ap_id_comuna
-ap_nombres
-ap_parentesco
-ap_rut
-ap_sexo
-
-apsu_amat
-apsu_apat
-apsu_domicilio
-apsu_email
-apsu_emergencia
-apsu_fono1
-apsu_fono2
-apsu_id_comuna
-apsu_nombres
-apsu_parentesco
-apsu_rut
-apsu_sexo
-
-*/
