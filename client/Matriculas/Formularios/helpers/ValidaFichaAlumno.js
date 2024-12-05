@@ -37,16 +37,28 @@ const validarEmail = (email) => {
 };
 
 export const ValidaFichaAlumno = (name, value, curso) => {
-  const camposExcluidosDeSanitizacion = ["al_idcurso", "al_id_comuna","al_canthnos","al_cur_repe"];
+  const camposExcluidosDeSanitizacion = [
+    "al_idcurso",
+    "al_id_comuna",
+    "al_canthnos",
+    "al_cur_repe",
+  ];
 
   let error = "";
 
   if (!camposExcluidosDeSanitizacion.includes(name)) {
-    const sanitizedInput = DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [], });
-    if (value !== sanitizedInput) {
-      return "Intento de contenido malicioso detectado!!, name = " + name + "  value =" + value;
+    const strValue = String(value);
+    const sanitizedInput = DOMPurify.sanitize(strValue, {
+      ALLOWED_TAGS: [],
+      ALLOWED_ATTR: [],
+    });
+    if (strValue !== sanitizedInput) {
+      return (
+        "Intento de contenido malicioso detectado!!, name = " +
+        name +
+        "  value =" + value +''
+      );
     }
-  
   }
 
   switch (name) {
@@ -267,68 +279,66 @@ export const ValidaFichaAlumno = (name, value, curso) => {
         error = "Debe seleccionar una comuna de la lista para el Apod.Suplente";
       }
       break;
-//*************************************************************** */
-// atecedentes de padre y madre
-case "madre_rut":
-  if (!/^\d{7,8}-[\dkK]$/.test(value)) {
-    error = "El RUT de madre, debe tener un formato válido.";
-  }
-  break;
+    //*************************************************************** */
+    // atecedentes de padre y madre
+    case "madre_rut":
+      if (!/^\d{7,8}-[\dkK]$/.test(value)) {
+        error = "El RUT de madre, debe tener un formato válido.";
+      }
+      break;
 
-  case "madre_nombres":
-    if (!value.trim()) {
-      error = "Nombre madre es obligatorio.";
-    } else if (value.length < 3) {
-      error = "El nombre madre debe tener al menos 3 caracteres.";
-    }
-    break;
+    case "madre_nombres":
+      if (!value.trim()) {
+        error = "Nombre madre es obligatorio.";
+      } else if (value.length < 3) {
+        error = "El nombre madre debe tener al menos 3 caracteres.";
+      }
+      break;
 
-  case "madre_apat":
-    if (!value.trim()) {
-      error = "Apellido paterno madre es obligatorio.";
-    } else if (value.length < 3) {
-      error = "El apellido madre debe tener al menos 3 caracteres.";
-    }
-    break;
-  case "madre_amat":
-    if (!value.trim()) {
-      error = "Apellido materno madre es obligatorio.";
-    } else if (value.length < 3) {
-      error =
-        "Apellido materno madre debe tener al menos 3 caracteres.";
-    }
-    break;
+    case "madre_apat":
+      if (!value.trim()) {
+        error = "Apellido paterno madre es obligatorio.";
+      } else if (value.length < 3) {
+        error = "El apellido madre debe tener al menos 3 caracteres.";
+      }
+      break;
+    case "madre_amat":
+      if (!value.trim()) {
+        error = "Apellido materno madre es obligatorio.";
+      } else if (value.length < 3) {
+        error = "Apellido materno madre debe tener al menos 3 caracteres.";
+      }
+      break;
     case "padre_rut":
       if (!/^\d{7,8}-[\dkK]$/.test(value)) {
         error = "El RUT de padre, debe tener un formato válido.";
       }
       break;
-    
-      case "padre_nombres":
-        if (!value.trim()) {
-          error = "Nombre padre es obligatorio.";
-        } else if (value.length < 3) {
-          error = "El nombre padre debe tener al menos 3 caracteres.";
-        }
-        break;
-    
-      case "padre_apat":
-        if (!value.trim()) {
-          error = "Apellido paterno padre es obligatorio.";
-        } else if (value.length < 3) {
-          error = "El apellido padre debe tener al menos 3 caracteres.";
-        }
-        break;
-      case "mpadre_amat":
-        if (!value.trim()) {
-          error = "Apellido materno padre es obligatorio.";
-        } else if (value.length < 3) {
-          error =
-            "Apellido materno padre debe tener al menos 3 caracteres.";
-        }
-        break;
 
-/**************************************************************** */
+    case "padre_nombres":
+      if (!value.trim()) {
+        error = "Nombre padre es obligatorio.";
+      } else if (value.length < 3) {
+        error = "El nombre padre debe tener al menos 3 caracteres.";
+      }
+      break;
+
+    case "padre_apat":
+      if (!value.trim()) {
+        error = "Apellido paterno padre es obligatorio.";
+      } else if (value.length < 3) {
+        error = "El apellido padre debe tener al menos 3 caracteres.";
+      }
+      break;
+    case "mpadre_amat":
+      if (!value.trim()) {
+        error = "Apellido materno padre es obligatorio.";
+      } else if (value.length < 3) {
+        error = "Apellido materno padre debe tener al menos 3 caracteres.";
+      }
+      break;
+
+    /**************************************************************** */
     default:
       break;
   }
@@ -416,6 +426,10 @@ export const validateFormAlumno = (dataBuscaAl) => {
     "ap_sexo",
     "apsu_dv",
     "apsu_parentesco",
+    "al_idmadre",
+    "al_idpadre",
+    "al_idapoderado",
+    "al_idapoderadosupl",
   ];
   const prefijos = ["al_", "ap_", "apsu_", "padre_", "madre_"]; // Primero "al_", luego "ap_", después "apsu_"
 
@@ -423,8 +437,8 @@ export const validateFormAlumno = (dataBuscaAl) => {
     for (const key of Object.keys(dataBuscaAl).filter(
       (key) => key.startsWith(prefijo) && !camposExcluidos.includes(key)
     )) {
-      if( key === "al_canthnos"){
-        console.log(" al_canthnos :", dataBuscaAl[key])
+      if (key === "al_canthnos") {
+        console.log(" al_canthnos :", dataBuscaAl[key]);
       }
       const error = ValidaFichaAlumno(key, dataBuscaAl[key]);
       if (error) {
@@ -435,6 +449,8 @@ export const validateFormAlumno = (dataBuscaAl) => {
   };
 
   for (const prefijo of prefijos) {
+    console.log("validarCampo con prefijo :,", prefijo);
+    console.log("Valor de dataBuscaAl : ", dataBuscaAl);
     const error = validarCampos(prefijo);
     if (error) {
       console.log(`Error encontrado para el prefijo "${prefijo}":`, error);

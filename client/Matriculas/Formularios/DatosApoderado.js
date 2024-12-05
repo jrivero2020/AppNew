@@ -51,27 +51,26 @@ export const DatosApoderado = ({
     []
   );
   const validaRutApoderado = (name, resultado, setResultado) => {
-    console.log(
-      "validaRutApoderado : name, resultado, setResultado",
-      name,
-      resultado,
-      setResultado
-    );
-    console.log("valor de resultado[name] ", resultado[name]);
-
-    if (resultado[name] === undefined || resultado[name] === "") {
-      return false;
+    const rutAp = resultado[name]
+    console.log("*********validaRutApoderado************** name :", name, " resultado :", resultado);
+    if (rutAp.length <= 1){
+      setErrors({ ...errors, [name]: "Debe ingresar Rut válido"});
+      console.log("rutAp :", rutAp);
+      return false
     }
-
+    
     if (FValidarOtrosRut(name, resultado, setResultado)) {
       console.log("Rut Validado y hay que buscar apoderado");
+    }else {
+      console.log("***Rut Inválido***");
+      setErrors({ ...errors, [name]: "Debe ingresar Rut válido"});
     }
   };
 
   if (!comunas || !parentescos || !dataBuscaAl || !resultado) {
     return <div>Cargando...</div>;
   }
-console.log(" dataBuscaAl =>:", dataBuscaAl )
+// console.log(" dataBuscaAl =>:", dataBuscaAl )
   return (
     <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}>
       <Grid item xs={12}>

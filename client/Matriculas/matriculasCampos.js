@@ -20,7 +20,7 @@ export const cFichaAlumno = {
   al_fincorpora: "",
   al_genero: "M",
   al_hnosaca: 0,
-  al_hnoscursos: 0,
+  al_hnoscursos:"",
   al_id_alumno: 0,
   al_id_comuna: 13102,
   al_idapoderado: 0,

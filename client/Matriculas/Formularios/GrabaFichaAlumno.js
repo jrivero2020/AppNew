@@ -1,5 +1,5 @@
 // import { useContext } from "react";
-import { ValidaFichaAlumno, validateFormAlumno } from "./helpers/ValidaFichaAlumno";
+import { validateFormAlumno } from "./helpers/ValidaFichaAlumno";
 // import { AuthContext } from "./../../core/AuthProvider";
 import { api_CreaModificaAlumno } from "./../../docentes/api-docentes";
 
