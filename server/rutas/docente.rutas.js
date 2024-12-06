@@ -30,11 +30,13 @@ router
   .route("/CsvLibroMatricula")
   .get(authCtrl.requireSignin, docenteCtrl.CsvLibroMatricula);
 
-router.route("/AlumnosByRut/:rutAl")
+router
+  .route("/AlumnosByRut/:rutAl")
   .get(docenteCtrl.listaAlumnosByRut)
-  .put(authCtrl.requireSignin, docenteCtrl.updateAlumnosByRut)
+  .put(authCtrl.requireSignin, docenteCtrl.updateAlumnosByRut);
 
-router.route("/matricula/:rutAl")
+router
+  .route("/matricula/:rutAl")
   .get(authCtrl.requireSignin, docenteCtrl.listaMatricula);
 
 router.param("Id", docenteCtrl.docenteByID);
@@ -61,11 +63,14 @@ router
   .route("/getAlumnosCurso/:ense/:grado/:letra")
   .get(authCtrl.requireSignin, docenteCtrl.getAlumnosCurso);
 
-router.route("/JsonInitOpcion")
-.get( docenteCtrl.JsonInitOpcion)
+router.route("/JsonInitOpcion").get(docenteCtrl.JsonInitOpcion);
 
-router.route("/UpdateInsertAlumno/:al_rut")
-.put( authCtrl.requireSignin, docenteCtrl.CreaAlumnoRut)
+router
+  .route("/UpdateInsertAlumno/:al_rut")
+  .put(authCtrl.requireSignin, docenteCtrl.CreaAlumnoRut);
 
+router
+  .route("/rutaGetDatosFamilia/:rutAl")
+  .get(authCtrl.requireSignin, docenteCtrl.getDatosFamilia);
 
 export default router;

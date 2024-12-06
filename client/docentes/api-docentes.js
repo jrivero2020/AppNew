@@ -296,6 +296,22 @@ const api_CreaModificaAlumno = async (params, credentials, alumno) => {
   }
 };
 
+const api_getDatosFamiliaAP = async (params, credentials, signal) => {
+  try {
+    let response = await fetch("/rutaGetDatosFamilia/" + params, {
+      method: "GET",
+      signal: signal,
+      headers: { Authorization: "Bearer " + credentials.t },
+    });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
 export {
   create,
   leer,
@@ -316,6 +332,7 @@ export {
   api_GetJsonInitOpcion,
   api_ActAlumnoCurso,
   api_CreaModificaAlumno,
+  api_getDatosFamiliaAP,
 };
 
 /*

@@ -2,6 +2,8 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SaveIcon from "@mui/icons-material/Save";
 import { AuthContext } from "../../core/AuthProvider";
+import { CargaDataFamiliaAp } from "./../../FichaAlumnos/CargaDataRutAlumno";
+
 import {
   Button,
   FormControl,
@@ -38,6 +40,12 @@ export const DatosApoderado = ({
   const { jwt } = useContext(AuthContext);
   const [errors, setErrors] = useState({});
   const [snackbar, setSnackbar] = useState(null);
+  const [mode, setMode] = useState(0);
+
+  const buscarFamiliaActiva = () =>
+    ["", "BuscaAp", "BuscaApSup", "BuscaPadre", "BuscaMadre"].some(
+      (key) => resultado[key] === 1
+    );
 
   const handleChange = useCallback(
     (name, curso) => (event) => {
@@ -51,26 +59,25 @@ export const DatosApoderado = ({
     []
   );
   const validaRutApoderado = (name, resultado, setResultado) => {
-    const rutAp = resultado[name]
-    console.log("*********validaRutApoderado************** name :", name, " resultado :", resultado);
-    if (rutAp.length <= 1){
-      setErrors({ ...errors, [name]: "Debe ingresar Rut válido"});
+    const rutAp = resultado[name];
+    const indName = name === "ApRut" ? 1 : 2;
+
+    if (rutAp.length <= 1) {
+      setErrors({ ...errors, [name]: "Debe ingresar Rut válido" });
       console.log("rutAp :", rutAp);
-      return false
+      return false;
     }
-    
-    if (FValidarOtrosRut(name, resultado, setResultado)) {
-      console.log("Rut Validado y hay que buscar apoderado");
-    }else {
-      console.log("***Rut Inválido***");
-      setErrors({ ...errors, [name]: "Debe ingresar Rut válido"});
+    if (!FValidarOtrosRut(name, resultado, setResultado)) {
+      setErrors({ ...errors, [name]: "Debe ingresar Rut válido" });
+      return false;
     }
+    setMode(indName);
   };
 
   if (!comunas || !parentescos || !dataBuscaAl || !resultado) {
     return <div>Cargando...</div>;
   }
-// console.log(" dataBuscaAl =>:", dataBuscaAl )
+  // console.log(" dataBuscaAl =>:", dataBuscaAl )
   return (
     <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}>
       <Grid item xs={12}>
@@ -87,8 +94,8 @@ export const DatosApoderado = ({
                 fullWidth
                 value={resultado.ApRut}
                 onChange={manejoCambiofRut("ApRut", resultado, setResultado)}
-                error={!!errors.ap_rut}
-                helperText={errors.ap_rut}
+                error={!!errors.ApRut}
+                helperText={errors.ApRut}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -154,7 +161,11 @@ export const DatosApoderado = ({
                 style={{ width: "100%", alignItems: "center" }}
                 sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
               >
-                <FormControl size="small" sx={{ ml: 2 }} error={!!errors.al_idparentesco}>
+                <FormControl
+                  size="small"
+                  sx={{ ml: 2 }}
+                  error={!!errors.al_idparentesco}
+                >
                   <FormLabel
                     id="apparentesco"
                     sx={{ mt: 1, ml: 2 }}
@@ -244,7 +255,11 @@ export const DatosApoderado = ({
                 style={{ width: "100%", alignItems: "center" }}
                 sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
               >
-                <FormControl size="small" sx={{ ml: 2 }}  error={!!errors.ap_id_comuna} >
+                <FormControl
+                  size="small"
+                  sx={{ ml: 2 }}
+                  error={!!errors.ap_id_comuna}
+                >
                   <FormLabel
                     id="aptComuna"
                     sx={{ mt: 1, ml: 2 }}
@@ -291,6 +306,8 @@ export const DatosApoderado = ({
                 required
                 fullWidth
                 value={resultado.ApsuRut}
+                error={!!errors.ApsuRut}
+                helperText={errors.ApsuRut}
                 onChange={manejoCambiofRut("ApsuRut", resultado, setResultado)}
                 InputProps={{
                   endAdornment: (
@@ -350,7 +367,11 @@ export const DatosApoderado = ({
                 style={{ width: "100%", alignItems: "center" }}
                 sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
               >
-                <FormControl size="small" sx={{ ml: 2 }} error={!!errors.al_idparentescosupl} >
+                <FormControl
+                  size="small"
+                  sx={{ ml: 2 }}
+                  error={!!errors.al_idparentescosupl}
+                >
                   <FormLabel
                     id="apsu_parentesco"
                     sx={{ mt: 1, ml: 2 }}
@@ -441,7 +462,11 @@ export const DatosApoderado = ({
                 style={{ width: "100%", alignItems: "center" }}
                 sx={{ mb: 2, pb: 2, backgroundColor: "#efebe9" }}
               >
-                <FormControl size="small" sx={{ ml: 2 }} error={!!errors.apsu_id_comuna}>
+                <FormControl
+                  size="small"
+                  sx={{ ml: 2 }}
+                  error={!!errors.apsu_id_comuna}
+                >
                   <FormLabel
                     id="apsComuna"
                     sx={{ mt: 1, ml: 2 }}
@@ -468,13 +493,22 @@ export const DatosApoderado = ({
                     ))}
                   </Select>
                   <FormHelperText>{errors.apsu_id_comuna}</FormHelperText>
-
                 </FormControl>
               </Paper>
             </Grid>
           </Grid>
         </Paper>
       </Grid>
+      {(mode === 1 || mode === 2) &&
+        CargaDataFamiliaAp({
+          resultado,
+          setResultado,
+          jwt,
+          dataBuscaAl,
+          setDataBuscaAl,
+          mode,
+          setMode,
+        })}
     </Grid>
   );
 };

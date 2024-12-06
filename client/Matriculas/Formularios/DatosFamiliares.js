@@ -2,6 +2,8 @@ import React, { useCallback, useContext, useState } from "react";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SaveIcon from "@mui/icons-material/Save";
 import { AuthContext } from "../../core/AuthProvider";
+import { CargaDataApoderado } from "./../../FichaAlumnos/CargaDataRutAlumno";
+
 import {
   Button,
   FormControl,
@@ -18,12 +20,12 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
-import { FmtoRut } from "./../../assets/js/FmtoRut";
+
 // import { api_CreaModificaAlumno } from "./../../docentes/api-docentes";
 import { ValidaFichaAlumno } from "./helpers/ValidaFichaAlumno";
 // import { MsgMuestraError } from "./../../assets/dialogs/MuestraError";
 import { Box } from "@mui/system";
-import {  CustomGridSubtitulo } from "./../../assets/componentes/customGridPaper/customVerAlumnos";
+import { CustomGridSubtitulo } from "./../../assets/componentes/customGridPaper/customVerAlumnos";
 export const DatosFamiliares = ({
   resultado,
   setResultado,
@@ -61,7 +63,7 @@ export const DatosFamiliares = ({
             sx={{ px: 1, pb: 2, backgroundColor: "#efebe9" }}
           >
             <Grid container spacing={1.5}>
-            <CustomGridSubtitulo texto={ "Antecedentes del padre"} />
+              <CustomGridSubtitulo texto={"Antecedentes del padre"} />
               <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   id="rutpadre"
@@ -127,7 +129,7 @@ export const DatosFamiliares = ({
                   onChange={handleChange("padre_ocupacion")}
                 />
               </Grid>
-              <CustomGridSubtitulo texto={ "Antecedentes de la Madre"} />
+              <CustomGridSubtitulo texto={"Antecedentes de la Madre"} />
               <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   id="idfRutAp"
@@ -193,7 +195,7 @@ export const DatosFamiliares = ({
                   onChange={handleChange("madre_ocupacion")}
                 />
               </Grid>
-              <CustomGridSubtitulo texto={ "Otros"} />
+              <CustomGridSubtitulo texto={"Otros"} />
 
               <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
@@ -210,20 +212,20 @@ export const DatosFamiliares = ({
 
               <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Grid item>
-                <Paper
-                  elevation={3}
-                  style={{ width: "100%", alignItems: "center" }}
-                  sx={{ pd: 2, backgroundColor: "#efebe9" }}
-                >
-                     <FormControl size="small" sx={{ ml: 2 }}>
-                    <FormLabel
-                      id="vivienda"
-                      sx={{ mt: 1, ml: 2 }}
-                      style={{ fontSize: "12px" }}
-                    >
-                      Vivienda
-                    </FormLabel>
-                   
+                  <Paper
+                    elevation={3}
+                    style={{ width: "100%", alignItems: "center" }}
+                    sx={{ pd: 2, backgroundColor: "#efebe9" }}
+                  >
+                    <FormControl size="small" sx={{ ml: 2 }}>
+                      <FormLabel
+                        id="vivienda"
+                        sx={{ mt: 1, ml: 2 }}
+                        style={{ fontSize: "12px" }}
+                      >
+                        Vivienda
+                      </FormLabel>
+
                       <RadioGroup
                         row
                         aria-labelledby="CasaProp"
@@ -258,20 +260,20 @@ export const DatosFamiliares = ({
                 </Grid>
               </Grid>
               <Grid item xs={12} sm={6} md={4} lg={3}>
-              <Paper
+                <Paper
                   elevation={3}
                   style={{ width: "100%", alignItems: "center" }}
                   sx={{ pd: 2, backgroundColor: "#efebe9" }}
                 >
-                     <FormControl size="small" sx={{ ml: 2 }}>
-                  <FormLabel
-                    id="religion"
-                    sx={{ mt: 1, ml: 2, mb: 3 }}
-                    style={{ fontSize: "12px" }}
-                  >
-                    Autorizo que mi hijo sea evaluado en religión &nbsp;&nbsp;
-                  </FormLabel>
-                 
+                  <FormControl size="small" sx={{ ml: 2 }}>
+                    <FormLabel
+                      id="religion"
+                      sx={{ mt: 1, ml: 2, mb: 3 }}
+                      style={{ fontSize: "12px" }}
+                    >
+                      Autorizo que mi hijo sea evaluado en religión &nbsp;&nbsp;
+                    </FormLabel>
+
                     <RadioGroup
                       row
                       aria-labelledby="autorizo"

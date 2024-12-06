@@ -111,6 +111,22 @@ const listaMatricula = async (req, res) => {
   }
 };
 
+const getDatosFamilia = async (req, res) => {
+  try {
+    const rutAl = req.params.rutAl;
+    const dataMatricula = await sequelize.query(
+      "CALL sp_getdatosfamiliaap( ? )",
+      {
+        replacements: [rutAl],
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+    res.json(dataMatricula);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 const listaAlumnosByRut = async (req, res) => {
   try {
     const rutAl = req.params.rutAl;
@@ -359,6 +375,7 @@ export default {
   getAlumnosCurso,
   JsonInitOpcion,
   CreaAlumnoRut,
+  getDatosFamilia,
 };
 
 /*

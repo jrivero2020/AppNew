@@ -33,8 +33,8 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
     (name, curso) => (event) => {
       const { value } = event.target;
       // Validar el campo
-      if( name === "al_canthnos"){
-        console.log("al_canthnos => ", value)
+      if (name === "al_canthnos") {
+        console.log("al_canthnos => ", value);
       }
       const error = ValidaFichaAlumno(name, value, curso);
       setDataBuscaAl((prev) => ({ ...prev, [name]: value }));
@@ -43,111 +43,7 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-  /*
-  const validateFormAlumno = () => {
-    const camposExcluidos = [
-      "al_rut",
-      "al_dv",
-      "al_activo",
-      "al_agno_matricula",
-      "al_cod_ense",
-      "al_cod_grado",
-      "al_evaluareligion",
-      "al_fecharetiro",
-      "al_fincorpora",
-      "al_id_alumno",
-      "al_ingresogrupofamiliar",
-      "al_letra",
-      "al_motivoretiro",
-      "al_nro_matricula",
-      "al_nrofamiliar",
-    ];
 
-    const newErrors = {};
-    Object.keys(dataBuscaAl)
-      .filter((key) => key.startsWith("al_") && !camposExcluidos.includes(key))
-      .forEach((key) => {
-        const error = ValidaFichaAlumno(key, dataBuscaAl[key]);
-        console.log(
-          "Recorriendo databuscaal key",
-          key,
-          " dataBuscaAl[",
-          key,
-          "]  =>",
-          dataBuscaAl[key]
-        );
-        if (error) {
-          newErrors[key] = error;
-        }
-      });
-
-    //setErrors(newErrors);
-
-    // Retornar verdadero si no hay errores
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const GrabarAlumno = (resultado, setResultado) => {
-    console.log("estoy en grabaralumno valor de resultado : ", resultado);
-    if (validateFormAlumno()) {
-      api_CreaModificaAlumno(
-        { al_rut: dataBuscaAl.al_rut, resul: resultado.resul },
-        { t: jwt.token },
-        dataBuscaAl
-      )
-        .then((data) => {
-          console.log("api_CreaModificaAlumno, retorno en data ===>", data);
-          if (data && data.error) {
-            if (data.error === 409) {
-              setSnackbar({
-                mensaje:
-                  "El alumno ya existe con el RUT proporcionado." ||
-                  data.message,
-                severity: "error",
-                variant: "filled",
-              });
-            } else {
-              setResultado({ ...resultado, result: 11 });
-            }
-            console.log("data.error :", data);
-
-            return false;
-          } else {
-            setSnackbar({
-              mensaje: "Datos se grabaron",
-              severity: "success",
-              variant: "filled",
-            });
-          }
-        })
-        .catch((error) => {
-          // Manejo de errores aquí
-          console.error("Error al grabar alumno:", error);
-          if (error.response) {
-            // Si el servidor respondió con un código de estado fuera del rango 2xx
-            setSnackbar({
-              mensaje: error.response.data.message || "Error al grabar alumno.",
-              severity: "error",
-              variant: "filled",
-            });
-          } else {
-            // Si hubo un error en la configuración de la solicitud
-            setSnackbar({
-              mensaje: "Error en la conexión con el servidor.",
-              severity: "error",
-              variant: "filled",
-            });
-          }
-        });
-    } else {
-      setSnackbar({
-        mensaje: "Hay Errores en el formulario",
-        severity: "error",
-        variant: "filled",
-      });
-    }
-  };
-*/
   if (!comunas || !cursos || !dataBuscaAl) {
     return <div>Cargando...</div>;
   }
@@ -278,7 +174,7 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
 
             <Grid item xs={12} sm={6} md={4} lg={3}>
               <Paper elevation={3} sx={{ px: 2, backgroundColor: "#efebe9" }}>
-                <FormControl  error={!!errors.al_cur_repe}>
+                <FormControl error={!!errors.al_cur_repe}>
                   <FormLabel
                     id="lSexo"
                     sx={{ mt: 1, ml: 4 }}
@@ -590,56 +486,7 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
             </Grid>
           </Grid>
         </Paper>
-
-        {/* **********************************************fin**/}
       </Grid>
-      {/*
-      <Grid
-        container
-        spacing={2}
-        sx={{
-          margin: "auto",
-          maxWidth: "95%",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Grid item xs={12} sm={6} sx={{ textAlign: "center" }}>
-          <Button
-            size="large"
-            variant="contained"
-            sx={{ fontSize: "11px", mt: "10px" }}
-            startIcon={<PersonAddIcon />}
-            onClick={() =>
-              setResultado({ ...resultado, result: 0, fRut: "", dv: "" })
-            }
-          >
-            Nueva Búsqueda
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={6} sx={{ textAlign: "center" }}>
-          <Button
-            size="large"
-            variant="contained"
-            sx={{
-              fontSize: "11px",
-              mt: "10px",
-              backgroundColor: "green", // Fondo verde
-
-              "&:hover": {
-                // Estilo al pasar el mouse
-                backgroundColor: "darkgreen", // Fondo verde más oscuro al hover
-              },
-            }}
-            startIcon={<SaveIcon />}
-            onClick={() => GrabarAlumno(resultado, setResultado)}
-          >
-            Grabar datos Alumno
-          </Button>
-        </Grid>
-      </Grid>
-      {snackbar && MsgMuestraError({ snackbar, setSnackbar })}
-      */}
     </>
   );
 };

@@ -11,6 +11,7 @@
 
 const FmtoRut = (value) => {
   // let tvalue = value.replace(/[.-]/g, '');
+  console.log("en FmtoRut el valor ==>", value);
   let tvalue = QuitaPuntos(value);
   let patt = new RegExp(/^\d{1,10}[kK]?$/);
   let retValue = "";
@@ -37,6 +38,7 @@ const QuitaPuntos = (rut) => {
 };
 
 const validarRut = (rut) => {
+  console.log(" en validarRut el rut es : ", rut);
   const rutnulos = [
     11111111, 22222222, 33333333, 44444444, 55555555, 66666666, 77777777,
     88888888, 99999999,
@@ -44,6 +46,7 @@ const validarRut = (rut) => {
   rut = rut.replace(/[.-]/g, ""); // Elimina los puntos y guión
   rut = rut.replace(/[^\dkK]/g, ""); // Eliminar caracteres no numéricos excepto K/k
   if (!/^\d{4,10}(?:[kK])?$/.test(rut)) {
+    console.log(" No paso el test: ", rut);
     return false;
   }
 
@@ -66,6 +69,7 @@ const validarRut = (rut) => {
   var resultado = 11 - (suma % 11); // Calcular dígito verificador esperado (módulo 11)
   resultado =
     resultado === 11 ? "0" : resultado === 10 ? "K" : String(resultado); // Convertir valor 10 a 'K'
+  console.log("resultado calculado es  : ", resultado);
   return dv === resultado; // Validar si el dígito verificador ingresado es igual al obtenido
 };
 
@@ -79,14 +83,16 @@ const manejoCambiofRut = (name, resultado, setResultado) => (event) => {
 };
 
 export const FValidarOtrosRut = (name, resultado, setResultado) => {
+  console.log("recibido en FValidarOtrosRut =", resultado[name]);
+
   let tvalue = FmtoRut(resultado[name]);
+  console.log("el formato rut es : ", tvalue);
   if (resultado[name].length === 1 && tvalue === null) tvalue = "";
   if (tvalue != null) {
-    return( validarRut(resultado[name] ) )
-  }else {
-  return false;
+    return validarRut(resultado[name]);
+  } else {
+    return false;
   }
 };
-
 
 export { FmtoRut, validarRut, QuitaPuntos, manejoCambiofRut };
