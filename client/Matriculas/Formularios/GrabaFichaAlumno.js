@@ -2,16 +2,36 @@
 import { validateFormAlumno } from "./helpers/ValidaFichaAlumno";
 // import { AuthContext } from "./../../core/AuthProvider";
 import { api_CreaModificaAlumno } from "./../../docentes/api-docentes";
+import {RutANumeros} from './../../assets/js/FmtoRut'
 
 export const GrabarAlumno = ({
   resultado,
   setResultado,
   setSnackbar,
   dataBuscaAl,
+  setDataBuscaAl,
   jwt,
 }) => {
-  // const { dataBuscaAl } = useContext(AuthContext);
-  // const { jwt } = useContext(AuthContext);
+
+  const actualizarRut = (campoRut, campoDv, nuevoRut) => {
+    const rutLimpio = RutANumeros(nuevoRut);
+    const dvLimpio = nuevoRut.slice(-1).toUpperCase();
+  
+    if (dataBuscaAl[campoRut] !== nuevoRut) {
+      setDataBuscaAl((prev) => ({
+        ...prev,
+        [campoRut]: rutLimpio,
+        [campoDv]: dvLimpio,
+      }));
+    }
+  };
+  
+  actualizarRut('ap_rut', 'ap_dv', resultado.ApRut);
+  actualizarRut('apsu_rut', 'apsu_dv', resultado.ApsuRut);
+  actualizarRut('madre_rut', 'madre_dv', resultado.MadRut);
+  actualizarRut('padre_rut', 'padre_dv', resultado.PadRut);
+
+  
 let validaForm = validateFormAlumno(dataBuscaAl);
   console.log( "**********Valor de validaForm********** ", validaForm)
   console.log("estoy en grabaralumno valor de resultado : ", resultado);

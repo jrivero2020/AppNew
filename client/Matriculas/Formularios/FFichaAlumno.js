@@ -211,6 +211,7 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
                 setResultado,
                 setSnackbar,
                 dataBuscaAl,
+                setDataBuscaAl,
                 jwt,
               })
             }

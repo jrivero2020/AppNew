@@ -63,6 +63,35 @@ export const CargaDataFamiliaAp = ({
   const indFamilia = ["", "BuscaAp", "BuscaApSup", "BuscaPadre", "BuscaMadre"];
   const rutFamilia = ["", "ApRut", "ApsuRut", "PadRut", "MadRut"];
 
+  const updateDataBuscaAl = (mode, results) => {
+    const prefixMap = {
+      1: "ap",
+      2: "apsu",
+      3: "padre",
+      4: "madre",
+    };
+
+    const prefix = prefixMap[mode];
+    if (!prefix) return;
+  
+    const updatedFields = {
+      [`${prefix}_nombres`]: results[0].fam_nombres,
+      [`${prefix}_apat`]: results[0].fam_apat,
+      [`${prefix}_amat`]: results[0].fam_amat,
+      [`${prefix}_fono1`]: results[0].fam_fono1,
+      [`${prefix}_fono2`]: results[0].fam_fono2,
+      [`${prefix}_emergencia`]: results[0].fam_emergencia,
+      [`${prefix}_email`]: results[0].fam_email,
+      [`${prefix}_domicilio`]: results[0].fam_domicilio,
+      [`${prefix}_id_comuna`]: results[0].fam_id_comuna,
+    };
+  
+    setDataBuscaAl((prev) => ({
+      ...prev,
+      ...updatedFields,
+    }));
+  };
+  
   /*
 modo =1; apoderado
 modo =2; apoderado suplente
@@ -70,15 +99,6 @@ modo =3; Padre
 modo =4; Madres
 */
   const rutLimpio = RutANumeros(resultado[rutFamilia[mode]]);
-
-  console.log(
-    " El valor que paso a api_getDatosFamiliaAp = >",
-    resultado[rutFamilia[mode]],
-    "resultado = ",
-    resultado,
-    " Rut Limpio ",
-    rutLimpio
-  );
 
   api_getDatosFamiliaAP(rutLimpio, { t: jwt.token }, signal).then((data) => {
     // console.log("getDatosMatricula resultado.RutBuscar ===>", resultado.RutBuscar );
@@ -108,8 +128,14 @@ modo =4; Madres
           "Cargar Data del ",
           [indFamilia[mode]],
           " Con resultado ==>",
-          results[0]
+          results[0].fam_nombres
         );
+
+        if (mode >= 1 && mode <= 4) {
+          updateDataBuscaAl(mode, results);
+        }
+      
+
         setMode(0);
 
         // setDataBuscaAl(results[0]); // Datos de la vista cargados
@@ -118,3 +144,4 @@ modo =4; Madres
   });
   return;
 };
+

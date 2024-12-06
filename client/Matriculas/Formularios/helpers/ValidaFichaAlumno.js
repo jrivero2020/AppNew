@@ -434,6 +434,29 @@ export const validateFormAlumno = (dataBuscaAl) => {
   const prefijos = ["al_", "ap_", "apsu_", "padre_", "madre_"]; // Primero "al_", luego "ap_", después "apsu_"
 
   const validarCampos = (prefijo) => {
+    const validarRut = (campoRut, campoDv, nombreCampo) => {
+      const rut = `${dataBuscaAl[campoRut]}-${dataBuscaAl[campoDv]}`;
+      if (!/^\d{7,8}-[\dkK]$/.test(rut)) {
+        return `El RUT de ${nombreCampo} debe tener un formato válido.`;
+      }
+      return null;
+    };
+    
+    const campos = [
+      { rut: 'al_rut', dv: 'al_dv', nombre: 'Alumno' },
+      { rut: 'ap_rut', dv: 'ap_dv', nombre: 'Apoderado' },
+      { rut: 'apsu_rut', dv: 'apsu_dv', nombre: 'Apoderado suplente' },
+      { rut: 'madre_rut', dv: 'madre_dv', nombre: 'Madre' },
+      { rut: 'padre_rut', dv: 'padre_dv', nombre: 'Padre' }
+    ];
+    
+    for (let { rut, dv, nombre } of campos) {
+      const error = validarRut(rut, dv, nombre);
+      if (error) return error;
+    }
+
+
+    
     for (const key of Object.keys(dataBuscaAl).filter(
       (key) => key.startsWith(prefijo) && !camposExcluidos.includes(key)
     )) {
