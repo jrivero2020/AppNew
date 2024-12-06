@@ -73,6 +73,13 @@ const validarRut = (rut) => {
   return dv === resultado; // Validar si el dígito verificador ingresado es igual al obtenido
 };
 
+export const RutANumeros = (rut) => {
+  rut = rut.replace(/[.-]/g, ""); // Elimina los puntos y guión
+  rut = rut.replace(/[^\dkK]/g, ""); // Eliminar caracteres no numéricos excepto K/k
+  rut = rut.padStart(10, "0"); // Rellenar con ceros a la izquierda si el rut no tiene 10 dígitos
+  return rut.slice(0, -1);
+};
+
 const manejoCambiofRut = (name, resultado, setResultado) => (event) => {
   let tvalue = FmtoRut(event.target.value);
   if (resultado[name].length === 1 && tvalue === null) tvalue = "";

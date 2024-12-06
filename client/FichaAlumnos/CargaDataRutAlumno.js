@@ -3,6 +3,7 @@ import {
   getDatosMatricula,
 } from "./../docentes/api-docentes";
 
+import { RutANumeros } from "./../assets/js/FmtoRut";
 // import { useContext } from "react";
 // import { AuthContext } from "./../core/AuthProvider"
 
@@ -68,18 +69,18 @@ modo =2; apoderado suplente
 modo =3; Padre
 modo =4; Madres
 */
+  const rutLimpio = RutANumeros(resultado[rutFamilia[mode]]);
+
   console.log(
     " El valor que paso a api_getDatosFamiliaAp = >",
     resultado[rutFamilia[mode]],
     "resultado = ",
-    resultado
+    resultado,
+    " Rut Limpio ",
+    rutLimpio
   );
 
-  api_getDatosFamiliaAP(
-    resultado[rutFamilia[mode]],
-    { t: jwt.token },
-    signal
-  ).then((data) => {
+  api_getDatosFamiliaAP(rutLimpio, { t: jwt.token }, signal).then((data) => {
     // console.log("getDatosMatricula resultado.RutBuscar ===>", resultado.RutBuscar );
     if (data && data.error) {
       setResultado({ ...resultado, [indFamilia[mode]]: 2 }); // error en conexion
