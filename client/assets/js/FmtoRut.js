@@ -90,10 +90,10 @@ const manejoCambiofRut = (name, resultado, setResultado) => (event) => {
 };
 
 export const FValidarOtrosRut = (name, resultado, setResultado) => {
-  console.log("recibido en FValidarOtrosRut =", resultado[name]);
+//  console.log("recibido en FValidarOtrosRut =", resultado[name]);
 
   let tvalue = FmtoRut(resultado[name]);
-  console.log("el formato rut es : ", tvalue);
+  // console.log("el formato rut es : ", tvalue);
   if (resultado[name].length === 1 && tvalue === null) tvalue = "";
   if (tvalue != null) {
     return validarRut(resultado[name]);

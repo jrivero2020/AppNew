@@ -16,25 +16,33 @@ export const GrabarAlumno = ({
   const actualizarRut = (campoRut, campoDv, nuevoRut) => {
     const rutLimpio = RutANumeros(nuevoRut);
     const dvLimpio = nuevoRut.slice(-1).toUpperCase();
-  
-    if (dataBuscaAl[campoRut] !== nuevoRut) {
+    // const numeroExtraido = parseInt(rutLimpio.match(/\d+/)[0], 10);
+    console.log( "*Rut limpio", rutLimpio, " y de dvLimpio :", 
+      dvLimpio, " nuevoRut ", nuevoRut, ' el rut en dataBuscaAl : ', dataBuscaAl[campoRut] )
+
+
+    if (dataBuscaAl[campoRut] !== nuevoRut) { 
+      console.log("*******LOS RUT son distintos y hago el setDataBuscaAl")
       setDataBuscaAl((prev) => ({
         ...prev,
-        [campoRut]: rutLimpio,
+        [campoRut]:  parseInt(rutLimpio.match(/\d+/)[0], 10),
         [campoDv]: dvLimpio,
       }));
     }
   };
   
+
   actualizarRut('ap_rut', 'ap_dv', resultado.ApRut);
   actualizarRut('apsu_rut', 'apsu_dv', resultado.ApsuRut);
   actualizarRut('madre_rut', 'madre_dv', resultado.MadRut);
   actualizarRut('padre_rut', 'padre_dv', resultado.PadRut);
 
   
+  console.log( "*Valor de GrabarAlumno resultado", resultado, " y de dataBuscaAl :", dataBuscaAl)
+  console.log("Voy a validar formulario****************");
+
+
 let validaForm = validateFormAlumno(dataBuscaAl);
-  console.log( "**********Valor de validaForm********** ", validaForm)
-  console.log("estoy en grabaralumno valor de resultado : ", resultado);
 
   if ( validaForm.length === 0) {
     api_CreaModificaAlumno(

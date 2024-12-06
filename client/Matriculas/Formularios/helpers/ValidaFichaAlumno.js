@@ -450,6 +450,10 @@ export const validateFormAlumno = (dataBuscaAl) => {
       { rut: 'padre_rut', dv: 'padre_dv', nombre: 'Padre' }
     ];
     
+    console.log("*****************************************")
+    console.log("********validarCampos********************")
+    console.log( "dataBuscaAl:", dataBuscaAl)
+    
     for (let { rut, dv, nombre } of campos) {
       const error = validarRut(rut, dv, nombre);
       if (error) return error;
