@@ -1,4 +1,6 @@
 import DOMPurify from "dompurify";
+import { validarRut } from "./../../../assets/js/FmtoRut";
+import { cFichaAlumnoOrdenada } from "./../../../Matriculas/matriculasCampos";
 
 const validarNroFono = (numero) => {
   // Expresión regular para celular chileno
@@ -56,7 +58,9 @@ export const ValidaFichaAlumno = (name, value, curso) => {
       return (
         "Intento de contenido malicioso detectado!!, name = " +
         name +
-        "  value =" + value +''
+        "  value =" +
+        value +
+        ""
       );
     }
   }
@@ -174,19 +178,19 @@ export const ValidaFichaAlumno = (name, value, curso) => {
       break;
     case "ap_fono1":
       if (!value.trim()) {
-        error = "Teléfono 1 es obligatorio.";
+        error = "Teléfono 1 de apoderado es obligatorio.";
       } else if (!validarNroFono(value)) {
-        error = "Nro de teléfono 1 es inválido";
+        error = "Nro de teléfono 1 de apoderado es inválido";
       }
       break;
     case "ap_fono2":
       if (value.trim() && !validarNroFono(value)) {
-        error = "Nro de teléfono 2 es inválido";
+        error = "Nro de teléfono 2 de apoderado es inválido";
       }
       break;
     case "ap_emergencia":
       if (value.trim() && !validarNroFono(value)) {
-        error = "Nro de teléfono emergencia es inválido";
+        error = "Nro de teléfono emergencia de apoderado es inválido";
       }
       break;
 
@@ -209,12 +213,6 @@ export const ValidaFichaAlumno = (name, value, curso) => {
       break;
     // ***********************************************
     // Datos del apoderado Suplente
-
-    case "apsu_rut":
-      if (!/^\d{7,8}-[\dkK]$/.test(value)) {
-        error = "El RUT Apoderado Supl, debe tener un formato válido.";
-      }
-      break;
 
     case "apsu_nombres":
       if (!value.trim()) {
@@ -281,11 +279,6 @@ export const ValidaFichaAlumno = (name, value, curso) => {
       break;
     //*************************************************************** */
     // atecedentes de padre y madre
-    case "madre_rut":
-      if (!/^\d{7,8}-[\dkK]$/.test(value)) {
-        error = "El RUT de madre, debe tener un formato válido.";
-      }
-      break;
 
     case "madre_nombres":
       if (!value.trim()) {
@@ -309,11 +302,6 @@ export const ValidaFichaAlumno = (name, value, curso) => {
         error = "Apellido materno madre debe tener al menos 3 caracteres.";
       }
       break;
-    case "padre_rut":
-      if (!/^\d{7,8}-[\dkK]$/.test(value)) {
-        error = "El RUT de padre, debe tener un formato válido.";
-      }
-      break;
 
     case "padre_nombres":
       if (!value.trim()) {
@@ -335,6 +323,25 @@ export const ValidaFichaAlumno = (name, value, curso) => {
         error = "Apellido materno padre es obligatorio.";
       } else if (value.length < 3) {
         error = "Apellido materno padre debe tener al menos 3 caracteres.";
+      }
+      break;
+    case "al_ingresogrupofamiliar":
+      if (!value.trim()) {
+        error = "Ingreso del grupo familiar es necesario.";
+      } else if (value.length < 3) {
+        error = "Apellido materno padre debe tener al menos 3 caracteres.";
+      }
+      break;
+
+    case "al_vivienda":
+      if (value === "" || value === 0) {
+        error = "Debe seleccionar tipo de vivienda";
+      }
+      break;
+    case "al_evaluareligion":
+      console.log("Rvalua religion ", value);
+      if (value === "" || value === 0) {
+        error = "Debe seleccionar sie evalúa religión";
       }
       break;
 
@@ -400,7 +407,7 @@ export const validaFechaAlumno = (fecha, curso, anioMatricula = 2025) => {
   } catch (e) {
     error = e.message;
   }
-  console.log("Validando fecha error = ", error);
+  // console.log("Validando fecha error = ", error);
   return error; // Si no hay error, retorna una cadena vacía
 };
 
@@ -421,70 +428,131 @@ export const validateFormAlumno = (dataBuscaAl) => {
     "al_motivoretiro",
     "al_nro_matricula",
     "al_nrofamiliar",
+    "ap_rut",
     "ap_dv",
     "ap_parentesco",
     "ap_sexo",
+    "apsu_rut",
     "apsu_dv",
     "apsu_parentesco",
     "al_idmadre",
     "al_idpadre",
     "al_idapoderado",
     "al_idapoderadosupl",
+    "madre_rut",
+    "madre_dv",
+    "padre_rut",
+    "padre_dv",
   ];
   const prefijos = ["al_", "ap_", "apsu_", "padre_", "madre_"]; // Primero "al_", luego "ap_", después "apsu_"
 
+  const campos = [
+    { rut: "ap_rut", dv: "ap_dv", nombre: "Apoderado" },
+    { rut: "apsu_rut", dv: "apsu_dv", nombre: "Apoderado suplente" },
+  ];
+
+  const clavesFiltradas = cFichaAlumnoOrdenada.filter(
+    (key) => !camposExcluidos.includes(key)
+  );
+
+  function esFalsyDefinida(value) {
+    return value === 0 || value === "" || value === null;
+  }
+
+  const validarFormatoRut = (campoRut, campoDv, nombreCampo) => {
+    const rut = `${dataBuscaAl[campoRut]}-${dataBuscaAl[campoDv]}`;
+    if (!validarRut(rut)) {
+      return `El RUT de ${nombreCampo} no es válido.`;
+    }
+    return null;
+  };
+
   const validarCampos = (prefijo) => {
-    const validarRut = (campoRut, campoDv, nombreCampo) => {
-      const rut = `${dataBuscaAl[campoRut]}-${dataBuscaAl[campoDv]}`;
-      if (!/^\d{7,8}-[\dkK]$/.test(rut)) {
-        return `El RUT de ${nombreCampo} debe tener un formato válido.`;
-      }
-      return null;
-    };
-    
-    const campos = [
-      { rut: 'al_rut', dv: 'al_dv', nombre: 'Alumno' },
-      { rut: 'ap_rut', dv: 'ap_dv', nombre: 'Apoderado' },
-      { rut: 'apsu_rut', dv: 'apsu_dv', nombre: 'Apoderado suplente' },
-      { rut: 'madre_rut', dv: 'madre_dv', nombre: 'Madre' },
-      { rut: 'padre_rut', dv: 'padre_dv', nombre: 'Padre' }
-    ];
-    
-    console.log("*****************************************")
-    console.log("********validarCampos********************")
-    console.log( "dataBuscaAl:", dataBuscaAl)
-    
+    console.log(
+      "Claves filtradas :",
+      clavesFiltradas,
+      "  dataBuscaAl =>",
+      dataBuscaAl
+    );
+
+    // *****************************************************
+    // validar los ruts de los formularios
     for (let { rut, dv, nombre } of campos) {
-      const error = validarRut(rut, dv, nombre);
+      const error = validarFormatoRut(rut, dv, nombre);
       if (error) return error;
     }
+    // fin ruts de formulario
+    // *******************************************************
 
+    // ********************************************************
+    // se permite rut de madre o padre sin datos, pero no los 2
+    if (
+      esFalsyDefinida(dataBuscaAl["padre_rut"]) &&
+      esFalsyDefinida(dataBuscaAl["padre_rut"])
+    ) {
+      return "Debe ingresar Rut de la Madre o el Padre, No se permite ambos padres sin Rut!";
+    }
+    if (!esFalsyDefinida(dataBuscaAl["padre_rut"])) {
+      const error = validarFormatoRut("padre_rut", "padre_dv", "Padre");
+      if (error) return error;
+    }
+    if (!esFalsyDefinida(dataBuscaAl["madre_rut"])) {
+      const error = validarFormatoRut("madre_rut", "madre_dv", "Madre");
+      if (error) return error;
+    }
+    // fin permite rut de madre o padre sin datos, pero no los 2
+    // **********************************************************
 
-    
+    // *******************************************************
+    // Validar todo el Formulario
+
+    // Filtra las claves que coincidan con el prefijo y no estén excluidas
+    //     const clavesFiltradas = cFichaAlumnoOrdenada.filter(
+    //       (key) => key.startsWith(prefijo) && !camposExcluidos.includes(key)
+    //     );
+
+    /*
     for (const key of Object.keys(dataBuscaAl).filter(
       (key) => key.startsWith(prefijo) && !camposExcluidos.includes(key)
     )) {
-      if (key === "al_canthnos") {
-        console.log(" al_canthnos :", dataBuscaAl[key]);
-      }
       const error = ValidaFichaAlumno(key, dataBuscaAl[key]);
       if (error) {
         return error; // Retorna el error y detiene la validación para este prefijo
       }
     }
+*/
+
+    for (const key of clavesFiltradas) {
+      if (dataBuscaAl.hasOwnProperty(key)) {
+        const valor = dataBuscaAl[key];
+
+        console.log("Se valida ", key, " con valor :", valor);
+        const error = ValidaFichaAlumno(key, valor);
+        if (error) {
+          return error; // Retorna el error y detiene la validación
+        }
+      }
+    }
     return null; // No hay errores en este prefijo
   };
-
+  /*
   for (const prefijo of prefijos) {
-    console.log("validarCampo con prefijo :,", prefijo);
-    console.log("Valor de dataBuscaAl : ", dataBuscaAl);
+    // console.log("validarCampo con prefijo :,", prefijo);
+    // console.log("Valor de dataBuscaAl : ", dataBuscaAl);
     const error = validarCampos(prefijo);
     if (error) {
-      console.log(`Error encontrado para el prefijo "${prefijo}":`, error);
+      // console.log(`Error encontrado para el prefijo "${prefijo}":`, error);
       return error; // Detener el proceso si se encuentra un error
     }
   }
+*/
 
+  const error = validarCampos();
+  if (error) {
+    return error; // Detener el proceso si se encuentra un error
+  }
+
+  /*
   // Validar campos específicos en la etapa de "madre_" y "padre_"
   const prefijosValidacionAdicional = ["madre_", "padre_"];
   const camposAdicionales = [
@@ -499,13 +567,14 @@ export const validateFormAlumno = (dataBuscaAl) => {
           // Solo validar si el campo existe en el objeto
           const error = ValidaFichaAlumno(key, dataBuscaAl[key]);
           if (error) {
-            console.log(`Error encontrado en campo adicional "${key}":`, error);
+            // console.log(`Error encontrado en campo adicional "${key}":`, error);
             return error; // Detener si hay error en campos adicionales
           }
         }
       }
     }
   }
+*/
 
   return "";
 };

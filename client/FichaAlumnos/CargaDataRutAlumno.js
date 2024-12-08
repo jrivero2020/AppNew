@@ -62,8 +62,10 @@ export const CargaDataFamiliaAp = ({
   const signal = abortController.signal;
   const indFamilia = ["", "BuscaAp", "BuscaApSup", "BuscaPadre", "BuscaMadre"];
   const rutFamilia = ["", "ApRut", "ApsuRut", "PadRut", "MadRut"];
+  const modeInterno = mode;
+  setMode(0);
 
-  const updateDataBuscaAl = (mode, results) => {
+  const updateDataBuscaAl = (results) => {
     const prefixMap = {
       1: "ap",
       2: "apsu",
@@ -71,9 +73,10 @@ export const CargaDataFamiliaAp = ({
       4: "madre",
     };
 
-    const prefix = prefixMap[mode];
+    const prefix = prefixMap[modeInterno];
+
     if (!prefix) return;
-  
+
     const updatedFields = {
       [`${prefix}_nombres`]: results[0].fam_nombres,
       [`${prefix}_apat`]: results[0].fam_apat,
@@ -84,27 +87,36 @@ export const CargaDataFamiliaAp = ({
       [`${prefix}_email`]: results[0].fam_email,
       [`${prefix}_domicilio`]: results[0].fam_domicilio,
       [`${prefix}_id_comuna`]: results[0].fam_id_comuna,
+      [`${prefix}_rut`]: results[0].fam_rut,
+      [`${prefix}_dv`]: results[0].fam_dv,
     };
-  
+
     setDataBuscaAl((prev) => ({
       ...prev,
       ...updatedFields,
     }));
+    /*
+    actualizarRut("ap_rut", "ap_dv", resultado.ApRut);
+    actualizarRut("apsu_rut", "apsu_dv", resultado.ApsuRut);
+    actualizarRut("madre_rut", "madre_dv", resultado.MadRut);
+    actualizarRut("padre_rut", "padre_dv", resultado.PadRut);
+*/
+
+    setMode(10); // Data Cargada en todo momento;
   };
-  
+
   /*
 modo =1; apoderado
 modo =2; apoderado suplente
 modo =3; Padre
 modo =4; Madres
 */
-  const rutLimpio = RutANumeros(resultado[rutFamilia[mode]]);
+  const rutLimpio = RutANumeros(resultado[rutFamilia[modeInterno]]);
 
   api_getDatosFamiliaAP(rutLimpio, { t: jwt.token }, signal).then((data) => {
     // console.log("getDatosMatricula resultado.RutBuscar ===>", resultado.RutBuscar );
     if (data && data.error) {
-      setResultado({ ...resultado, [indFamilia[mode]]: 2 }); // error en conexion
-      setMode(0);
+      setResultado({ ...resultado, [indFamilia[modeInterno]]: 2 }); // error en conexion
       return false;
     } else {
       const [results] = data;
@@ -113,28 +125,26 @@ modo =4; Madres
         results[0] === null ||
         Object.keys(results[0]).length === 0
       ) {
-        setResultado({ ...resultado, [indFamilia[mode]]: 3 }); // No está en base de datos
+        setResultado({ ...resultado, [indFamilia[modeInterno]]: 3 }); // No está en base de datos
         console.log("getDatosFamiliaAP resultado, no está en bd) :", resultado);
-        setMode(0);
       } else {
         console.log(
           "(results[0] :",
           results[0],
           " Cargar datos para modo =",
-          mode
+          modeInterno
         );
-        setResultado({ ...resultado, [indFamilia[mode]]: 1 }); // Ficha Cargada
+        setResultado({ ...resultado, [indFamilia[modeInterno]]: 1 }); // Ficha Cargada
         console.log(
           "Cargar Data del ",
-          [indFamilia[mode]],
+          [indFamilia[modeInterno]],
           " Con resultado ==>",
           results[0].fam_nombres
         );
 
-        if (mode >= 1 && mode <= 4) {
-          updateDataBuscaAl(mode, results);
+        if (modeInterno >= 1 && modeInterno <= 4) {
+          updateDataBuscaAl(results);
         }
-      
 
         setMode(0);
 
@@ -144,4 +154,3 @@ modo =4; Madres
   });
   return;
 };
-

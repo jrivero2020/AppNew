@@ -1,8 +1,5 @@
-// import { useContext } from "react";
 import { validateFormAlumno } from "./helpers/ValidaFichaAlumno";
-// import { AuthContext } from "./../../core/AuthProvider";
 import { api_CreaModificaAlumno } from "./../../docentes/api-docentes";
-import {RutANumeros} from './../../assets/js/FmtoRut'
 
 export const GrabarAlumno = ({
   resultado,
@@ -12,39 +9,35 @@ export const GrabarAlumno = ({
   setDataBuscaAl,
   jwt,
 }) => {
-
+  /*
   const actualizarRut = (campoRut, campoDv, nuevoRut) => {
     const rutLimpio = RutANumeros(nuevoRut);
     const dvLimpio = nuevoRut.slice(-1).toUpperCase();
-    // const numeroExtraido = parseInt(rutLimpio.match(/\d+/)[0], 10);
-    console.log( "*Rut limpio", rutLimpio, " y de dvLimpio :", 
-      dvLimpio, " nuevoRut ", nuevoRut, ' el rut en dataBuscaAl : ', dataBuscaAl[campoRut] )
 
-
-    if (dataBuscaAl[campoRut] !== nuevoRut) { 
-      console.log("*******LOS RUT son distintos y hago el setDataBuscaAl")
+    if (dataBuscaAl[campoRut] !== nuevoRut) {
       setDataBuscaAl((prev) => ({
         ...prev,
-        [campoRut]:  parseInt(rutLimpio.match(/\d+/)[0], 10),
+        [campoRut]: parseInt(rutLimpio.match(/\d+/)[0], 10),
         [campoDv]: dvLimpio,
       }));
     }
   };
-  
 
-  actualizarRut('ap_rut', 'ap_dv', resultado.ApRut);
-  actualizarRut('apsu_rut', 'apsu_dv', resultado.ApsuRut);
-  actualizarRut('madre_rut', 'madre_dv', resultado.MadRut);
-  actualizarRut('padre_rut', 'padre_dv', resultado.PadRut);
+  actualizarRut("ap_rut", "ap_dv", resultado.ApRut);
+  actualizarRut("apsu_rut", "apsu_dv", resultado.ApsuRut);
+  actualizarRut("madre_rut", "madre_dv", resultado.MadRut);
+  actualizarRut("padre_rut", "padre_dv", resultado.PadRut);
+*/
 
-  
-  console.log( "*Valor de GrabarAlumno resultado", resultado, " y de dataBuscaAl :", dataBuscaAl)
-  console.log("Voy a validar formulario****************");
+  console.log(
+    "GrabarAlumno, voy a validar todo el formulario dataBuscaAl===>",
+    dataBuscaAl,
+    " resultado => ",
+    resultado
+  );
+  const validaForm = validateFormAlumno(dataBuscaAl);
 
-
-let validaForm = validateFormAlumno(dataBuscaAl);
-
-  if ( validaForm.length === 0) {
+  if (validaForm.length === 0) {
     api_CreaModificaAlumno(
       { al_rut: dataBuscaAl.al_rut, resul: resultado.resul },
       { t: jwt.token },
@@ -94,7 +87,6 @@ let validaForm = validateFormAlumno(dataBuscaAl);
         }
       });
   } else {
-
     // let msg = "";
     // if (dataBuscaAl.ap_rut === 0 || dataBuscaAl.apsu_rut === 0) {
     //   msg = "Hay Errores en el formulario II.- Del Apoderado";
@@ -110,4 +102,5 @@ let validaForm = validateFormAlumno(dataBuscaAl);
       variant: "filled",
     });
   }
+  return;
 };

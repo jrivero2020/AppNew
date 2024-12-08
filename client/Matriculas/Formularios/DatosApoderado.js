@@ -42,11 +42,6 @@ export const DatosApoderado = ({
   const [snackbar, setSnackbar] = useState(null);
   const [mode, setMode] = useState(0);
 
-  const buscarFamiliaActiva = () =>
-    ["", "BuscaAp", "BuscaApSup", "BuscaPadre", "BuscaMadre"].some(
-      (key) => resultado[key] === 1
-    );
-
   const handleChange = useCallback(
     (name, curso) => (event) => {
       const { value } = event.target;
@@ -58,10 +53,10 @@ export const DatosApoderado = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
+
   const validaRutApoderado = (name, resultado, setResultado) => {
     const rutAp = resultado[name];
     const indName = name === "ApRut" ? 1 : 2;
-
     if (rutAp.length <= 1) {
       setErrors({ ...errors, [name]: "Debe ingresar Rut válido" });
       console.log("rutAp :", rutAp);
@@ -93,7 +88,13 @@ export const DatosApoderado = ({
                 required
                 fullWidth
                 value={resultado.ApRut}
-                onChange={manejoCambiofRut("ApRut", resultado, setResultado)}
+                onChange={manejoCambiofRut(
+                  "ApRut",
+                  resultado,
+                  setResultado,
+                  dataBuscaAl,
+                  setDataBuscaAl
+                )}
                 error={!!errors.ApRut}
                 helperText={errors.ApRut}
                 InputProps={{
@@ -308,7 +309,13 @@ export const DatosApoderado = ({
                 value={resultado.ApsuRut}
                 error={!!errors.ApsuRut}
                 helperText={errors.ApsuRut}
-                onChange={manejoCambiofRut("ApsuRut", resultado, setResultado)}
+                onChange={manejoCambiofRut(
+                  "ApsuRut",
+                  resultado,
+                  setResultado,
+                  dataBuscaAl,
+                  setDataBuscaAl
+                )}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">

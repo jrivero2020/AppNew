@@ -80,17 +80,27 @@ export const RutANumeros = (rut) => {
   return rut.slice(0, -1);
 };
 
-const manejoCambiofRut = (name, resultado, setResultado) => (event) => {
-  let tvalue = FmtoRut(event.target.value);
-  if (resultado[name].length === 1 && tvalue === null) tvalue = "";
+const manejoCambiofRut =
+  (name, resultado, setResultado, dataBuscaAl, setDataBuscaAl) => (event) => {
+    let tvalue = FmtoRut(event.target.value);
+    if (resultado[name].length === 1 && tvalue === null) tvalue = "";
 
-  if (tvalue != null) {
-    setResultado({ ...resultado, [name]: tvalue });
-  }
-};
+    if (tvalue != null) {
+      var rut = parseInt(RutANumeros(tvalue), 10);
+      var dv = tvalue.slice(-1).toUpperCase();
+
+      setResultado({ ...resultado, [name]: tvalue });
+
+      if (name === "ApRut")
+        setDataBuscaAl({ ...dataBuscaAl, ap_rut: rut, ap_dv: dv });
+
+      if (name === "ApsuRut")
+        setDataBuscaAl({ ...dataBuscaAl, apsu_rut: rut, apsu_dv: dv });
+    }
+  };
 
 export const FValidarOtrosRut = (name, resultado, setResultado) => {
-//  console.log("recibido en FValidarOtrosRut =", resultado[name]);
+  //  console.log("recibido en FValidarOtrosRut =", resultado[name]);
 
   let tvalue = FmtoRut(resultado[name]);
   // console.log("el formato rut es : ", tvalue);
