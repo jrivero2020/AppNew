@@ -372,7 +372,8 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                 </FormControl>
               </Paper>
             </Grid>
-            {String(dataBuscaAl.al_idvivecon === "4") && (
+            {(dataBuscaAl?.al_idvivecon === "4" ||
+              dataBuscaAl?.al_idvivecon === 4) && (
               <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
                   sx={{ mt: 1 }}

@@ -38,7 +38,7 @@ export const CargaDataFichaAlumno = ({
           });
           console.log("getDatosMatricula resultado) :", resultado);
         } else {
-          // console.log("(results[0] :", results[0]);
+          console.log("(results[0] :", results[0]);
 
           setResultado({ ...resultado, result: 10 }); // Ficha Cargada
           setDataBuscaAl(results[0]); // Datos de la vista cargados

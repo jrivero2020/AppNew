@@ -192,13 +192,13 @@ export const DatosFamiliares = ({
               <CustomGridSubtitulo texto={"Antecedentes de la Madre"} />
               <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
-                  id="idfRutAp"
+                  id="rutmadre"
                   size="small"
                   label="R.u.n. Madre"
                   variant="outlined"
                   required
                   fullWidth
-                  value={dataBuscaAl.madre_rut}
+                  value={resultado.MadRut}
                   onChange={manejoCambiofRut(
                     "MadRut",
                     resultado,
@@ -206,8 +206,8 @@ export const DatosFamiliares = ({
                     dataBuscaAl,
                     setDataBuscaAl
                   )}
-                  error={!!errors.ApRut}
-                  helperText={errors.ApRut}
+                  error={!!errors.MadRut}
+                  helperText={errors.MadRut}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
