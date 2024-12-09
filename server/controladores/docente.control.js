@@ -294,6 +294,7 @@ const CreaAlumnoRut = async (req, res) => {
     const rutAl = req.params.rutAl;
     const resul = req.params.resul;
     const body = req.body;
+    console.log( " ****body**** =>", body)
     const camposRep = [
       body.al_rut,
       body.al_dv,
@@ -322,7 +323,7 @@ const CreaAlumnoRut = async (req, res) => {
       resul === alNuevo
         ? `CALL colegio.sp_CreaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
         : `CALL colegio.sp_ActualizaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-    console.log("control=========> CreaAlumnoRut , req.params:", req.params);
+    console.log("control=========> CreaAlumnoRut , req.params:", req.params, " resul = ", resul);
     console.log("control=========> CreaAlumnoRut , camposRep:", camposRep);
 
     const idAlumno = await sequelize.query(MyQuery, {

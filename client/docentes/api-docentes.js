@@ -270,7 +270,9 @@ const api_GetJsonInitOpcion = async (params, signal) => {
 const api_CreaModificaAlumno = async (params, credentials, alumno) => {
   try {
     const al_rut = params.al_rut;
-    const result = params.result;
+    const result = params.resul;
+
+    console.log("api_CreaModificaAlumno => PARAMS:", params);
 
     console.log("api_CreaModificaAlumno => alumno:", alumno);
     console.log("api_CreaModificaAlumno => params.al_rut:", params.al_rut);

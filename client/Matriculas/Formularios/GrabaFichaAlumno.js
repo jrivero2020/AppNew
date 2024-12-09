@@ -6,40 +6,20 @@ export const GrabarAlumno = ({
   setResultado,
   setSnackbar,
   dataBuscaAl,
-  setDataBuscaAl,
   jwt,
-}) => {
-  /*
-  const actualizarRut = (campoRut, campoDv, nuevoRut) => {
-    const rutLimpio = RutANumeros(nuevoRut);
-    const dvLimpio = nuevoRut.slice(-1).toUpperCase();
-
-    if (dataBuscaAl[campoRut] !== nuevoRut) {
-      setDataBuscaAl((prev) => ({
-        ...prev,
-        [campoRut]: parseInt(rutLimpio.match(/\d+/)[0], 10),
-        [campoDv]: dvLimpio,
-      }));
-    }
-  };
-
-  actualizarRut("ap_rut", "ap_dv", resultado.ApRut);
-  actualizarRut("apsu_rut", "apsu_dv", resultado.ApsuRut);
-  actualizarRut("madre_rut", "madre_dv", resultado.MadRut);
-  actualizarRut("padre_rut", "padre_dv", resultado.PadRut);
-*/
-
+}) => {  
   console.log(
     "GrabarAlumno, voy a validar todo el formulario dataBuscaAl===>",
     dataBuscaAl,
     " resultado => ",
     resultado
   );
+  
   const validaForm = validateFormAlumno(dataBuscaAl);
 
   if (validaForm.length === 0) {
     api_CreaModificaAlumno(
-      { al_rut: dataBuscaAl.al_rut, resul: resultado.resul },
+      { al_rut: dataBuscaAl.al_rut, resul: resultado.result },
       { t: jwt.token },
       dataBuscaAl
     )
