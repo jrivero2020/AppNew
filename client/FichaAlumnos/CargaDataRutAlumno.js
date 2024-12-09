@@ -38,7 +38,7 @@ export const CargaDataFichaAlumno = ({
           });
           console.log("getDatosMatricula resultado) :", resultado);
         } else {
-          console.log("(results[0] :", results[0]);
+          // console.log("(results[0] :", results[0]);
 
           setResultado({ ...resultado, result: 10 }); // Ficha Cargada
           setDataBuscaAl(results[0]); // Datos de la vista cargados
@@ -65,6 +65,41 @@ export const CargaDataFamiliaAp = ({
   const modeInterno = mode;
   setMode(0);
 
+  const generateUpdatedFields = (mode, prefix, results) => {
+    const baseFields = {
+      [`${prefix}_nombres`]: results[0].fam_nombres,
+      [`${prefix}_apat`]: results[0].fam_apat,
+      [`${prefix}_amat`]: results[0].fam_amat,
+      [`${prefix}_rut`]: results[0].fam_rut,
+      [`${prefix}_dv`]: results[0].fam_dv,
+    };
+
+    if (mode === 1 || mode === 2) {
+      return {
+        ...baseFields,
+        [`${prefix}_fono1`]: results[0].fam_fono1,
+        [`${prefix}_fono2`]: results[0].fam_fono2,
+        [`${prefix}_emergencia`]: results[0].fam_emergencia,
+        [`${prefix}_email`]: results[0].fam_email,
+        [`${prefix}_domicilio`]: results[0].fam_domicilio,
+        [`${prefix}_id_comuna`]: results[0].fam_id_comuna,
+      };
+    }
+
+    if (mode === 3 || mode === 4) {
+      return {
+        ...baseFields,
+        [`${prefix}_estudios`]: results[0].fam_apat, // Revisa si este mapeo es correcto
+        [`${prefix}_ocupacion`]: results[0].fam_amat, // Revisa si este mapeo es correcto
+        al_ingresogrupofamiliar: results[0].fam_ingresogrupofamiliar,
+        al_vivienda: results[0].fam_vivienda,
+        al_evaluareligion: results[0].fam_evaluareligion,
+      };
+    }
+
+    return baseFields; // Default case (if needed)
+  };
+
   const updateDataBuscaAl = (results) => {
     const prefixMap = {
       1: "ap",
@@ -76,25 +111,46 @@ export const CargaDataFamiliaAp = ({
     const prefix = prefixMap[modeInterno];
 
     if (!prefix) return;
+    /*
+    if (modeInterno === 1 || modeInterno === 2) {
+      const updatedFields = {
+        [`${prefix}_nombres`]: results[0].fam_nombres,
+        [`${prefix}_apat`]: results[0].fam_apat,
+        [`${prefix}_amat`]: results[0].fam_amat,
+        [`${prefix}_fono1`]: results[0].fam_fono1,
+        [`${prefix}_fono2`]: results[0].fam_fono2,
+        [`${prefix}_emergencia`]: results[0].fam_emergencia,
+        [`${prefix}_email`]: results[0].fam_email,
+        [`${prefix}_domicilio`]: results[0].fam_domicilio,
+        [`${prefix}_id_comuna`]: results[0].fam_id_comuna,
+        [`${prefix}_rut`]: results[0].fam_rut,
+        [`${prefix}_dv`]: results[0].fam_dv,
+      };
+    }
+    if (modeInterno === 3 || modeInterno === 4) {
+      const updatedFields = {
+        [`${prefix}_nombres`]: results[0].fam_nombres,
+        [`${prefix}_apat`]: results[0].fam_apat,
+        [`${prefix}_amat`]: results[0].fam_amat,
+        [`${prefix}_estudios`]: results[0].fam_apat,
+        [`${prefix}_ocupacion`]: results[0].fam_amat,
+        al_ingresogrupofamiliar: results[0].fam_ingresogrupofamiliar,
+        al_vivienda: results[0].fam_vivienda,
+        al_evaluareligion: results[0].fam_evaluareligion,
+        [`${prefix}_rut`]: results[0].fam_rut,
+        [`${prefix}_dv`]: results[0].fam_dv,
+      };
+    }
+*/
 
-    const updatedFields = {
-      [`${prefix}_nombres`]: results[0].fam_nombres,
-      [`${prefix}_apat`]: results[0].fam_apat,
-      [`${prefix}_amat`]: results[0].fam_amat,
-      [`${prefix}_fono1`]: results[0].fam_fono1,
-      [`${prefix}_fono2`]: results[0].fam_fono2,
-      [`${prefix}_emergencia`]: results[0].fam_emergencia,
-      [`${prefix}_email`]: results[0].fam_email,
-      [`${prefix}_domicilio`]: results[0].fam_domicilio,
-      [`${prefix}_id_comuna`]: results[0].fam_id_comuna,
-      [`${prefix}_rut`]: results[0].fam_rut,
-      [`${prefix}_dv`]: results[0].fam_dv,
-    };
+    if ([1, 2, 3, 4].includes(modeInterno)) {
+      const updatedFields = generateUpdatedFields(modeInterno, prefix, results);
+      setDataBuscaAl((prev) => ({
+        ...prev,
+        ...updatedFields,
+      }));
+    }
 
-    setDataBuscaAl((prev) => ({
-      ...prev,
-      ...updatedFields,
-    }));
     /*
     actualizarRut("ap_rut", "ap_dv", resultado.ApRut);
     actualizarRut("apsu_rut", "apsu_dv", resultado.ApsuRut);

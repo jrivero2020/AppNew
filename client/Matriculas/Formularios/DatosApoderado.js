@@ -1,11 +1,8 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import SaveIcon from "@mui/icons-material/Save";
 import { AuthContext } from "../../core/AuthProvider";
 import { CargaDataFamiliaAp } from "./../../FichaAlumnos/CargaDataRutAlumno";
 
 import {
-  Button,
   FormControl,
   FormLabel,
   Grid,
@@ -14,19 +11,13 @@ import {
   Select,
   TextField,
   FormHelperText,
-  Typography,
   Divider,
-  Stack,
   InputAdornment,
   IconButton,
 } from "@mui/material";
 import { manejoCambiofRut, FValidarOtrosRut } from "./../../assets/js/FmtoRut";
-// import { api_CreaModificaAlumno } from "./../../docentes/api-docentes";
 import { ValidaFichaAlumno } from "./helpers/ValidaFichaAlumno";
-// import { MsgMuestraError } from "./../../assets/dialogs/MuestraError";
-import { Box } from "@mui/system";
 import { CustomGridSubtitulo } from "./../../assets/componentes/customGridPaper/customVerAlumnos";
-
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import Tooltip from "@mui/material/Tooltip";
 
@@ -39,7 +30,6 @@ export const DatosApoderado = ({
   const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
   const { jwt } = useContext(AuthContext);
   const [errors, setErrors] = useState({});
-  const [snackbar, setSnackbar] = useState(null);
   const [mode, setMode] = useState(0);
 
   const handleChange = useCallback(
@@ -59,7 +49,6 @@ export const DatosApoderado = ({
     const indName = name === "ApRut" ? 1 : 2;
     if (rutAp.length <= 1) {
       setErrors({ ...errors, [name]: "Debe ingresar Rut válido" });
-      console.log("rutAp :", rutAp);
       return false;
     }
     if (!FValidarOtrosRut(name, resultado, setResultado)) {

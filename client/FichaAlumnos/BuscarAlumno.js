@@ -18,7 +18,7 @@ import { ListaNombresGrilla } from "./../assets/componentes/DataGrid/Lst-selNomb
 import { MsgMuestraError } from "./../assets/dialogs/MuestraError";
 import { CargaDataFichaAlumno } from "./CargaDataRutAlumno";
 import { FFichaAlumno } from "./../Matriculas/Formularios/FFichaAlumno";
-import { cFichaAlumno } from "./../Matriculas/matriculasCampos";
+import { cFichaAlumno, dataResultado } from "./../Matriculas/matriculasCampos";
 const theme = createTheme({
   palette: {
     secondary: {
@@ -30,7 +30,8 @@ const theme = createTheme({
 export default function BuscarAlumno() {
   const [snackbar, setSnackbar] = useState(null);
   // const handleCloseSnackbar = () => setSnackbar(null);
-  const [resultado, setResultado] = useState({
+  const [resultado, setResultado] = useState(dataResultado);
+  /*
     fRut: "",
     dv: "",
     result: 0,
@@ -54,7 +55,7 @@ export default function BuscarAlumno() {
     BuscaPadre: 0,
     BuscaMadre: 0,
   });
-
+*/
   const [alumnosGetApi, SetAlumnosGetApi] = useState([]);
   const gridBusca = [0, 3, 4]; // 0=init, 3=error,4=abort
   const alNuevo = 1;

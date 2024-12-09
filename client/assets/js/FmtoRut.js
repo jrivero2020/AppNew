@@ -11,7 +11,7 @@
 
 const FmtoRut = (value) => {
   // let tvalue = value.replace(/[.-]/g, '');
-  console.log("en FmtoRut el valor ==>", value);
+  // console.log("en FmtoRut el valor ==>", value);
   let tvalue = QuitaPuntos(value);
   let patt = new RegExp(/^\d{1,10}[kK]?$/);
   let retValue = "";
@@ -38,7 +38,7 @@ const QuitaPuntos = (rut) => {
 };
 
 const validarRut = (rut) => {
-  console.log(" en validarRut el rut es : ", rut);
+  // console.log(" en validarRut el rut es : ", rut);
   const rutnulos = [
     11111111, 22222222, 33333333, 44444444, 55555555, 66666666, 77777777,
     88888888, 99999999,
@@ -46,7 +46,7 @@ const validarRut = (rut) => {
   rut = rut.replace(/[.-]/g, ""); // Elimina los puntos y guión
   rut = rut.replace(/[^\dkK]/g, ""); // Eliminar caracteres no numéricos excepto K/k
   if (!/^\d{4,10}(?:[kK])?$/.test(rut)) {
-    console.log(" No paso el test: ", rut);
+    // console.log(" No paso el test: ", rut);
     return false;
   }
 
@@ -69,7 +69,7 @@ const validarRut = (rut) => {
   var resultado = 11 - (suma % 11); // Calcular dígito verificador esperado (módulo 11)
   resultado =
     resultado === 11 ? "0" : resultado === 10 ? "K" : String(resultado); // Convertir valor 10 a 'K'
-  console.log("resultado calculado es  : ", resultado);
+  //console.log("resultado calculado es  : ", resultado);
   return dv === resultado; // Validar si el dígito verificador ingresado es igual al obtenido
 };
 
@@ -91,11 +91,27 @@ const manejoCambiofRut =
 
       setResultado({ ...resultado, [name]: tvalue });
 
-      if (name === "ApRut")
-        setDataBuscaAl({ ...dataBuscaAl, ap_rut: rut, ap_dv: dv });
+      const fieldMapping = {
+        ApRut: { keyRut: "ap_rut", keyDv: "ap_dv" },
+        ApsuRut: { keyRut: "apsu_rut", keyDv: "apsu_dv" },
+        PadRut: { keyRut: "padre_rut", keyDv: "padre_dv" },
+        MadRut: { keyRut: "madre_rut", keyDv: "madre_dv" },
+      };
 
-      if (name === "ApsuRut")
-        setDataBuscaAl({ ...dataBuscaAl, apsu_rut: rut, apsu_dv: dv });
+      if (fieldMapping[name]) {
+        const { keyRut, keyDv } = fieldMapping[name];
+        setDataBuscaAl({ ...dataBuscaAl, [keyRut]: rut, [keyDv]: dv });
+      }
+      //
+      //       if (name === "ApRut")
+      //         setDataBuscaAl({ ...dataBuscaAl, ap_rut: rut, ap_dv: dv });
+      //
+      //       if (name === "ApsuRut")
+      //         setDataBuscaAl({ ...dataBuscaAl, apsu_rut: rut, apsu_dv: dv });
+      //       if (name === "PadRut")
+      //         setDataBuscaAl({ ...dataBuscaAl, padre_rut: rut, padre_dv: dv });
+      //       if (name === "MadRut")
+      //         setDataBuscaAl({ ...dataBuscaAl, madre_rut: rut, madre_dv: dv });
     }
   };
 

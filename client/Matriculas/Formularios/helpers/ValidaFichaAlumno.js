@@ -45,6 +45,11 @@ export const ValidaFichaAlumno = (name, value, curso) => {
     "al_canthnos",
     "al_cur_repe",
   ];
+  const fichas = [
+    "(I.- Del Alumno)",
+    "(II.- Del Apoderado)",
+    "(III.- Familiares)",
+  ];
 
   let error = "";
 
@@ -68,63 +73,66 @@ export const ValidaFichaAlumno = (name, value, curso) => {
   switch (name) {
     case "al_nombres":
       if (!value.trim()) {
-        error = "El nombre alumno es obligatorio.";
+        error = "El nombre alumno es obligatorio." + fichas[0];
       } else if (value.length < 3) {
-        error = "El nombre alumno debe tener al menos 3 caracteres.";
+        error =
+          "El nombre alumno debe tener al menos 3 caracteres." + fichas[0];
       }
       break;
 
     case "al_apat":
       if (!value.trim()) {
-        error = "El apellido paterno alumno es obligatorio.";
+        error = "El apellido paterno alumno es obligatorio." + fichas[0];
       } else if (value.length < 3) {
-        error = "El apellido paterno alumno debe tener al menos 3 caracteres.";
+        error =
+          "El apellido paterno alumno debe tener al menos 3 caracteres." +
+          fichas[0];
       }
       break;
     case "al_amat":
       if (!value.trim()) {
-        error = "El apellido materno alumno es obligatorio.";
+        error = "El apellido materno alumno es obligatorio." + fichas[0];
       } else if (value.length < 3) {
-        error = "El apellido materno alumno debe tener al menos 3 caracteres.";
-      }
-      break;
-
-    case "al_rut":
-      if (!/^\d{7,8}-[\dkK]$/.test(value)) {
-        error = "El RUT del alumno debe tener un formato válido.";
+        error =
+          "El apellido materno alumno debe tener al menos 3 caracteres." +
+          fichas[0];
       }
       break;
 
     case "al_idcurso":
       if (value === "" || value === 0) {
-        error = "Debe seleccionar un curso de la lista para el alumno";
+        error =
+          "Debe seleccionar un curso de la lista para el alumno" + fichas[0];
       }
       break;
     case "al_id_comuna":
       if (value === "" || value === 0) {
-        error = "Debe seleccionar una comuna de la lista para el alumno";
+        error =
+          "Debe seleccionar una comuna de la lista para el alumno" + fichas[0];
       }
       break;
     case "al_cur_repe":
       if (value === "" || value === 0) {
-        error = "Debe seleccionar cursos repetidos (Sí o No) del alumno";
+        error =
+          "Debe seleccionar cursos repetidos (Sí o No) del alumno" + fichas[0];
       }
       break;
 
     case "al_idvivecon":
       if (value === "" || value === 0) {
-        error = "Debe seleccionar con quien vive el alumno";
+        error = "Debe seleccionar con quien vive el alumno" + fichas[0];
       }
       break;
     case "al_enfermo":
       if (value === "" || value === 0) {
-        error = "Debe seleccionar si tiene o no enfermedad el alumno";
+        error =
+          "Debe seleccionar si tiene o no enfermedad el alumno" + fichas[0];
       }
       break;
 
     case "al_genero":
       if (value === "" || value === 0) {
-        error = "Debe seleccionar sexo de alumno";
+        error = "Debe seleccionar sexo de alumno" + fichas[0];
       }
       break;
 
@@ -135,80 +143,90 @@ export const ValidaFichaAlumno = (name, value, curso) => {
 
     case "al_domicilio":
       if (!value.trim()) {
-        error = "El domicilio de alumno es obligatorio.";
+        error = "El domicilio de alumno es obligatorio." + fichas[0];
       } else if (value.length < 3) {
-        error = "El domicilio alumno debe tener al menos 3 caracteres.";
+        error =
+          "El domicilio alumno debe tener al menos 3 caracteres." + fichas[0];
       }
       break;
 
     // ***********************************************
     // Datos del apoderado
-    case "ap_rut":
-      if (!/^\d{7,8}-[\dkK]$/.test(value)) {
-        error = "El RUT del apoderado debe tener un formato válido.";
-      }
-      break;
+    //    case "ap_rut":
+    //      if (!/^\d{7,8}-[\dkK]$/.test(value)) {
+    //        error = "El RUT del apoderado debe tener un formato válido.";
+    //      }
+    //      break;
 
     case "ap_nombres":
       if (!value.trim()) {
-        error = "Nombre apoderado es obligatorio.";
+        error = "Nombre apoderado es obligatorio." + fichas[1];
       } else if (value.length < 3) {
-        error = "El nombre apoderado debe tener al menos 3 caracteres.";
+        error =
+          "El nombre apoderado debe tener al menos 3 caracteres." + fichas[1];
       }
       break;
 
     case "ap_apat":
       if (!value.trim()) {
-        error = "Apellido paterno apoderado es obligatorio.";
+        error = "Apellido paterno apoderado es obligatorio." + fichas[1];
       } else if (value.length < 3) {
-        error = "El apellido apoderado debe tener al menos 3 caracteres.";
+        error =
+          "El apellido apoderado debe tener al menos 3 caracteres." + fichas[1];
       }
       break;
     case "ap_amat":
       if (!value.trim()) {
-        error = "Apellido materno apoderado es obligatorio.";
+        error = "Apellido materno apoderado es obligatorio." + fichas[1];
       } else if (value.length < 3) {
-        error = "Apellido materno apoderado debe tener al menos 3 caracteres.";
+        error =
+          "Apellido materno apoderado debe tener al menos 3 caracteres." +
+          fichas[1];
       }
       break;
     case "al_idparentesco":
       if (value === "" || value === 0) {
-        error = "Debe seleccionar Parentesco del apoderado";
+        error = "Debe seleccionar Parentesco del apoderado" + fichas[1];
       }
       break;
     case "ap_fono1":
       if (!value.trim()) {
-        error = "Teléfono 1 de apoderado es obligatorio.";
+        error = "Teléfono 1 de apoderado es obligatorio." + fichas[1];
       } else if (!validarNroFono(value)) {
-        error = "Nro de teléfono 1 de apoderado es inválido";
+        error = "Nro de teléfono 1 de apoderado es inválido" + fichas[1];
       }
       break;
     case "ap_fono2":
       if (value.trim() && !validarNroFono(value)) {
-        error = "Nro de teléfono 2 de apoderado es inválido";
+        error = "Nro de teléfono 2 de apoderado es inválido" + fichas[1];
       }
       break;
     case "ap_emergencia":
       if (value.trim() && !validarNroFono(value)) {
-        error = "Nro de teléfono emergencia de apoderado es inválido";
+        error =
+          "Nro de teléfono emergencia de apoderado es inválido" + fichas[1];
       }
       break;
 
     case "ap_email":
       if (value.trim() && !validarEmail(value)) {
-        error = "Correo apoderado no es válido";
+        error = "Correo apoderado no es válido" + fichas[1];
       }
       break;
     case "ap_domicilio":
       if (!value.trim()) {
-        error = "El domicilio apoderado es obligatorio.";
+        error = "El domicilio apoderado es obligatorio." + fichas[1];
       } else if (value.length < 3) {
-        error = "El domicilio apoderado debe tener al menos 3 caracteres.";
+        error =
+          "El domicilio apoderado debe tener al menos 3 caracteres." +
+          fichas[1];
       }
       break;
     case "ap_id_comuna":
       if (value === "" || value === 0) {
-        error = "Debe seleccionar una comuna de la lista para el apoderado";
+        error =
+          "Debe seleccionar una comuna de la lista para el apoderado" +
+          fichas[1];
       }
       break;
     // ***********************************************
@@ -216,65 +234,75 @@ export const ValidaFichaAlumno = (name, value, curso) => {
 
     case "apsu_nombres":
       if (!value.trim()) {
-        error = "Nombre Apod.Suplente es obligatorio.";
+        error = "Nombre Apod.Suplente es obligatorio." + fichas[1];
       } else if (value.length < 3) {
-        error = "El nombre Apod.Suplente debe tener al menos 3 caracteres.";
+        error =
+          "El nombre Apod.Suplente debe tener al menos 3 caracteres." +
+          fichas[1];
       }
       break;
 
     case "apsu_apat":
       if (!value.trim()) {
-        error = "Apellido paterno Apod.Suplente es obligatorio.";
+        error = "Apellido paterno Apod.Suplente es obligatorio." + fichas[1];
       } else if (value.length < 3) {
-        error = "El apellido Apod.Suplente debe tener al menos 3 caracteres.";
+        error =
+          "El apellido Apod.Suplente debe tener al menos 3 caracteres." +
+          fichas[1];
       }
       break;
     case "apsu_amat":
       if (!value.trim()) {
-        error = "Apellido materno Apod.Suplente es obligatorio.";
+        error = "Apellido materno Apod.Suplente es obligatorio." + fichas[1];
       } else if (value.length < 3) {
         error =
-          "Apellido materno Apod.Suplente debe tener al menos 3 caracteres.";
+          "Apellido materno Apod.Suplente debe tener al menos 3 caracteres." +
+          fichas[1];
       }
       break;
     case "al_idparentescosupl":
       if (value === "" || value === 0) {
-        error = "Debe seleccionar Parentesco del Apod.Suplente";
+        error = "Debe seleccionar Parentesco del Apod.Suplente" + fichas[1];
       }
       break;
     case "apsu_fono1":
       if (!value.trim()) {
-        error = "Teléfono 1 Apod.Suplente es obligatorio.";
+        error = "Teléfono 1 Apod.Suplente es obligatorio." + fichas[1];
       } else if (!validarNroFono(value)) {
-        error = "Nro de teléfono 1 Apod.Suplente es inválido";
+        error = "Nro de teléfono 1 Apod.Suplente es inválido" + fichas[1];
       }
       break;
     case "apsu_fono2":
       if (value.trim() && !validarNroFono(value)) {
-        error = "Nro de teléfono 2 Apod.Suplente es inválido";
+        error = "Nro de teléfono 2 Apod.Suplente es inválido" + fichas[1];
       }
       break;
     case "apsu_emergencia":
       if (value.trim() && !validarNroFono(value)) {
-        error = "Nro de teléfono emergencia Apod.Suplente es inválido";
+        error =
+          "Nro de teléfono emergencia Apod.Suplente es inválido" + fichas[1];
       }
       break;
 
     case "apsu_email":
       if (value.trim() && !validarEmail(value)) {
-        error = "Correo Apod.Suplente no es válido";
+        error = "Correo Apod.Suplente no es válido" + fichas[1];
       }
       break;
     case "apsu_domicilio":
       if (!value.trim()) {
-        error = "El domicilio Apod.Suplente es obligatorio.";
+        error = "El domicilio Apod.Suplente es obligatorio." + fichas[1];
       } else if (value.length < 3) {
-        error = "El domicilio Apod.Suplente debe tener al menos 3 caracteres.";
+        error =
+          "El domicilio Apod.Suplente debe tener al menos 3 caracteres." +
+          fichas[1];
       }
       break;
     case "apsu_id_comuna":
       if (value === "" || value === 0) {
-        error = "Debe seleccionar una comuna de la lista para el Apod.Suplente";
+        error =
+          "Debe seleccionar una comuna de la lista para el Apod.Suplente" +
+          fichas[1];
       }
       break;
     //*************************************************************** */
@@ -282,66 +310,69 @@ export const ValidaFichaAlumno = (name, value, curso) => {
 
     case "madre_nombres":
       if (!value.trim()) {
-        error = "Nombre madre es obligatorio.";
+        error = "Nombre madre es obligatorio." + fichas[2];
       } else if (value.length < 3) {
-        error = "El nombre madre debe tener al menos 3 caracteres.";
+        error = "El nombre madre debe tener al menos 3 caracteres." + fichas[2];
       }
       break;
 
     case "madre_apat":
       if (!value.trim()) {
-        error = "Apellido paterno madre es obligatorio.";
+        error = "Apellido paterno madre es obligatorio." + fichas[2];
       } else if (value.length < 3) {
-        error = "El apellido madre debe tener al menos 3 caracteres.";
+        error =
+          "El apellido madre debe tener al menos 3 caracteres." + fichas[2];
       }
       break;
     case "madre_amat":
       if (!value.trim()) {
-        error = "Apellido materno madre es obligatorio.";
+        error = "Apellido materno madre es obligatorio." + fichas[2];
       } else if (value.length < 3) {
-        error = "Apellido materno madre debe tener al menos 3 caracteres.";
+        error =
+          "Apellido materno madre debe tener al menos 3 caracteres." +
+          fichas[2];
       }
       break;
 
     case "padre_nombres":
       if (!value.trim()) {
-        error = "Nombre padre es obligatorio.";
+        error = "Nombre padre es obligatorio." + fichas[2];
       } else if (value.length < 3) {
-        error = "El nombre padre debe tener al menos 3 caracteres.";
+        error = "El nombre padre debe tener al menos 3 caracteres." + fichas[2];
       }
       break;
 
     case "padre_apat":
       if (!value.trim()) {
-        error = "Apellido paterno padre es obligatorio.";
+        error = "Apellido paterno padre es obligatorio." + fichas[2];
       } else if (value.length < 3) {
-        error = "El apellido padre debe tener al menos 3 caracteres.";
+        error =
+          "El apellido padre debe tener al menos 3 caracteres." + fichas[2];
       }
       break;
     case "mpadre_amat":
       if (!value.trim()) {
-        error = "Apellido materno padre es obligatorio.";
+        error = "Apellido materno padre es obligatorio." + fichas[2];
       } else if (value.length < 3) {
-        error = "Apellido materno padre debe tener al menos 3 caracteres.";
+        error =
+          "Apellido materno padre debe tener al menos 3 caracteres." +
+          fichas[2];
       }
       break;
     case "al_ingresogrupofamiliar":
-      if (!value.trim()) {
-        error = "Ingreso del grupo familiar es necesario.";
-      } else if (value.length < 3) {
-        error = "Apellido materno padre debe tener al menos 3 caracteres.";
+      if (value === "" || value === 0) {
+        error = "Ingreso del grupo familiar es necesario." + fichas[2];
       }
       break;
 
     case "al_vivienda":
       if (value === "" || value === 0) {
-        error = "Debe seleccionar tipo de vivienda";
+        error = "Debe seleccionar tipo de vivienda" + fichas[2];
       }
       break;
     case "al_evaluareligion":
-      console.log("Rvalua religion ", value);
       if (value === "" || value === 0) {
-        error = "Debe seleccionar sie evalúa religión";
+        error = "Debe seleccionar sie evalúa religión" + fichas[2];
       }
       break;
 
@@ -413,36 +444,23 @@ export const validaFechaAlumno = (fecha, curso, anioMatricula = 2025) => {
 
 export const validateFormAlumno = (dataBuscaAl) => {
   const camposExcluidos = [
-    "al_rut",
-    "al_dv",
     "al_activo",
     "al_agno_matricula",
     "al_cod_ense",
     "al_cod_grado",
-    "al_evaluareligion",
     "al_fecharetiro",
     "al_fincorpora",
     "al_id_alumno",
-    "al_ingresogrupofamiliar",
     "al_letra",
     "al_motivoretiro",
     "al_nro_matricula",
-    "al_nrofamiliar",
-    "ap_rut",
-    "ap_dv",
     "ap_parentesco",
     "ap_sexo",
-    "apsu_rut",
-    "apsu_dv",
     "apsu_parentesco",
     "al_idmadre",
     "al_idpadre",
     "al_idapoderado",
     "al_idapoderadosupl",
-    "madre_rut",
-    "madre_dv",
-    "padre_rut",
-    "padre_dv",
   ];
   const prefijos = ["al_", "ap_", "apsu_", "padre_", "madre_"]; // Primero "al_", luego "ap_", después "apsu_"
 
@@ -461,8 +479,12 @@ export const validateFormAlumno = (dataBuscaAl) => {
 
   const validarFormatoRut = (campoRut, campoDv, nombreCampo) => {
     const rut = `${dataBuscaAl[campoRut]}-${dataBuscaAl[campoDv]}`;
+    console.log(
+      `Valor de Rut ${campoRut} valor dv ${campoDv}  y nombre ${nombreCampo} valor obtenido rut=${rut}`
+    );
+
     if (!validarRut(rut)) {
-      return `El RUT de ${nombreCampo} no es válido.`;
+      return `El RUT de ${nombreCampo} no es válido. Rut : ${rut}`;
     }
     return null;
   };
@@ -476,7 +498,7 @@ export const validateFormAlumno = (dataBuscaAl) => {
     );
 
     // *****************************************************
-    // validar los ruts de los formularios
+    // validar los ruts de los formularios excepto de padres
     for (let { rut, dv, nombre } of campos) {
       const error = validarFormatoRut(rut, dv, nombre);
       if (error) return error;
@@ -488,7 +510,7 @@ export const validateFormAlumno = (dataBuscaAl) => {
     // se permite rut de madre o padre sin datos, pero no los 2
     if (
       esFalsyDefinida(dataBuscaAl["padre_rut"]) &&
-      esFalsyDefinida(dataBuscaAl["padre_rut"])
+      esFalsyDefinida(dataBuscaAl["madre_rut"])
     ) {
       return "Debe ingresar Rut de la Madre o el Padre, No se permite ambos padres sin Rut!";
     }
@@ -506,22 +528,6 @@ export const validateFormAlumno = (dataBuscaAl) => {
     // *******************************************************
     // Validar todo el Formulario
 
-    // Filtra las claves que coincidan con el prefijo y no estén excluidas
-    //     const clavesFiltradas = cFichaAlumnoOrdenada.filter(
-    //       (key) => key.startsWith(prefijo) && !camposExcluidos.includes(key)
-    //     );
-
-    /*
-    for (const key of Object.keys(dataBuscaAl).filter(
-      (key) => key.startsWith(prefijo) && !camposExcluidos.includes(key)
-    )) {
-      const error = ValidaFichaAlumno(key, dataBuscaAl[key]);
-      if (error) {
-        return error; // Retorna el error y detiene la validación para este prefijo
-      }
-    }
-*/
-
     for (const key of clavesFiltradas) {
       if (dataBuscaAl.hasOwnProperty(key)) {
         const valor = dataBuscaAl[key];
@@ -535,46 +541,11 @@ export const validateFormAlumno = (dataBuscaAl) => {
     }
     return null; // No hay errores en este prefijo
   };
-  /*
-  for (const prefijo of prefijos) {
-    // console.log("validarCampo con prefijo :,", prefijo);
-    // console.log("Valor de dataBuscaAl : ", dataBuscaAl);
-    const error = validarCampos(prefijo);
-    if (error) {
-      // console.log(`Error encontrado para el prefijo "${prefijo}":`, error);
-      return error; // Detener el proceso si se encuentra un error
-    }
-  }
-*/
 
   const error = validarCampos();
   if (error) {
     return error; // Detener el proceso si se encuentra un error
   }
-
-  /*
-  // Validar campos específicos en la etapa de "madre_" y "padre_"
-  const prefijosValidacionAdicional = ["madre_", "padre_"];
-  const camposAdicionales = [
-    "al_ingresogrupofamiliar",
-    "al_vivienda",
-    "al_evaluareligion",
-  ];
-  for (const prefijo of prefijosValidacionAdicional) {
-    if (prefijos.includes(prefijo)) {
-      for (const key of camposAdicionales) {
-        if (dataBuscaAl[key] !== undefined) {
-          // Solo validar si el campo existe en el objeto
-          const error = ValidaFichaAlumno(key, dataBuscaAl[key]);
-          if (error) {
-            // console.log(`Error encontrado en campo adicional "${key}":`, error);
-            return error; // Detener si hay error en campos adicionales
-          }
-        }
-      }
-    }
-  }
-*/
 
   return "";
 };

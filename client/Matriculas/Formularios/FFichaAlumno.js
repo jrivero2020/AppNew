@@ -23,6 +23,10 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SaveIcon from "@mui/icons-material/Save";
 import { MsgMuestraError } from "./../../assets/dialogs/MuestraError";
 import { GrabarAlumno } from "./GrabaFichaAlumno";
+import {
+  cFichaAlumno,
+  dataResultado,
+} from "./../../Matriculas/matriculasCampos";
 
 const theme = createTheme({
   palette: {
@@ -48,6 +52,11 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
 
   const EsVacio = (valor) => {
     return valor === 0 || valor === "" || valor === null || valor === undefined;
+  };
+
+  const reseteoFichas = () => {
+    setResultado(dataResultado);
+    setDataBuscaAl(cFichaAlumno);
   };
 
   // ************************************************
@@ -183,9 +192,7 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
             variant="contained"
             sx={{ fontSize: "11px", mt: "10px" }}
             startIcon={<PersonAddIcon />}
-            onClick={() =>
-              setResultado({ ...resultado, result: 0, fRut: "", dv: "" })
-            }
+            onClick={() => reseteoFichas()}
           >
             Nueva Búsqueda
           </Button>
