@@ -31,31 +31,7 @@ export default function BuscarAlumno() {
   const [snackbar, setSnackbar] = useState(null);
   // const handleCloseSnackbar = () => setSnackbar(null);
   const [resultado, setResultado] = useState(dataResultado);
-  /*
-    fRut: "",
-    dv: "",
-    result: 0,
-    al_amat: "",
-    al_apat: "",
-    al_nombres: "",
-    RutBuscar: "",
-    GrbAlumno: 0,
-    GrbApode: 0,
-    GrabFamilia: 0,
-    ApRut: "",
-    ApDv: "",
-    ApsuRut: "",
-    ApsuDv: "",
-    PadRut: "",
-    PadDv: "",
-    MadRut: "",
-    MadDv: "",
-    BuscaAp: 0,
-    BuscaApSup: 0,
-    BuscaPadre: 0,
-    BuscaMadre: 0,
-  });
-*/
+
   const [alumnosGetApi, SetAlumnosGetApi] = useState([]);
   const gridBusca = [0, 3, 4]; // 0=init, 3=error,4=abort
   const alNuevo = 1;

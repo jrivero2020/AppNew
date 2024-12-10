@@ -95,6 +95,7 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
         setDataBuscaAl({ ...dataBuscaAl, al_id_comuna: 13102 });
       }
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comunas]);
 

@@ -292,9 +292,9 @@ const CreaAlumnoRut = async (req, res) => {
   try {
     const alNuevo = 1;
     const rutAl = req.params.rutAl;
-    const resul = req.params.resul;
-    const body = req.body;
-    console.log( " ****body**** =>", body)
+    const resul = req.body.result;
+    const body = req.body.alumno;
+    console.log(" ****body**** =>", body, "*********Resul =>", resul);
     const camposRep = [
       body.al_rut,
       body.al_dv,
@@ -317,13 +317,120 @@ const CreaAlumnoRut = async (req, res) => {
       body.al_idvivecon,
       body.al_descripcionvivecon,
       body.al_idcurso,
+      body.al_activo,
+      body.al_evaluareligion,
+      body.al_idapoderado,
+      body.al_idapoderadosupl,
+      body.al_idmadre,
+      body.al_idpadre,
+      body.al_idparentesco,
+      body.al_idparentescosupl,
+      body.al_ingresogrupofamiliar,
+      body.al_nrofamiliar,
+      body.al_vivienda,
+      body.ap_rut,
+      body.ap_dv,
+      body.ap_nombres,
+      body.ap_apat,
+      body.ap_amat,
+      body.ap_parentesco,
+      body.ap_fono1,
+      body.ap_fono2,
+      body.ap_emergencia,
+      body.ap_email,
+      body.ap_domicilio,
+      body.ap_id_comuna,
+      body.apsu_rut,
+      body.apsu_dv,
+      body.apsu_nombres,
+      body.apsu_apat,
+      body.apsu_amat,
+      body.apsu_parentesco,
+      body.apsu_fono1,
+      body.apsu_fono2,
+      body.apsu_emergencia,
+      body.apsu_email,
+      body.apsu_domicilio,
+      body.apsu_id_comuna,
+      body.madre_rut,
+      body.madre_dv,
+      body.madre_nombres,
+      body.madre_apat,
+      body.madre_amat,
+      body.madre_estudios,
+      body.madre_ocupacion,
+      body.padre_rut,
+      body.padre_dv,
+      body.padre_nombres,
+      body.padre_apat,
+      body.padre_amat,
+      body.padre_estudios,
+      body.padre_ocupacion,
     ];
+    /*
+al_activo
+al_evaluareligion
+al_idapoderado
+al_idapoderadosupl
+al_idmadre
+al_idpadre
+al_idparentesco
+al_idparentescosupl
+al_ingresogrupofamiliar
+al_nrofamiliar
+al_vivienda
+ap_rut
+ap_dv
+ap_nombres
+ap_apat
+ap_amat
+ap_parentesco
+ap_fono1
+ap_fono2
+ap_emergencia
+ap_email
+ap_domicilio
+ap_id_comuna
+apsu_rut
+apsu_dv
+apsu_nombres
+apsu_apat
+apsu_amat
+apsu_parentesco
+apsu_fono1
+apsu_fono2
+apsu_emergencia
+apsu_email
+apsu_domicilio
+apsu_id_comuna
+madre_rut
+madre_dv
+madre_nombres
+madre_apat
+madre_amat
+madre_estudios
+madre_ocupacion
+padre_rut
+padre_dv
+padre_nombres
+padre_apat
+padre_amat
+padre_estudios
+padre_ocupacion
+
+*/
 
     const MyQuery =
       resul === alNuevo
-        ? `CALL colegio.sp_CreaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
-        : `CALL colegio.sp_ActualizaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-    console.log("control=========> CreaAlumnoRut , req.params:", req.params, " resul = ", resul);
+        ? `CALL colegio.sp_CreaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+        : `CALL colegio.sp_ActualizaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+
+    console.log(
+      "control==> CreaAlumnoRut , req.params:",
+      req.params,
+      " resul = ",
+      resul
+    );
     console.log("control=========> CreaAlumnoRut , camposRep:", camposRep);
 
     const idAlumno = await sequelize.query(MyQuery, {

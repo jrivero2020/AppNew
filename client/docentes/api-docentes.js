@@ -273,9 +273,12 @@ const api_CreaModificaAlumno = async (params, credentials, alumno) => {
     const result = params.resul;
 
     console.log("api_CreaModificaAlumno => PARAMS:", params);
-
+    console.log("api_CreaModificaAlumno => credentials:", credentials);
     console.log("api_CreaModificaAlumno => alumno:", alumno);
     console.log("api_CreaModificaAlumno => params.al_rut:", params.al_rut);
+    console.log("api_CreaModificaAlumno => params.resul:", params.resul);
+    console.log("api_CreaModificaAlumno => result:", result);
+
     let response = await fetch("/UpdateInsertAlumno/" + al_rut, {
       method: "PUT",
       headers: {
@@ -283,7 +286,7 @@ const api_CreaModificaAlumno = async (params, credentials, alumno) => {
         "Content-Type": "application/json",
         Authorization: "Bearer " + credentials.t,
       },
-      body: JSON.stringify(alumno, result),
+      body: JSON.stringify({ alumno, result }),
     });
     if (!response.ok) {
       console.log(
