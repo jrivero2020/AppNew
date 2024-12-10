@@ -39,6 +39,22 @@ export const DatosApoderado = ({
       const error = ValidaFichaAlumno(name, value, curso);
       setDataBuscaAl((prev) => ({ ...prev, [name]: value }));
       setErrors({ ...errors, [name]: error });
+      const numValor = Number(value);
+
+      const isParentesco =
+        name === "al_idparentesco" || name === "al_idparentescosupl";
+
+      if (isParentesco) {
+        const updatedValue = name === "al_idparentescosupl" ? numValor + 2 : numValor;
+        console.log( "cambio sw a updatedValue=", updatedValue, " y name = ", name)
+        setResultado({ ...resultado, swParentesco: updatedValue });
+        console.log(
+          "dataBuscaAl=>",
+          dataBuscaAl,
+          " updatedValue:",
+          updatedValue
+        );
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

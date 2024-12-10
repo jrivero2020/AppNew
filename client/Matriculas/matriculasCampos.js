@@ -317,4 +317,5 @@ export const dataResultado = {
   BuscaApSup: 0,
   BuscaPadre: 0,
   BuscaMadre: 0,
+  swParentesco: 0
 };

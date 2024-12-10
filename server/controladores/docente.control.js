@@ -317,6 +317,7 @@ const CreaAlumnoRut = async (req, res) => {
       body.al_idvivecon,
       body.al_descripcionvivecon,
       body.al_idcurso,
+      
       body.al_activo,
       body.al_evaluareligion,
       body.al_idapoderado,
