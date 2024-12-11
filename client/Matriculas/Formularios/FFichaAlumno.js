@@ -99,44 +99,9 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comunas]);
 
-  useEffect(() => {
-    if ([1, 2, 3, 4].includes(resultado.swParentesco)) {
-      actalizaPadres(resultado.swParentesco);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resultado.swParentesco]); //
-
-
   if (!dataBuscaAl) {
     return <div>Cargando datos del alumno...</div>;
   }
-
-  const actalizaPadres = (swValue) => {
-    // Mapear el parentesco con los campos correspondientes
-    const parentFields = {
-      madre: ["madre_rut", "madre_dv", "madre_nombres", "madre_apat", "madre_amat"],
-      padre: ["padre_rut", "padre_dv", "padre_nombres", "padre_apat", "padre_amat"],
-    };
-    const dataKey = (swValue >= 1 && swValue <= 2 ) ? "ap" : "apsu"
-    const parentType = (swValue === 2 || swValue === 4 ) ? "madre" : "padre"
-    console.log( "***actalizaPadres*** swValue=", swValue, "dataKey=", dataKey, " parentType=", parentType)
-  
-    if (parentType) {
-      const [rut, dv, nombres, apat, amat] = parentFields[parentType];
-  
-     
-      setDataBuscaAl({
-        ...dataBuscaAl,
-        [rut]: dataBuscaAl[`${dataKey}_rut`],
-        [dv]: dataBuscaAl[`${dataKey}_dv`],
-        [nombres]: dataBuscaAl[`${dataKey}_nombres`],
-        [apat]: dataBuscaAl[`${dataKey}_apat`],
-        [amat]: dataBuscaAl[`${dataKey}_amat`], // Asume que 'amat' es igual a 'apat'
-      });
-
-      setResultado( {...resultado, swParentesco: 0 })
-    }
-  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -264,7 +229,6 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
         </Grid>
       </Grid>
       {snackbar && MsgMuestraError({ snackbar, setSnackbar })}
-
     </ThemeProvider>
   );
 };

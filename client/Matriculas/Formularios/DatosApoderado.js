@@ -1,6 +1,15 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import { AuthContext } from "../../core/AuthProvider";
-import { CargaDataFamiliaAp } from "./../../FichaAlumnos/CargaDataRutAlumno";
+import {
+  CargaDataFamiliaAp,
+  actualizaPadres,
+} from "./../../FichaAlumnos/CargaDataRutAlumno";
 
 import {
   FormControl,
@@ -45,15 +54,9 @@ export const DatosApoderado = ({
         name === "al_idparentesco" || name === "al_idparentescosupl";
 
       if (isParentesco) {
-        const updatedValue = name === "al_idparentescosupl" ? numValor + 2 : numValor;
-        console.log( "cambio sw a updatedValue=", updatedValue, " y name = ", name)
+        const updatedValue =
+          name === "al_idparentescosupl" ? numValor + 2 : numValor;
         setResultado({ ...resultado, swParentesco: updatedValue });
-        console.log(
-          "dataBuscaAl=>",
-          dataBuscaAl,
-          " updatedValue:",
-          updatedValue
-        );
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,10 +77,22 @@ export const DatosApoderado = ({
     setMode(indName);
   };
 
+  useEffect(() => {
+    if ([1, 2, 3, 4].includes(resultado.swParentesco)) {
+      actualizaPadres({
+        resultado,
+        setResultado,
+        dataBuscaAl,
+        setDataBuscaAl,
+      });
+    }
+  }, [resultado, setResultado, dataBuscaAl, setDataBuscaAl]);
+
+  // console.log(" dataBuscaAl =>:", dataBuscaAl )
   if (!comunas || !parentescos || !dataBuscaAl || !resultado) {
     return <div>Cargando...</div>;
   }
-  // console.log(" dataBuscaAl =>:", dataBuscaAl )
+
   return (
     <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}>
       <Grid item xs={12}>
@@ -511,6 +526,7 @@ export const DatosApoderado = ({
           </Grid>
         </Paper>
       </Grid>
+
       {(mode === 1 || mode === 2) &&
         CargaDataFamiliaAp({
           resultado,

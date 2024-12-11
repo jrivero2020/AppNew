@@ -66,7 +66,7 @@ export const DatosFamiliares = ({
       setErrors({ ...errors, [name]: "Debe ingresar Rut válido" });
       return false;
     }
-    console.log(resultado.BuscaAp);
+
     setMode(indName);
   };
 

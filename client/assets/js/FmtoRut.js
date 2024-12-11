@@ -66,11 +66,15 @@ const validarRut = (rut) => {
     multiplo = multiplo === 7 ? 2 : multiplo + 1;
   }
 
-  var resultado = 11 - (suma % 11); // Calcular dígito verificador esperado (módulo 11)
-  resultado =
-    resultado === 11 ? "0" : resultado === 10 ? "K" : String(resultado); // Convertir valor 10 a 'K'
+  var Rutresultado = 11 - (suma % 11); // Calcular dígito verificador esperado (módulo 11)
+  Rutresultado =
+    Rutresultado === 11
+      ? "0"
+      : Rutresultado === 10
+      ? "K"
+      : String(Rutresultado); // Convertir valor 10 a 'K'
   //console.log("resultado calculado es  : ", resultado);
-  return dv === resultado; // Validar si el dígito verificador ingresado es igual al obtenido
+  return dv === Rutresultado; // Validar si el dígito verificador ingresado es igual al obtenido
 };
 
 export const RutANumeros = (rut) => {
@@ -83,6 +87,7 @@ export const RutANumeros = (rut) => {
 const manejoCambiofRut =
   (name, resultado, setResultado, dataBuscaAl, setDataBuscaAl) => (event) => {
     let tvalue = FmtoRut(event.target.value);
+
     if (resultado[name].length === 1 && tvalue === null) tvalue = "";
 
     if (tvalue != null) {
@@ -102,16 +107,6 @@ const manejoCambiofRut =
         const { keyRut, keyDv } = fieldMapping[name];
         setDataBuscaAl({ ...dataBuscaAl, [keyRut]: rut, [keyDv]: dv });
       }
-      //
-      //       if (name === "ApRut")
-      //         setDataBuscaAl({ ...dataBuscaAl, ap_rut: rut, ap_dv: dv });
-      //
-      //       if (name === "ApsuRut")
-      //         setDataBuscaAl({ ...dataBuscaAl, apsu_rut: rut, apsu_dv: dv });
-      //       if (name === "PadRut")
-      //         setDataBuscaAl({ ...dataBuscaAl, padre_rut: rut, padre_dv: dv });
-      //       if (name === "MadRut")
-      //         setDataBuscaAl({ ...dataBuscaAl, madre_rut: rut, madre_dv: dv });
     }
   };
 

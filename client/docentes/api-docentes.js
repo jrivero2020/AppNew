@@ -272,12 +272,12 @@ const api_CreaModificaAlumno = async (params, credentials, alumno) => {
     const al_rut = params.al_rut;
     const result = params.resul;
 
-    console.log("api_CreaModificaAlumno => PARAMS:", params);
-    console.log("api_CreaModificaAlumno => credentials:", credentials);
-    console.log("api_CreaModificaAlumno => alumno:", alumno);
-    console.log("api_CreaModificaAlumno => params.al_rut:", params.al_rut);
-    console.log("api_CreaModificaAlumno => params.resul:", params.resul);
-    console.log("api_CreaModificaAlumno => result:", result);
+    // console.log("api_CreaModificaAlumno => PARAMS:", params);
+    // console.log("api_CreaModificaAlumno => credentials:", credentials);
+    // console.log("api_CreaModificaAlumno => alumno:", alumno);
+    // console.log("api_CreaModificaAlumno => params.al_rut:", params.al_rut);
+    // console.log("api_CreaModificaAlumno => params.resul:", params.resul);
+    // console.log("api_CreaModificaAlumno => result:", result);
 
     let response = await fetch("/UpdateInsertAlumno/" + al_rut, {
       method: "PUT",
@@ -289,10 +289,7 @@ const api_CreaModificaAlumno = async (params, credentials, alumno) => {
       body: JSON.stringify({ alumno, result }),
     });
     if (!response.ok) {
-      console.log(
-        "api_CreaModificaAlumno ===> !response.ok valor de response:==>",
-        response
-      );
+      // console.log("api_CreaModificaAlumno ===> !response.ok valor de response:==>", response );
       return { error: response.status, message: response.statusText };
     }
     return await response.json();
