@@ -532,7 +532,7 @@ export const validateFormAlumno = (dataBuscaAl) => {
       if (dataBuscaAl.hasOwnProperty(key)) {
         const valor = dataBuscaAl[key];
 
-        console.log("Se valida ", key, " con valor :", valor);
+        // console.log("Se valida ", key, " con valor :", valor);
         const error = ValidaFichaAlumno(key, valor);
         if (error) {
           return error; // Retorna el error y detiene la validación

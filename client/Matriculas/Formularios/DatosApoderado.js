@@ -66,13 +66,21 @@ export const DatosApoderado = ({
   const validaRutApoderado = (name, resultado, setResultado) => {
     const rutAp = resultado[name];
     const indName = name === "ApRut" ? 1 : 2;
+    // console.log(`Resultado[${name}] = ${rutAp}`);
     if (rutAp.length <= 1) {
       setErrors({ ...errors, [name]: "Debe ingresar Rut válido" });
       return false;
     }
+    // console.log("va a FValidarOtrosRut ");
+
     if (!FValidarOtrosRut(name, resultado, setResultado)) {
-      setErrors({ ...errors, [name]: "Debe ingresar Rut válido" });
+      setErrors({
+        ...errors,
+        [name]: "Debe ingresar Rut válido, Digito verificador",
+      });
       return false;
+    } else {
+      setErrors({ ...errors, [name]: "" });
     }
     setMode(indName);
   };

@@ -4,6 +4,8 @@ object-assign
 @license MIT
 */
 
+/*! @license DOMPurify 3.2.2 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.2/LICENSE */
+
 /**
  * @license React
  * react-is.production.min.js
@@ -45,14 +47,18 @@ object-assign
  */
 
 /**
-<<<<<<< HEAD
- * @mui/x-data-grid v6.19.11
-=======
- * @mui/x-data-grid v6.19.10
->>>>>>> 930317e7648291cb22bac676b8766fc8e44ef9da
+ * @mui/x-data-grid v7.3.2
  *
  * @license MIT
  * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * @mui/x-data-grid-generator v7.4.0
+ *
+ * @license MUI X Commercial
+ * This source code is licensed under the commercial license found in the
  * LICENSE file in the root directory of this source tree.
  */
 

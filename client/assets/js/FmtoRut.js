@@ -73,7 +73,6 @@ const validarRut = (rut) => {
       : Rutresultado === 10
       ? "K"
       : String(Rutresultado); // Convertir valor 10 a 'K'
-  //console.log("resultado calculado es  : ", resultado);
   return dv === Rutresultado; // Validar si el dígito verificador ingresado es igual al obtenido
 };
 
@@ -87,6 +86,7 @@ export const RutANumeros = (rut) => {
 const manejoCambiofRut =
   (name, resultado, setResultado, dataBuscaAl, setDataBuscaAl) => (event) => {
     let tvalue = FmtoRut(event.target.value);
+    // console.log(` en manejoCambiofRut Resultado[${name}] tvalue = ${tvalue}`);
 
     if (resultado[name].length === 1 && tvalue === null) tvalue = "";
 
@@ -112,12 +112,13 @@ const manejoCambiofRut =
 
 export const FValidarOtrosRut = (name, resultado, setResultado) => {
   //  console.log("recibido en FValidarOtrosRut =", resultado[name]);
-
   let tvalue = FmtoRut(resultado[name]);
-  // console.log("el formato rut es : ", tvalue);
+  //console.log("el formato rut es : ", tvalue);
   if (resultado[name].length === 1 && tvalue === null) tvalue = "";
   if (tvalue != null) {
-    return validarRut(resultado[name]);
+    const retornovalida = validarRut(resultado[name]);
+    //console.log("Voy a retornar con retornovalida=", retornovalida);
+    return retornovalida;
   } else {
     return false;
   }

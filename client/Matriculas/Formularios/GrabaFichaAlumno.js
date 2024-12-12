@@ -7,14 +7,14 @@ export const GrabarAlumno = ({
   setSnackbar,
   dataBuscaAl,
   jwt,
-}) => {  
-  console.log(
-    "GrabarAlumno, voy a validar todo el formulario dataBuscaAl===>",
-    dataBuscaAl,
-    " resultado => ",
-    resultado
-  );
-  
+}) => {
+  //  console.log(
+  //    "GrabarAlumno, voy a validar todo el formulario dataBuscaAl===>",
+  //    dataBuscaAl,
+  //    " resultado => ",
+  //    resultado
+  //  );
+
   const validaForm = validateFormAlumno(dataBuscaAl);
 
   if (validaForm.length === 0) {
@@ -24,7 +24,7 @@ export const GrabarAlumno = ({
       dataBuscaAl
     )
       .then((data) => {
-        console.log("api_CreaModificaAlumno, retorno en data ===>", data);
+        // console.log("api_CreaModificaAlumno, retorno en data ===>", data);
         if (data && data.error) {
           if (data.error === 409) {
             setSnackbar({
@@ -36,7 +36,7 @@ export const GrabarAlumno = ({
           } else {
             setResultado({ ...resultado, result: 11 });
           }
-          console.log("data.error :", data);
+          // console.log("data.error :", data);
 
           return false;
         } else {
@@ -49,7 +49,7 @@ export const GrabarAlumno = ({
       })
       .catch((error) => {
         // Manejo de errores aquí
-        console.error("Error al grabar alumno:", error);
+        // console.error("Error al grabar alumno:", error);
         if (error.response) {
           // Si el servidor respondió con un código de estado fuera del rango 2xx
           setSnackbar({
