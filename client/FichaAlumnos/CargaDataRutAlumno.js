@@ -38,9 +38,35 @@ export const CargaDataFichaAlumno = ({
           });
           // console.log("getDatosMatricula resultado) :", resultado);
         } else {
-          // console.log("(results[0] :", results[0]);
+          console.log("(results[0] :", results[0]);
+          console.log("Resultado:", resultado);
+          /*ApDv
+ApRut
+ApsuDv
+ApsuRut
+MadDv
+MadRut
+PadDv
+PadRut
 
-          setResultado({ ...resultado, result: 10 }); // Ficha Cargada
+*/
+          const ApRut = results[0].ap_rut + "-" + results[0].ap_dv;
+          const ApsuRut = results[0].apsu_rut + "-" + results[0].apsu_dv;
+          const MadRut = results[0].madre_rut + "-" + results[0].madre_dv;
+          const PadRut = results[0].padre_rut + "-" + results[0].padre_dv;
+
+          setResultado({
+            ...resultado,
+            result: 10,
+            ApRut: ApRut,
+            ApDv: results[0].ap_dv,
+            ApsuRut: ApsuRut,
+            ApsuDv: results[0].apsu_dv,
+            MadRut: MadRut,
+            MadDv: results[0].madre_dv,
+            PadRut: PadRut,
+            PadDv: results[0].padre_dv,
+          });
           setDataBuscaAl(results[0]); // Datos de la vista cargados
         }
       }

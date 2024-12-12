@@ -490,13 +490,6 @@ export const validateFormAlumno = (dataBuscaAl) => {
   };
 
   const validarCampos = (prefijo) => {
-    console.log(
-      "Claves filtradas :",
-      clavesFiltradas,
-      "  dataBuscaAl =>",
-      dataBuscaAl
-    );
-
     // *****************************************************
     // validar los ruts de los formularios excepto de padres
     for (let { rut, dv, nombre } of campos) {
