@@ -479,17 +479,13 @@ export const validateFormAlumno = (dataBuscaAl) => {
 
   const validarFormatoRut = (campoRut, campoDv, nombreCampo) => {
     const rut = `${dataBuscaAl[campoRut]}-${dataBuscaAl[campoDv]}`;
-    console.log(
-      `Valor de Rut ${campoRut} valor dv ${campoDv}  y nombre ${nombreCampo} valor obtenido rut=${rut}`
-    );
-
     if (!validarRut(rut)) {
       return `El RUT de ${nombreCampo} no es válido. Rut : ${rut}`;
     }
     return null;
   };
 
-  const validarCampos = (prefijo) => {
+  const validarCampos = () => {
     // *****************************************************
     // validar los ruts de los formularios excepto de padres
     for (let { rut, dv, nombre } of campos) {
@@ -524,7 +520,7 @@ export const validateFormAlumno = (dataBuscaAl) => {
     for (const key of clavesFiltradas) {
       if (dataBuscaAl.hasOwnProperty(key)) {
         const valor = dataBuscaAl[key];
-
+        // console.log("ValidaFichaAlumno key =>", key, " valor=>", valor);
         // console.log("Se valida ", key, " con valor :", valor);
         const error = ValidaFichaAlumno(key, valor);
         if (error) {

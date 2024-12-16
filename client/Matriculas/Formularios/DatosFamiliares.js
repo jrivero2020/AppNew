@@ -12,7 +12,6 @@ import {
   Paper,
   TextField,
   FormHelperText,
-  Divider,
   InputAdornment,
   IconButton,
   Radio,
@@ -20,16 +19,14 @@ import {
 } from "@mui/material";
 
 import { ValidaFichaAlumno } from "./helpers/ValidaFichaAlumno";
-import { manejoCambiofRut, FValidarOtrosRut } from "./../../assets/js/FmtoRut";
+import {
+  FValidarOtrosRut,
+  FmtoRut,
+  RutANumeros,
+} from "./../../assets/js/FmtoRut";
 
 import { CustomGridSubtitulo } from "./../../assets/componentes/customGridPaper/customVerAlumnos";
-export const DatosFamiliares = ({
-  resultado,
-  setResultado,
-  cursos,
-  comunas,
-  parentescos,
-}) => {
+export const DatosFamiliares = ({ comunas, parentescos }) => {
   const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
   const { jwt } = useContext(AuthContext);
   const [errors, setErrors] = useState({});
@@ -46,31 +43,66 @@ export const DatosFamiliares = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-  const validaRutPadres = (name, resultado, setResultado) => {
+  const validaRutPadres = (name) => {
     const nameMapping = {
-      ApRut: 1,
-      ApsuRut: 2,
       PadRut: 3,
       MadRut: 4,
     };
 
     // Obtenemos el índice correspondiente o un valor predeterminado
     const indName = nameMapping[name] || 0; // 0 si 'name' no está en el mapeo
-    const rutName = resultado[name];
+    const rutName = dataBuscaAl[name];
 
     if (rutName.length <= 1) {
       setErrors({ ...errors, [name]: "Debe ingresar Rut válido" });
       return false;
     }
-    if (!FValidarOtrosRut(name, resultado, setResultado)) {
-      setErrors({ ...errors, [name]: "Debe ingresar Rut válido" });
+    if (!FValidarOtrosRut(name, dataBuscaAl)) {
+      setErrors({
+        ...errors,
+        [name]: "Debe ingresar Rut válido, Digito varificador",
+      });
       return false;
     }
 
     setMode(indName);
   };
 
-  if (!comunas || !parentescos || !dataBuscaAl || !resultado) {
+  const handleChangeRutApsu = (name) => (event) => {
+    const value = event.target.value;
+    let tvalue = FmtoRut(value);
+    if (tvalue === 1 && tvalue === null) tvalue = "";
+
+    if (tvalue != null) {
+      var rut = parseInt(RutANumeros(tvalue), 10);
+      var dv = tvalue.slice(-1).toUpperCase();
+
+      const fieldMapping = {
+        PadRut: { keyRut: "padre_rut", keyDv: "padre_dv" },
+        MadRut: { keyRut: "madre_rut", keyDv: "madre_dv" },
+      };
+      if (fieldMapping[name]) {
+        const { keyRut, keyDv } = fieldMapping[name];
+
+        setDataBuscaAl((prev) => ({
+          ...prev,
+          [name]: tvalue,
+          [keyRut]: rut,
+          [keyDv]: dv,
+        }));
+        //        setDataBuscaAl({
+        //          ...dataBuscaAl,
+        //          [name]: tvalue,
+        //          [keyRut]: rut,
+        //          [keyDv]: dv,
+        //        });
+      } else {
+        setDataBuscaAl((prev) => ({ ...prev, [name]: tvalue }));
+      }
+    }
+  };
+
+  if (!comunas || !parentescos || !dataBuscaAl) {
     return <div>Cargando...</div>;
   }
 
@@ -96,14 +128,8 @@ export const DatosFamiliares = ({
                   variant="outlined"
                   required
                   fullWidth
-                  value={resultado.PadRut}
-                  onChange={manejoCambiofRut(
-                    "PadRut",
-                    resultado,
-                    setResultado,
-                    dataBuscaAl,
-                    setDataBuscaAl
-                  )}
+                  value={dataBuscaAl.PadRut}
+                  onChange={handleChangeRutApsu("PadRut")}
                   error={!!errors.PadRut}
                   helperText={errors.PadRut}
                   InputProps={{
@@ -112,11 +138,7 @@ export const DatosFamiliares = ({
                         <Tooltip title="Buscar Padre por el RUT">
                           <IconButton
                             onClick={() => {
-                              validaRutPadres(
-                                "PadRut",
-                                resultado,
-                                setResultado
-                              );
+                              validaRutPadres("PadRut");
                             }}
                           >
                             <PersonSearchIcon />
@@ -198,14 +220,8 @@ export const DatosFamiliares = ({
                   variant="outlined"
                   required
                   fullWidth
-                  value={resultado.MadRut}
-                  onChange={manejoCambiofRut(
-                    "MadRut",
-                    resultado,
-                    setResultado,
-                    dataBuscaAl,
-                    setDataBuscaAl
-                  )}
+                  value={dataBuscaAl.MadRut}
+                  onChange={handleChangeRutApsu("MadRut")}
                   error={!!errors.MadRut}
                   helperText={errors.MadRut}
                   InputProps={{
@@ -214,11 +230,7 @@ export const DatosFamiliares = ({
                         <Tooltip title="Buscar Madre por el RUT">
                           <IconButton
                             onClick={() => {
-                              validaRutPadres(
-                                "MadRut",
-                                resultado,
-                                setResultado
-                              );
+                              validaRutPadres("MadRut");
                             }}
                           >
                             <PersonSearchIcon />
@@ -410,8 +422,6 @@ export const DatosFamiliares = ({
         </Grid>
         {(mode === 3 || mode === 4) &&
           CargaDataFamiliaAp({
-            resultado,
-            setResultado,
             jwt,
             dataBuscaAl,
             setDataBuscaAl,

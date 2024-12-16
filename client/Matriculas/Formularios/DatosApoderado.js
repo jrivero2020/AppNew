@@ -1,15 +1,6 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-} from "react";
+import React, { useCallback, useContext, useState, useRef } from "react";
 import { AuthContext } from "../../core/AuthProvider";
-import {
-  CargaDataFamiliaAp,
-  actualizaPadres,
-} from "./../../FichaAlumnos/CargaDataRutAlumno";
+import { CargaDataFamiliaAp } from "./../../FichaAlumnos/CargaDataRutAlumno";
 
 import {
   FormControl,
@@ -24,56 +15,127 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material";
-import { manejoCambiofRut, FValidarOtrosRut } from "./../../assets/js/FmtoRut";
+import {
+  FValidarOtrosRut,
+  RutANumeros,
+  FmtoRut,
+} from "./../../assets/js/FmtoRut";
 import { ValidaFichaAlumno } from "./helpers/ValidaFichaAlumno";
 import { CustomGridSubtitulo } from "./../../assets/componentes/customGridPaper/customVerAlumnos";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import Tooltip from "@mui/material/Tooltip";
 
-export const DatosApoderado = ({
-  resultado,
-  setResultado,
-  comunas,
-  parentescos,
-}) => {
+export const DatosApoderado = ({ comunas, parentescos }) => {
   const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
   const { jwt } = useContext(AuthContext);
   const [errors, setErrors] = useState({});
   const [mode, setMode] = useState(0);
 
+  const refs = {
+    ApRut: useRef(""),
+    ApsuRut: useRef(""),
+    PadRut: useRef(""),
+    MadRut: useRef(""),
+  };
+
   const handleChange = useCallback(
     (name, curso) => (event) => {
       const { value } = event.target;
-      // Validar el campo
       const error = ValidaFichaAlumno(name, value, curso);
-      setDataBuscaAl((prev) => ({ ...prev, [name]: value }));
       setErrors({ ...errors, [name]: error });
+
       const numValor = Number(value);
-
       const isParentesco =
-        name === "al_idparentesco" || name === "al_idparentescosupl";
-
+        (name === "al_idparentesco" || name === "al_idparentescosupl") &&
+        [1, 2].includes(numValor);
+      // console.log("Antes de asignar isParentesco:=>", dataBuscaAl);
       if (isParentesco) {
-        const updatedValue =
-          name === "al_idparentescosupl" ? numValor + 2 : numValor;
-        setResultado({ ...resultado, swParentesco: updatedValue });
+        const isSuplente = name === "al_idparentescosupl";
+        const prefix = numValor === 1 ? "padre" : "madre"; // Determina si es padre o madre
+        const source = isSuplente
+          ? {
+              rut: "apsu_rut",
+              dv: "apsu_dv",
+              nombres: "apsu_nombres",
+              apat: "apsu_apat",
+              amat: "apsu_amat",
+              formatted: "ApsuRut",
+            }
+          : {
+              rut: "ap_rut",
+              dv: "ap_dv",
+              nombres: "ap_nombres",
+              apat: "ap_apat",
+              amat: "ap_amat",
+              formatted: "ApRut",
+            };
+        setDataBuscaAl((prev) => ({
+          ...prev,
+          [name]: value,
+          [`${prefix}_rut`]: prev[source.rut],
+          [`${prefix}_dv`]: prev[source.dv],
+          [`${prefix}_nombres`]: prev[source.nombres],
+          [`${prefix}_apat`]: prev[source.apat],
+          [`${prefix}_amat`]: prev[source.amat],
+          [`${prefix === "padre" ? "PadRut" : "MadRut"}`]:
+            prev[source.formatted], // Formateado
+        }));
+      } else {
+        setDataBuscaAl((prev) => ({ ...prev, [name]: value }));
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
-  const validaRutApoderado = (name, resultado, setResultado) => {
-    const rutAp = resultado[name];
+  const handleChangeRutAp = () => (event) => {
+    const { name, value } = event.target;
+    let tvalue = FmtoRut(value);
+
+    // console.log(
+    //   ` en handleChangeRutAp dataBuscaAl[${name}] tvalue = ${tvalue}`
+    // );
+
+    if (tvalue === 1 && tvalue === null) tvalue = "";
+
+    if (tvalue != null) {
+      var rut = parseInt(RutANumeros(tvalue), 10);
+      var dv = tvalue.slice(-1).toUpperCase();
+
+      const fieldMapping = {
+        ApRut: { keyRut: "ap_rut", keyDv: "ap_dv" },
+        ApsuRut: { keyRut: "apsu_rut", keyDv: "apsu_dv" },
+        PadRut: { keyRut: "padre_rut", keyDv: "padre_dv" },
+        MadRut: { keyRut: "madre_rut", keyDv: "madre_dv" },
+      };
+
+      if (fieldMapping[name]) {
+        const { keyRut, keyDv } = fieldMapping[name];
+        setDataBuscaAl((prev) => ({
+          ...prev,
+          [name]: tvalue,
+          [keyRut]: rut,
+          [keyDv]: dv,
+        }));
+      }
+      if (refs[name]) {
+        refs[name].current = tvalue; // Actualizamos el valor del ref
+        // console.log(`Ref actualizado para ${name}: ${refs[name].current}`);
+      }
+    }
+  };
+
+  const validaRutApoderado = (name) => {
+    const rutAp = dataBuscaAl[name];
     const indName = name === "ApRut" ? 1 : 2;
-    // console.log(`Resultado[${name}] = ${rutAp}`);
+
     if (rutAp.length <= 1) {
       setErrors({ ...errors, [name]: "Debe ingresar Rut válido" });
       return false;
     }
     // console.log("va a FValidarOtrosRut ");
 
-    if (!FValidarOtrosRut(name, resultado, setResultado)) {
+    if (!FValidarOtrosRut(name, dataBuscaAl)) {
       setErrors({
         ...errors,
         [name]: "Debe ingresar Rut válido, Digito verificador",
@@ -85,19 +147,21 @@ export const DatosApoderado = ({
     setMode(indName);
   };
 
-  useEffect(() => {
-    if ([1, 2, 3, 4].includes(resultado.swParentesco)) {
-      actualizaPadres({
-        resultado,
-        setResultado,
-        dataBuscaAl,
-        setDataBuscaAl,
-      });
-    }
-  }, [resultado, setResultado, dataBuscaAl, setDataBuscaAl]);
+  // useEffect(() => {
+  //   if ([1, 2, 3, 4].includes(dataBuscaAl.swParentesco)) {
+  //     console.log("ir a actualizar padre");
+  //     setDataBuscaAl({ ...dataBuscaAl, swParentesco: 0 });
+  //     actualizaPadres({
+  //       dataBuscaAl,
+  //       setDataBuscaAl,
+  //       refs,
+  //     });
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [dataBuscaAl]);
 
   // console.log(" dataBuscaAl =>:", dataBuscaAl )
-  if (!comunas || !parentescos || !dataBuscaAl || !resultado) {
+  if (!comunas || !parentescos || !dataBuscaAl) {
     return <div>Cargando...</div>;
   }
 
@@ -115,14 +179,9 @@ export const DatosApoderado = ({
                 variant="outlined"
                 required
                 fullWidth
-                value={resultado.ApRut}
-                onChange={manejoCambiofRut(
-                  "ApRut",
-                  resultado,
-                  setResultado,
-                  dataBuscaAl,
-                  setDataBuscaAl
-                )}
+                name="ApRut"
+                value={dataBuscaAl.ApRut}
+                onChange={handleChangeRutAp()}
                 error={!!errors.ApRut}
                 helperText={errors.ApRut}
                 InputProps={{
@@ -131,11 +190,7 @@ export const DatosApoderado = ({
                       <Tooltip title="Buscar Apoderado por el RUT">
                         <IconButton
                           onClick={() => {
-                            validaRutApoderado(
-                              "ApRut",
-                              resultado,
-                              setResultado
-                            );
+                            validaRutApoderado("ApRut");
                           }}
                         >
                           <PersonSearchIcon />
@@ -334,27 +389,18 @@ export const DatosApoderado = ({
                 variant="outlined"
                 required
                 fullWidth
-                value={resultado.ApsuRut}
+                value={dataBuscaAl.ApsuRut}
+                name="ApsuRut"
                 error={!!errors.ApsuRut}
                 helperText={errors.ApsuRut}
-                onChange={manejoCambiofRut(
-                  "ApsuRut",
-                  resultado,
-                  setResultado,
-                  dataBuscaAl,
-                  setDataBuscaAl
-                )}
+                onChange={handleChangeRutAp()}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip title="Buscar Apoderado suplente por el RUT">
                         <IconButton
                           onClick={() => {
-                            validaRutApoderado(
-                              "ApsuRut",
-                              resultado,
-                              setResultado
-                            );
+                            validaRutApoderado("ApsuRut");
                           }}
                         >
                           <PersonSearchIcon />
@@ -537,8 +583,6 @@ export const DatosApoderado = ({
 
       {(mode === 1 || mode === 2) &&
         CargaDataFamiliaAp({
-          resultado,
-          setResultado,
           jwt,
           dataBuscaAl,
           setDataBuscaAl,

@@ -1,19 +1,33 @@
 import { validateFormAlumno } from "./helpers/ValidaFichaAlumno";
 import { api_CreaModificaAlumno } from "./../../docentes/api-docentes";
+import { cFichaAlumnoOrdenada } from "./../../Matriculas/matriculasCampos";
 
 export const GrabarAlumno = ({
   resultado,
   setResultado,
   setSnackbar,
   dataBuscaAl,
+  setDataBuscaAl,
   jwt,
 }) => {
-  //  console.log(
-  //    "GrabarAlumno, voy a validar todo el formulario dataBuscaAl===>",
-  //    dataBuscaAl,
-  //    " resultado => ",
-  //    resultado
-  //  );
+  const validateAndCleanData = () => {
+    setDataBuscaAl((prev) => {
+      // Recorremos el array con los nombres de los campos
+      const updatedData = { ...prev }; // Creamos una copia del estado actual
+      cFichaAlumnoOrdenada.forEach((field) => {
+        // Si el campo en prev es null, lo actualizamos a ""
+        if (updatedData[field] === null || updatedData[field] === undefined) {
+          updatedData[field] = "";
+        }
+      });
+      return updatedData; // Devolvemos el objeto actualizado
+    });
+  };
+
+  // console.log("antes de validate ", dataBuscaAl);
+  validateAndCleanData();
+
+  //console.log("dataBuscaAl sin nulos =>", dataBuscaAl);
 
   const validaForm = validateFormAlumno(dataBuscaAl);
 
@@ -26,6 +40,7 @@ export const GrabarAlumno = ({
       .then((data) => {
         // console.log("api_CreaModificaAlumno, retorno en data ===>", data);
         if (data && data.error) {
+          setResultado((prev) => ({ ...prev, result: 11 }));
           if (data.error === 409) {
             setSnackbar({
               mensaje:
@@ -33,11 +48,13 @@ export const GrabarAlumno = ({
               severity: "error",
               variant: "filled",
             });
-          } else {
-            setResultado({ ...resultado, result: 11 });
           }
+          setSnackbar({
+            mensaje: "El Servidor no grabó los datos y responde con error",
+            severity: "success",
+            variant: "filled",
+          });
           // console.log("data.error :", data);
-
           return false;
         } else {
           setSnackbar({
@@ -45,9 +62,12 @@ export const GrabarAlumno = ({
             severity: "success",
             variant: "filled",
           });
+          // setResultado((prev) => ({ ...prev, result: 13 }));
         }
       })
       .catch((error) => {
+        //  setResultado((prev) => ({ ...prev, result: 11 }));
+
         // Manejo de errores aquí
         // console.error("Error al grabar alumno:", error);
         if (error.response) {
@@ -67,15 +87,7 @@ export const GrabarAlumno = ({
         }
       });
   } else {
-    // let msg = "";
-    // if (dataBuscaAl.ap_rut === 0 || dataBuscaAl.apsu_rut === 0) {
-    //   msg = "Hay Errores en el formulario II.- Del Apoderado";
-    // } else if (dataBuscaAl.madre_rut === 0 || dataBuscaAl.padre_rut === 0) {
-    //   msg = "Hay Errores en el formulario III.- Familiares";
-    // } else {
-    //   msg = "Hay Errores en el formulario I.- Del Alumno";
-    // }
-
+    // setResultado((prev) => ({ ...prev, result: 14 }));
     setSnackbar({
       mensaje: validaForm,
       severity: "error",

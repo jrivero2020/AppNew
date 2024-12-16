@@ -21,7 +21,7 @@ export const CargaDataFichaAlumno = ({
     (data) => {
       // console.log("getDatosMatricula resultado.RutBuscar ===>", resultado.RutBuscar );
       if (data && data.error) {
-        setResultado({ ...resultado, result: 11 });
+        setResultado((prev) => ({ ...prev, result: 11 }));
         return false;
       } else {
         const [results] = data;
@@ -30,33 +30,27 @@ export const CargaDataFichaAlumno = ({
           results[0] === null ||
           Object.keys(results[0]).length === 0
         ) {
-          setResultado({ ...resultado, result: 9 }); // No está en base de datos
-          setDataBuscaAl({
-            ...dataBuscaAl,
+          setResultado((prev) => ({ ...prev, result: 9 })); // No está en base de datos
+          setDataBuscaAl((prev) => ({
+            ...prev,
             al_rut: resultado.RutBuscar,
             al_dv: resultado.dv,
-          });
+          }));
           // console.log("getDatosMatricula resultado) :", resultado);
         } else {
-          console.log("(results[0] :", results[0]);
-          console.log("Resultado:", resultado);
-          /*ApDv
-ApRut
-ApsuDv
-ApsuRut
-MadDv
-MadRut
-PadDv
-PadRut
+          setResultado((prev) => ({ ...prev, result: 12 })); // No hace nada, mantener tabs
+          //console.log("(results[0] :", results[0]);
+          //console.log("Resultado:", resultado);
 
-*/
           const ApRut = results[0].ap_rut + "-" + results[0].ap_dv;
           const ApsuRut = results[0].apsu_rut + "-" + results[0].apsu_dv;
           const MadRut = results[0].madre_rut + "-" + results[0].madre_dv;
           const PadRut = results[0].padre_rut + "-" + results[0].padre_dv;
 
-          setResultado({
-            ...resultado,
+          // console.log("Los rut =>", ApRut, ApsuRut, MadRut, PadRut);
+
+          setResultado((prev) => ({
+            ...prev,
             result: 10,
             ApRut: ApRut,
             ApDv: results[0].ap_dv,
@@ -66,8 +60,37 @@ PadRut
             MadDv: results[0].madre_dv,
             PadRut: PadRut,
             PadDv: results[0].padre_dv,
+          }));
+
+          setDataBuscaAl((prev) => {
+            // Fusiona todos los datos de results[0] con los campos adicionales si no están definidos en el estado previo
+            const updatedData = {
+              ...prev, // Mantén los valores existentes en el estado
+              ...results[0], // Carga todos los campos de results[0]
+              // Agrega los campos adicionales si no existen en prev
+              ApRut: prev?.ApRut ?? ApRut,
+              ApDv: prev?.ApDv ?? results[0]?.ap_dv,
+              ApsuRut: prev?.ApsuRut ?? ApsuRut,
+              ApsuDv: prev?.ApsuDv ?? results[0]?.apsu_dv,
+              MadRut: prev?.MadRut ?? MadRut,
+              MadDv: prev?.MadDv ?? results[0]?.madre_dv,
+              PadRut: prev?.PadRut ?? PadRut,
+              PadDv: prev?.PadDv ?? results[0]?.padre_dv,
+            };
+
+            return updatedData; // Retorna el estado actualizado
           });
-          setDataBuscaAl(results[0]); // Datos de la vista cargados
+          setDataBuscaAl((prev) => ({
+            ...prev,
+            ApRut: ApRut,
+            ApDv: results[0].ap_dv,
+            ApsuRut: ApsuRut,
+            ApsuDv: results[0].apsu_dv,
+            MadRut: MadRut,
+            MadDv: results[0].madre_dv,
+            PadRut: PadRut,
+            PadDv: results[0].padre_dv,
+          }));
         }
       }
     }
@@ -76,8 +99,6 @@ PadRut
 };
 
 export const CargaDataFamiliaAp = ({
-  resultado,
-  setResultado,
   jwt,
   dataBuscaAl,
   setDataBuscaAl,
@@ -86,9 +107,9 @@ export const CargaDataFamiliaAp = ({
 }) => {
   const abortController = new AbortController();
   const signal = abortController.signal;
-  const indFamilia = ["", "BuscaAp", "BuscaApSup", "BuscaPadre", "BuscaMadre"];
   const rutFamilia = ["", "ApRut", "ApsuRut", "PadRut", "MadRut"];
   const modeInterno = mode;
+
   setMode(0);
 
   const generateUpdatedFields = (mode, prefix, results) => {
@@ -117,8 +138,8 @@ export const CargaDataFamiliaAp = ({
         [`${prefix}_id_comuna`]: results[0].fam_id_comuna,
       },
       madrePadre: {
-        [`${prefix}_estudios`]: results[0].fam_apat, // Revisa si este mapeo es correcto
-        [`${prefix}_ocupacion`]: results[0].fam_amat, // Revisa si este mapeo es correcto
+        [`${prefix}_estudios`]: results[0].fam_estudios, // Revisa si este mapeo es correcto
+        [`${prefix}_ocupacion`]: results[0].fam_ocupacion, // Revisa si este mapeo es correcto
         al_ingresogrupofamiliar: results[0].fam_ingresogrupofamiliar,
         al_vivienda: results[0].fam_vivienda,
         al_evaluareligion: results[0].fam_evaluareligion,
@@ -164,18 +185,12 @@ export const CargaDataFamiliaAp = ({
     setMode(10); // Data Cargada en todo momento;
   };
 
-  /*
-modo =1; apoderado
-modo =2; apoderado suplente
-modo =3; Padre
-modo =4; Madres
-*/
-  const rutLimpio = RutANumeros(resultado[rutFamilia[modeInterno]]);
+  const rutLimpio = RutANumeros(dataBuscaAl[rutFamilia[modeInterno]]);
 
   api_getDatosFamiliaAP(rutLimpio, { t: jwt.token }, signal).then((data) => {
     // console.log("getDatosMatricula resultado.RutBuscar ===>", resultado.RutBuscar );
     if (data && data.error) {
-      setResultado({ ...resultado, [indFamilia[modeInterno]]: 2 }); // error en conexion
+      // setResultado({ ...resultado, [indFamilia[modeInterno]]: 2 }); // error en conexion
       return false;
     } else {
       const [results] = data;
@@ -184,9 +199,9 @@ modo =4; Madres
         results[0] === null ||
         Object.keys(results[0]).length === 0
       ) {
-        setResultado({ ...resultado, [indFamilia[modeInterno]]: 3 }); // No está en base de datos
+        // setResultado({ ...resultado, [indFamilia[modeInterno]]: 3 }); // No está en base de datos
       } else {
-        setResultado({ ...resultado, [indFamilia[modeInterno]]: 1 }); // Ficha Cargada
+        //        setResultado({ ...resultado, [indFamilia[modeInterno]]: 1 }); // Ficha Cargada
 
         if (modeInterno >= 1 && modeInterno <= 4) {
           updateDataBuscaAl(results);
@@ -202,52 +217,96 @@ modo =4; Madres
 };
 
 export const actualizaPadres = ({
-  resultado,
-  setResultado,
   dataBuscaAl,
   setDataBuscaAl,
+  refs,
+  swValue,
 }) => {
   // Mapear el parentesco con los campos correspondientes
-  const swValue = resultado.swParentesco;
+  // const swValue = dataBuscaAl.swParentesco;
+  const commonFields = ["rut", "dv", "nombres", "apat", "amat"];
   const parentFields = {
-    madre: [
-      "madre_rut",
-      "madre_dv",
-      "madre_nombres",
-      "madre_apat",
-      "madre_amat",
-    ],
-    padre: [
-      "padre_rut",
-      "padre_dv",
-      "padre_nombres",
-      "padre_apat",
-      "padre_amat",
-    ],
+    madre: commonFields.map((field) => `madre_${field}`),
+    padre: commonFields.map((field) => `padre_${field}`),
   };
-  const dataKey = swValue >= 1 && swValue <= 2 ? "ap" : "apsu";
-  const parentType = swValue === 2 || swValue === 4 ? "madre" : "padre";
+
+  const dataKeyMap = {
+    1: "ap",
+    2: "ap",
+    3: "apsu",
+    4: "apsu",
+  };
+
+  const parentTypeMap = {
+    1: "padre",
+    2: "madre",
+    3: "padre",
+    4: "madre",
+  };
+
+  const dataKey = dataKeyMap[swValue] || null; // Manejo de caso por defecto
+  const parentType = parentTypeMap[swValue] || null;
+  const rutFamilia = parentType === "madre" ? "MadRut" : "PadRut";
+  const rutApoderado = dataKey === "ap" ? "ApRut" : "ApsuRut";
+  const rutDinamico =
+    dataBuscaAl[`${dataKey}_rut`] + "-" + dataBuscaAl[`${dataKey}_dv`];
+  const rutDinamicoFmto = FmtoRut(rutDinamico);
+  const refsRut = refs[rutFamilia].current;
+  // setDataBuscaAl({ ...dataBuscaAl.swParentesco, swParentesco: 0 });
+  //console.log("El valor de dataBuscaAl:=>", dataBuscaAl);
+  const EsVacio = (valor) => {
+    return valor === 0 || valor === "" || valor === null || valor === undefined;
+  };
+
+  if (EsVacio(refsRut) && !EsVacio(rutDinamicoFmto)) {
+    // console.log(
+    //   "****refsRut venia en blanco rutFamilia =>",
+    //   rutFamilia,
+    //   " rutApoderado : =>",
+    //   rutApoderado
+    // );
+    refs[rutFamilia].current = rutDinamicoFmto;
+    refs[rutApoderado].current = rutDinamicoFmto;
+  }
+  //console.log(
+  //  " dataBuscaAl:=>",
+  //  dataBuscaAl,
+  //  " refs[rutFamilia].current =>",
+  //  refs[rutFamilia].current,
+  //  "refs =>",
+  //  refs,
+  //  " parentType:=>",
+  //  parentType
+  //);
 
   if (parentType) {
     const [rut, dv, nombres, apat, amat] = parentFields[parentType];
-    const rutDinamico =
-      dataBuscaAl[`${dataKey}_rut`] + "-" + dataBuscaAl[`${dataKey}_dv`];
-    const rutDinamicoFmto = FmtoRut(rutDinamico);
-    setDataBuscaAl({
-      ...dataBuscaAl,
+
+    //console.log(
+    //  "dataKey =>",
+    //  dataKey,
+    //  " dataBuscaAl[{dataKey}_rut]",
+    //  dataBuscaAl[`${dataKey}_rut`],
+    //  "[rut] =>",
+    //  [rut]
+    //);
+
+    setDataBuscaAl((prev) => ({
+      ...prev,
       [rut]: dataBuscaAl[`${dataKey}_rut`],
       [dv]: dataBuscaAl[`${dataKey}_dv`],
       [nombres]: dataBuscaAl[`${dataKey}_nombres`],
       [apat]: dataBuscaAl[`${dataKey}_apat`],
       [amat]: dataBuscaAl[`${dataKey}_amat`],
-    });
+    }));
 
-    setResultado({
-      ...resultado,
-      [`${dataKey === "ap" ? "ApRut" : "ApsuRut"}`]: rutDinamicoFmto,
-      [`${dataKey === "ap" ? "ApDv" : "ApsuDv"}`]: dataBuscaAl[`${dataKey}_dv`],
-      [parentType === "madre" ? "MadRut" : "PadRut"]: rutDinamicoFmto,
-      swParentesco: 0, // Reiniciar swParentesco para evitar actualizaciones repetidas
-    });
+    //     setDataBuscaAl({
+    //       ...dataBuscaAl,
+    //       [rut]: dataBuscaAl[`${dataKey}_rut`],
+    //       [dv]: dataBuscaAl[`${dataKey}_dv`],
+    //       [nombres]: dataBuscaAl[`${dataKey}_nombres`],
+    //       [apat]: dataBuscaAl[`${dataKey}_apat`],
+    //       [amat]: dataBuscaAl[`${dataKey}_amat`],
+    //     });
   }
 };

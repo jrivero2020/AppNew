@@ -105,18 +105,19 @@ const manejoCambiofRut =
 
       if (fieldMapping[name]) {
         const { keyRut, keyDv } = fieldMapping[name];
-        setDataBuscaAl({ ...dataBuscaAl, [keyRut]: rut, [keyDv]: dv });
+        //         setDataBuscaAl({ ...dataBuscaAl, [keyRut]: rut, [keyDv]: dv });
+        setDataBuscaAl((prev) => ({ ...prev, [keyRut]: rut, [keyDv]: dv }));
       }
     }
   };
 
-export const FValidarOtrosRut = (name, resultado, setResultado) => {
+export const FValidarOtrosRut = (name, dataBuscaAl) => {
   //  console.log("recibido en FValidarOtrosRut =", resultado[name]);
-  let tvalue = FmtoRut(resultado[name]);
+  let tvalue = FmtoRut(dataBuscaAl[name]);
   //console.log("el formato rut es : ", tvalue);
-  if (resultado[name].length === 1 && tvalue === null) tvalue = "";
+  if (dataBuscaAl[name].length === 1 && tvalue === null) tvalue = "";
   if (tvalue != null) {
-    const retornovalida = validarRut(resultado[name]);
+    const retornovalida = validarRut(dataBuscaAl[name]);
     //console.log("Voy a retornar con retornovalida=", retornovalida);
     return retornovalida;
   } else {

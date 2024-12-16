@@ -92,12 +92,10 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
   useEffect(() => {
     if (comunas && comunas.length > 0 && resultado.result !== alNuevo) {
       if (EsVacio(dataBuscaAl.al_id_comuna)) {
-        setDataBuscaAl({ ...dataBuscaAl, al_id_comuna: 13102 });
+        setDataBuscaAl((prev) => ({ ...prev, al_id_comuna: 13102 }));
       }
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [comunas]);
+  }, [comunas, resultado, setDataBuscaAl, dataBuscaAl]);
 
   if (!dataBuscaAl) {
     return <div>Cargando datos del alumno...</div>;
@@ -159,21 +157,13 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
 
         {value === 1 && (
           <DatosApoderado
-            resultado={resultado}
-            setResultado={setResultado}
             cursos={cursos}
             comunas={comunas}
             parentescos={parentescos}
           />
         )}
         {value === 2 && (
-          <DatosFamiliares
-            resultado={resultado}
-            setResultado={setResultado}
-            cursos={cursos}
-            comunas={comunas}
-            parentescos={parentescos}
-          />
+          <DatosFamiliares comunas={comunas} parentescos={parentescos} />
         )}
       </Grid>
 

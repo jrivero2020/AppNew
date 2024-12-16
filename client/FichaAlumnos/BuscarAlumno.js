@@ -43,6 +43,9 @@ export default function BuscarAlumno() {
   const RutNotFound = 9;
   const DataFichaCargada = 10;
   const ErrorServidor = 11;
+  const MantenerTabs = 12;
+  const DatosGrabados = 13;
+  const NovalidoFormulario = 14;
 
   const MsgRut = 0;
   const MsgNombre = 1;
@@ -94,9 +97,7 @@ export default function BuscarAlumno() {
   };
   useEffect(() => {
     if (gridBusca.includes(resultado.result)) setDataBuscaAl(cFichaAlumno);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resultado.result]);
+  }, [resultado.result, gridBusca, setDataBuscaAl]);
 
   return (
     <>

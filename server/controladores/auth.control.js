@@ -24,7 +24,7 @@ const signin = async (req, res) => {
     res.cookie("t", token, { expire: new Date() + 20 });
     // console.log( 'Token: ', token)
     req.profile = usrFind.dataValues;
-    console.log("Enlogeo signin usrFind.dataValues==>", usrFind.dataValues)
+    // console.log("Enlogeo signin usrFind.dataValues==>", usrFind.dataValues)
     return res.json({ token, user });
   } catch (error) {
     // console.log("El Error: ", error)
@@ -46,7 +46,7 @@ const requireSignin = expressjwt({
 });
 
 const estaAutorizado = async (req, res, next) => {
-  console.log("estaAutorizado*********************req", req.auth.user._id);
+  // console.log("estaAutorizado*********************req", req.auth.user._id);
   var usrRol = null;
   try {
     let findUsrRol = await usuarios.findByPk(req.auth.user._id);
@@ -60,8 +60,8 @@ const estaAutorizado = async (req, res, next) => {
       .status(404)
       .json({ message: "No pude conectar con BD. Usuario " + error });
   }
-console.log("estaAutorizado req.profile ", req.profile )
-// , " req.auth.user :", req.auth.user, " req.profile.idUsuario =>", req.profile.idUsuario, "usrRol : ", usrRol)
+  // console.log("estaAutorizado req.profile ", req.profile )
+  // , " req.auth.user :", req.auth.user, " req.profile.idUsuario =>", req.profile.idUsuario, "usrRol : ", usrRol)
 
   const autorizado =
     req.profile && req.auth.user && req.profile.idUsuario === req.auth.user._id;

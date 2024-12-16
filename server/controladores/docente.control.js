@@ -294,7 +294,7 @@ const CreaAlumnoRut = async (req, res) => {
     const rutAl = req.params.rutAl;
     const resul = req.body.result;
     const body = req.body.alumno;
-    console.log(" ****body**** =>", body, "*********Resul =>", resul);
+    // console.log(" ****body**** =>", body, "*********Resul =>", resul);
     const camposRep = [
       body.al_rut,
       body.al_dv,
@@ -381,8 +381,8 @@ const CreaAlumnoRut = async (req, res) => {
     res.json(idAlumno);
   } catch (err) {
     if (err.name === "SequelizeUniqueConstraintError") {
-      console.log("details; ", err.errors[0].message);
-      console.log("value; ", err.errors[0].value);
+      // console.log("details; ", err.errors[0].message);
+      // console.log("value; ", err.errors[0].value);
 
       return res.status(409).json({
         message: "El alumno ya existe con el RUT proporcionado.",

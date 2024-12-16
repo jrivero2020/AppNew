@@ -99,6 +99,11 @@ export const cFichaAlumno = {
   datagrid: false,
   buscando: true,
   encontrado: false,
+  swParentesco: 0,
+  ApRut: "",
+  ApsuRut: "",
+  PadRut: "",
+  MadRut: "",
 };
 
 export const valAlumno = {
@@ -237,10 +242,10 @@ export const cFichaAlumnoOrdenada = [
   "al_id_comuna",
   "al_procedencia",
   "al_promedionota",
-  "al_cur_repe ",
+  "al_cur_repe",
   "al_idvivecon",
   "al_descripcionvivecon",
-  "al_enfermo ",
+  "al_enfermo",
   "al_cuidados",
   "al_canthnos",
   "al_nroentrehnos",
@@ -273,20 +278,20 @@ export const cFichaAlumnoOrdenada = [
   "apsu_domicilio",
   "apsu_id_comuna",
 
-  "padre_dv ",
+  "padre_dv",
   "padre_rut",
   "padre_nombres",
   "padre_apat",
   "padre_amat",
-  "padre_estudios ",
+  "padre_estudios",
   "padre_ocupacion",
 
-  "madre_dv ",
+  "madre_dv",
   "madre_rut",
   "madre_nombres",
   "madre_amat",
   "madre_apat",
-  "madre_estudios ",
+  "madre_estudios",
   "madre_ocupacion",
 
   "al_ingresogrupofamiliar",
@@ -317,5 +322,5 @@ export const dataResultado = {
   BuscaApSup: 0,
   BuscaPadre: 0,
   BuscaMadre: 0,
-  swParentesco: 0
+  swParentesco: 0,
 };
