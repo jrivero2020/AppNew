@@ -73,4 +73,8 @@ router
   .route("/rutaGetDatosFamilia/:rutAl")
   .get(authCtrl.requireSignin, docenteCtrl.getDatosFamilia);
 
+router
+  .route("/rutaGetApoderadoNombres/:nomAp/:apPatAp/:apMatAp")
+  .get(docenteCtrl.getDataApoderadoNombres);
+
 export default router;

@@ -1,6 +1,7 @@
 import DOMPurify from "dompurify";
 import { validarRut } from "./../../../assets/js/FmtoRut";
 import { cFichaAlumnoOrdenada } from "./../../../Matriculas/matriculasCampos";
+// import { ConsultaApoderadoNombres } from "../ConsultaApoderadoNombres";
 
 const validarNroFono = (numero) => {
   // Expresión regular para celular chileno
@@ -485,6 +486,58 @@ export const validateFormAlumno = (dataBuscaAl) => {
     return null;
   };
 
+  const parentescoMap = {
+    1: { role: "padre", message: "El Padre" },
+    2: { role: "madre", message: "La Madre" },
+  };
+
+  const validateParentesco = (idParentesco, apFields, roleName) => {
+    //   "al_idparentesco","ap","Apoderado"
+
+    console.log(
+      "dataBuscaAl[idParentesco]=",
+      idParentesco,
+      "valor:",
+      dataBuscaAl[idParentesco],
+      "apFields:",
+      apFields,
+      "roleName:",
+      roleName
+    );
+
+    if (dataBuscaAl[idParentesco] in parentescoMap) {
+      const { role, message } = parentescoMap[dataBuscaAl[idParentesco]];
+      console.log("role:", role, "message;", message);
+      console.log(
+        "cmp rut =>",
+        dataBuscaAl[`${apFields}_rut`],
+        "!==",
+        dataBuscaAl[`${role}_rut`]
+      );
+
+      if (dataBuscaAl[`${apFields}_rut`] !== dataBuscaAl[`${role}_rut`]) {
+        return `${message} debe tener el mismo rut que el ${roleName} cuando parentesco="${message.substring(
+          3
+        )}"!`;
+      }
+
+      if (
+        dataBuscaAl[`${apFields}_nombres`] !== dataBuscaAl[`${role}_nombres`] ||
+        dataBuscaAl[`${apFields}_apat`] !== dataBuscaAl[`${role}_apat`] ||
+        dataBuscaAl[`${apFields}_amat`] !== dataBuscaAl[`${role}_amat`]
+      ) {
+        return `${message} se debe llamar igual que ${roleName} cuando parentesco="${message.substring(
+          3
+        )}"!`;
+      }
+    }
+  };
+
+  const sonNombresIguales = (person1, person2) =>
+    dataBuscaAl[`${person1}_nombres`] === dataBuscaAl[`${person2}_nombres`] &&
+    dataBuscaAl[`${person1}_apat`] === dataBuscaAl[`${person2}_apat`] &&
+    dataBuscaAl[`${person1}_amat`] === dataBuscaAl[`${person2}_amat`];
+
   const validarCampos = () => {
     // *****************************************************
     // validar los ruts de los formularios excepto de padres
@@ -503,6 +556,9 @@ export const validateFormAlumno = (dataBuscaAl) => {
     ) {
       return "Debe ingresar Rut de la Madre o el Padre, No se permite ambos padres sin Rut!";
     }
+    if (dataBuscaAl["ap_rut"] === dataBuscaAl["apsu_rut"])
+      return 'El apoderado "Suplente" no puede tener el mismo Rut del Apoderado "Titular"!';
+
     if (!esFalsyDefinida(dataBuscaAl["padre_rut"])) {
       const error = validarFormatoRut("padre_rut", "padre_dv", "Padre");
       if (error) return error;
@@ -510,6 +566,22 @@ export const validateFormAlumno = (dataBuscaAl) => {
     if (!esFalsyDefinida(dataBuscaAl["madre_rut"])) {
       const error = validarFormatoRut("madre_rut", "madre_dv", "Madre");
       if (error) return error;
+    }
+    if (
+      !esFalsyDefinida(dataBuscaAl["padre_rut"]) &&
+      !esFalsyDefinida(dataBuscaAl["madre_rut"])
+    ) {
+      if (dataBuscaAl["madre_rut"] === dataBuscaAl["padre_rut"])
+        return 'La "Madre" no puede tener el mismo Rut que el "Padre"!';
+    }
+
+    if (
+      !esFalsyDefinida(dataBuscaAl["al_idparentesco"]) &&
+      !esFalsyDefinida(dataBuscaAl["al_idparentescosupl"]) &&
+      dataBuscaAl["ap_rut"] !== dataBuscaAl["apsu_rut"]
+    ) {
+      if (dataBuscaAl["al_idparentescosupl"] === dataBuscaAl["al_idparentesco"])
+        return "El Apoderado y el suplente, no pueden tener el mismo parentesco!";
     }
     // fin permite rut de madre o padre sin datos, pero no los 2
     // **********************************************************
@@ -520,14 +592,55 @@ export const validateFormAlumno = (dataBuscaAl) => {
     for (const key of clavesFiltradas) {
       if (dataBuscaAl.hasOwnProperty(key)) {
         const valor = dataBuscaAl[key];
-        // console.log("ValidaFichaAlumno key =>", key, " valor=>", valor);
-        // console.log("Se valida ", key, " con valor :", valor);
         const error = ValidaFichaAlumno(key, valor);
         if (error) {
           return error; // Retorna el error y detiene la validación
         }
       }
     }
+    // Validaciones
+    if (sonNombresIguales("ap", "apsu")) {
+      return "El Apoderado y el suplente, no se pueden llamar iguales!";
+    }
+
+    if (sonNombresIguales("madre", "padre")) {
+      return "Los padres no se pueden llamar iguales!";
+    }
+
+    // Validar Apoderado
+    const apoderadoError = validateParentesco(
+      "al_idparentesco",
+      "ap",
+      "Apoderado"
+    );
+    if (apoderadoError) return apoderadoError;
+
+    // Validar Apoderado Suplente
+    const suplenteError = validateParentesco(
+      "al_idparentescosupl",
+      "apsu",
+      "Apoderado Suplente"
+    );
+    if (suplenteError) return suplenteError;
+
+    if (dataBuscaAl["al_idparentesco"] === 1) {
+      if (dataBuscaAl["ap_rut"] !== dataBuscaAl["padre_rut"])
+        return 'El Padre debe tener el mismo rut que el Apoderado cuando parentesco="Padre"!';
+    }
+    if (dataBuscaAl["al_idparentesco"] === 2) {
+      if (dataBuscaAl["ap_rut"] !== dataBuscaAl["madre_rut"])
+        return 'La Madre debe tener el mismo rut que el Apoderado cuando parentesco="Madre"!';
+    }
+
+    if (dataBuscaAl["al_idparentescosupl"] === 1) {
+      if (dataBuscaAl["apsu_rut"] !== dataBuscaAl["padre_rut"])
+        return 'El Padre debe tener el mismo rut que el Apoderado Suplente cuando parentesco="Padre"!';
+    }
+    if (dataBuscaAl["al_idparentescosupl"] === 2) {
+      if (dataBuscaAl["apsu_rut"] !== dataBuscaAl["madre_rut"])
+        return 'La Madre debe tener el mismo rut que el Apoderado Suplente cuando parentesco="Madre"!';
+    }
+
     return null; // No hay errores en este prefijo
   };
 
@@ -535,6 +648,42 @@ export const validateFormAlumno = (dataBuscaAl) => {
   if (error) {
     return error; // Detener el proceso si se encuentra un error
   }
+  // validación si los campos de padre o madre están vacíos y se ingresa nombres que ya existen en la b.datos
+  /*
+  const {
+    padre_rut,
+    padre_apat,
+    padre_amat,
+    padre_nombres,
+    madre_rut,
+    madre_apat,
+    madre_amat,
+    madre_nombres,
+  } = dataBuscaAl;
+  const cpadre = {
+    aprut: padre_rut,
+    apat: padre_apat,
+    amat: padre_amat,
+    nombres: padre_nombres,
+  };
+  const cmadre = {
+    aprut: madre_rut,
+    apat: madre_apat,
+    amat: madre_amat,
+    nombres: madre_nombres,
+  };
+  console.log(
+    "Voy a validar si exite ap con los mismos nombres cpadre=>",
+    cpadre,
+    " cmadre=>",
+    cmadre
+  );
+  const ResultPadre = await ConsultaApoderadoNombres(cpadre, apDup, setApDup);
+
+  // const ResultMadre = ConsultaApoderadoNombres(cmadre, apDup, setApDup);
+  console.log("ResultPadre:", ResultPadre);
+  console.log("ResultPadre apDup:", apDup);
+*/
 
   return "";
 };

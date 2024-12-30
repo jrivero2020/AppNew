@@ -88,6 +88,7 @@ export const GrabarAlumno = ({
       });
   } else {
     // setResultado((prev) => ({ ...prev, result: 14 }));
+    console.log("Error en validacion: ", validaForm);
     setSnackbar({
       mensaje: validaForm,
       severity: "error",

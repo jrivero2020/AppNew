@@ -307,6 +307,29 @@ const api_getDatosFamiliaAP = async (params, credentials, signal) => {
   }
 };
 
+const api_getApoderadoNombres = async (params, signal) => {
+  try {
+    let nomAp = params.nombres;
+    let apPatAp = params.apat;
+    let apMatAp = params.amat;
+
+    nomAp = !nomAp ? "@" : nomAp;
+    apPatAp = !apPatAp ? "@" : apPatAp;
+    apMatAp = !apMatAp ? "@" : apMatAp;
+
+    let response = await fetch(
+      "/rutaGetApoderadoNombres/" + nomAp + "/" + apPatAp + "/" + apMatAp,
+      {
+        method: "GET",
+        signal: signal,
+      }
+    );
+    return await response.json();
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
 export {
   create,
   leer,
@@ -328,4 +351,5 @@ export {
   api_ActAlumnoCurso,
   api_CreaModificaAlumno,
   api_getDatosFamiliaAP,
+  api_getApoderadoNombres,
 };

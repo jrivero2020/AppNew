@@ -231,7 +231,6 @@ const getDataAlumnoNombres = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
-
 //
 // SP_csvLibroMatricula
 const CsvLibroMatricula = async (req, res) => {
@@ -396,6 +395,25 @@ const CreaAlumnoRut = async (req, res) => {
   }
 };
 
+const getDataApoderadoNombres = async (req, res) => {
+  try {
+    const nomAp = req.params.nomAp;
+    const apPatAp = req.params.apPatAp;
+    const apMatAp = req.params.apMatAp;
+    const dataApoderado = await sequelize.query(
+      `CALL sp_buscaApoderadoNombres( ?,?,? )`,
+      {
+        replacements: [nomAp, apPatAp, apMatAp],
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+    console.log("dataApoderados", dataApoderado);
+    res.json(dataApoderado);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 export default {
   docenteByID,
   leerDocente,
@@ -419,4 +437,5 @@ export default {
   JsonInitOpcion,
   CreaAlumnoRut,
   getDatosFamilia,
+  getDataApoderadoNombres,
 };

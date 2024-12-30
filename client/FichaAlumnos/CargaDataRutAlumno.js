@@ -39,7 +39,10 @@ export const CargaDataFichaAlumno = ({
           // console.log("getDatosMatricula resultado) :", resultado);
         } else {
           setResultado((prev) => ({ ...prev, result: 12 })); // No hace nada, mantener tabs
-          //console.log("(results[0] :", results[0]);
+          console.log(
+            "Datos obtenido del alumno que existe ! ==>results[0] :",
+            results[0]
+          );
           //console.log("Resultado:", resultado);
 
           const ApRut = results[0].ap_rut + "-" + results[0].ap_dv;
@@ -109,10 +112,21 @@ export const CargaDataFamiliaAp = ({
   const signal = abortController.signal;
   const rutFamilia = ["", "ApRut", "ApsuRut", "PadRut", "MadRut"];
   const modeInterno = mode;
-
+  console.log("CargaDataFamiliaAp  ****  modeInterno: ", modeInterno);
   setMode(0);
 
   const generateUpdatedFields = (mode, prefix, results) => {
+    console.log(
+      "generateUpdatedFields**** mode:",
+      mode,
+      " prefix:",
+      prefix,
+      "  results:",
+      results,
+      "  results[0].fam_id==>",
+      results[0].fam_id
+    );
+
     const baseFieldsInit = {
       [`${prefix}_rut`]: results[0].fam_rut,
       [`${prefix}_dv`]: results[0].fam_dv,
@@ -124,8 +138,12 @@ export const CargaDataFamiliaAp = ({
     const modeFields = {
       1: { al_idapoderado: results[0].fam_id },
       2: { al_idapoderadosupl: results[0].fam_id },
-      3: { al_idmadre: results[0].fam_id },
-      4: { al_idpadre: results[0].fam_id },
+      3: { al_idpadre: results[0].fam_id },
+      4: { al_idmadre: results[0].fam_id },
+    };
+    const parentFields = {
+      1: { al_idparentesco: 0 },
+      2: { al_idparentescosupl: 0 },
     };
 
     const additionalFields = {
@@ -140,11 +158,10 @@ export const CargaDataFamiliaAp = ({
       madrePadre: {
         [`${prefix}_estudios`]: results[0].fam_estudios, // Revisa si este mapeo es correcto
         [`${prefix}_ocupacion`]: results[0].fam_ocupacion, // Revisa si este mapeo es correcto
-        al_ingresogrupofamiliar: results[0].fam_ingresogrupofamiliar,
-        al_vivienda: results[0].fam_vivienda,
-        al_evaluareligion: results[0].fam_evaluareligion,
       },
     };
+    console.log("baseFieldsInit :", baseFieldsInit);
+    console.log("modefields[", mode, "==>] ", modeFields[mode]);
 
     let baseFields = {
       ...baseFieldsInit,
@@ -152,7 +169,11 @@ export const CargaDataFamiliaAp = ({
     };
 
     if (mode === 1 || mode === 2) {
-      return { ...baseFields, ...additionalFields.common };
+      return {
+        ...baseFields,
+        ...additionalFields.common,
+        ...(parentFields[mode] || {}),
+      };
     }
 
     if (mode === 3 || mode === 4) {
@@ -204,6 +225,7 @@ export const CargaDataFamiliaAp = ({
         //        setResultado({ ...resultado, [indFamilia[modeInterno]]: 1 }); // Ficha Cargada
 
         if (modeInterno >= 1 && modeInterno <= 4) {
+          console.log("Results de carga data de familia:==>", results);
           updateDataBuscaAl(results);
         }
 

@@ -9,7 +9,7 @@ export const MsgMuestraError = ({ snackbar, setSnackbar }) => {
       anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       open
       onClose={handleCloseSnackbar}
-      autoHideDuration={4000}
+      autoHideDuration={6000}
       direction={"up"}
       slide={"up"}
     >

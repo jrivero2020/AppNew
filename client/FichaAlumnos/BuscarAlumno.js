@@ -64,13 +64,17 @@ export default function BuscarAlumno() {
       "Alumno no existe en B.Datos",
       "Error interno del servidor",
     ];
-
+    const retorno = ptrMsg === 3 ? DataFichaCargada : 0;
     setSnackbar({
       mensaje: arrMensaje[ptrMsg], // "Rut ingresado no es válido",
       severity: "error",
       variant: "filled",
     });
-    setResultado({ ...resultado, fRut: "", dv: "", result: 0 });
+    if (retorno === 0) {
+      setResultado((prev) => ({ ...prev, fRut: "", dv: "", result: retorno }));
+    } else {
+      setResultado((prev) => ({ ...prev, result: retorno }));
+    }
   };
 
   const AlertaRut = ({ resultado, setResultado }) => {

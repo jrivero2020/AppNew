@@ -44,6 +44,7 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
   const [parentescos, setParentescos] = useState([]);
   const [cursos, setCursos] = useState(null);
   const [snackbar, setSnackbar] = useState(null);
+  const [apDup, setApDup] = useState(null);
 
   const alNuevo = 1;
   const handleChangeTabs = (event, newValue) => {

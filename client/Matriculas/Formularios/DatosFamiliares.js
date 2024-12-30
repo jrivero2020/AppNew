@@ -63,6 +63,8 @@ export const DatosFamiliares = ({ comunas, parentescos }) => {
         [name]: "Debe ingresar Rut válido, Digito varificador",
       });
       return false;
+    } else {
+      setErrors({ ...errors, [name]: "" });
     }
 
     setMode(indName);
