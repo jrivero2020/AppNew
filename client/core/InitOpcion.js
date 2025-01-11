@@ -158,7 +158,7 @@ export default function BasicGrid() {
     {
       id: 13,
       foto: "calendarioescolar.png",
-      titulo: "Calendario Escolar año 2024",
+      titulo: "Calendario Escolar año 2025",
       llamada: { componente: "/MiddlewarePdf", param: { ptr: 7 } },
       activo: 1,
       autorizado: 1,

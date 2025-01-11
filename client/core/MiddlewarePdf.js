@@ -25,7 +25,7 @@ const Item = styled(Paper)(({ theme }) => ({
 function VisorPdfMiddleware() {
   const location = useLocation();
   const idArch = location.state.ptr;
-  const pdfResult = archivoPdf.find((pdf) => pdf.id == idArch);
+  const pdfResult = archivoPdf.find((pdf) => pdf.id === idArch);
 
   return (
     <Grid

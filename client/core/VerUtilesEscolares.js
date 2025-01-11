@@ -18,7 +18,7 @@ import VisorPdfFinal from "./VisorPdfFinal";
 import { archivoPdf, imgLinks } from "../../config/ConfigPdf";
 import { Link } from "react-router-dom";
 
-const ListaUtiles = "dist/images/links/ListaUtiles.png";
+const ListaUtiles = "dist/images/links/ListaUtiles.jpg";
 /* **********************ESTILOS PERSONALES PARA Item y CardMedia con imagenes *** */
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -59,7 +59,7 @@ export default function BasicGrid() {
 
   const handleOptionClick = (option) => {
     if (option !== null) {
-      let pdfResult = archivoPdf.find((pdf) => pdf.id == option);
+      let pdfResult = archivoPdf.find((pdf) => pdf.id === option);
       setDocu(pdfResult.archivo);
     }
     setSelectedOption(option);
@@ -71,9 +71,9 @@ export default function BasicGrid() {
     setSelectedOption(false);
   };
   const Noticia1 =
-    "dist/images/links/" + imgLinks.find((img) => img.id == 11).foto;
+    "dist/images/links/" + imgLinks.find((img) => img.id === 11).foto;
   const Noticia2 =
-    "dist/images/links/" + imgLinks.find((img) => img.id == 12).foto;
+    "dist/images/links/" + imgLinks.find((img) => img.id === 12).foto;
 
   const isSmallScreen = useMediaQuery("(max-width:900px)");
   return (
@@ -87,7 +87,7 @@ export default function BasicGrid() {
         >
           <Item>
             <Typography variant="h3" gutterBottom sx={{ color: "blue" }}>
-              Útiles escolares año 2024
+              Útiles escolares año 2025
             </Typography>
           </Item>
         </Grid>

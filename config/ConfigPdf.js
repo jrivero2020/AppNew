@@ -32,7 +32,7 @@ const archivoPdf = [
   {
     id: 7,
     archivo: "dist/Pdf/calendarioescolar2024.pdf",
-    titulo: "Calendario Escolar año 2024",
+    titulo: "Calendario Escolar año 2025",
   },
 ];
 

@@ -16,7 +16,7 @@ import { Copyright } from "../assets/js/CopyRight";
 import { AuthContext } from "./AuthProvider";
 // import activeImgLinks from "./../assets/data/json/CardOpcionesPaginaPrincipal.json"
 import { chkActivoRolAutentica } from "./../assets/js/funciones";
-import { api_GetJsonInitOpcion } from "./../docentes/api-docentes";
+//import { api_GetJsonInitOpcion } from "./../docentes/api-docentes";
 import { Box, CardHeader, Divider } from "@mui/material";
 // import { borderRadius } from "@mui/system";
 const useStyles = makeStyles({
@@ -78,41 +78,34 @@ export default function BasicGrid() {
       </div>
 
       <Card sx={{ backgroundColor: "#E1E1E1" }}>
-        <CardHeader
-          title="Noticias"
-          sx={{ backgroundColor: "blue", color: "white", maxHeight: 12 }}
-        />
+        <Box
+          sx={{
+            backgroundColor: "blue",
+            color: "white",
+            textAlign: "center",
+            padding: 2, // Espaciado interno
+            fontSize: "2.25rem", // Tamaño del texto similar a un título
+            fontWeight: "bold", // Negrita para parecerse al título del CardHeader
+          }}
+        >
+          Noticias
+        </Box>
         <CardContent>
-          <Typography
-            variant="body1"
-            align="justify"
-            sx={{ backgroundColor: "#E1E1E1" }}
-          >
-            Ea deserunt mollit id consectetur sunt id tempor consequat aliquip
-            elit. Duis laboris in adipisicing amet ea cupidatat qui adipisicing.
-            Id officia ea mollit aliquip consequat pariatur non ad sit occaecat
-            aute do. Sunt elit excepteur sunt enim consectetur. Consectetur
-            incididunt sit cupidatat ad consectetur est non consectetur
-            adipisicing incididunt excepteur. Minim deserunt in cupidatat et id
-            aliqua occaecat tempor anim Lorem Lorem ad ea magna. Eiusmod mollit
-            aliquip ea pariatur in ullamco. Labore eu consectetur culpa aliquip
-            exercitation proident exercitation occaecat aliquip nulla elit. Id
-            dolor Lorem reprehenderit eu. Ipsum ea enim anim nostrud ea laborum
-            pariatur occaecat in anim labore. Cillum ipsum ex eu aliquip ea ad
-            nostrud proident. Fugiat Lorem irure anim adipisicing do ipsum
-            officia Lorem in ipsum consequat reprehenderit. Reprehenderit
-            ullamco enim eiusmod exercitation. Cupidatat tempor tempor nostrud
-            reprehenderit culpa elit non proident amet ad. Veniam sit sit
-            laborum sunt sint ea Lorem sint consectetur sit qui proident id
-            nulla. Sit culpa est velit commodo adipisicing est tempor minim. Id
-            esse ipsum elit consectetur aliquip Lorem occaecat esse. Dolor
-            cillum esse labore aliquip dolor irure esse voluptate deserunt. Amet
-            pariatur dolore nisi nisi cillum. Velit fugiat esse laboris enim
-            Lorem dolore Lorem sunt dolor in cillum.
+          <Typography variant="h6" align="left">
+            Estimada Comunidad Educativa: Junto con saludar, se informa que el
+            Colegio comenzará a atender público desde el próximo 25 de Febrero,
+            desde las 9:00 hrs. y hasta las 16:00.
+          </Typography>
+          <Typography variant="h6" align="left">
+            Les deseamos unas muy felices y reponedoras vacaciones.
+          </Typography>
+          <Typography variant="h6" align="left">
+            Les saluda muy afectuosamente, Equipo Directivo.
           </Typography>
         </CardContent>
         <Divider sx={{ backgroundColor: "blue" }} />
       </Card>
+
       <Card sx={{ backgroundColor: "#E1E1E1" }}>
         <CardHeader
           title="Contenido"
