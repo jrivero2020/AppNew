@@ -1,6 +1,6 @@
 import React from "react";
-import { Box, Grid, Paper, Typography, styled } from "@mui/material";
-
+import { Box, Button, Grid, Paper, Typography, styled } from "@mui/material";
+import { useNavigate } from "react-router";
 const pathImg = "dist/images/links/";
 
 const StyledImage = styled("img")({
@@ -17,7 +17,7 @@ export default function Pendiente() {
     textAlign: "center",
     color: theme.palette.text.secondary,
   }));
-
+  const navigate = useNavigate();
   return (
     <div style={{ paddingTop: "100px" }}>
       <Box sx={{ flexGrow: 1 }}>
@@ -62,6 +62,16 @@ export default function Pendiente() {
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>
+        <Button
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          Cerrar
+        </Button>
       </Box>
     </div>
   );

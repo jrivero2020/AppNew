@@ -7,12 +7,13 @@ import {
   CardContent,
   CardHeader,
   Grid,
+  Button,
 } from "@mui/material";
 
 import { styled } from "@mui/material/styles";
 import VisorPdfFinal from "./VisorPdfFinal";
-import { archivoPdf } from "../../config/ConfigPdf";
-import { useLocation } from "react-router";
+// import { archivoPdf } from "../../config/ConfigPdf";
+import { useNavigate, useLocation } from "react-router";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -24,8 +25,14 @@ const Item = styled(Paper)(({ theme }) => ({
 
 function VisorPdfMiddleware() {
   const location = useLocation();
-  const idArch = location.state.ptr;
-  const pdfResult = archivoPdf.find((pdf) => pdf.id === idArch);
+  const navigate = useNavigate();
+  // const idArch = location.state.ptr;
+  //   const pdfResult = archivoPdf.find((pdf) => pdf.id === idArch);
+  const pdfResult = location.state;
+
+  if (!pdfResult.archivo) return;
+
+  const urlPdf = "dist/Pdf/" + pdfResult.archivo;
 
   return (
     <Grid
@@ -47,9 +54,19 @@ function VisorPdfMiddleware() {
 
       <Card>
         <CardContent style={{ height: "920px" }}>
-          <VisorPdfFinal ArchivoUrl={pdfResult.archivo} />
+          <VisorPdfFinal ArchivoUrl={urlPdf} />
         </CardContent>
       </Card>
+      <Button
+        size="small"
+        variant="contained"
+        color="primary"
+        onClick={() => {
+          navigate("/");
+        }}
+      >
+        Cerrar
+      </Button>
     </Grid>
   );
 }

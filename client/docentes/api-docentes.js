@@ -330,6 +330,18 @@ const api_getApoderadoNombres = async (params, signal) => {
   }
 };
 
+const api_GetNoticias = async (params, signal) => {
+  try {
+    let response = await fetch("/JsonGetNoticias", {
+      method: "GET",
+      signal: signal,
+    });
+    return await response.json();
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
 export {
   create,
   leer,
@@ -352,4 +364,5 @@ export {
   api_CreaModificaAlumno,
   api_getDatosFamiliaAP,
   api_getApoderadoNombres,
+  api_GetNoticias,
 };

@@ -77,4 +77,6 @@ router
   .route("/rutaGetApoderadoNombres/:nomAp/:apPatAp/:apMatAp")
   .get(docenteCtrl.getDataApoderadoNombres);
 
+router.route("/JsonGetNoticias").get(docenteCtrl.JsonGetNoticias);
+
 export default router;

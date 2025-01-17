@@ -19,6 +19,13 @@ import { chkActivoRolAutentica } from "./../assets/js/funciones";
 //import { api_GetJsonInitOpcion } from "./../docentes/api-docentes";
 import { Box, CardHeader, Divider } from "@mui/material";
 // import { borderRadius } from "@mui/system";
+
+import Footer from "../core/PieDePagina";
+import Noticias from "./Noticias";
+
+// import * as FooterModule from "../core/PieDePagina";
+// console.log(FooterModule);
+
 const useStyles = makeStyles({
   imgBtn: {
     width: "100%",
@@ -34,8 +41,7 @@ const useStyles = makeStyles({
 });
 
 export default function BasicGrid() {
-  const { isAuthenticated, isJwtRol, activeImgLinks, setactiveImgLinks } =
-    useContext(AuthContext);
+  const { isAuthenticated, isJwtRol, activeImgLinks } = useContext(AuthContext);
   const jwtRol = isJwtRol ? isJwtRol._rol : 0;
 
   const [showOpc, setShowOpc] = useState(true);
@@ -76,35 +82,7 @@ export default function BasicGrid() {
           />
         </Box>
       </div>
-
-      <Card sx={{ backgroundColor: "#E1E1E1" }}>
-        <Box
-          sx={{
-            backgroundColor: "blue",
-            color: "white",
-            textAlign: "center",
-            padding: 2, // Espaciado interno
-            fontSize: "2.25rem", // Tamaño del texto similar a un título
-            fontWeight: "bold", // Negrita para parecerse al título del CardHeader
-          }}
-        >
-          Noticias
-        </Box>
-        <CardContent>
-          <Typography variant="h6" align="left">
-            Estimada Comunidad Educativa: Junto con saludar, se informa que el
-            Colegio comenzará a atender público desde el próximo 25 de Febrero,
-            desde las 9:00 hrs. y hasta las 16:00.
-          </Typography>
-          <Typography variant="h6" align="left">
-            Les deseamos unas muy felices y reponedoras vacaciones.
-          </Typography>
-          <Typography variant="h6" align="left">
-            Les saluda muy afectuosamente, Equipo Directivo.
-          </Typography>
-        </CardContent>
-        <Divider sx={{ backgroundColor: "blue" }} />
-      </Card>
+      <Noticias />
 
       <Card sx={{ backgroundColor: "#E1E1E1" }}>
         <CardHeader
@@ -126,20 +104,27 @@ export default function BasicGrid() {
                 ) && (
                   <Grid
                     item
-                    xs={8}
-                    sm={6}
+                    xs={6}
+                    sm={5}
                     md={4}
-                    lg={2.5}
-                    xl={2}
+                    lg={4}
+                    xl={3}
                     key={ImagenLnk.datos.id}
                   >
                     <Card
                       elevation={8}
                       sx={{ maxWidth: 325, maxHeight: 450 }}
                       onClick={() => {
+                        if (!ImagenLnk.datos.llamada) {
+                          return;
+                        }
                         if (ImagenLnk.datos.llamada.param) {
                           navigate(ImagenLnk.datos.llamada.componente, {
-                            state: ImagenLnk.datos.llamada.param,
+                            state: {
+                              param: ImagenLnk.datos.llamada.param,
+                              archivo: ImagenLnk.datos.llamada.param.archivo,
+                              titulo: ImagenLnk.datos.titulo,
+                            },
                           });
                         }
                         if (ImagenLnk.datos.llamada.link) {
@@ -171,24 +156,52 @@ export default function BasicGrid() {
                               {ImagenLnk.datos.texto}
                             </Typography>
                           )}
-                          {!ImagenLnk.datos.texto && (
-                            <Typography variant="body2" color="text.secondary">
-                              Lizards are a widespread group of squamate
-                              reptiles, with over 6,000 species, ranging across
-                              all continents except Antarctica
-                            </Typography>
-                          )}
                         </CardContent>
                       </CardActionArea>
                     </Card>
                   </Grid>
                 )
             )}
+
           <Grid item sm={12}>
-            <Copyright sx={{ mt: 5 }} />
+            <Footer sx={{ mt: 5 }} />
           </Grid>
         </Grid>
       </Container>
     </div>
   );
 }
+
+/*
+
+      <Card sx={{ backgroundColor: "#E1E1E1" }}>
+        <Box
+          sx={{
+            backgroundColor: "blue",
+            color: "white",
+            textAlign: "center",
+            padding: 2, // Espaciado interno
+            fontSize: "2.25rem", // Tamaño del texto similar a un título
+            fontWeight: "bold", // Negrita para parecerse al título del CardHeader
+          }}
+        >
+          Noticias
+        </Box>
+        <CardContent>
+          <Typography variant="h6" align="left">
+            Estimada Comunidad Educativa: Junto con saludar, se informa que el
+            Colegio comenzará a atender público desde el próximo 25 de Febrero,
+            desde las 9:00 hrs. y hasta las 16:00.
+          </Typography>
+          <Typography variant="h6" align="left">
+            Les deseamos unas muy felices y reponedoras vacaciones.
+          </Typography>
+          <Typography variant="h6" align="left">
+            Les saluda muy afectuosamente, Equipo Directivo.
+          </Typography>
+        </CardContent>
+
+        <Divider sx={{ backgroundColor: "blue" }} />
+      </Card>
+
+*/

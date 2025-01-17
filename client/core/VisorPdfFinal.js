@@ -11,14 +11,28 @@ const WorkerMinJs = "dist/pdf.worker.min.js";
 function VisorPdf(props) {
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
+  const handleLinkClick = (e) => {
+    const target = e.target;
+
+    // Verifica si el clic fue en un enlace
+    if (target.tagName === "A" && target.href) {
+      e.preventDefault();
+
+      // console.log(`Enlace prevenido: ${target.href}`);
+      window.open(target.href, "_blank");
+    }
+  };
+
   return (
-    <Worker workerUrl={WorkerMinJs}>
-      <Viewer
-        fileUrl={props.ArchivoUrl}
-        plugins={[defaultLayoutPluginInstance]}
-        initialPage={0}
-      />
-    </Worker>
+    <div onClick={handleLinkClick} style={{ height: "920px" }}>
+      <Worker workerUrl={WorkerMinJs}>
+        <Viewer
+          fileUrl={props.ArchivoUrl}
+          plugins={[defaultLayoutPluginInstance]}
+          initialPage={0}
+        />
+      </Worker>
+    </div>
   );
 }
 export default VisorPdf;

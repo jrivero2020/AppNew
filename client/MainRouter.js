@@ -5,13 +5,11 @@ import LstUsuarios from "./usuario/LstUsuarios";
 import Signup from "./usuario/Signup";
 import SalidaUsr from "./auth/SignOut";
 import Inscripcion from "./usuario/Inscripcion";
-// import auth from "./auth/auth-helper";
-// import Carousel from "./core/carousel";
-// import ReactImageGalery from "./core/ReactimageGalery";
 import MiddlewarePdf from "./core/MiddlewarePdf";
 import DocenteHoras from "./core/DocenteHoras";
 import HistoriaDetalle from "./assets/data/historiaDetalle";
-import FichaDelAlumno2 from "./Matriculas/FichaDelAlumno2";
+import Vision from "./assets/data/vision";
+import Mision from "./assets/data/mision";
 import CertAlumnoRegular from "./print/CertAlumnoRegular";
 import LabTabs from "./Matriculas/LabTabs";
 import VerUtilesEscolares from "./core/VerUtilesEscolares";
@@ -24,21 +22,10 @@ import PrivateRoute from "./auth/PrivateRoute";
 import { AuthProvider } from "./core/AuthProvider";
 import AlumnosCursos from "./Matriculas/AlumnosCursos";
 import BuscarAlumno from "./FichaAlumnos/BuscarAlumno";
-
 import Signin from "./auth/Signin";
-import FullFeaturedCrudGrid from "./assets/GrillaExamples/FullFeaturedCrudGrid"
-// import PrincipalGui from './../client/core/PrincipalGui'
+import FullFeaturedCrudGrid from "./assets/GrillaExamples/FullFeaturedCrudGrid";
 import PrincipalGui from "./core/InitOpcionII";
-import VerJSON from './../client/core/VerJSON'
-
-/*
-const Signout = () => {
-  auth.clearJWT();
-  // let location = useLocation();
-  return <Navigate to="/" replace />;
-};
-*/
-
+import VerJSON from "./../client/core/VerJSON";
 
 const MainRouter = () => {
   return (
@@ -47,15 +34,22 @@ const MainRouter = () => {
         <Menu />
 
         <Routes>
-        <Route path="/" element={<PrincipalGui />} />
-          <Route path='/FullFeaturedCrudGrid' element={<FullFeaturedCrudGrid /> } />
-          <Route path="/Signup" element={<Signup /> } />
+          <Route path="/" element={<PrincipalGui />} />
+          <Route
+            path="/FullFeaturedCrudGrid"
+            element={<FullFeaturedCrudGrid />}
+          />
+          <Route path="/Signup" element={<Signup />} />
           <Route path="/lstusuario" element={<LstUsuarios />} />
           <Route path="/SalidaUsr" element={<SalidaUsr />} />
           <Route path="/Inscripcion" element={<Inscripcion />} />
           <Route path="/Signin" element={<Signin />} />
           <Route path="/HistoriaDetalle" element={<HistoriaDetalle />} />
+          <Route path="/Vision" element={<Vision />} />
+          <Route path="/Mision" element={<Mision />} />
+
           <Route path="/MiddlewarePdf" element={<MiddlewarePdf />} />
+
           <Route path="/VerUtilesEscolares" element={<VerUtilesEscolares />} />
           <Route path="/DocenteHoras" element={<DocenteHoras />} />
           <Route path="/VerJSON" element={<VerJSON />} />
@@ -106,4 +100,4 @@ const MainRouter = () => {
 export default MainRouter;
 
 //             <Route exact path="/ImprimeCertificado" element={<ImprimeCertificado />} />
-//  
+//

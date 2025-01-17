@@ -414,6 +414,17 @@ const getDataApoderadoNombres = async (req, res) => {
   }
 };
 
+const JsonGetNoticias = async (req, res) => {
+  try {
+    const dataJson = await sequelize.query(`CALL colegio.sp_getNoticias()`, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+    res.send(JSON.stringify(dataJson));
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 export default {
   docenteByID,
   leerDocente,
@@ -438,4 +449,5 @@ export default {
   CreaAlumnoRut,
   getDatosFamilia,
   getDataApoderadoNombres,
+  JsonGetNoticias,
 };

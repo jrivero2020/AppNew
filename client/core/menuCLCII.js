@@ -12,23 +12,28 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "./AuthProvider";
-import activePages from "./../assets/data/json/OpcionesMenuPrincipal.json"
-import { chkActivoRolAutentica } from "./../assets/js/funciones"
+import activePages from "./../assets/data/json/OpcionesMenuPrincipal.json";
+import { chkActivoRolAutentica } from "./../assets/js/funciones";
 import CargandoPantalla from "./CargandoPantalla";
-import { api_GetJsonInitOpcion } from "./../docentes/api-docentes";
-
+import {
+  api_GetJsonInitOpcion,
+  api_GetNoticias,
+} from "./../docentes/api-docentes";
 
 const logo = "dist/images/links/LogoColegio_p.png";
 
 function ResponsiveAppBar() {
-
-
-  const { isAuthenticated, isJwtRol, activeImgLinks, setactiveImgLinks } = useContext(AuthContext);
+  const {
+    isAuthenticated,
+    isJwtRol,
+    activeImgLinks,
+    setactiveImgLinks,
+    setNoticias,
+  } = useContext(AuthContext);
 
   const jwtRol = isJwtRol ? isJwtRol._rol : 0;
   const [anchorElNav, setAnchorElNav] = React.useState(false);
   const [loading, setLoading] = useState(true);
-
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -49,25 +54,34 @@ function ResponsiveAppBar() {
             results === undefined ||
             results === null ||
             Object.keys(results).length === 0
-
           ) {
-            alert(
-              "**ATENCION** no encuentro JSON inicial"
-            );
+            alert("**ATENCION** no encuentro JSON inicial");
           } else {
             setactiveImgLinks(results);
+            // setLoading(false);
+          }
+        }
+      });
+
+      api_GetNoticias().then((data) => {
+        if (data && data.error) {
+          return false;
+        } else {
+          const results = Object.values(data[0]);
+          if (
+            results === undefined ||
+            results === null ||
+            Object.keys(results).length === 0
+          ) {
+            alert("**ATENCION** no encuentro Noticias");
+          } else {
+            setNoticias(results[0]);
             setLoading(false);
           }
         }
       });
-    } else {
-    
-      console.log('el obj no es vacio', activeImgLinks)
-    
     }
-
   }, []);
-
 
   return (
     <>
@@ -101,7 +115,10 @@ function ResponsiveAppBar() {
               >
                 Colegio Los Conquistadores
               </Typography>
-              <Typography variant="subtitle1" sx={{ lineHeight: "1", activo: 1 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{ lineHeight: "1", activo: 1 }}
+              >
                 Cerrillos
               </Typography>
             </Box>
@@ -114,7 +131,10 @@ function ResponsiveAppBar() {
             >
               {/* *** Menú principal **   */}
               <Box
-                sx={{ flexGrow: 1, display: { xs: "flex", md: "none", activo: 1 } }}
+                sx={{
+                  flexGrow: 1,
+                  display: { xs: "flex", md: "none", activo: 1 },
+                }}
               >
                 <IconButton
                   size="large"
@@ -146,19 +166,27 @@ function ResponsiveAppBar() {
                     mt: 6,
                   }}
                 >
-                  {activePages.map((pagina) => (
-                    chkActivoRolAutentica(pagina, isAuthenticated, jwtRol) && (
-                      <NavLink
-                        to={pagina.urlCall}
-                        sx={{ marginleft: "Auto", activo: 1 }}
-                        key={pagina.menu}
-                      >
-                        <MenuItem onClick={handleCloseNavMenu}>
-                          <Typography textAlign="center"> {pagina.menu}</Typography>
-                        </MenuItem>
-                      </NavLink>
-                    )
-                  ))}
+                  {activePages.map(
+                    (pagina) =>
+                      chkActivoRolAutentica(
+                        pagina,
+                        isAuthenticated,
+                        jwtRol
+                      ) && (
+                        <NavLink
+                          to={pagina.urlCall}
+                          sx={{ marginleft: "Auto", activo: 1 }}
+                          key={pagina.menu}
+                        >
+                          <MenuItem onClick={handleCloseNavMenu}>
+                            <Typography textAlign="center">
+                              {" "}
+                              {pagina.menu}
+                            </Typography>
+                          </MenuItem>
+                        </NavLink>
+                      )
+                  )}
                 </Menu>
               </Box>
               {/* *** Fin Menú principal **   */}
@@ -170,42 +198,53 @@ function ResponsiveAppBar() {
                   display: { xs: "none", md: "flex", activo: 1 },
                 }}
               >
-                {activePages.map((page) => (
-                  chkActivoRolAutentica(page, isAuthenticated, jwtRol) && (
-                    <NavLink
-                      to={page.urlCall}
-                      sx={{
-                        marginleft: "Auto",
-                        textDecoration: "none !important",
-                        activo: 1,
-                      }}
-                      key={page.menu}
-                    >
-                      <Button
-                        onClick={handleCloseNavMenu}
+                {activePages.map(
+                  (page) =>
+                    chkActivoRolAutentica(page, isAuthenticated, jwtRol) && (
+                      <NavLink
+                        to={page.urlCall}
                         sx={{
-                          my: 2,
-                          color: "white",
-                          backgroundColor: "#3F51B5",
-                          "&:hover": {
-                            backgroundColor: "#757575",
-                          },
-                          fontSize: { sm: "8px", md: "12px", lg: "16px", activo: 1 },
-                          margin: { sm: "4px", md: "6px", lg: "12px", activo: 1 },
-                          "@media (min-width: 600)": {
-                            fontSize: "18px",
-                            margin: "10px",
-                          },
-                          fontWeight: "bold",
-                          boxShadow:
-                            "inset 0px 1px 0px rgba(255, 255, 255, 0.5), inset 0px -1px 0px rgba(0, 0, 0, 0.25), 0px 2px 2px rgba(0, 0, 0, 0.25)",
+                          marginleft: "Auto",
+                          textDecoration: "none !important",
+                          activo: 1,
                         }}
+                        key={page.menu}
                       >
-                        {page.menu}
-                      </Button>
-                    </NavLink>
-                  )
-                ))}
+                        <Button
+                          onClick={handleCloseNavMenu}
+                          sx={{
+                            my: 2,
+                            color: "white",
+                            backgroundColor: "#3F51B5",
+                            "&:hover": {
+                              backgroundColor: "#757575",
+                            },
+                            fontSize: {
+                              sm: "8px",
+                              md: "12px",
+                              lg: "16px",
+                              activo: 1,
+                            },
+                            margin: {
+                              sm: "4px",
+                              md: "6px",
+                              lg: "12px",
+                              activo: 1,
+                            },
+                            "@media (min-width: 600)": {
+                              fontSize: "18px",
+                              margin: "10px",
+                            },
+                            fontWeight: "bold",
+                            boxShadow:
+                              "inset 0px 1px 0px rgba(255, 255, 255, 0.5), inset 0px -1px 0px rgba(0, 0, 0, 0.25), 0px 2px 2px rgba(0, 0, 0, 0.25)",
+                          }}
+                        >
+                          {page.menu}
+                        </Button>
+                      </NavLink>
+                    )
+                )}
               </Box>
             </Toolbar>
           </Container>
