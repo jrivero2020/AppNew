@@ -66,11 +66,20 @@ export default function FichaDelAlumno() {
   /************************************************************************ */
 
   const chgBtnBusca = () => {
-    setbtnBuscaNombres({ ...btnBuscaNombres, btnBusca: false, btnDialog:true });
+    setbtnBuscaNombres({
+      ...btnBuscaNombres,
+      btnBusca: false,
+      btnDialog: true,
+    });
   };
 
-  function MuestraGrillaAlumnos() {   
-    return (<GridBuscaAlumnos btnBuscaNombres={btnBuscaNombres} setbtnBuscaNombres={setbtnBuscaNombres} />);
+  function MuestraGrillaAlumnos() {
+    return (
+      <GridBuscaAlumnos
+        btnBuscaNombres={btnBuscaNombres}
+        setbtnBuscaNombres={setbtnBuscaNombres}
+      />
+    );
   }
 
   const vViveConCambio = (event) => {
@@ -91,10 +100,10 @@ export default function FichaDelAlumno() {
 
   const handleBlur = (campo) => () => {
     let ret = true;
-    console.log("*************************************");
-    console.log("*           handleBlur              *");
-    console.log("campo==>:", campo);
-    console.log("validations==>:", validations);
+    // console.log("*************************************");
+    // console.log("*           handleBlur              *");
+    // console.log("campo==>:", campo);
+    // console.log("validations==>:", validations);
     // *************************
     // Validar con nuevas propiedades
     if (campo === "al_rut") {
@@ -106,16 +115,24 @@ export default function FichaDelAlumno() {
             al_dv: fRut.slice(-1),
           });
           setverBtnBusca(true);
-          setbtnBuscaNombres({ ...btnBuscaNombres, btnBusca: false, btnDialog: false });
-          console.log("Rut ok Validado. valores=", valores);
+          setbtnBuscaNombres({
+            ...btnBuscaNombres,
+            btnBusca: false,
+            btnDialog: false,
+          });
+          // console.log("Rut ok Validado. valores=", valores);
         } else {
           setverBtnBusca(false);
-          setbtnBuscaNombres({ ...btnBuscaNombres, btnBusca: true, btnDialog: false });
-          console.log("Rut no es válido");
+          setbtnBuscaNombres({
+            ...btnBuscaNombres,
+            btnBusca: true,
+            btnDialog: false,
+          });
+          // console.log("Rut no es válido");
           ret = false;
         }
       } else {
-        console.log("Largo de rut debe ser a lo menos de 8 caracteres");
+        // console.log("Largo de rut debe ser a lo menos de 8 caracteres");
         ret = false;
       }
     }
@@ -130,7 +147,7 @@ export default function FichaDelAlumno() {
       console.log("ret : ", ret);
     }
 
-    console.log("Se llama a actualizar validations");
+    //console.log("Se llama a actualizar validations");
     setValidations({
       ...validations,
       [campo]: {
@@ -139,8 +156,8 @@ export default function FichaDelAlumno() {
       },
     });
 
-    console.log("*                                   *");
-    console.log("*************************************");
+    //console.log("*                                   *");
+    //console.log("*************************************");
     return ret;
   };
 
@@ -158,19 +175,26 @@ export default function FichaDelAlumno() {
   //* manejoCambiofRut
   const manejoCambiofRut = (name) => (event) => {
     let tvalue = FmtoRut(event.target.value);
-    
+
     if (fRut.length === 1 && tvalue == null) tvalue = "";
 
     if (tvalue.length <= 13) setfRut(tvalue);
 
     if (tvalue.length >= 12) {
       setverBtnBusca(true);
-      setbtnBuscaNombres({ ...btnBuscaNombres, btnBusca: false, btnDialog:false });
+      setbtnBuscaNombres({
+        ...btnBuscaNombres,
+        btnBusca: false,
+        btnDialog: false,
+      });
     } else {
       setverBtnBusca(false);
-      setbtnBuscaNombres({ ...btnBuscaNombres, btnBusca: true, btnDialog: false });
+      setbtnBuscaNombres({
+        ...btnBuscaNombres,
+        btnBusca: true,
+        btnDialog: false,
+      });
     }
-    
   };
   //***************************************************/
 
@@ -207,7 +231,7 @@ export default function FichaDelAlumno() {
 */
     getDatosMatricula(valores, signal).then((data) => {
       if (data && data.error) {
-        console.log("*** Error ***", data.error);
+        //console.log("*** Error ***", data.error);
       } else {
         const [results, metadata] = data;
         if (
@@ -220,8 +244,8 @@ export default function FichaDelAlumno() {
           );
         } else {
           const [results, metadata] = data;
-          console.log("results", results[0]);
-          console.log('metadata"]', metadata);
+          // console.log("results", results[0]);
+          // console.log('metadata"]', metadata);
           setValores(results[0]);
           setSelectedComuna(results[0].al_id_comuna);
           if (results[0].al_genero === "M") {
@@ -236,8 +260,11 @@ export default function FichaDelAlumno() {
         // setValidations(updatedValidations);
         setvViveCon(results[0].ma_idvivecon);
         setverBtnBusca(false);
-        setbtnBuscaNombres({ ...btnBuscaNombres, btnBusca: false, btnDialog:false });
-
+        setbtnBuscaNombres({
+          ...btnBuscaNombres,
+          btnBusca: false,
+          btnDialog: false,
+        });
       }
     });
   };
@@ -264,7 +291,7 @@ export default function FichaDelAlumno() {
   // validateField
   const validateField = (campo) => {
     let ret = true;
-    console.log("En validateField recibo como campo : ", campo);
+    // console.log("En validateField recibo como campo : ", campo);
     // Aquí puedes realizar tus validaciones personalizadas para cada campo
     // Por ejemplo:
     if (
@@ -280,28 +307,19 @@ export default function FichaDelAlumno() {
       }
 
       actualizaRutEnValores();
-      console.log(
-        "llamo a actualizaRutEnValores",
-        QuitaPuntos(fRut.slice(0, -1)),
-        valores.al_rut
-      );
+      //console.log("llamo a actualizaRutEnValores",QuitaPuntos(fRut.slice(0, -1)),valores.al_rut);
     } else {
-      console.log("Largo de rut debe ser a lo menos de 8 caracteres");
+      // console.log("Largo de rut debe ser a lo menos de 8 caracteres");
       ret = false;
     }
 
-    console.log(
-      "Validando campo : ",
-      campo,
-      "Retorno de validateField:==>",
-      ret
-    );
-    console.log(" validations ===>", validations);
+    //console.log("Validando campo : ",campo,"Retorno de validateField:==>",ret);
+    //console.log(" validations ===>", validations);
     return ret;
   };
   //************************************************************** */
   function updateValidations(obj) {
-    console.log("updateValidations(obj)", obj);
+    // console.log("updateValidations(obj)", obj);
     const newValidations = {};
     Object.keys(obj).forEach((key) => {
       newValidations[key] = {
@@ -310,7 +328,7 @@ export default function FichaDelAlumno() {
       };
     });
 
-    console.log("newValidations", newValidations);
+    // console.log("newValidations", newValidations);
 
     setValidations(newValidations);
   }
@@ -321,37 +339,35 @@ export default function FichaDelAlumno() {
     if (validations.hasOwnProperty(campo)) {
       const { ty, num, nn, ml } = validations[campo];
       const valor = valorCampo; //validations[campo].valor;
-      console.log("Campo en validar campo", campo);
+      //console.log("Campo en validar campo", campo);
       if (valor !== "") {
         if (
           campo === "ma_promedionota" &&
           (!/^\d+(?:[.,]\d+)?$/.test(valor) || valor < 4 || valor > 7)
         ) {
-          console.log(
-            "El campo debe ser numérico no mayor que 4 ni mayor que 7"
-          );
+          //console.log("El campo debe ser numérico no mayor que 4 ni mayor que 7" );
           return false;
         }
         if (ty === "n" && !/^\d+$/.test(valor)) {
-          console.log("El campo debe ser numérico ");
+          //console.log("El campo debe ser numérico ");
           return false;
         }
         if (ml > 0 && valor.length > ml) {
-          console.log(`El campo debe tener máximo ${ml} caracteres`);
+          //console.log(`El campo debe tener máximo ${ml} caracteres`);
           return false;
         }
       } else {
         if (nn && valor === "") {
-          console.log("El campo no debe ser nulo");
+          //console.log("El campo no debe ser nulo");
           return false;
         }
       }
     } else {
-      console.log("El campo no existe en la estructura");
+      //console.log("El campo no existe en la estructura");
       return false;
     }
 
-    console.log("El campo es válido");
+    //console.log("El campo es válido");
     return true;
   };
 
@@ -360,11 +376,11 @@ export default function FichaDelAlumno() {
   useEffect(() => {
     getComunas().then((data) => {
       if (data && data.error) {
-        console.log("*** Error ***", data.error);
+        //console.log("*** Error ***", data.error);
       } else {
-        console.log("validations :", validations);
+        //console.log("validations :", validations);
 
-        console.log("validations[al_rut].value :", validations["al_rut"].value);
+        // console.log("validations[al_rut].value :", validations["al_rut"].value);
 
         setComunas(data);
       }
@@ -414,7 +430,6 @@ export default function FichaDelAlumno() {
           </Box>
 
           <TabPanel value="1">
-
             <Grid
               container
               spacing={2}
@@ -503,7 +518,7 @@ export default function FichaDelAlumno() {
                   error={!validations["al_apat"].value}
                   sx={{ backgroundColor: "#E8EAF6" }}
                   inputProps={{ style: { fontSize: 12 } }}
-                /*
+                  /*
                 InputProps={{
                   endAdornment: validations["al_apat"].value ? (
                     <CheckIcon color="success" />
@@ -527,7 +542,7 @@ export default function FichaDelAlumno() {
                   error={!validations["al_amat"].value}
                   sx={{ backgroundColor: "#E8EAF6" }}
                   inputProps={{ style: { fontSize: 12 } }}
-                /*InputProps={{
+                  /*InputProps={{
                   endAdornment: validations["al_amat"].value ? (
                     <CheckIcon color="success" />
                   ) : valores.al_amat === "" ? (
@@ -610,7 +625,7 @@ export default function FichaDelAlumno() {
                   sx={{ backgroundColor: "#E8EAF6" }}
                   inputProps={{ style: { fontSize: 12 } }}
                   error={!validations["al_domicilio"].value}
-                /*InputProps={{
+                  /*InputProps={{
                   endAdornment: validations["al_domicilio"].value ? (
                     <CheckIcon color="success" />
                   ) : valores.al_domicilio == "" ? (
@@ -668,7 +683,7 @@ export default function FichaDelAlumno() {
                   sx={{ backgroundColor: "#E8EAF6" }}
                   inputProps={{ style: { fontSize: 12 } }}
                   error={!validations["ma_cole_origen"].value}
-                /*InputProps={{
+                  /*InputProps={{
                   endAdornment: validations["ma_cole_origen"].value ? (
                     <CheckIcon color="success" />
                   ) : valores.al_id_comuna == "" ? (
@@ -694,7 +709,7 @@ export default function FichaDelAlumno() {
                   sx={{ backgroundColor: "#E8EAF6" }}
                   inputProps={{ style: { fontSize: 12 } }}
                   error={!validations["ma_promedionota"].value}
-                /*InputProps={{
+                  /*InputProps={{
                   endAdornment: validations["ma_promedionota"].value ? (
                     <CheckIcon color="success" />
                   ) : valores.ma_promedionota == "" ? (
@@ -799,7 +814,7 @@ export default function FichaDelAlumno() {
                       onBlur={handleBlur("ma_descripcionviveconotros")}
                       inputProps={{ style: { fontSize: 12 } }}
                       error={!validations["ma_descripcionviveconotros"].value}
-                    /* InputProps={{
+                      /* InputProps={{
                       endAdornment: validations["ma_descripcionviveconotros"]
                         .value ? (
                         <CheckIcon color="success" />
@@ -822,7 +837,6 @@ export default function FichaDelAlumno() {
                         height: "1020px",
                       }}
                     >
-                      {console.log("Valores a imprimir:", valores)}
                       <BasicEditingGrid data={valores} />
                     </Card>
                   ) : null}
@@ -885,7 +899,7 @@ export default function FichaDelAlumno() {
                   sx={{ backgroundColor: "#E8EAF6" }}
                   inputProps={{ style: { fontSize: 12 } }}
                   error={!validations["al_cuidados"].value}
-                /*InputProps={{
+                  /*InputProps={{
                   endAdornment: validations["al_cuidados"].value ? (
                     <CheckIcon color="success" />
                   ) : valores.al_cuidados == "" ? (
@@ -909,7 +923,7 @@ export default function FichaDelAlumno() {
                   sx={{ backgroundColor: "#E8EAF6" }}
                   inputProps={{ style: { fontSize: 12 } }}
                   error={!validations["al_canthnos"].value}
-                /*InputProps={{
+                  /*InputProps={{
                   endAdornment: validations["al_canthnos"].value ? (
                     <CheckIcon color="success" />
                   ) : valores.al_canthnos == "" ? (
@@ -933,7 +947,7 @@ export default function FichaDelAlumno() {
                   sx={{ backgroundColor: "#E8EAF6" }}
                   inputProps={{ style: { fontSize: 12 } }}
                   error={!validations["al_nroentrehnos"].value}
-                /*InputProps={{
+                  /*InputProps={{
                   endAdornment: !validations["al_nroentrehnos"].value ? (
                     <CheckIcon color="success" />
                   ) : valores.al_nroentrehnos == "" ? (
@@ -962,7 +976,7 @@ export default function FichaDelAlumno() {
                   sx={{ backgroundColor: "#E8EAF6" }}
                   inputProps={{ style: { fontSize: 12 } }}
                   error={!validations["al_hnosaca"]}
-                /*InputProps={{
+                  /*InputProps={{
                   endAdornment: validations["al_hnosaca"] ? (
                     <CheckIcon color="success" />
                   ) : valores.al_hnosaca == "" ? (
@@ -986,7 +1000,7 @@ export default function FichaDelAlumno() {
                   sx={{ backgroundColor: "#E8EAF6" }}
                   inputProps={{ style: { fontSize: 12 } }}
                   error={!validations["al_hnoscursos"].value}
-                /* InputProps={{
+                  /* InputProps={{
                   endAdornment: validations["al_hnoscursos"].value ? (
                     <CheckIcon color="success" />
                   ) : valores.al_hnoscursos == "" ? (

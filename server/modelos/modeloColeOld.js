@@ -244,9 +244,7 @@ Alumnos.belongsTo(Comunas, { foreignKey: "id_comuna" });
 
 Alumnos.sync()
   .then(() => {
-    console.log(
-      "Modelo Alumnos, sincronizado correctamente con la base de datos"
-    );
+    // console.log("Modelo Alumnos, sincronizado correctamente con la base de datos" );
   })
   .catch((error) => {
     console.error(

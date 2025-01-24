@@ -39,10 +39,7 @@ export const CargaDataFichaAlumno = ({
           // console.log("getDatosMatricula resultado) :", resultado);
         } else {
           setResultado((prev) => ({ ...prev, result: 12 })); // No hace nada, mantener tabs
-          console.log(
-            "Datos obtenido del alumno que existe ! ==>results[0] :",
-            results[0]
-          );
+          // console.log("Datos obtenido del alumno que existe ! ==>results[0] :", results[0] );
           //console.log("Resultado:", resultado);
 
           const ApRut = results[0].ap_rut + "-" + results[0].ap_dv;
@@ -112,20 +109,11 @@ export const CargaDataFamiliaAp = ({
   const signal = abortController.signal;
   const rutFamilia = ["", "ApRut", "ApsuRut", "PadRut", "MadRut"];
   const modeInterno = mode;
-  console.log("CargaDataFamiliaAp  ****  modeInterno: ", modeInterno);
+  // console.log("CargaDataFamiliaAp  ****  modeInterno: ", modeInterno);
   setMode(0);
 
   const generateUpdatedFields = (mode, prefix, results) => {
-    console.log(
-      "generateUpdatedFields**** mode:",
-      mode,
-      " prefix:",
-      prefix,
-      "  results:",
-      results,
-      "  results[0].fam_id==>",
-      results[0].fam_id
-    );
+    // console.log("generateUpdatedFields**** mode:",mode," prefix:",prefix,"  results:",results,"  results[0].fam_id==>",results[0].fam_id  );
 
     const baseFieldsInit = {
       [`${prefix}_rut`]: results[0].fam_rut,
@@ -160,8 +148,8 @@ export const CargaDataFamiliaAp = ({
         [`${prefix}_ocupacion`]: results[0].fam_ocupacion, // Revisa si este mapeo es correcto
       },
     };
-    console.log("baseFieldsInit :", baseFieldsInit);
-    console.log("modefields[", mode, "==>] ", modeFields[mode]);
+    // console.log("baseFieldsInit :", baseFieldsInit);
+    // console.log("modefields[", mode, "==>] ", modeFields[mode]);
 
     let baseFields = {
       ...baseFieldsInit,

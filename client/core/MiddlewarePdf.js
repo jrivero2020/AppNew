@@ -41,19 +41,45 @@ function VisorPdfMiddleware() {
       sx={{
         paddingTop: "88px",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "space-between",
         margin: "auto",
-        maxWidth: "70%",
+        maxWidth: {
+          xs: "98%", // Casi 100% para pantallas pequeñas
+          sm: "96%", // Disminuye ligeramente para pantallas pequeñas-medianas
+          md: "87%", // Ajuste adicional para pantallas medianas
+          lg: "82%", // Pantallas grandes
+          xl: "80%", // Menor anchura para pantallas extra grandes
+        },
       }}
     >
       <Item>
-        <Typography variant="h3" gutterBottom sx={{ color: "blue" }}>
+        <Typography
+          variant="h3"
+          gutterBottom
+          sx={{
+            color: "blue",
+            fontSize: {
+              xs: "1.1rem",
+              md: "1.5rem",
+              lg: "2.5rem",
+              xl: "3rem",
+            }, // Ajusta el tamaño del contenido
+          }}
+        >
           {pdfResult.titulo}
         </Typography>
       </Item>
 
       <Card>
-        <CardContent style={{ height: "920px" }}>
+        <CardContent
+          sx={{
+            height: {
+              xs: "55rem", // Casi como xl
+              sm: "57.5rem", // Equivalente a 920px
+            },
+            padding: 0, // Elimina el padding para evitar márgenes no deseados
+          }}
+        >
           <VisorPdfFinal ArchivoUrl={urlPdf} />
         </CardContent>
       </Card>

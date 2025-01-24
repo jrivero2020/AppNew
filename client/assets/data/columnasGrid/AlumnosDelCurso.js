@@ -1,11 +1,10 @@
-
 export const AlCursocolumns = [
   {
     field: "nroal",
     headerName: "Nº Lista",
     width: 80,
     height: 18,
-    type: 'number',
+    type: "number",
     editable: true,
   },
   {
@@ -47,9 +46,9 @@ export const AlCursocolumns = [
     field: "nro_matricula",
     headerName: "Nº Matr.",
     width: 90,
-    headerAlign: 'center',
+    headerAlign: "center",
     height: 18,
-    type: 'number',
+    type: "number",
     editable: true,
   },
 
@@ -58,27 +57,33 @@ export const AlCursocolumns = [
     headerName: "F.Retiro",
     width: 113,
     height: 18,
-    type: 'date',
+    type: "date",
     editable: true,
-    headerAlign: 'center',
-    align: 'center',
+    headerAlign: "center",
+    align: "center",
     valueGetter: (params) => {
-      // console.log( "Params en valueGetter :", params , "  params.value :", params.value)
       const dateValue = params ? new Date(params) : null;
       return dateValue;
     },
     renderCell: (params) => {
       const lafecha = new Date(1900, 0, 1, 0, 0, 0); // Año, Mes (0-11), Día, Hora, Minuto, Segundo
-      const fechaNula = (  params.value.getFullYear() === lafecha.getFullYear()  && params.value.getMonth() === lafecha.getMonth())
+      const fechaNula =
+        params.value.getFullYear() === lafecha.getFullYear() &&
+        params.value.getMonth() === lafecha.getMonth();
 
-      if (params === null || fechaNula ) {
+      if (params === null || fechaNula) {
         return "-"; // Mostrar nada si el valor es NULL
       } else {
-        let lafecha = params.value        
-        return String(lafecha.getDate()).padStart(2, '0') +'-' + String(lafecha.getMonth() + 1).padStart(2, '0') + "-" + lafecha.getFullYear() 
-
+        let lafecha = params.value;
+        return (
+          String(lafecha.getDate()).padStart(2, "0") +
+          "-" +
+          String(lafecha.getMonth() + 1).padStart(2, "0") +
+          "-" +
+          lafecha.getFullYear()
+        );
       }
-    }
+    },
   },
 
   {
@@ -86,7 +91,7 @@ export const AlCursocolumns = [
     headerName: "activo",
     width: 60,
     height: 18,
-    type: 'boolean',
+    type: "boolean",
     editable: true,
   },
 ];

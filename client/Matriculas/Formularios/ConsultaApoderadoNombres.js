@@ -5,7 +5,7 @@ export const ConsultaApoderadoNombres = (padres, apDup, setApDup) => {
   const abortController = new AbortController();
   const signal = abortController.signal;
   let retorno = false;
-  console.log("ConsultaApoderadoNombres padres=>", padres);
+  //console.log("ConsultaApoderadoNombres padres=>", padres);
   api_getApoderadoNombres(padres, signal).then((data) => {
     if (data && data.error) {
       return false;
@@ -32,15 +32,15 @@ export const ConsultaApoderadoNombres = (padres, apDup, setApDup) => {
             dataApo.domicilio +
             dataApo.comuna
         );
-        console.log("results[0] =>", results[0]);
-        console.log("dataApo =>", dataApo);
+        //console.log("results[0] =>", results[0]);
+        //console.log("dataApo =>", dataApo);
 
         retorno = true;
       }
     }
   });
-  if (apDup) {
-    console.log("apDup despues de cargar =>", apDup);
-  }
+  // if (apDup) {
+  //   console.log("apDup despues de cargar =>", apDup);
+  // }
   return retorno;
 };

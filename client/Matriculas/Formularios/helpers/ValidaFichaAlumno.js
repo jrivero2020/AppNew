@@ -507,13 +507,8 @@ export const validateFormAlumno = (dataBuscaAl) => {
 
     if (dataBuscaAl[idParentesco] in parentescoMap) {
       const { role, message } = parentescoMap[dataBuscaAl[idParentesco]];
-      console.log("role:", role, "message;", message);
-      console.log(
-        "cmp rut =>",
-        dataBuscaAl[`${apFields}_rut`],
-        "!==",
-        dataBuscaAl[`${role}_rut`]
-      );
+      // console.log("role:", role, "message;", message);
+      // console.log("cmp rut =>",dataBuscaAl[`${apFields}_rut`],"!==",dataBuscaAl[`${role}_rut`]      );
 
       if (dataBuscaAl[`${apFields}_rut`] !== dataBuscaAl[`${role}_rut`]) {
         return `${message} debe tener el mismo rut que el ${roleName} cuando parentesco="${message.substring(

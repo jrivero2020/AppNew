@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -12,14 +11,23 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "./AuthProvider";
-import activePages from "./../assets/data/json/OpcionesMenuPrincipal.json";
 import { chkActivoRolAutentica } from "./../assets/js/funciones";
 import CargandoPantalla from "./CargandoPantalla";
-import {
-  api_GetJsonInitOpcion,
-  api_GetNoticias,
-} from "./../docentes/api-docentes";
+import { api_GetJsonInitOpcion } from "./../docentes/api-docentes";
+import { ThemeProvider } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 
+const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0, // Pantallas pequeñas
+      sm: 720, // Ahora sm empieza en 720px
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
+});
 const logo = "dist/images/links/LogoColegio_p.png";
 
 function ResponsiveAppBar() {
@@ -31,10 +39,12 @@ function ResponsiveAppBar() {
     setNoticias,
   } = useContext(AuthContext);
 
+  // const { Noticias } = useContext(AuthContext);
+
   const jwtRol = isJwtRol ? isJwtRol._rol : 0;
   const [anchorElNav, setAnchorElNav] = React.useState(false);
   const [loading, setLoading] = useState(true);
-
+  const [activePages, setActivePages] = useState([]);
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -58,34 +68,30 @@ function ResponsiveAppBar() {
             alert("**ATENCION** no encuentro JSON inicial");
           } else {
             setactiveImgLinks(results);
-            // setLoading(false);
-          }
-        }
-      });
 
-      api_GetNoticias().then((data) => {
-        if (data && data.error) {
-          return false;
-        } else {
-          const results = Object.values(data[0]);
-          if (
-            results === undefined ||
-            results === null ||
-            Object.keys(results).length === 0
-          ) {
-            alert("**ATENCION** no encuentro Noticias");
-          } else {
-            setNoticias(results[0]);
+            // Filtrar solo los registros con "tipo" igual a "opccgi"
+            const filteredPages = results
+              .filter((item) => item.datos.tipo === "menu")
+              .sort((a, b) => a.id - b.id); // Ordenar por id en orden ascendente
+
+            setActivePages(filteredPages);
+
+            const NotifilteredPages = results
+              .filter((item) => item.datos.tipo === "noticia")
+              .sort((a, b) => a.id - b.id); // Ordenar por id en orden ascendente
+            setNoticias(NotifilteredPages);
             setLoading(false);
           }
         }
       });
+    } else {
+      console.log("el obj no es vacio", activeImgLinks);
     }
   }, []);
 
   return (
-    <>
-      {activeImgLinks.length === 0 && <CargandoPantalla />}
+    <ThemeProvider theme={theme}>
+      {activePages.length === 0 && <CargandoPantalla />}
       {!loading && (
         <AppBar>
           <Container maxWidth="xl">
@@ -129,11 +135,11 @@ function ResponsiveAppBar() {
               style={{ height: "90px", activo: 1 }}
               sx={{ justifyContent: "right", activo: 1 }}
             >
-              {/* *** Menú principal **   */}
+              {/* *** Menú Móvil **   */}
               <Box
                 sx={{
                   flexGrow: 1,
-                  display: { xs: "flex", md: "none", activo: 1 },
+                  display: { xs: "flex", sm: "none", activo: 1 },
                 }}
               >
                 <IconButton
@@ -162,7 +168,7 @@ function ResponsiveAppBar() {
                   open={Boolean(anchorElNav)}
                   onClose={handleCloseNavMenu}
                   sx={{
-                    display: { xs: "block", md: "none", activo: 1 },
+                    display: { xs: "block", sm: "none", activo: 1 },
                     mt: 6,
                   }}
                 >
@@ -174,14 +180,13 @@ function ResponsiveAppBar() {
                         jwtRol
                       ) && (
                         <NavLink
-                          to={pagina.urlCall}
+                          to={pagina.datos.urlCall}
                           sx={{ marginleft: "Auto", activo: 1 }}
-                          key={pagina.menu}
+                          key={pagina.datos.id}
                         >
                           <MenuItem onClick={handleCloseNavMenu}>
                             <Typography textAlign="center">
-                              {" "}
-                              {pagina.menu}
+                              {pagina.datos.opcion}
                             </Typography>
                           </MenuItem>
                         </NavLink>
@@ -189,26 +194,26 @@ function ResponsiveAppBar() {
                   )}
                 </Menu>
               </Box>
-              {/* *** Fin Menú principal **   */}
+              {/* *** Fin Menú Movil **   */}
 
               <Box
                 sx={{
                   position: "absolute",
                   right: 0,
-                  display: { xs: "none", md: "flex", activo: 1 },
+                  display: { xs: "none", sm: "flex", activo: 1 },
                 }}
               >
                 {activePages.map(
                   (page) =>
                     chkActivoRolAutentica(page, isAuthenticated, jwtRol) && (
                       <NavLink
-                        to={page.urlCall}
+                        to={page.datos.urlCall}
                         sx={{
                           marginleft: "Auto",
                           textDecoration: "none !important",
                           activo: 1,
                         }}
-                        key={page.menu}
+                        key={page.datos.id}
                       >
                         <Button
                           onClick={handleCloseNavMenu}
@@ -220,7 +225,7 @@ function ResponsiveAppBar() {
                               backgroundColor: "#757575",
                             },
                             fontSize: {
-                              sm: "8px",
+                              sm: "10px",
                               md: "12px",
                               lg: "16px",
                               activo: 1,
@@ -240,7 +245,7 @@ function ResponsiveAppBar() {
                               "inset 0px 1px 0px rgba(255, 255, 255, 0.5), inset 0px -1px 0px rgba(0, 0, 0, 0.25), 0px 2px 2px rgba(0, 0, 0, 0.25)",
                           }}
                         >
-                          {page.menu}
+                          {page.datos.opcion}
                         </Button>
                       </NavLink>
                     )
@@ -250,7 +255,7 @@ function ResponsiveAppBar() {
           </Container>
         </AppBar>
       )}
-    </>
+    </ThemeProvider>
   );
 }
 export default ResponsiveAppBar;

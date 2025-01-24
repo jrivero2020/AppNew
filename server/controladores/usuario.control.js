@@ -18,7 +18,7 @@ const userByID = async (req, res, next, id) => {
     } else {
       usuario.dataValues.password = undefined;
       req.profile = usuario.dataValues;
-      console.log("Usuario.control,req.profile = ", usuario.dataValues)
+      // console.log("Usuario.control,req.profile = ", usuario.dataValues)
       next();
     }
   } catch (err) {
@@ -40,7 +40,7 @@ const crearUsuario = async (req, res) => {
 };
 
 const inscripcionUsuario = async (req, res) => {
-  console.log("req.body:", req.body);
+  //console.log("req.body:", req.body);
   try {
     const newUsuario = await usuarios.create(req.body);
     return res.status(200).json({ message: "Inscripción exitosa" });
