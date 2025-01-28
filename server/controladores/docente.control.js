@@ -1,5 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/no-anonymous-default-export */
+import fs from "fs";
+import path from "path";
+
 import {
   docentes,
   parentescos,
@@ -9,6 +12,40 @@ import {
 
 import { verErrorSequelize } from "../helpers/sequelizeErrores.js";
 import { sequelize } from "../bdatos/bdatos.js";
+
+// Método para obtener imágenes por categoría
+const obtenerImagenesPorCategoria = async (req, res) => {
+  const { category } = req.query; // Obtener la categoría desde el frontend
+  if (!category) {
+    return res.status(400).json({ error: "La categoría es requerida" });
+  }
+
+  // Ruta de la carpeta de imágenes
+  const categoryFolder = path.join(
+    process.cwd(),
+    "dist",
+    "images",
+    "fotos",
+    category
+  );
+
+  // Leer los archivos de la carpeta
+  fs.readdir(categoryFolder, (error, files) => {
+    if (error) {
+      return res.status(500).json({ error: "Error al leer la carpeta" });
+    }
+
+    // Crear un array con las rutas de las imágenes
+    const images = files.map((file) => ({
+      id: file, // Nombre del archivo como ID
+      url: `/dist/images/fotos/${category}/${file}`, // Ruta para acceder a la imagen
+      title: file.split(".")[0], // Título (nombre del archivo sin extensión)
+    }));
+
+    // Devolver las imágenes al frontend
+    res.status(200).json(images);
+  });
+};
 
 const listaDocente = async (req, res) => {
   try {
@@ -450,4 +487,5 @@ export default {
   getDatosFamilia,
   getDataApoderadoNombres,
   JsonGetNoticias,
+  obtenerImagenesPorCategoria,
 };

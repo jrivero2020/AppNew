@@ -7,6 +7,7 @@ import SalidaUsr from "./auth/SignOut";
 import Inscripcion from "./usuario/Inscripcion";
 import MiddlewarePdf from "./core/MiddlewarePdf";
 import DocenteHoras from "./core/DocenteHoras";
+import VerFotoCompleta from "./core/VerFotoCompleta";
 import HistoriaDetalle from "./assets/data/historiaDetalle";
 import Vision from "./assets/data/vision";
 import Mision from "./assets/data/mision";
@@ -26,6 +27,7 @@ import Signin from "./auth/Signin";
 import FullFeaturedCrudGrid from "./assets/GrillaExamples/FullFeaturedCrudGrid";
 import PrincipalGui from "./core/InitOpcionII";
 import VerJSON from "./../client/core/VerJSON";
+import Gallery from "./../client/core/GaleriaFotos";
 
 const MainRouter = () => {
   return (
@@ -40,6 +42,7 @@ const MainRouter = () => {
             element={<FullFeaturedCrudGrid />}
           />
           <Route path="/Signup" element={<Signup />} />
+          <Route path="/Gallery" element={<Gallery />} />
           <Route path="/lstusuario" element={<LstUsuarios />} />
           <Route path="/SalidaUsr" element={<SalidaUsr />} />
           <Route path="/Inscripcion" element={<Inscripcion />} />
@@ -49,6 +52,7 @@ const MainRouter = () => {
           <Route path="/Mision" element={<Mision />} />
 
           <Route path="/MiddlewarePdf" element={<MiddlewarePdf />} />
+          <Route path="/VerFotoCompleta" element={<VerFotoCompleta />} />
 
           <Route path="/VerUtilesEscolares" element={<VerUtilesEscolares />} />
           <Route path="/DocenteHoras" element={<DocenteHoras />} />

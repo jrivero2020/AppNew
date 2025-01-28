@@ -79,4 +79,7 @@ router
 
 router.route("/JsonGetNoticias").get(docenteCtrl.JsonGetNoticias);
 
+// Ruta para obtener imágenes por categoría
+router.route("/api/images").get(docenteCtrl.obtenerImagenesPorCategoria);
+
 export default router;

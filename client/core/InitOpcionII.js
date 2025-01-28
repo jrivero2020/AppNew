@@ -73,17 +73,20 @@ export default function BasicGrid() {
               paddingTop: "80px",
               backgroundColor: "#E1E1E1",
               backgroundSize: "cover",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
-            sx={{ justify: "center", alignItems: "center" }}
           >
             <Box
               sx={{
-                width: "100%",
+                width: "80%",
                 height: "48%",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                flexDirection: "column",
+                overflow: "hidden",
+                position: "relative",
                 "@media (max-width: 720px)": {
                   height: "30%", // Cambiar el tamaño en pantallas móviles
                 },
@@ -92,7 +95,12 @@ export default function BasicGrid() {
               <img
                 src={backgroundFondo}
                 alt="Img.Fondo"
-                style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                style={{
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  width: "100%",
+                  height: "100%",
+                }}
               />
             </Box>
           </div>
