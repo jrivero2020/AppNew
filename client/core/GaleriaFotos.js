@@ -23,6 +23,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+
 // Categorías disponibles
 const categories = [
   { id: "colegio", name: "Colegio" },
@@ -160,6 +164,35 @@ const Gallery = () => {
     setZoomLevel((prevZoom) => Math.max(prevZoom - 0.25, 0.25)); // Zoom mínimo de 0.25x
   };
 
+  // Manejar el zoom con la rueda del ratón
+  const handleWheelZoom = (event) => {
+    console.log("Evento wheel detectado", event); // Depuración
+    // event.preventDefault();
+    event.stopPropagation();
+
+    if (event.deltaY < 0) {
+      // Rueda hacia arriba (zoom in)
+      handleZoomIn();
+    } else {
+      // Rueda hacia abajo (zoom out)
+      handleZoomOut();
+    }
+  };
+
+  const isSmallScreen = useMediaQuery("(max-width:720px)");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuItemClick = (categoryId) => {
+    handleCategoryChange(null, categoryId); // Llama al manejador de cambio de categoría
+    handleMenuClose();
+  };
   return (
     <div
       style={{
@@ -172,69 +205,121 @@ const Gallery = () => {
         position="fixed"
         sx={{ top: 81, left: 0, right: 0, overflowX: "auto" }}
       >
-        <Toolbar>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, textAlign: "center", width: "100%" }}
-          >
-            Galería Fotos
-          </Typography>
-        </Toolbar>
-        <Tabs
-          value={selectedCategory}
-          onChange={handleCategoryChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          sx={{
-            backgroundColor: "primary.dark", // Fondo más oscuro para las pestañas
-            "& .MuiTab-root": {
-              color: "white", // Color del texto de las pestañas no seleccionadas
-              opacity: 0.5, // Opacidad para las pestañas no seleccionadas
-              "&.Mui-selected": {
-                color: "white", // Color del texto de la pestaña seleccionada
-                opacity: 1, // Opacidad completa para la pestaña seleccionada
-                fontWeight: "bold", // Texto en negrita para la pestaña seleccionada
-              },
-              "&:hover": {
-                opacity: 1, // Opacidad completa al hacer hover
-              },
-            },
-            "& .MuiTabs-indicator": {
-              backgroundColor: "secondary.main", // Color del indicador de la pestaña seleccionada
-            },
-
-            "& .MuiTabs-flexContainer": {
-              flexWrap: "nowrap", // Evita el wrapping de las pestañas
-            },
-          }}
-        >
-          {categories.map((category) => (
-            <Tab
-              key={category.id}
-              label={category.name}
-              value={category.id}
+        {isSmallScreen ? (
+          // Pantalla pequeña: Mostrar botón de menú hamburguesa
+          <Toolbar>
+            <Typography
+              variant="body1"
               sx={{
-                color: "white",
-                backgroundColor: "#3F51B5",
-                "&:hover": {
-                  backgroundColor: "#757575",
-                },
                 fontSize: {
-                  xs: "7px",
-                  sm: "10px",
-                  md: "12px",
+                  xs: "14px",
                   lg: "16px",
                 },
               }}
-            />
-          ))}
-        </Tabs>
+            >
+              Menú Galería ={">  "}
+            </Typography>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              onClick={handleMenuOpen}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              {categories.map((category) => (
+                <MenuItem
+                  key={category.id}
+                  onClick={() => handleMenuItemClick(category.id)}
+                  selected={selectedCategory === category.id}
+                >
+                  {category.name}
+                </MenuItem>
+              ))}
+            </Menu>
+          </Toolbar>
+        ) : (
+          <>
+            <Toolbar>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{
+                  flexGrow: 1,
+                  textAlign: "center",
+                  width: "100%",
+                  fontSize: {
+                    xs: "0.8rem",
+                    sm: "1.2rem",
+                    md: "1.8rem",
+                  },
+                  fontWeight: "bold", // Negrita para parecerse al título del CardHeader, }}
+                }}
+              >
+                Galería Fotos
+              </Typography>
+            </Toolbar>
+
+            <Tabs
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              sx={{
+                backgroundColor: "primary.dark", // Fondo más oscuro para las pestañas
+                "& .MuiTab-root": {
+                  color: "white", // Color del texto de las pestañas no seleccionadas
+                  opacity: 0.5, // Opacidad para las pestañas no seleccionadas
+                  "&.Mui-selected": {
+                    color: "white", // Color del texto de la pestaña seleccionada
+                    opacity: 1, // Opacidad completa para la pestaña seleccionada
+                    fontWeight: "bold", // Texto en negrita para la pestaña seleccionada
+                  },
+                  "&:hover": {
+                    opacity: 1, // Opacidad completa al hacer hover
+                  },
+                },
+                "& .MuiTabs-indicator": {
+                  backgroundColor: "secondary.main", // Color del indicador de la pestaña seleccionada
+                },
+
+                "& .MuiTabs-flexContainer": {
+                  flexWrap: "nowrap", // Evita el wrapping de las pestañas
+                },
+              }}
+            >
+              {categories.map((category) => (
+                <Tab
+                  key={category.id}
+                  label={category.name}
+                  value={category.id}
+                  sx={{
+                    color: "white",
+                    backgroundColor: "#3F51B5",
+                    "&:hover": {
+                      backgroundColor: "#757575",
+                    },
+                    fontSize: {
+                      xs: "7px",
+                      sm: "10px",
+                      md: "12px",
+                      lg: "16px",
+                    },
+                  }}
+                />
+              ))}
+            </Tabs>
+          </>
+        )}
       </AppBar>
 
       {/* Contenido de la galería (oculto en pantalla completa) */}
-      <Box sx={{ marginTop: "5.7rem" }}>
-        {" "}
+      <Box sx={{ marginTop: isSmallScreen ? "3rem" : "5.7rem" }}>
         {/* Ajustar el margen superior (128px ≈ 8rem) */}
         {!isFullscreen && (
           <Grid container spacing={2} sx={{ padding: 2 }}>
@@ -283,7 +368,11 @@ const Gallery = () => {
         )}
         {/* Pantalla completa con la imagen seleccionada */}
         {isFullscreen && (
-          <Box className={classes.fullscreenContainer}>
+          <Box
+            className={classes.fullscreenContainer}
+            onWheel={handleWheelZoom}
+            tabIndex={0}
+          >
             <img
               src={selectedImage}
               alt="Seleccionada"
