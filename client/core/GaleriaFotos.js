@@ -180,6 +180,9 @@ const Gallery = () => {
   };
 
   const isSmallScreen = useMediaQuery("(max-width:720px)");
+  const isShortScreen = useMediaQuery("(max-height: 720px)");
+  const isMovil = isSmallScreen || isShortScreen;
+
   const [anchorEl, setAnchorEl] = useState(null);
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -196,14 +199,14 @@ const Gallery = () => {
   return (
     <div
       style={{
-        paddingTop: "80px",
+        paddingTop: isMovil ? 0.5 : 80,
       }}
-      sx={{ overflowX: "auto" }}
+      // sx={{ overflowX: "auto" }}
     >
       {/* Barra de navegación */}
       <AppBar
-        position="fixed"
-        sx={{ top: 81, left: 0, right: 0, overflowX: "auto" }}
+        position={isMovil ? "static" : "fixed"}
+        sx={{ top: isMovil ? 8 : 81, left: 0, right: 0, overflowX: "auto" }}
       >
         {isSmallScreen ? (
           // Pantalla pequeña: Mostrar botón de menú hamburguesa
@@ -211,9 +214,12 @@ const Gallery = () => {
             <Typography
               variant="body1"
               sx={{
+                ml: 1,
+                lineHeight: "1",
                 fontSize: {
-                  xs: "14px",
-                  lg: "16px",
+                  xs: "0.6rem",
+                  sm: "0.8rem",
+                  md: "1.1rem",
                 },
               }}
             >
@@ -253,10 +259,11 @@ const Gallery = () => {
                   flexGrow: 1,
                   textAlign: "center",
                   width: "100%",
+                  lineHeight: "1",
                   fontSize: {
-                    xs: "0.8rem",
-                    sm: "1.2rem",
-                    md: "1.8rem",
+                    xs: "0.6rem",
+                    sm: "0.8rem",
+                    md: "1.1rem",
                   },
                   fontWeight: "bold", // Negrita para parecerse al título del CardHeader, }}
                 }}
@@ -319,10 +326,10 @@ const Gallery = () => {
       </AppBar>
 
       {/* Contenido de la galería (oculto en pantalla completa) */}
-      <Box sx={{ marginTop: isSmallScreen ? "3rem" : "5.7rem" }}>
+      <Box sx={{ marginTop: isMovil ? "1rem" : "6.2rem" }}>
         {/* Ajustar el margen superior (128px ≈ 8rem) */}
         {!isFullscreen && (
-          <Grid container spacing={2} sx={{ padding: 2 }}>
+          <Grid container spacing={2} sx={{ padding: isMovil ? 0 : 2 }}>
             {loading ? (
               <Box
                 sx={{
@@ -342,7 +349,7 @@ const Gallery = () => {
                     onClick={() => handleImageClick(image.url)}
                   >
                     <CardActionArea>
-                      <CardMedia sx={{ mt: 1 }}>
+                      <CardMedia sx={{ mt: isMovil ? 0 : 1 }}>
                         <LazyLoadImage
                           src={image.url}
                           effect="blur"

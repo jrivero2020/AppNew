@@ -16,6 +16,7 @@ import CargandoPantalla from "./CargandoPantalla";
 import { api_GetJsonInitOpcion } from "./../docentes/api-docentes";
 import { ThemeProvider } from "@mui/material/styles";
 import { createTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const theme = createTheme({
   breakpoints: {
@@ -39,8 +40,6 @@ function ResponsiveAppBar() {
     setNoticias,
   } = useContext(AuthContext);
 
-  // const { Noticias } = useContext(AuthContext);
-
   const jwtRol = isJwtRol ? isJwtRol._rol : 0;
   const [anchorElNav, setAnchorElNav] = React.useState(false);
   const [loading, setLoading] = useState(true);
@@ -52,7 +51,9 @@ function ResponsiveAppBar() {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
+  const isSmallScreen = useMediaQuery("(max-width:720px)");
+  const isShortScreen = useMediaQuery("(max-height: 720px)");
+  const isMovil = isSmallScreen || isShortScreen;
   useEffect(() => {
     if (activeImgLinks.length === 0) {
       api_GetJsonInitOpcion().then((data) => {
@@ -93,13 +94,13 @@ function ResponsiveAppBar() {
     <ThemeProvider theme={theme}>
       {activePages.length === 0 && <CargandoPantalla />}
       {!loading && (
-        <AppBar>
+        <AppBar position={isMovil ? "static" : "fixed"}>
           <Container maxWidth="xl">
             <Box
               sx={{
                 mt: "1",
-                position: "absolute",
-                left: 0,
+                position: isMovil ? "static" : "absolute",
+                left: isMovil ? "auto" : 0,
                 display: "flex",
                 alignItems: "center",
                 flexDirection: "column",
@@ -112,18 +113,33 @@ function ResponsiveAppBar() {
                   height: "45px",
                   marginRight: "8px",
                   marginTop: "6px",
-                  activo: 1,
                 }}
               />
+
               <Typography
                 variant="subtitle1"
-                sx={{ ml: 1, lineHeight: "1", activo: 1 }}
+                sx={{
+                  ml: 1,
+                  lineHeight: "1",
+                  fontSize: {
+                    xs: "0.6rem",
+                    sm: "0.8rem",
+                    md: "1.1rem",
+                  },
+                }}
               >
                 Colegio Los Conquistadores
               </Typography>
               <Typography
                 variant="subtitle1"
-                sx={{ lineHeight: "1", activo: 1 }}
+                sx={{
+                  lineHeight: "1",
+                  fontSize: {
+                    xs: "0.6rem",
+                    sm: "0.8rem",
+                    md: "1.1rem",
+                  },
+                }}
               >
                 Cerrillos
               </Typography>
@@ -131,15 +147,16 @@ function ResponsiveAppBar() {
 
             <Toolbar
               disableGutters
-              position="fixed"
-              style={{ height: "90px", activo: 1 }}
-              sx={{ justifyContent: "right", activo: 1 }}
+              position={isMovil ? "static" : "fixed"} // Cambia a "static" en pantallas pequeñas
+              style={{ height: isMovil ? "1px" : "90px" }}
+              sx={{ justifyContent: "right" }}
             >
               {/* *** Menú Móvil **   */}
               <Box
                 sx={{
-                  flexGrow: 1,
-                  display: { xs: "flex", sm: "none", activo: 1 },
+                  right: 0,
+                  position: isSmallScreen ? "static" : "absolute", // Cambia a "static" en pantallas pequeñas
+                  display: { xs: "flex", sm: "none" },
                 }}
               >
                 <IconButton
@@ -149,7 +166,7 @@ function ResponsiveAppBar() {
                   aria-haspopup="true"
                   onClick={handleOpenNavMenu}
                   color="inherit"
-                  sx={{ marginLeft: "auto", fontSize: "32px", activo: 1 }}
+                  sx={{ marginLeft: "auto", fontSize: "32px" }}
                 >
                   <MenuIcon />
                 </IconButton>
@@ -168,7 +185,7 @@ function ResponsiveAppBar() {
                   open={Boolean(anchorElNav)}
                   onClose={handleCloseNavMenu}
                   sx={{
-                    display: { xs: "block", sm: "none", activo: 1 },
+                    display: { xs: "block", sm: "none" },
                     mt: 6,
                   }}
                 >
@@ -181,7 +198,7 @@ function ResponsiveAppBar() {
                       ) && (
                         <NavLink
                           to={pagina.datos.urlCall}
-                          sx={{ marginleft: "Auto", activo: 1 }}
+                          sx={{ marginleft: "Auto" }}
                           key={pagina.datos.id}
                         >
                           <MenuItem onClick={handleCloseNavMenu}>
@@ -198,9 +215,9 @@ function ResponsiveAppBar() {
 
               <Box
                 sx={{
-                  position: "absolute",
+                  position: isMovil ? "static" : "absolute", // Cambia a "static" en pantallas pequeñas
                   right: 0,
-                  display: { xs: "none", sm: "flex", activo: 1 },
+                  display: { xs: "none", sm: "flex" },
                 }}
               >
                 {activePages.map(
@@ -211,7 +228,6 @@ function ResponsiveAppBar() {
                         sx={{
                           marginleft: "Auto",
                           textDecoration: "none !important",
-                          activo: 1,
                         }}
                         key={page.datos.id}
                       >
@@ -228,13 +244,11 @@ function ResponsiveAppBar() {
                               sm: "10px",
                               md: "12px",
                               lg: "16px",
-                              activo: 1,
                             },
                             margin: {
                               sm: "4px",
                               md: "6px",
                               lg: "12px",
-                              activo: 1,
                             },
                             "@media (min-width: 600)": {
                               fontSize: "18px",
