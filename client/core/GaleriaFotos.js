@@ -112,7 +112,6 @@ const Gallery = () => {
         const data = await response.json();
         setImages(data);
       } catch (error) {
-        console.error("Error al cargar las imágenes:", error);
         setError("No se pudieron cargar las imágenes. Inténtalo de nuevo.");
       } finally {
         setLoading(false);
@@ -166,7 +165,6 @@ const Gallery = () => {
 
   // Manejar el zoom con la rueda del ratón
   const handleWheelZoom = (event) => {
-    console.log("Evento wheel detectado", event); // Depuración
     // event.preventDefault();
     event.stopPropagation();
 
@@ -177,6 +175,9 @@ const Gallery = () => {
       // Rueda hacia abajo (zoom out)
       handleZoomOut();
     }
+  };
+  const agregarEspacios = (cantidad) => {
+    return "\u00A0".repeat(cantidad); // Espacio en blanco no rompible
   };
 
   const isSmallScreen = useMediaQuery("(max-width:720px)");
@@ -206,7 +207,7 @@ const Gallery = () => {
       {/* Barra de navegación */}
       <AppBar
         position={isMovil ? "static" : "fixed"}
-        sx={{ top: isMovil ? 8 : 81, left: 0, right: 0, overflowX: "auto" }}
+        sx={{ top: isMovil ? 8 : 90, left: 0, right: 0, overflowX: "auto" }}
       >
         {isSmallScreen ? (
           // Pantalla pequeña: Mostrar botón de menú hamburguesa
@@ -223,7 +224,7 @@ const Gallery = () => {
                 },
               }}
             >
-              Menú Galería ={">  "}
+              Menú Galería {agregarEspacios(3)}
             </Typography>
             <IconButton
               edge="start"
