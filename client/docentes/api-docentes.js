@@ -342,6 +342,41 @@ const api_GetNoticias = async (params, signal) => {
   }
 };
 
+
+const getSolicitudesByProfesor = async (params, credentials, signal) => {
+  try {
+    let response = await fetch("/api/profesor/" + params, {
+      method: "GET",
+      signal: signal,
+      headers: { Authorization: "Bearer " + credentials.t },
+    });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
+const createSolicitud = async (params, credentials, signal) => {
+  try {
+    let response = await fetch("/api/CreaSolicitaEquipo", {
+      method: "POST",
+      signal: signal,
+      headers: { Authorization: "Bearer " + credentials.t },
+    });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
+
+
 export {
   create,
   leer,
@@ -365,4 +400,7 @@ export {
   api_getDatosFamiliaAP,
   api_getApoderadoNombres,
   api_GetNoticias,
+  getSolicitudesByProfesor,
+  createSolicitud,
+
 };

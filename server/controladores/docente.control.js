@@ -462,6 +462,70 @@ const JsonGetNoticias = async (req, res) => {
   }
 };
 
+
+const CreaSolicitaEquipo = async (req, res) => {
+  try {
+    const camposRep = [
+      req.body.id_profesor,
+      req.body.id_curso,
+      req.body.id_asignatura,
+      req.body.id_jornada,
+      req.body.id_equipamiento,
+      req.body.fecha_solicitud,
+      req.body.bloques_solicitados,
+      req.body.cantidad,
+    ]
+    const MyQuery = `CALL colegio.InsertarSolicitaEquipo(?,?,?,?,?,?,?,?)`;
+
+    const idEquipamiento = await sequelize.query(MyQuery, {
+      replacements: camposRep,
+      type: sequelize.QueryTypes.INSERT,
+    });
+    res.json(idEquipamiento);
+  } catch (err) {
+    if (err.name === "SequelizeUniqueConstraintError") {
+      return res.status(409).json({
+        message: "Equipamiento y módulo horario ya existe",
+        details: err.errors[0].message, // Mensaje detallado del error
+        value: err.errors[0].value, // El valor que causó el conflicto
+      });
+    }
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+const SolicitudEquipoProfe  = async (req, res) => {
+  try {
+
+      const { id_profesor } = req.params;
+      const fecha_inicio     = req.query.fecha_inicio
+      const fecha_fin = req.query.fecha_fin
+      const id_equipamiento = req.query.id_equipamiento
+
+      // Llamar al procedimiento almacenado
+      const solicitudes = await sequelize.query(
+          'CALL ObtenerSolicitudesPorProfesor(?,?,?,?)',
+          {
+              replacements: {
+                  id_profesor,
+                  fecha_inicio: fecha_inicio || null,
+                  fecha_fin: fecha_fin || null,
+                  id_equipamiento: id_equipamiento || null,
+              },
+              type: sequelize.QueryTypes.SELECT,
+          }
+      );
+console.log("solicitudes=>", solicitudes )
+      res.status(200).json(solicitudes);
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+
+
 export default {
   docenteByID,
   leerDocente,
@@ -488,4 +552,6 @@ export default {
   getDataApoderadoNombres,
   JsonGetNoticias,
   obtenerImagenesPorCategoria,
+  CreaSolicitaEquipo,
+  SolicitudEquipoProfe,
 };

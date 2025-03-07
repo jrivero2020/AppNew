@@ -82,4 +82,9 @@ router.route("/JsonGetNoticias").get(docenteCtrl.JsonGetNoticias);
 // Ruta para obtener imágenes por categoría
 router.route("/api/images").get(docenteCtrl.obtenerImagenesPorCategoria);
 
+// Ruta para CREAR SOLICITUD DE EQUIPOS
+router.route("/api/CreaSolicitaEquipo").post(authCtrl.requireSignin,docenteCtrl.CreaSolicitaEquipo);
+
+router.route("/api/profesor/:id_profesor").get(authCtrl.requireSignin,docenteCtrl.SolicitudEquipoProfe )
+
 export default router;

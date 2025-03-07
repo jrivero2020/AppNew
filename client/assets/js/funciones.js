@@ -15,6 +15,9 @@ const chkActivoRolAutentica = (data, isAuthenticated, jwtRol) => {
     if (objeto.autorizado === "A" && isAuthenticated) ret = true;
     if (objeto.autorizado === "A1" && isAuthenticated && jwtRol === 1)
       ret = true;
+    if (objeto.autorizado === "A9" && isAuthenticated && jwtRol === 9)
+      ret = true;
+
     if (
       objeto.autorizado === "A12" &&
       isAuthenticated &&

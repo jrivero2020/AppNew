@@ -28,7 +28,8 @@ import FullFeaturedCrudGrid from "./assets/GrillaExamples/FullFeaturedCrudGrid";
 import PrincipalGui from "./core/InitOpcionII";
 import VerJSON from "./../client/core/VerJSON";
 import Gallery from "./../client/core/GaleriaFotos";
-
+import SeleccionEquipos from "./../client/core/SeleccionEquipos";
+import SolicitudEquipos from  "./../client/core/SolicitudEquipos";
 const MainRouter = () => {
   return (
     <>
@@ -59,6 +60,23 @@ const MainRouter = () => {
           <Route path="/VerJSON" element={<VerJSON />} />
 
           <Route
+            path="/SolicitudEquipos"
+            element={
+              <PrivateRoute>
+                <SolicitudEquipos />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/SeleccionEquipos"
+            element={
+              <PrivateRoute>
+                <SeleccionEquipos />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
             path="/CertAlumnoRegular"
             element={
               <PrivateRoute>
@@ -66,6 +84,7 @@ const MainRouter = () => {
               </PrivateRoute>
             }
           />
+
           <Route path="/LabTabs" element={<LabTabs />} />
           <Route
             path="/BuscarAlumno"
