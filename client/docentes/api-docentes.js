@@ -166,8 +166,56 @@ const getParentesco = async () => {
 
 const getCursos = async () => {
   try {
-    let response = await fetch("/getCursos", { method: "GET" });
+    const response = await fetch("/getCursos", { method: "GET" });
+    const data = await response.json();
+    return Object.values(data[0]);
+
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+const getAsignaturas = async () => {
+  try {
+    const response = await fetch("/getAsignaturas", { method: "GET" });
+    const data = await response.json();
+    return Object.values(data[0]);
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
+/*
+const getJornadas = async () => {
+  try {
+    let response = await fetch("/getJornadas", { method: "GET" });
     return await response.json();
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+*/
+const getEquipamientos = async () => {
+  try {
+    const response = await fetch("/getEquipamiento", { method: "GET" });
+    const data = await response.json();
+    return Object.values(data[0]);
+
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
+const getBloquesHorarios = async(params, signal) => {
+  const { jornada_id, equipamiento_id, fecha_solicitud } = params;
+  try {
+    const response = await fetch("/getBloquesHorarios/"+jornada_id+"/"+equipamiento_id+"/"+fecha_solicitud, 
+      {
+        method: "GET",
+        signal: signal,
+      }  
+    );
+    const data = await response.json();
+    return Object.values(data[0]);
   } catch (err) {
     return { error: err.message, message: err.message };
   }
@@ -389,6 +437,10 @@ export {
   getComunas,
   getParentesco,
   getCursos,
+  getAsignaturas,
+  // getJornadas,
+  getEquipamientos,
+  getBloquesHorarios,
   api_getAlumnosNombres,
   getcsvLibroMatriculas,
   api_CantAlumnosCurso,

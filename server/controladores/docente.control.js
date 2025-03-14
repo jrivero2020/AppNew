@@ -226,18 +226,6 @@ const getComunas = async (req, res) => {
   }
 };
 
-const getCursos = async (req, res) => {
-  try {
-    const dataCursos = await sequelize.query(`CALL sp_GetDataCursos()`, {
-      type: sequelize.QueryTypes.SELECT,
-    });
-
-    res.json(dataCursos);
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-};
-
 const getCantAlumnosCurso = async (req, res) => {
   try {
     const dataCursos = await sequelize.query(`CALL sp_getCantAlumnosCurso()`, {
@@ -462,7 +450,6 @@ const JsonGetNoticias = async (req, res) => {
   }
 };
 
-
 const CreaSolicitaEquipo = async (req, res) => {
   try {
     const camposRep = [
@@ -474,7 +461,7 @@ const CreaSolicitaEquipo = async (req, res) => {
       req.body.fecha_solicitud,
       req.body.bloques_solicitados,
       req.body.cantidad,
-    ]
+    ];
     const MyQuery = `CALL colegio.InsertarSolicitaEquipo(?,?,?,?,?,?,?,?)`;
 
     const idEquipamiento = await sequelize.query(MyQuery, {
@@ -494,37 +481,93 @@ const CreaSolicitaEquipo = async (req, res) => {
   }
 };
 
-const SolicitudEquipoProfe  = async (req, res) => {
+const SolicitudEquipoProfe = async (req, res) => {
   try {
+    const { id_profesor } = req.params;
+    const fecha_inicio = req.query.fecha_inicio;
+    const fecha_fin = req.query.fecha_fin;
+    const id_equipamiento = req.query.id_equipamiento;
 
-      const { id_profesor } = req.params;
-      const fecha_inicio     = req.query.fecha_inicio
-      const fecha_fin = req.query.fecha_fin
-      const id_equipamiento = req.query.id_equipamiento
-
-      // Llamar al procedimiento almacenado
-      const solicitudes = await sequelize.query(
-          'CALL ObtenerSolicitudesPorProfesor(?,?,?,?)',
-          {
-              replacements: {
-                  id_profesor,
-                  fecha_inicio: fecha_inicio || null,
-                  fecha_fin: fecha_fin || null,
-                  id_equipamiento: id_equipamiento || null,
-              },
-              type: sequelize.QueryTypes.SELECT,
-          }
-      );
-console.log("solicitudes=>", solicitudes )
-      res.status(200).json(solicitudes);
+    // Llamar al procedimiento almacenado
+    const solicitudes = await sequelize.query(
+      "CALL ObtenerSolicitudesPorProfesor(?,?,?,?)",
+      {
+        replacements: {
+          id_profesor,
+          fecha_inicio: fecha_inicio || null,
+          fecha_fin: fecha_fin || null,
+          id_equipamiento: id_equipamiento || null,
+        },
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+    console.log("solicitudes=>", solicitudes);
+    res.status(200).json(solicitudes);
   } catch (error) {
-      res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
+const getCursos = async (req, res) => {
+  try {
+    const dataCursos = await sequelize.query(`CALL sp_GetDataCursos()`, {
+      type: sequelize.QueryTypes.SELECT,
+    });
 
+    res.json(dataCursos);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
 
+const getAsignaturas = async (req, res) => {
+  try {
+    const dataCursos = await sequelize.query(`CALL sp_GetDataAsignatura()`, {
+      type: sequelize.QueryTypes.SELECT,
+    });
 
+    res.json(dataCursos);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+const getEquipamiento = async (req, res) => {
+  try {
+    const dataCursos = await sequelize.query(`CALL sp_GetDataEquipamiento()`, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+
+    res.json(dataCursos);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+const getBloquesHorarios = async (req, res) => {
+  const { jornada_id, equipamiento_id, fecha_solicitud } = req.params;
+  if (!jornada_id || !equipamiento_id || !fecha_solicitud) {
+    return res
+      .status(400)
+      .json({
+        error: "Se requieren jornada_id, equipamiento_id y fecha_solicitud",
+      });
+  }
+
+  try {
+    const dataCursos = await sequelize.query(
+      `CALL sp_getBloquehhDisponible(?,?,?)`,
+      {
+        replacements: [ jornada_id, equipamiento_id, fecha_solicitud ],
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    res.json(dataCursos);
+  } catch (err) {
+    return res.status(500).json({ error: "Error al obtener bloques horarios" });
+  }
+};
 
 export default {
   docenteByID,
@@ -540,6 +583,7 @@ export default {
   listaMatricula,
   getComunas,
   getCursos,
+  getAsignaturas,
   getParentesco,
   getDataAlumnoNombres,
   CsvLibroMatricula,
@@ -554,4 +598,6 @@ export default {
   obtenerImagenesPorCategoria,
   CreaSolicitaEquipo,
   SolicitudEquipoProfe,
+  getEquipamiento,
+  getBloquesHorarios,
 };
