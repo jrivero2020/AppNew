@@ -451,6 +451,7 @@ const JsonGetNoticias = async (req, res) => {
 };
 
 const CreaSolicitaEquipo = async (req, res) => {
+  console.log( "** control CreaSolicitaEquipo ** req.body", req.body)
   try {
     const camposRep = [
       req.body.id_profesor,

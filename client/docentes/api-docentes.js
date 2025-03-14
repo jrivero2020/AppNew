@@ -407,12 +407,12 @@ const getSolicitudesByProfesor = async (params, credentials, signal) => {
   }
 };
 
-const createSolicitud = async (params, credentials, signal) => {
+const createSolicitud = async (params) => {
+  console.log( "api-createSolicitud*** params=>", params)
   try {
-    let response = await fetch("/api/CreaSolicitaEquipo", {
+    let response = await fetch("/api/CreaSolicitaEquipo" + params, {
       method: "POST",
-      signal: signal,
-      headers: { Authorization: "Bearer " + credentials.t },
+
     });
     if (!response.ok) {
       return { error: response.status, message: response.statusText };

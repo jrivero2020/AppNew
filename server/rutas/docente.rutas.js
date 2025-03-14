@@ -93,7 +93,7 @@ router.route("/getBloquesHorarios/:jornada_id/:equipamiento_id/:fecha_solicitud"
 .get(docenteCtrl.getBloquesHorarios);
 
 
-router.route("/api/CreaSolicitaEquipo").post(authCtrl.requireSignin,docenteCtrl.CreaSolicitaEquipo);
+router.route("/api/CreaSolicitaEquipo/:params").post(authCtrl.requireSignin,docenteCtrl.CreaSolicitaEquipo);
 
 router.route("/api/profesor/:id_profesor").get(authCtrl.requireSignin,docenteCtrl.SolicitudEquipoProfe )
 
