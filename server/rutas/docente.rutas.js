@@ -89,12 +89,17 @@ router.route("/getAsignaturas").get(docenteCtrl.getAsignaturas);
 
 router.route("/getEquipamiento").get(docenteCtrl.getEquipamiento);
 
-router.route("/getBloquesHorarios/:jornada_id/:equipamiento_id/:fecha_solicitud")
-.get(docenteCtrl.getBloquesHorarios);
+router
+  .route("/getBloquesHorarios/:jornada_id/:equipamiento_id/:fecha_solicitud")
+  .get(docenteCtrl.getBloquesHorarios);
 
+//  .route("/api/CreaSolicitaEquipo/:id_profesor/:id_curso/:id_asignatura/:id_jornada/:id_equipamiento/:fecha_solicitud/:bloques_seleccionados/:cantidad")
+  router
+  .route("/api/CreaSolicitaEquipo")
+  .post(authCtrl.requireSignin, docenteCtrl.CreaSolicitaEquipo);
 
-router.route("/api/CreaSolicitaEquipo/:params").post(authCtrl.requireSignin,docenteCtrl.CreaSolicitaEquipo);
-
-router.route("/api/profesor/:id_profesor").get(authCtrl.requireSignin,docenteCtrl.SolicitudEquipoProfe )
+router
+  .route("/api/profesor/:id_profesor")
+  .get(authCtrl.requireSignin, docenteCtrl.SolicitudEquipoProfe);
 
 export default router;

@@ -169,7 +169,6 @@ const getCursos = async () => {
     const response = await fetch("/getCursos", { method: "GET" });
     const data = await response.json();
     return Object.values(data[0]);
-
   } catch (err) {
     return { error: err.message, message: err.message };
   }
@@ -199,20 +198,25 @@ const getEquipamientos = async () => {
     const response = await fetch("/getEquipamiento", { method: "GET" });
     const data = await response.json();
     return Object.values(data[0]);
-
   } catch (err) {
     return { error: err.message, message: err.message };
   }
 };
 
-const getBloquesHorarios = async(params, signal) => {
+const getBloquesHorarios = async (params, signal) => {
   const { jornada_id, equipamiento_id, fecha_solicitud } = params;
   try {
-    const response = await fetch("/getBloquesHorarios/"+jornada_id+"/"+equipamiento_id+"/"+fecha_solicitud, 
+    const response = await fetch(
+      "/getBloquesHorarios/" +
+        jornada_id +
+        "/" +
+        equipamiento_id +
+        "/" +
+        fecha_solicitud,
       {
         method: "GET",
         signal: signal,
-      }  
+      }
     );
     const data = await response.json();
     return Object.values(data[0]);
@@ -390,7 +394,6 @@ const api_GetNoticias = async (params, signal) => {
   }
 };
 
-
 const getSolicitudesByProfesor = async (params, credentials, signal) => {
   try {
     let response = await fetch("/api/profesor/" + params, {
@@ -407,13 +410,41 @@ const getSolicitudesByProfesor = async (params, credentials, signal) => {
   }
 };
 
-const createSolicitud = async (params) => {
-  console.log( "api-createSolicitud*** params=>", params)
-  try {
-    let response = await fetch("/api/CreaSolicitaEquipo" + params, {
-      method: "POST",
 
+/*
+const api_ActAlumnoCurso = async (params, credentials, user) => {
+  try {
+    const rutAl = params.rutAl;
+    let response = await fetch("/AlumnosByRut/" + rutAl, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify(user),
     });
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+*/
+
+const createSolicitud = async (params,credentials, signal) => {
+  console.log("api-createSolicitud*** params=>", params); 
+  try {
+    const response = await fetch("/api/CreaSolicitaEquipo", {
+      method: "POST",
+      signal: signal,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify(params),
+    });
+
     if (!response.ok) {
       return { error: response.status, message: response.statusText };
     }
@@ -422,8 +453,6 @@ const createSolicitud = async (params) => {
     return { error: 500, message: err.message };
   }
 };
-
-
 
 export {
   create,
@@ -454,5 +483,4 @@ export {
   api_GetNoticias,
   getSolicitudesByProfesor,
   createSolicitud,
-
 };

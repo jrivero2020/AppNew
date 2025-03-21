@@ -452,7 +452,9 @@ const JsonGetNoticias = async (req, res) => {
 
 const CreaSolicitaEquipo = async (req, res) => {
   console.log( "** control CreaSolicitaEquipo ** req.body", req.body)
+  const bloquesString = JSON.stringify(req.body.bloques_seleccionados);
   try {
+    const {id_profesor, id_curso,id_asignatura,id_jornada, id_equipamiento,fecha_solicitud,bloques_seleccionados,cantidad} = req.body
     const camposRep = [
       req.body.id_profesor,
       req.body.id_curso,
@@ -460,16 +462,27 @@ const CreaSolicitaEquipo = async (req, res) => {
       req.body.id_jornada,
       req.body.id_equipamiento,
       req.body.fecha_solicitud,
-      req.body.bloques_solicitados,
+      bloquesString,
       req.body.cantidad,
+      
     ];
-    const MyQuery = `CALL colegio.InsertarSolicitaEquipo(?,?,?,?,?,?,?,?)`;
-
+    const MyQuery = `    
+    CALL colegio.InsertarSolicitaEquipo(?,?,?,?,?,?,?,?,@new_id);
+    
+    `;
+console.log( "MyQuery===>", MyQuery)
+console.log( "camposRep==>", camposRep)
     const idEquipamiento = await sequelize.query(MyQuery, {
       replacements: camposRep,
-      type: sequelize.QueryTypes.INSERT,
+      type: sequelize.QueryTypes.SELECT,
     });
-    res.json(idEquipamiento);
+
+
+    const newId = idEquipamiento[0]['0'].new_id_solicitud;
+
+    console.log("✅ ID de solicitud generada:", newId);
+
+    res.json(newId);
   } catch (err) {
     if (err.name === "SequelizeUniqueConstraintError") {
       return res.status(409).json({
@@ -478,34 +491,17 @@ const CreaSolicitaEquipo = async (req, res) => {
         value: err.errors[0].value, // El valor que causó el conflicto
       });
     }
+    if (err.code === "ER_SIGNAL_EXCEPTION") {
+      return res.status(409).json({
+        message: "Error al crear la solicitud",
+        details:  err.message, // Mensaje detallado del error
+        value: err.value, // El valor que causó el conflicto
+      });
+    }
+      // Mostrar un mensaje al usuario
+    console.error("❌ Error en el backend:", err);
+    res.status(500).json({ error: "Error en el servidor" });
     return res.status(500).json({ message: err.message });
-  }
-};
-
-const SolicitudEquipoProfe = async (req, res) => {
-  try {
-    const { id_profesor } = req.params;
-    const fecha_inicio = req.query.fecha_inicio;
-    const fecha_fin = req.query.fecha_fin;
-    const id_equipamiento = req.query.id_equipamiento;
-
-    // Llamar al procedimiento almacenado
-    const solicitudes = await sequelize.query(
-      "CALL ObtenerSolicitudesPorProfesor(?,?,?,?)",
-      {
-        replacements: {
-          id_profesor,
-          fecha_inicio: fecha_inicio || null,
-          fecha_fin: fecha_fin || null,
-          id_equipamiento: id_equipamiento || null,
-        },
-        type: sequelize.QueryTypes.SELECT,
-      }
-    );
-    console.log("solicitudes=>", solicitudes);
-    res.status(200).json(solicitudes);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
 };
 
@@ -567,6 +563,33 @@ const getBloquesHorarios = async (req, res) => {
     res.json(dataCursos);
   } catch (err) {
     return res.status(500).json({ error: "Error al obtener bloques horarios" });
+  }
+};
+
+const SolicitudEquipoProfe = async (req, res) => {
+  try {
+    const { id_profesor } = req.params;
+    const fecha_inicio = req.query.fecha_inicio;
+    const fecha_fin = req.query.fecha_fin;
+    const id_equipamiento = req.query.id_equipamiento;
+
+    // Llamar al procedimiento almacenado
+    const solicitudes = await sequelize.query(
+      "CALL ObtenerSolicitudesPorProfesor(?,?,?,?)",
+      {
+        replacements: {
+          id_profesor,
+          fecha_inicio: fecha_inicio || null,
+          fecha_fin: fecha_fin || null,
+          id_equipamiento: id_equipamiento || null,
+        },
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+    console.log("solicitudes=>", solicitudes);
+    res.status(200).json(solicitudes);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 

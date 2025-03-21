@@ -8,6 +8,9 @@ export const sequelize = new Sequelize(
     {
         host: mybdSql.host,
         dialect: mybdSql.dialect,
+        dialectOptions: {
+            multipleStatements: true // 🚀 Habilita múltiples sentencias
+          },
         define: {
             timestamps: false,
             createdAt: false,
