@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import {
   TextField,
   MenuItem,
@@ -24,6 +24,7 @@ import {
   getEquipamientos,
   createSolicitud,
   getBloquesHorarios,
+  liberarSolicitud,
 } from "../docentes/api-docentes";
 import { AuthContext } from "./../core/AuthProvider";
 
@@ -44,10 +45,11 @@ const SolicitudEquipos = ({ id_profesor }) => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [cantidad, setCantidad] = useState(1); // Valor inicial de 1
   const { jwt } = useContext(AuthContext);
-  const idProfesor =  jwt.user._id;
+  const [selectedReservedBlocks, setSelectedReservedBlocks] = useState([]);
+  const idProfesor = jwt.user._id;
   // const idProfesor =  26
-  
-
+  const abortController = new AbortController();
+  const signal = abortController.signal;
   // Cargar datos iniciales
   useEffect(() => {
     const fetchData = async () => {
@@ -78,7 +80,7 @@ const SolicitudEquipos = ({ id_profesor }) => {
 
   // Cargar bloques horarios cuando se selecciona jornada, equipamiento y fecha
   useEffect(() => {
-    console.log("selectedEquipamiento==>", selectedEquipamiento)
+    console.log("selectedEquipamiento==>", selectedEquipamiento);
     if (selectedJornada && selectedEquipamiento && selectedDate) {
       const fetchBloquesHorarios = async () => {
         try {
@@ -87,7 +89,7 @@ const SolicitudEquipos = ({ id_profesor }) => {
             equipamiento_id: selectedEquipamiento,
             fecha_solicitud: selectedDate.format("YYYY-MM-DD"),
           });
-          console.log("bloquesData de bloques horarios==>", bloquesData )
+          console.log("bloquesData de bloques horarios==>", bloquesData);
           setBloquesHorarios(bloquesData);
         } catch (error) {
           console.error("Error cargando bloques horarios:", error);
@@ -132,9 +134,7 @@ const SolicitudEquipos = ({ id_profesor }) => {
     };
     console.log("solicitudData==>", solicitudData);
 
-
-    const abortController = new AbortController();
-    const signal = abortController.signal;
+    
     try {
       createSolicitud(solicitudData, { t: jwt.token }, signal).then((data) => {
         if (data && data.error) {
@@ -169,6 +169,49 @@ const SolicitudEquipos = ({ id_profesor }) => {
     setSnackbarOpen(false);
   };
 
+  const handleLiberarBloques = async () => {    
+    const desbloquear = {
+      id_profesor: idProfesor,
+      jornada_id:selectedJornada,
+      id_equipamiento: selectedEquipamiento,
+      fecha_solicitud: selectedDate.format('YYYY-MM-DD'),
+      bloques_ids: selectedReservedBlocks.map(bloque => ({ id_bloque: bloque })),
+    };
+
+    try {      
+      liberarSolicitud(desbloquear, { t: jwt.token }, signal).then((data) => {        
+        if (data && data.error) {
+          setSnackbarMessage("Error al enviar la solicitud");
+          setSnackbarSeverity("error");
+          setSnackbarOpen(true);
+          return false;
+        } else {
+          const [results, metadata] = data;
+          if (
+            results[0] === undefined ||
+            results[0] === null ||
+            Object.keys(results[0]).length === 0
+          ) {
+            alert("**ATENCION** no se grabó la solicitud", metadata);
+          } else {
+            setSnackbarMessage(data.message || 'Bloques liberados correctamente');
+            setSnackbarSeverity('success');
+            setSelectedReservedBlocks([]);
+            setBloquesHorarios([])
+            // fetchBloquesHorarios();
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error liberando bloques:', error);
+      setSnackbarMessage(error.message || 'Error al liberar bloques');
+      setSnackbarSeverity('error');
+    } finally {
+      setSnackbarOpen(true);
+    }
+  };
+     
+      
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <form onSubmit={handleSubmit}>
@@ -212,47 +255,48 @@ const SolicitudEquipos = ({ id_profesor }) => {
 
           {/* Selector de jornada */}
           <Grid item xs={12}>
-  <Typography variant="subtitle1">Jornada</Typography>
-  <FormControl component="fieldset">
-    <RadioGroup
-      row
-      value={selectedJornada}
-      onChange={(e) => setSelectedJornada(Number(e.target.value))}
-    >
-      {jornadas.map((jornada) => (
-        <FormControlLabel
-          key={jornada.id}
-          value={jornada.id}
-          control={<Radio />}
-          label={jornada.nombre}
-        />
-      ))}
-    </RadioGroup>
-  </FormControl>
-</Grid>
+            <Typography variant="subtitle1">Jornada</Typography>
+            <FormControl component="fieldset">
+              <RadioGroup
+                row
+                value={selectedJornada}
+                onChange={(e) => setSelectedJornada(Number(e.target.value))}
+              >
+                {jornadas.map((jornada) => (
+                  <FormControlLabel
+                    key={jornada.id}
+                    value={jornada.id}
+                    control={<Radio />}
+                    label={jornada.nombre}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </Grid>
           {/* Selector de equipamiento */}
           <Grid item xs={12}>
-  <Typography variant="subtitle1">Equipamiento</Typography>
-  <FormControl component="fieldset">
-    <RadioGroup
-      row
-      value={selectedEquipamiento}
-      onChange={(e) => setSelectedEquipamiento(Number(e.target.value))}
-    >
-      {equipamientos.map((equipamiento) => (
-        <FormControlLabel
-          key={equipamiento.id_equipos}
-          value={equipamiento.id_equipos}
-          control={<Radio />}
-          label={equipamiento.nombre}
-        />
-      ))}
-    </RadioGroup>
-  </FormControl>
-</Grid>
+            <Typography variant="subtitle1">Equipamiento</Typography>
+            <FormControl component="fieldset">
+              <RadioGroup
+                row
+                value={selectedEquipamiento}
+                onChange={(e) =>
+                  setSelectedEquipamiento(Number(e.target.value))
+                }
+              >
+                {equipamientos.map((equipamiento) => (
+                  <FormControlLabel
+                    key={equipamiento.id_equipos}
+                    value={equipamiento.id_equipos}
+                    control={<Radio />}
+                    label={equipamiento.nombre}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </Grid>
           {/* Campo de cantidad (solo para Chromebook y Tablet) */}
-          {(selectedEquipamiento === 2 ||
-            selectedEquipamiento === 3) && (
+          {(selectedEquipamiento === 2 || selectedEquipamiento === 3) && (
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Cantidad"
@@ -302,11 +346,15 @@ const SolicitudEquipos = ({ id_profesor }) => {
                   title={
                     bloque.estado === "reservado"
                       ? bloque.id_profesor_reserva === idProfesor
-                        ? "Este bloque está reservado por usted."
-                        : "Este bloque ya está reservado por otro profesor." 
+                      ? selectedReservedBlocks.includes(bloque.bloque_id)
+                      ? "Click para deseleccionar" // Mensaje cuando ya está seleccionado para liberación
+                      : "Este bloque está reservado por usted. Click para liberarlo." // Mensaje inicial
+                    : "Este bloque ya está reservado por otro profesor."
                       : bloque.estado === "superpuesto"
                       ? "Este bloque está superpuesto con otro ya reservado."
-                      : "Bloque disponible para reservar"
+                      : selectedBloques.includes(bloque.bloque_id)
+                      ? "Click para deseleccionar"
+                      : "Click para seleccionar"
                   }
                   slotProps={{
                     tooltip: {
@@ -322,43 +370,76 @@ const SolicitudEquipos = ({ id_profesor }) => {
                   }}
                   disableTouchListener={false} // Habilita el Tooltip en dispositivos táctiles
                 >
-                  
                   <span>
-                  <Button
-                    variant="contained"
-                    disabled={( bloque.estado === "reservado" && bloque.id_profesor_reserva !== idProfesor ) || bloque.estado === "superpuesto"}
-                    style={{
-                      backgroundColor:
-                        selectedBloques.includes(bloque.bloque_id)
-                          ? "#666666" // Fondo gris para bloques seleccionados
-                          : bloque.estado === "reservado"
-                          ? bloque.id_profesor_reserva === idProfesor
-                            ? "#00cc66" // Fondo verde para bloques reservados por el profesor
-                            : "#ff4444" // Fondo rojo para bloques reservados por otros
-                          : bloque.estado === "superpuesto"
-                          ? "#ff8800" // Fondo naranja para bloques superpuestos
-                          : "#1976d2", // Fondo azul para bloques disponibles
-                      color: "white", // Texto blanco para todos los bloques
-                      margin: "5px",
-                    }}
-                    onClick={() => {
-                      if (selectedBloques.includes(bloque.bloque_id)) {
-                        // Usar bloque_id
-                        setSelectedBloques(
-                          selectedBloques.filter(
-                            (id) => id !== bloque.bloque_id
-                          ) // Usar bloque_id
-                        );
-                      } else {
-                        setSelectedBloques([
-                          ...selectedBloques,
-                          bloque.bloque_id,
-                        ]); // Usar bloque_id
+                    <Button
+                      variant="contained"
+                      disabled={
+                        // Bloques reservados por otros profesores
+                        (bloque.estado === "reservado" && bloque.id_profesor_reserva !== idProfesor) ||
+                        
+                        // Bloques superpuestos
+                        bloque.estado === "superpuesto"
+                        //  ||
+                        
+                        // Bloques ya seleccionados para liberación (evitar doble selección)
+                       //  (bloque.estado === "reservado" && selectedReservedBlocks.includes(bloque.bloque_id))
                       }
-                    }}
-                  >
-                    {bloque.descripcion}-{bloque.id_profesor_reserva}-{ idProfesor}
-                  </Button>
+                      style={{
+                        backgroundColor: 
+    selectedBloques.includes(bloque.bloque_id)
+      ? "#666666" // Fondo gris para bloques disponibles seleccionados
+      : bloque.estado === "reservado"
+        ? bloque.id_profesor_reserva === idProfesor
+          ? selectedReservedBlocks.includes(bloque.bloque_id)
+            ? "#33691E" // VERDE OSCURO cuando está seleccionado para liberación
+            : "#00cc66" // Verde original para mis reservas no seleccionadas
+          : "#ff4444" // Rojo para reservas de otros
+        : bloque.estado === "superpuesto"
+          ? "#ff8800" // Naranja para bloques superpuestos
+          : "#1976d2", // Azul para bloques disponibles
+  color: "white",
+  margin: "5px",
+                      }}
+                      onClick={() => {
+                        if (
+                          bloque.estado === "reservado" &&
+                          bloque.id_profesor_reserva === idProfesor
+                        ) {
+                          setSelectedReservedBlocks((prev) =>
+                            prev.includes(bloque.bloque_id)
+                              ? prev.filter((id) => id !== bloque.bloque_id)
+                              : [...prev, bloque.bloque_id]
+                          );
+                        }
+                        /*
+                        if (selectedBloques.includes(bloque.bloque_id)) {
+                          // Usar bloque_id
+                          setSelectedBloques(
+                            selectedBloques.filter(
+                              (id) => id !== bloque.bloque_id
+                            ) // Usar bloque_id
+                          );
+                        } else {
+                          setSelectedBloques([
+                            ...selectedBloques,
+                            bloque.bloque_id,
+                          ]); // Usar bloque_id
+                        }
+                          */
+ // Manejo de bloques para nueva reserva (solo si no está reservado)
+ if (bloque.estado !== "reservado") {
+  setSelectedBloques(prev =>
+    prev.includes(bloque.bloque_id)
+      ? prev.filter(id => id !== bloque.bloque_id)
+      : [...prev, bloque.bloque_id]
+  );
+}
+
+                      }}
+                    >
+                      {bloque.descripcion}-{bloque.id_profesor_reserva}-
+                      {idProfesor}
+                    </Button>
                   </span>
                 </Tooltip>
               ))
@@ -366,7 +447,7 @@ const SolicitudEquipos = ({ id_profesor }) => {
           </Grid>
 
           {/* Botón de enviar */}
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <Button
               type="submit"
               variant="contained"
@@ -381,6 +462,22 @@ const SolicitudEquipos = ({ id_profesor }) => {
             >
               Enviar Solicitud
             </Button>
+          </Grid>
+          <Grid item xs={6}>
+          <Button
+  variant="contained"
+  color="secondary"
+  onClick={handleLiberarBloques}
+  disabled={selectedReservedBlocks.length === 0}
+  style={{ 
+    marginTop: "16px",
+    backgroundColor: selectedReservedBlocks.length > 0 ? '#33691E' : '', // Rojo cuando activo
+    transition: 'all 0.3s ease'
+  }}
+  startIcon={<LockOpenIcon />} // Icono sugerido
+>
+  Liberar bloques ({selectedReservedBlocks.length})
+</Button>
           </Grid>
         </Grid>
       </form>

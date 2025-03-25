@@ -454,6 +454,31 @@ const createSolicitud = async (params,credentials, signal) => {
   }
 };
 
+const liberarSolicitud = async (params,credentials, signal) => {
+  console.log("api-liberarSolicitud*** params=>", params); 
+  try {
+    const response = await fetch("/api/EliminaReservaBloque", {
+      method: "POST",
+      signal: signal,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify(params),
+    });
+
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
+
+
 export {
   create,
   leer,
@@ -483,4 +508,5 @@ export {
   api_GetNoticias,
   getSolicitudesByProfesor,
   createSolicitud,
+  liberarSolicitud,
 };

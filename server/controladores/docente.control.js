@@ -450,61 +450,6 @@ const JsonGetNoticias = async (req, res) => {
   }
 };
 
-const CreaSolicitaEquipo = async (req, res) => {
-  console.log( "** control CreaSolicitaEquipo ** req.body", req.body)
-  const bloquesString = JSON.stringify(req.body.bloques_seleccionados);
-  try {
-    const {id_profesor, id_curso,id_asignatura,id_jornada, id_equipamiento,fecha_solicitud,bloques_seleccionados,cantidad} = req.body
-    const camposRep = [
-      req.body.id_profesor,
-      req.body.id_curso,
-      req.body.id_asignatura,
-      req.body.id_jornada,
-      req.body.id_equipamiento,
-      req.body.fecha_solicitud,
-      bloquesString,
-      req.body.cantidad,
-      
-    ];
-    const MyQuery = `    
-    CALL colegio.InsertarSolicitaEquipo(?,?,?,?,?,?,?,?,@new_id);
-    
-    `;
-console.log( "MyQuery===>", MyQuery)
-console.log( "camposRep==>", camposRep)
-    const idEquipamiento = await sequelize.query(MyQuery, {
-      replacements: camposRep,
-      type: sequelize.QueryTypes.SELECT,
-    });
-
-
-    const newId = idEquipamiento[0]['0'].new_id_solicitud;
-
-    console.log("✅ ID de solicitud generada:", newId);
-
-    res.json(newId);
-  } catch (err) {
-    if (err.name === "SequelizeUniqueConstraintError") {
-      return res.status(409).json({
-        message: "Equipamiento y módulo horario ya existe",
-        details: err.errors[0].message, // Mensaje detallado del error
-        value: err.errors[0].value, // El valor que causó el conflicto
-      });
-    }
-    if (err.code === "ER_SIGNAL_EXCEPTION") {
-      return res.status(409).json({
-        message: "Error al crear la solicitud",
-        details:  err.message, // Mensaje detallado del error
-        value: err.value, // El valor que causó el conflicto
-      });
-    }
-      // Mostrar un mensaje al usuario
-    console.error("❌ Error en el backend:", err);
-    res.status(500).json({ error: "Error en el servidor" });
-    return res.status(500).json({ message: err.message });
-  }
-};
-
 const getCursos = async (req, res) => {
   try {
     const dataCursos = await sequelize.query(`CALL sp_GetDataCursos()`, {
@@ -566,6 +511,97 @@ const getBloquesHorarios = async (req, res) => {
   }
 };
 
+
+const CreaSolicitaEquipo = async (req, res) => {
+  console.log( "** control CreaSolicitaEquipo ** req.body", req.body)
+  const bloquesString = JSON.stringify(req.body.bloques_seleccionados);
+  try {
+    const {id_profesor, id_curso,id_asignatura,id_jornada, id_equipamiento,fecha_solicitud,bloques_seleccionados,cantidad} = req.body
+    const camposRep = [
+      req.body.id_profesor,
+      req.body.id_curso,
+      req.body.id_asignatura,
+      req.body.id_jornada,
+      req.body.id_equipamiento,
+      req.body.fecha_solicitud,
+      bloquesString,
+      req.body.cantidad,
+      
+    ];
+    const MyQuery = `    
+    CALL colegio.InsertarSolicitaEquipo(?,?,?,?,?,?,?,?,@new_id);
+    
+    `;
+    const idEquipamiento = await sequelize.query(MyQuery, {
+      replacements: camposRep,
+      type: sequelize.QueryTypes.SELECT,
+    });
+    const newId = idEquipamiento[0]['0'].new_id_solicitud;
+    res.json(newId);
+  } catch (err) {
+    if (err.name === "SequelizeUniqueConstraintError") {
+      return res.status(409).json({
+        message: "Equipamiento y módulo horario ya existe",
+        details: err.errors[0].message, // Mensaje detallado del error
+        value: err.errors[0].value, // El valor que causó el conflicto
+      });
+    }
+    if (err.code === "ER_SIGNAL_EXCEPTION") {
+      return res.status(409).json({
+        message: "Error al crear la solicitud",
+        details:  err.message, // Mensaje detallado del error
+        value: err.value, // El valor que causó el conflicto
+      });
+    }
+      // Mostrar un mensaje al usuario
+    console.error("❌ Error en el backend:", err);
+    res.status(500).json({ error: "Error en el servidor" });
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+  const EliminaReservaBloque = async (req, res) => {
+    console.log( "** control EliminaReservaBloque ** req.body", req.body)
+//    const bloquesString = JSON.stringify(req.body.bloques_ids);
+//    const bloquesStringLimpio = bloquesString.replace(/\\"/g, '"');
+    const bloquesString = req.body.bloques_ids;
+
+ 
+    try {      
+      const camposRep = [
+        req.body.id_profesor,
+        req.body.jornada_id,
+        req.body.id_equipamiento,
+        req.body.fecha_solicitud,
+        JSON.stringify(req.body.bloques_ids),        
+      ];
+      const MyQuery = `CALL colegio.SP_EliminarBloquesReserva(?,?,?,?,?);`;
+      console.log( "camposRep==>", camposRep)
+      
+      const idEquipamiento = await sequelize.query(MyQuery, {
+        replacements: camposRep,
+        type: sequelize.QueryTypes.SELECT,
+      });
+      console.log("*** SP_EliminarBloquesReserva** idEquipamiento=> ", idEquipamiento)
+//      const newId = idEquipamiento[0]['0'].new_id_solicitud;
+      res.json('OK');
+    } catch (err) {
+     
+      if (err.code === "ER_SIGNAL_EXCEPTION") {
+        return res.status(409).json({
+          message: "Error al eliminar reserva",
+          details:  err.message, // Mensaje detallado del error
+          value: err.value, // El valor que causó el conflicto
+        });
+      }
+        // Mostrar un mensaje al usuario
+      console.error("❌ Error en el backend:", err);
+      res.status(500).json({ error: "Error en el servidor" });
+      return res.status(500).json({ message: err.message });
+    }
+  };
+  
+
 const SolicitudEquipoProfe = async (req, res) => {
   try {
     const { id_profesor } = req.params;
@@ -624,4 +660,5 @@ export default {
   SolicitudEquipoProfe,
   getEquipamiento,
   getBloquesHorarios,
+  EliminaReservaBloque,
 };

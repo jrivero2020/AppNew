@@ -93,10 +93,17 @@ router
   .route("/getBloquesHorarios/:jornada_id/:equipamiento_id/:fecha_solicitud")
   .get(docenteCtrl.getBloquesHorarios);
 
-//  .route("/api/CreaSolicitaEquipo/:id_profesor/:id_curso/:id_asignatura/:id_jornada/:id_equipamiento/:fecha_solicitud/:bloques_seleccionados/:cantidad")
-  router
+
+router
   .route("/api/CreaSolicitaEquipo")
   .post(authCtrl.requireSignin, docenteCtrl.CreaSolicitaEquipo);
+
+  router
+  .route("/api/EliminaReservaBloque")
+  .post(authCtrl.requireSignin, docenteCtrl.EliminaReservaBloque);
+
+
+
 
 router
   .route("/api/profesor/:id_profesor")
