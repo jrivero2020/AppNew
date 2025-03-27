@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import {
   TextField,
   MenuItem,
@@ -132,32 +132,31 @@ const SolicitudEquipos = ({ id_profesor }) => {
           ? cantidad
           : null, // Incluir cantidad solo para Chromebook y Tablet
     };
-    console.log("solicitudData==>", solicitudData);
 
-    
     try {
-      createSolicitud(solicitudData, { t: jwt.token }, signal).then((data) => {
-        if (data && data.error) {
-          setSnackbarMessage("Error al enviar la solicitud");
-          setSnackbarSeverity("error");
-          setSnackbarOpen(true);
-          return false;
-        } else {
-          const [results, metadata] = data;
-          if (
-            results[0] === undefined ||
-            results[0] === null ||
-            Object.keys(results[0]).length === 0
-          ) {
-            alert("**ATENCION** no se grabó la solicitud", metadata);
-          } else {
-            setSnackbarMessage("Solicitud enviada correctamente");
-            setSnackbarSeverity("success");
-            setSnackbarOpen(true);
-          }
-        }
+      const data = await createSolicitud(
+        solicitudData,
+        { t: jwt.token },
+        signal
+      );
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+      setSelectedBloques([]);
+      setSelectedReservedBlocks([]);
+
+      setSnackbarMessage("Solicitud enviada correctamente");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+
+      const bloquesData = await getBloquesHorarios({
+        jornada_id: selectedJornada,
+        equipamiento_id: selectedEquipamiento,
+        fecha_solicitud: selectedDate.format("YYYY-MM-DD"),
       });
+      setBloquesHorarios(bloquesData);
     } catch (error) {
+      console.log("error==>", error);
       setSnackbarMessage("Error al enviar la solicitud");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
@@ -169,53 +168,65 @@ const SolicitudEquipos = ({ id_profesor }) => {
     setSnackbarOpen(false);
   };
 
-  const handleLiberarBloques = async () => {    
+  const handleLiberarBloques = async () => {
     const desbloquear = {
       id_profesor: idProfesor,
-      jornada_id:selectedJornada,
+      jornada_id: selectedJornada,
       id_equipamiento: selectedEquipamiento,
-      fecha_solicitud: selectedDate.format('YYYY-MM-DD'),
-      bloques_ids: selectedReservedBlocks.map(bloque => ({ id_bloque: bloque })),
+      fecha_solicitud: selectedDate.format("YYYY-MM-DD"),
+      bloques_ids: selectedReservedBlocks.map((bloque) => ({
+        id_bloque: bloque,
+      })),
     };
 
-    try {      
-      liberarSolicitud(desbloquear, { t: jwt.token }, signal).then((data) => {        
-        if (data && data.error) {
-          setSnackbarMessage("Error al enviar la solicitud");
-          setSnackbarSeverity("error");
-          setSnackbarOpen(true);
-          return false;
-        } else {
-          const [results, metadata] = data;
-          if (
-            results[0] === undefined ||
-            results[0] === null ||
-            Object.keys(results[0]).length === 0
-          ) {
-            alert("**ATENCION** no se grabó la solicitud", metadata);
-          } else {
-            setSnackbarMessage(data.message || 'Bloques liberados correctamente');
-            setSnackbarSeverity('success');
-            setSelectedReservedBlocks([]);
-            setBloquesHorarios([])
-            // fetchBloquesHorarios();
-          }
-        }
+    try {
+      setBloquesHorarios((prevBloques) =>
+        prevBloques.map((bloque) =>
+          selectedReservedBlocks.includes(bloque.bloque_id)
+            ? { ...bloque, estado: "disponible", id_profesor_reserva: null }
+            : bloque
+        )
+      );
+
+      const data = await liberarSolicitud(
+        desbloquear,
+        { t: jwt.token },
+        signal
+      );
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      const bloquesData = await getBloquesHorarios({
+        jornada_id: selectedJornada,
+        equipamiento_id: selectedEquipamiento,
+        fecha_solicitud: selectedDate.format("YYYY-MM-DD"),
       });
+      setBloquesHorarios(bloquesData);
+      setSnackbarMessage(data.message || "Bloques liberados correctamente");
+      setSnackbarSeverity("success");
+      setSelectedReservedBlocks([]);
     } catch (error) {
-      console.error('Error liberando bloques:', error);
-      setSnackbarMessage(error.message || 'Error al liberar bloques');
-      setSnackbarSeverity('error');
+      // Revertir cambios si hay error
+      const bloquesData = await getBloquesHorarios({
+        jornada_id: selectedJornada,
+        equipamiento_id: selectedEquipamiento,
+        fecha_solicitud: selectedDate.format("YYYY-MM-DD"),
+      });
+      setBloquesHorarios(bloquesData);
+
+      console.error("Error liberando bloques:", error);
+      setSnackbarMessage(error.message || "Error al liberar bloques");
+      setSnackbarSeverity("error");
     } finally {
       setSnackbarOpen(true);
     }
   };
-     
-      
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <form onSubmit={handleSubmit}>
-        <Grid container spacing={3} marginTop={11}>
+        <Grid container spacing={3} marginTop={18}>
           {/* Selector de curso */}
           <Grid item xs={12} sm={6}>
             <TextField
@@ -346,10 +357,10 @@ const SolicitudEquipos = ({ id_profesor }) => {
                   title={
                     bloque.estado === "reservado"
                       ? bloque.id_profesor_reserva === idProfesor
-                      ? selectedReservedBlocks.includes(bloque.bloque_id)
-                      ? "Click para deseleccionar" // Mensaje cuando ya está seleccionado para liberación
-                      : "Este bloque está reservado por usted. Click para liberarlo." // Mensaje inicial
-                    : "Este bloque ya está reservado por otro profesor."
+                        ? selectedReservedBlocks.includes(bloque.bloque_id)
+                          ? "Click para deseleccionar" // Mensaje cuando ya está seleccionado para liberación
+                          : "Este bloque está reservado por usted. Click para liberarlo." // Mensaje inicial
+                        : "Este bloque ya está reservado por otro profesor."
                       : bloque.estado === "superpuesto"
                       ? "Este bloque está superpuesto con otro ya reservado."
                       : selectedBloques.includes(bloque.bloque_id)
@@ -375,30 +386,31 @@ const SolicitudEquipos = ({ id_profesor }) => {
                       variant="contained"
                       disabled={
                         // Bloques reservados por otros profesores
-                        (bloque.estado === "reservado" && bloque.id_profesor_reserva !== idProfesor) ||
-                        
+                        (bloque.estado === "reservado" &&
+                          bloque.id_profesor_reserva !== idProfesor) ||
                         // Bloques superpuestos
                         bloque.estado === "superpuesto"
                         //  ||
-                        
+
                         // Bloques ya seleccionados para liberación (evitar doble selección)
-                       //  (bloque.estado === "reservado" && selectedReservedBlocks.includes(bloque.bloque_id))
+                        //  (bloque.estado === "reservado" && selectedReservedBlocks.includes(bloque.bloque_id))
                       }
                       style={{
                         backgroundColor: 
-    selectedBloques.includes(bloque.bloque_id)
-      ? "#666666" // Fondo gris para bloques disponibles seleccionados
-      : bloque.estado === "reservado"
-        ? bloque.id_profesor_reserva === idProfesor
-          ? selectedReservedBlocks.includes(bloque.bloque_id)
-            ? "#33691E" // VERDE OSCURO cuando está seleccionado para liberación
-            : "#00cc66" // Verde original para mis reservas no seleccionadas
-          : "#ff4444" // Rojo para reservas de otros
-        : bloque.estado === "superpuesto"
-          ? "#ff8800" // Naranja para bloques superpuestos
-          : "#1976d2", // Azul para bloques disponibles
-  color: "white",
-  margin: "5px",
+                        selectedBloques.includes(bloque.bloque_id)
+                          ? "#666666" // Fondo gris para bloques disponibles seleccionados
+                          : bloque.estado === "reservado"
+                          ? bloque.id_profesor_reserva === idProfesor
+                            ? selectedReservedBlocks.includes(bloque.bloque_id)
+                              ? "#33691E" // VERDE OSCURO cuando está seleccionado para liberación
+                              : "#00cc66" // Verde original para mis reservas no seleccionadas
+                            : "#ff4444" // Rojo para reservas de otros
+                            
+                          : bloque.estado === "superpuesto"
+                          ? "#ff8800" // Naranja para bloques superpuestos
+                          : "#1976d2", // Azul para bloques disponibles
+                        color: "white",
+                        margin: "5px",
                       }}
                       onClick={() => {
                         if (
@@ -426,15 +438,14 @@ const SolicitudEquipos = ({ id_profesor }) => {
                           ]); // Usar bloque_id
                         }
                           */
- // Manejo de bloques para nueva reserva (solo si no está reservado)
- if (bloque.estado !== "reservado") {
-  setSelectedBloques(prev =>
-    prev.includes(bloque.bloque_id)
-      ? prev.filter(id => id !== bloque.bloque_id)
-      : [...prev, bloque.bloque_id]
-  );
-}
-
+                        // Manejo de bloques para nueva reserva (solo si no está reservado)
+                        if (bloque.estado !== "reservado") {
+                          setSelectedBloques((prev) =>
+                            prev.includes(bloque.bloque_id)
+                              ? prev.filter((id) => id !== bloque.bloque_id)
+                              : [...prev, bloque.bloque_id]
+                          );
+                        }
                       }}
                     >
                       {bloque.descripcion}-{bloque.id_profesor_reserva}-
@@ -464,20 +475,21 @@ const SolicitudEquipos = ({ id_profesor }) => {
             </Button>
           </Grid>
           <Grid item xs={6}>
-          <Button
-  variant="contained"
-  color="secondary"
-  onClick={handleLiberarBloques}
-  disabled={selectedReservedBlocks.length === 0}
-  style={{ 
-    marginTop: "16px",
-    backgroundColor: selectedReservedBlocks.length > 0 ? '#33691E' : '', // Rojo cuando activo
-    transition: 'all 0.3s ease'
-  }}
-  startIcon={<LockOpenIcon />} // Icono sugerido
->
-  Liberar bloques ({selectedReservedBlocks.length})
-</Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleLiberarBloques}
+              disabled={selectedReservedBlocks.length === 0}
+              style={{
+                marginTop: "16px",
+                backgroundColor:
+                  selectedReservedBlocks.length > 0 ? "#33691E" : "", // Rojo cuando activo
+                transition: "all 0.3s ease",
+              }}
+              startIcon={<LockOpenIcon />} // Icono sugerido
+            >
+              Liberar bloques ({selectedReservedBlocks.length})
+            </Button>
           </Grid>
         </Grid>
       </form>
@@ -487,6 +499,13 @@ const SolicitudEquipos = ({ id_profesor }) => {
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
+        slotProps={{
+          root: {
+            // Solución definitiva para MUI v6
+            ownerState: undefined,
+            component: "div",
+          },
+        }}
       >
         <Alert
           onClose={handleCloseSnackbar}

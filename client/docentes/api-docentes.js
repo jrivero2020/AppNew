@@ -410,29 +410,7 @@ const getSolicitudesByProfesor = async (params, credentials, signal) => {
   }
 };
 
-
-/*
-const api_ActAlumnoCurso = async (params, credentials, user) => {
-  try {
-    const rutAl = params.rutAl;
-    let response = await fetch("/AlumnosByRut/" + rutAl, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + credentials.t,
-      },
-      body: JSON.stringify(user),
-    });
-    return await response.json();
-  } catch (err) {
-    return { error: 500, message: err.message };
-  }
-};
-*/
-
 const createSolicitud = async (params,credentials, signal) => {
-  console.log("api-createSolicitud*** params=>", params); 
   try {
     const response = await fetch("/api/CreaSolicitaEquipo", {
       method: "POST",
