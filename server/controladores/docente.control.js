@@ -629,6 +629,21 @@ const SolicitudEquipoProfe = async (req, res) => {
   }
 };
 
+
+const GetFeriados = async (req, res) => {
+  try {
+    const dataCursos = await sequelize.query(`CALL sp_getFeriados()`, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+
+    res.json(dataCursos);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+
+
 export default {
   docenteByID,
   leerDocente,
@@ -661,4 +676,5 @@ export default {
   getEquipamiento,
   getBloquesHorarios,
   EliminaReservaBloque,
+  GetFeriados,
 };

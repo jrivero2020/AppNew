@@ -109,4 +109,10 @@ router
   .route("/api/profesor/:id_profesor")
   .get(authCtrl.requireSignin, docenteCtrl.SolicitudEquipoProfe);
 
+  router
+  .route("/GetFeriados")
+  .get(docenteCtrl.GetFeriados);
+
+  
+
 export default router;

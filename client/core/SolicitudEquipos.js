@@ -13,6 +13,8 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Paper,
+  Box,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -25,10 +27,11 @@ import {
   createSolicitud,
   getBloquesHorarios,
   liberarSolicitud,
+  api_GetFeriados,
 } from "../docentes/api-docentes";
 import { AuthContext } from "./../core/AuthProvider";
 
-const SolicitudEquipos = ({ id_profesor }) => {
+const SolicitudEquipos = () => {
   const [cursos, setCursos] = useState([]);
   const [asignaturas, setAsignaturas] = useState([]);
   const [jornadas, setJornadas] = useState([]);
@@ -46,6 +49,8 @@ const SolicitudEquipos = ({ id_profesor }) => {
   const [cantidad, setCantidad] = useState(1); // Valor inicial de 1
   const { jwt } = useContext(AuthContext);
   const [selectedReservedBlocks, setSelectedReservedBlocks] = useState([]);
+  const [feriados, setFeriados] = useState([]);
+  
   const idProfesor = jwt.user._id;
   // const idProfesor =  26
   const abortController = new AbortController();
@@ -54,13 +59,14 @@ const SolicitudEquipos = ({ id_profesor }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [cursosData, asignaturasData, equipamientosData] =
+        const [cursosData, asignaturasData, equipamientosData, dferiados] =
           await Promise.all([
             getCursos(),
             getAsignaturas(),
             getEquipamientos(),
+            api_GetFeriados(),
           ]);
-
+console.log("Dias feriados obtenidos===>",dferiados)
         setCursos(cursosData);
         setAsignaturas(asignaturasData);
         setEquipamientos(equipamientosData);
@@ -68,6 +74,7 @@ const SolicitudEquipos = ({ id_profesor }) => {
           { id: 1, nombre: "Mañana" },
           { id: 2, nombre: "Tarde" },
         ]);
+        setFeriados(dferiados.map(f => dayjs(f.diaferiado)));
       } catch (error) {
         console.error("Error cargando datos:", error);
         setSnackbarMessage("Error cargando datos iniciales");
@@ -101,6 +108,17 @@ const SolicitudEquipos = ({ id_profesor }) => {
       fetchBloquesHorarios();
     }
   }, [selectedJornada, selectedEquipamiento, selectedDate]);
+
+  const shouldDisableDate = (date) => {
+    const day = date.day();
+    return (
+      date.isBefore(dayjs(), 'day') ||
+      day === 0 ||
+      day === 6 ||
+      feriados.some(feriado => date.isSame(feriado, 'day'))
+    );
+  };
+
 
   // Manejar envío del formulario
   const handleSubmit = async (e) => {
@@ -225,8 +243,17 @@ const SolicitudEquipos = ({ id_profesor }) => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+ <Grid container justifyContent="center" style={{ padding: '20px', marginTop: '80px' }}>
+        <Grid item xs={12} md={10} lg={8}>
+          <Paper elevation={10} style={{ padding: '30px', borderRadius: '15px' }} sx={{
+                    pb: "0.5rem",
+                    pt: "0.5rem",
+                    backgroundColor: "#efebe9",
+                    whiteSpace: "pre-line",
+                  }}>
+            
       <form onSubmit={handleSubmit}>
-        <Grid container spacing={3} marginTop={18}>
+        <Grid container spacing={3} marginTop={5}>
           {/* Selector de curso */}
           <Grid item xs={12} sm={6}>
             <TextField
@@ -267,45 +294,46 @@ const SolicitudEquipos = ({ id_profesor }) => {
           {/* Selector de jornada */}
           <Grid item xs={12}>
             <Typography variant="subtitle1">Jornada</Typography>
-            <FormControl component="fieldset">
-              <RadioGroup
-                row
-                value={selectedJornada}
-                onChange={(e) => setSelectedJornada(Number(e.target.value))}
-              >
-                {jornadas.map((jornada) => (
-                  <FormControlLabel
-                    key={jornada.id}
-                    value={jornada.id}
-                    control={<Radio />}
-                    label={jornada.nombre}
-                  />
-                ))}
-              </RadioGroup>
-            </FormControl>
+            <Box display="flex" gap={2} mb={3}>
+                    {jornadas.map((jornada) => (
+                      <Button
+                        key={jornada.id}
+                        variant={selectedJornada === jornada.id ? "contained" : "outlined"}
+                        color="primary"
+                        onClick={() => setSelectedJornada(jornada.id)}
+                        style={{
+                          flex: 1,
+                          backgroundColor: selectedJornada === jornada.id ? '#1976d2' : 'transparent',
+                          color: selectedJornada === jornada.id ? 'white' : '#1976d2'
+                        }}
+                      >
+                        {jornada.nombre}
+                      </Button>
+                    ))}
+                  </Box>
           </Grid>
           {/* Selector de equipamiento */}
           <Grid item xs={12}>
             <Typography variant="subtitle1">Equipamiento</Typography>
-            <FormControl component="fieldset">
-              <RadioGroup
-                row
-                value={selectedEquipamiento}
-                onChange={(e) =>
-                  setSelectedEquipamiento(Number(e.target.value))
-                }
-              >
-                {equipamientos.map((equipamiento) => (
-                  <FormControlLabel
-                    key={equipamiento.id_equipos}
-                    value={equipamiento.id_equipos}
-                    control={<Radio />}
-                    label={equipamiento.nombre}
-                  />
-                ))}
-              </RadioGroup>
-            </FormControl>
+            <Box display="flex" gap={2} mb={3} flexWrap="wrap">
+                    {equipamientos.map((equip) => (
+                      <Button
+                        key={equip.id_equipos}
+                        variant={selectedEquipamiento === equip.id_equipos ? "contained" : "outlined"}
+                        color="secondary"
+                        onClick={() => setSelectedEquipamiento(equip.id_equipos)}
+                        style={{
+                          minWidth: '120px',
+                          backgroundColor: selectedEquipamiento === equip.id_equipos ? '#dc004e' : 'transparent',
+                          color: selectedEquipamiento === equip.id_equipos ? 'white' : '#dc004e'
+                        }}
+                      >
+                        {equip.nombre}
+                      </Button>
+                    ))}
+                  </Box>
           </Grid>
+
           {/* Campo de cantidad (solo para Chromebook y Tablet) */}
           {(selectedEquipamiento === 2 || selectedEquipamiento === 3) && (
             <Grid item xs={12} sm={6}>
@@ -338,6 +366,7 @@ const SolicitudEquipos = ({ id_profesor }) => {
                 displayStaticWrapperAs="desktop"
                 value={selectedDate}
                 onChange={(newDate) => setSelectedDate(newDate)}
+                shouldDisableDate={shouldDisableDate}
                 views={["day"]}
               />
             </LocalizationProvider>
@@ -423,21 +452,7 @@ const SolicitudEquipos = ({ id_profesor }) => {
                               : [...prev, bloque.bloque_id]
                           );
                         }
-                        /*
-                        if (selectedBloques.includes(bloque.bloque_id)) {
-                          // Usar bloque_id
-                          setSelectedBloques(
-                            selectedBloques.filter(
-                              (id) => id !== bloque.bloque_id
-                            ) // Usar bloque_id
-                          );
-                        } else {
-                          setSelectedBloques([
-                            ...selectedBloques,
-                            bloque.bloque_id,
-                          ]); // Usar bloque_id
-                        }
-                          */
+                       
                         // Manejo de bloques para nueva reserva (solo si no está reservado)
                         if (bloque.estado !== "reservado") {
                           setSelectedBloques((prev) =>
@@ -493,6 +508,9 @@ const SolicitudEquipos = ({ id_profesor }) => {
           </Grid>
         </Grid>
       </form>
+      </Paper>
+        </Grid>
+      </Grid>
 
       {/* Snackbar para mensajes */}
       <Snackbar
