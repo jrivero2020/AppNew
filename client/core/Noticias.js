@@ -1,9 +1,38 @@
 import React, { useContext } from "react";
-import { Box, Card, Grid, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardMedia,
+  Grid,
+  Paper,
+  Typography,
+  useMediaQuery,
+  // useTheme,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { AuthContext } from "./AuthProvider";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+
+const useStyles = makeStyles({
+  imgBtn: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+});
 
 export default function Noticias() {
   const { Noticias } = useContext(AuthContext);
+  // const theme = useTheme();
+  // const isMediumScreen = useMediaQuery(theme.breakpoints.up("md")); // Detectar pantallas medianas en adelante
+
+  const isSmallScreen = useMediaQuery("(max-width:720px)");
+  const isShortScreen = useMediaQuery("(max-height: 720px)");
+  const isMovil = isSmallScreen || isShortScreen;
+  const classes = useStyles();
+  const pathImg = "dist/images/links/";
+
   const agregarEspacios = (cantidad) => {
     return "\u00A0".repeat(cantidad); // Espacio en blanco no rompible
   };
@@ -44,49 +73,75 @@ export default function Noticias() {
           >
             {Noticias.map((noticia) => (
               <Grid item key={noticia.datos.nro} xs={12} sm={6} md={4}>
-                <Paper
-                  elevation={10}
-                  sx={{
-                    pb: "0.5rem",
-                    pt: "0.5rem",
-                    backgroundColor: "#efebe9",
-                    whiteSpace: "pre-line",
-                  }}
-                >
-                  <Typography
+                {noticia.datos.modo === "img" && (
+                  <>
+                    <Card elevation={8}>
+                      <CardActionArea>
+                        <CardMedia sx={{ mt: isMovil ? 0 : 1 }}>
+                          <LazyLoadImage
+                            src={pathImg + noticia.datos.src}
+                            effect="blur"
+                            style={{
+                              height: "115",
+                              display: "block",
+                              margin: "0 auto",
+                              width: "100%",
+                            }}
+                            className={classes.imgBtn}
+                          />
+                        </CardMedia>
+                      </CardActionArea>
+                    </Card>
+                  </>
+                )}
+
+                {noticia.datos.modo === "txt" && (
+                  <Paper
+                    elevation={10}
                     sx={{
-                      textAlign: "center", // Justificar el texto
-                      fontWeight: "bold",
-                      fontSize: {
-                        xs: "0.8rem",
-                        sm: "1rem",
-                        md: "1.2rem",
-                      }, // Ajusta el tamaño del título
+                      pb: "0.5rem",
+                      pt: "0.5rem",
+                      backgroundColor: "#efebe9",
+                      whiteSpace: "pre-line",
                     }}
                   >
-                    {noticia.datos.titulo}
-                  </Typography>
-                  <Typography> {agregarEspacios(20)}</Typography>
-                  <Typography
-                    sx={{
-                      textAlign: "left", // Justificar el texto
-                      marginLeft: {
-                        xs: "1rem", // 1rem de margen izquierdo para pantallas pequeñas
-                      },
-                      marginRight: {
-                        xs: "1rem", // 1rem de margen derecho para pantallas pequeñas
-                      },
-                      fontSize: {
-                        xs: "0.6rem",
-                        sm: "0.8rem",
-                        md: "1rem",
-                        lg: "1.2rem",
-                      }, // Ajusta el tamaño del título
-                    }}
-                  >
-                    {noticia.datos.contenido}
-                  </Typography>
-                </Paper>
+                    <>
+                      <Typography
+                        sx={{
+                          textAlign: "center", // Justificar el texto
+                          fontWeight: "bold",
+                          fontSize: {
+                            xs: "0.8rem",
+                            sm: "1rem",
+                            md: "1.2rem",
+                          }, // Ajusta el tamaño del título
+                        }}
+                      >
+                        {noticia.datos.titulo}
+                      </Typography>
+                      <Typography> {agregarEspacios(20)}</Typography>
+                      <Typography
+                        sx={{
+                          textAlign: "left", // Justificar el texto
+                          marginLeft: {
+                            xs: "1rem", // 1rem de margen izquierdo para pantallas pequeñas
+                          },
+                          marginRight: {
+                            xs: "1rem", // 1rem de margen derecho para pantallas pequeñas
+                          },
+                          fontSize: {
+                            xs: "0.6rem",
+                            sm: "0.8rem",
+                            md: "1rem",
+                            lg: "1.2rem",
+                          }, // Ajusta el tamaño del título
+                        }}
+                      >
+                        {noticia.datos.contenido}
+                      </Typography>
+                    </>
+                  </Paper>
+                )}
               </Grid>
             ))}
           </Grid>

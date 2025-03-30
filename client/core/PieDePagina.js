@@ -141,24 +141,11 @@ const Footer = () => {
             <FooterHeading variant="h6">Enlaces Útiles</FooterHeading>
             <Box>
               <FooterLink
-                href="https://www.mineduc.cl/servicios/informacion-sobre-educacion/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Información sobre educación
-              </FooterLink>
-              <FooterLink
                 href="https://admision.mineduc.cl/registro/"
                 target="_blank"
                 rel="noreferrer"
               >
                 Sistema de Admisión Escolar
-              </FooterLink>
-              <FooterLink
-                href="https://www.mineduc.cl/servicios/tramites-subsecretaria-de-educacion/"
-                target="_blank"
-              >
-                Trámites Subsecretaría de Educación
               </FooterLink>
             </Box>
           </Grid>
