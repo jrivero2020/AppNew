@@ -15,6 +15,7 @@ import {
   Radio,
   Paper,
   Box,
+  Card,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -46,11 +47,11 @@ const SolicitudEquipos = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-  const [cantidad, setCantidad] = useState(1); // Valor inicial de 1
+  const [cantidad, setCantidad] = useState( 0 ); // Valor inicial de 0
   const { jwt } = useContext(AuthContext);
   const [selectedReservedBlocks, setSelectedReservedBlocks] = useState([]);
   const [feriados, setFeriados] = useState([]);
-  
+
   const idProfesor = jwt.user._id;
   // const idProfesor =  26
   const abortController = new AbortController();
@@ -66,7 +67,7 @@ const SolicitudEquipos = () => {
             getEquipamientos(),
             api_GetFeriados(),
           ]);
-console.log("Dias feriados obtenidos===>",dferiados)
+        console.log("Dias feriados obtenidos===>", dferiados);
         setCursos(cursosData);
         setAsignaturas(asignaturasData);
         setEquipamientos(equipamientosData);
@@ -74,7 +75,7 @@ console.log("Dias feriados obtenidos===>",dferiados)
           { id: 1, nombre: "Mañana" },
           { id: 2, nombre: "Tarde" },
         ]);
-        setFeriados(dferiados.map(f => dayjs(f.diaferiado)));
+        setFeriados(dferiados.map((f) => dayjs(f.diaferiado)));
       } catch (error) {
         console.error("Error cargando datos:", error);
         setSnackbarMessage("Error cargando datos iniciales");
@@ -112,27 +113,46 @@ console.log("Dias feriados obtenidos===>",dferiados)
   const shouldDisableDate = (date) => {
     const day = date.day();
     return (
-      date.isBefore(dayjs(), 'day') ||
+      date.isBefore(dayjs(), "day") ||
       day === 0 ||
       day === 6 ||
-      feriados.some(feriado => date.isSame(feriado, 'day'))
+      feriados.some((feriado) => date.isSame(feriado, "day"))
     );
   };
-
 
   // Manejar envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Validar stock disponible
-    const stockDisponible = selectedEquipamiento === "Tablet" ? 60 : 45;
-    if (cantidad > stockDisponible) {
-      setSnackbarMessage(
-        `La cantidad solicitada excede el stock disponible (${stockDisponible}).`
-      );
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
-      return;
+    const equipamientoSeleccionado = equipamientos.find(
+      (equip) => equip.id_equipos === selectedEquipamiento
+    );
+    let errorMsg = '';
+  
+  if (!equipamientoSeleccionado) {
+    errorMsg = 'Debe seleccionar un equipamiento válido';
+  } 
+  else if( selectedEquipamiento === 1)
+    setCantidad( equipamientoSeleccionado.cantidad );
+  else if ((selectedEquipamiento === 2 || selectedEquipamiento === 3)) {
+    // Validar solo para Chromebook (2) y Tablet (3)
+    const stock = equipamientoSeleccionado.cantidad;
+    
+    if (cantidad <= 0) {
+      errorMsg = `La cantidad mínima debe ser 1`;
+    } 
+    else if (cantidad > stock) {
+      errorMsg = `La cantidad excede el stock disponible (${stock})`;
     }
+  }
+
+  // 3. Manejo de errores
+  if (errorMsg) {
+    setSnackbarMessage(errorMsg);
+    setSnackbarSeverity("error");
+    setSnackbarOpen(true);
+    return;
+  }
 
     const solicitudData = {
       id_profesor: idProfesor,
@@ -144,14 +164,12 @@ console.log("Dias feriados obtenidos===>",dferiados)
       bloques_seleccionados: selectedBloques.map((bloque) => ({
         id_bloque: bloque,
       })),
-      cantidad:
-        selectedEquipamiento === "Chromebook" ||
-        selectedEquipamiento === "Tablet"
-          ? cantidad
-          : null, // Incluir cantidad solo para Chromebook y Tablet
+      cantidad: [1, 2, 3].includes(selectedEquipamiento) ? cantidad : null
     };
 
     try {
+
+      console.log("solicitudData ==>", solicitudData )
       const data = await createSolicitud(
         solicitudData,
         { t: jwt.token },
@@ -243,272 +261,418 @@ console.log("Dias feriados obtenidos===>",dferiados)
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
- <Grid container justifyContent="center" style={{ padding: '20px', marginTop: '80px' }}>
+      <Grid
+        container
+        justifyContent="center"
+        style={{ padding: "20px", marginTop: "80px" }}
+      >
         <Grid item xs={12} md={10} lg={8}>
-          <Paper elevation={10} style={{ padding: '30px', borderRadius: '15px' }} sx={{
-                    pb: "0.5rem",
-                    pt: "0.5rem",
-                    backgroundColor: "#efebe9",
-                    whiteSpace: "pre-line",
-                  }}>
-            
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={3} marginTop={5}>
-          {/* Selector de curso */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              select
-              label="Curso"
-              value={selectedCurso}
-              onChange={(e) => setSelectedCurso(e.target.value)}
-              fullWidth
-            >
-              {cursos.map((curso) => (
-                <MenuItem key={curso.id_curso} value={curso.id_curso}>
-                  {curso.nomlargo}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
+          <Paper
+            elevation={10}
+            style={{ padding: "30px", borderRadius: "15px" }}
+            sx={{
+              pb: "0.5rem",
+              pt: "0.5rem",
+              backgroundColor: "#efebe9",
+              whiteSpace: "pre-line",
+            }}
+          >
+            <Card sx={{ backgroundColor: "#E1E1E1" }}>
+              <Box
+                sx={{
+                  backgroundColor: "blue",
+                  color: "white",
+                  textAlign: "center",
+                  padding: 1, // Espaciado interno
+                  fontSize: {
+                    xs: "0.8rem",
+                    sm: "1.1rem",
+                    md: "1.5rem",
+                  },
+                  fontWeight: "bold", // Negrita para parecerse al título del CardHeader
+                }}
+              >
+                Seleccione Curso y Asignatura
+              </Box>
+            </Card>
+            <form onSubmit={handleSubmit}>
+              <Grid container spacing={3} marginTop={1}>
+                {/* Selector de curso */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    select
+                    label="Curso"
+                    value={selectedCurso}
+                    onChange={(e) => setSelectedCurso(e.target.value)}
+                    fullWidth
+                  >
+                    {cursos.map((curso) => (
+                      <MenuItem key={curso.id_curso} value={curso.id_curso}>
+                        {curso.nomlargo}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
 
-          {/* Selector de asignatura */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              select
-              label="Asignatura"
-              value={selectedAsignatura}
-              onChange={(e) => setSelectedAsignatura(e.target.value)}
-              fullWidth
-            >
-              {asignaturas.map((asignatura) => (
-                <MenuItem
-                  key={asignatura.id_asignatura}
-                  value={asignatura.id_asignatura}
-                >
-                  {asignatura.nombre}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
+                {/* Selector de asignatura */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    select
+                    label="Asignatura"
+                    value={selectedAsignatura}
+                    onChange={(e) => setSelectedAsignatura(e.target.value)}
+                    fullWidth
+                  >
+                    {asignaturas.map((asignatura) => (
+                      <MenuItem
+                        key={asignatura.id_asignatura}
+                        value={asignatura.id_asignatura}
+                      >
+                        {asignatura.nombre}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
 
-          {/* Selector de jornada */}
-          <Grid item xs={12}>
-            <Typography variant="subtitle1">Jornada</Typography>
-            <Box display="flex" gap={2} mb={3}>
+                {/* Selector de jornada */}
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1" gutterBottom align="center" sx={{ fontSize: {
+                    xs: "0.8rem",
+                    sm: "1.1rem",
+                    md: "1.5rem",
+                  },fontWeight: "bold"}}>
+                    Seleccione Jornada
+                  </Typography>
+                  <Box display="flex" gap={1} mb={1} justifyContent="center">
                     {jornadas.map((jornada) => (
                       <Button
                         key={jornada.id}
-                        variant={selectedJornada === jornada.id ? "contained" : "outlined"}
+                        variant={
+                          selectedJornada === jornada.id
+                            ? "contained"
+                            : "outlined"
+                        }
                         color="primary"
                         onClick={() => setSelectedJornada(jornada.id)}
+                        sx={{
+                          minWidth: "120px", // Ancho fijo equivalente a ~10 caracteres
+                          width: "120px", // Fuerza el ancho exacto
+                          maxWidth: "120px", // Previene expansión
+                          padding: "8px 12px", // Ajuste interno
+                          fontSize: "0.875rem", // Tamaño de texto consistente
+                          backgroundColor:
+                            selectedJornada === jornada.id
+                              ? "#006064"
+                              : "transparent",
+                          color:
+                            selectedJornada === jornada.id
+                              ? "white"
+                              : "#006064",
+                          "&:hover": {
+                            backgroundColor:
+                              selectedJornada === jornada.id
+                                ? "#1565c0"
+                                : "rgba(25, 118, 210, 0.04)",
+                          },
+                        }}
+
+                        /*
                         style={{
                           flex: 1,
-                          backgroundColor: selectedJornada === jornada.id ? '#1976d2' : 'transparent',
-                          color: selectedJornada === jornada.id ? 'white' : '#1976d2'
+                          backgroundColor:
+                            selectedJornada === jornada.id
+                              ? "#006064"
+                              : "transparent",
+                          color:
+                            selectedJornada === jornada.id
+                              ? "white"
+                              : "#006064",
                         }}
+                              */
                       >
                         {jornada.nombre}
                       </Button>
                     ))}
                   </Box>
-          </Grid>
-          {/* Selector de equipamiento */}
-          <Grid item xs={12}>
-            <Typography variant="subtitle1">Equipamiento</Typography>
-            <Box display="flex" gap={2} mb={3} flexWrap="wrap">
+                </Grid>
+                {/* Selector de equipamiento */}
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1" gutterBottom align="center" sx={{fontWeight: "bold"}}>
+                    Seleccione Equipamiento
+                  </Typography>
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    gap={2}
+                    mb={1}
+                    flexWrap="wrap"
+                  >
                     {equipamientos.map((equip) => (
                       <Button
                         key={equip.id_equipos}
-                        variant={selectedEquipamiento === equip.id_equipos ? "contained" : "outlined"}
+                        variant={
+                          selectedEquipamiento === equip.id_equipos
+                            ? "contained"
+                            : "outlined"
+                        }
                         color="secondary"
-                        onClick={() => setSelectedEquipamiento(equip.id_equipos)}
+                        onClick={() =>
+                          setSelectedEquipamiento(equip.id_equipos)
+                        }
                         style={{
-                          minWidth: '120px',
-                          backgroundColor: selectedEquipamiento === equip.id_equipos ? '#dc004e' : 'transparent',
-                          color: selectedEquipamiento === equip.id_equipos ? 'white' : '#dc004e'
+                          minWidth: "120px",
+                          backgroundColor:
+                            selectedEquipamiento === equip.id_equipos
+                              ? "#006064"
+                              : "transparent",
+                          color:
+                            selectedEquipamiento === equip.id_equipos
+                              ? "white"
+                              : "#006064",
                         }}
                       >
                         {equip.nombre}
                       </Button>
                     ))}
                   </Box>
-          </Grid>
+                </Grid>
 
-          {/* Campo de cantidad (solo para Chromebook y Tablet) */}
-          {(selectedEquipamiento === 2 || selectedEquipamiento === 3) && (
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Cantidad"
-                type="number"
-                value={cantidad}
-                onChange={(e) => {
-                  const value = Math.max(
-                    1,
-                    Math.min(
-                      e.target.value,
-                      selectedEquipamiento === "Tablet" ? 60 : 45
-                    )
-                  );
-                  setCantidad(value);
-                }}
-                inputProps={{
-                  min: 1,
-                  max: selectedEquipamiento === "Tablet" ? 60 : 45, // Límite según el equipamiento
-                }}
-                fullWidth
-              />
-            </Grid>
-          )}
-          {/* Selector de fecha */}
-          <Grid item xs={12} sm={6}>
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-              <StaticDatePicker
-                displayStaticWrapperAs="desktop"
-                value={selectedDate}
-                onChange={(newDate) => setSelectedDate(newDate)}
-                shouldDisableDate={shouldDisableDate}
-                views={["day"]}
-              />
-            </LocalizationProvider>
-          </Grid>
-
-          {/* Bloques horarios disponibles */}
-          <Grid item xs={12}>
-            <Typography variant="h6">Bloques horarios disponibles</Typography>
-            {bloquesHorarios.length === 0 ? (
-              <Typography variant="body1">
-                No hay bloques disponibles para la fecha seleccionada.
-              </Typography>
-            ) : (
-              bloquesHorarios.map((bloque) => (
-                <Tooltip
-                  key={bloque.bloque_id}
-                  title={
-                    bloque.estado === "reservado"
-                      ? bloque.id_profesor_reserva === idProfesor
-                        ? selectedReservedBlocks.includes(bloque.bloque_id)
-                          ? "Click para deseleccionar" // Mensaje cuando ya está seleccionado para liberación
-                          : "Este bloque está reservado por usted. Click para liberarlo." // Mensaje inicial
-                        : "Este bloque ya está reservado por otro profesor."
-                      : bloque.estado === "superpuesto"
-                      ? "Este bloque está superpuesto con otro ya reservado."
-                      : selectedBloques.includes(bloque.bloque_id)
-                      ? "Click para deseleccionar"
-                      : "Click para seleccionar"
-                  }
-                  slotProps={{
-                    tooltip: {
-                      sx: {
-                        fontSize: "1.3rem", // Tamaño de fuente más grande
-                        maxWidth: "300px", // Ancho máximo del Tooltip
-                        backgroundColor: "rgba(0, 0, 0, 0.9)", // Fondo oscuro
-                        color: "#fff", // Texto blanco
-                        padding: "10px", // Espaciado interno
-                        borderRadius: "8px", // Bordes redondeados
+                {/* Campo de cantidad (solo para Chromebook y Tablet) */}
+                {(selectedEquipamiento === 2 || selectedEquipamiento === 3) && (
+                  <Grid item xs={12}  sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <TextField
+                      label="Cantidad"
+                      type="number"
+                      value={cantidad}
+                      onChange={(e) => {
+                        const value = Math.max(
+                          1,
+                          Math.min(
+                            e.target.value,
+                            selectedEquipamiento === "Tablet" ? 60 : 45
+                          )
+                        );
+                        setCantidad(value);
+                      }}
+                      inputProps={{
+                        min: 1,
+                        max: selectedEquipamiento === "Tablet" ? 60 : 45, // Límite según el equipamiento
+                        style: { 
+                          textAlign: 'center',
+                          padding: '8px 5px'
+                        }
+                      }}
+                      
+                      sx={{
+                        width: '80px',
+                        '& .MuiOutlinedInput-root': {
+                          padding: '0 !important'
+                        },
+                        '& .MuiInputLabel-root': {
+                          transform: 'translate(50%, -50%) scale(0.75)',
+                          right: '50%',
+                          left: 'auto',
+                          top: '0px',
+                          position: 'absolute',
+                          originX: 'center'
+                        },
+                        '& .MuiInputLabel-shrink': {
+                          transform: 'translate(50%, 0) scale(0.75)'
+                        }
+                      }}
+                    />
+                  </Grid>
+                )}
+                {/* Selector de fecha */}
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      width: "100%",
+                      "& .MuiStaticDatePicker-root": {
+                        margin: "0 auto",
+                        width: "100%",
+                        maxWidth: "320px", // Ancho típico del calendario
                       },
-                    },
-                  }}
-                  disableTouchListener={false} // Habilita el Tooltip en dispositivos táctiles
-                >
-                  <span>
-                    <Button
-                      variant="contained"
-                      disabled={
-                        // Bloques reservados por otros profesores
-                        (bloque.estado === "reservado" &&
-                          bloque.id_profesor_reserva !== idProfesor) ||
-                        // Bloques superpuestos
-                        bloque.estado === "superpuesto"
-                        //  ||
-
-                        // Bloques ya seleccionados para liberación (evitar doble selección)
-                        //  (bloque.estado === "reservado" && selectedReservedBlocks.includes(bloque.bloque_id))
-                      }
-                      style={{
-                        backgroundColor: 
-                        selectedBloques.includes(bloque.bloque_id)
-                          ? "#666666" // Fondo gris para bloques disponibles seleccionados
-                          : bloque.estado === "reservado"
-                          ? bloque.id_profesor_reserva === idProfesor
-                            ? selectedReservedBlocks.includes(bloque.bloque_id)
-                              ? "#33691E" // VERDE OSCURO cuando está seleccionado para liberación
-                              : "#00cc66" // Verde original para mis reservas no seleccionadas
-                            : "#ff4444" // Rojo para reservas de otros
-                            
-                          : bloque.estado === "superpuesto"
-                          ? "#ff8800" // Naranja para bloques superpuestos
-                          : "#1976d2", // Azul para bloques disponibles
-                        color: "white",
-                        margin: "5px",
-                      }}
-                      onClick={() => {
-                        if (
-                          bloque.estado === "reservado" &&
-                          bloque.id_profesor_reserva === idProfesor
-                        ) {
-                          setSelectedReservedBlocks((prev) =>
-                            prev.includes(bloque.bloque_id)
-                              ? prev.filter((id) => id !== bloque.bloque_id)
-                              : [...prev, bloque.bloque_id]
-                          );
-                        }
-                       
-                        // Manejo de bloques para nueva reserva (solo si no está reservado)
-                        if (bloque.estado !== "reservado") {
-                          setSelectedBloques((prev) =>
-                            prev.includes(bloque.bloque_id)
-                              ? prev.filter((id) => id !== bloque.bloque_id)
-                              : [...prev, bloque.bloque_id]
-                          );
-                        }
-                      }}
+                      "& .MuiCalendarOrClockPicker-root": {
+                        width: "100%",
+                      },
+                      "& .MuiCalendarPicker-root": {
+                        width: "100%",
+                      },
+                    }}
+                  >
+                    <LocalizationProvider
+                      dateAdapter={AdapterDayjs}
+                      adapterLocale="es"
                     >
-                      {bloque.descripcion}-{bloque.id_profesor_reserva}-
-                      {idProfesor}
-                    </Button>
-                  </span>
-                </Tooltip>
-              ))
-            )}
-          </Grid>
+                      <StaticDatePicker
+                        displayStaticWrapperAs="desktop"
+                        value={selectedDate}
+                        onChange={(newDate) => setSelectedDate(newDate)}
+                        shouldDisableDate={shouldDisableDate}
+                        views={["day"]}
+                      />
+                    </LocalizationProvider>
+                  </Box>
+                </Grid>
 
-          {/* Botón de enviar */}
-          <Grid item xs={6}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={
-                !selectedCurso ||
-                !selectedAsignatura ||
-                !selectedJornada ||
-                !selectedEquipamiento ||
-                selectedBloques.length === 0
-              }
-            >
-              Enviar Solicitud
-            </Button>
-          </Grid>
-          <Grid item xs={6}>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleLiberarBloques}
-              disabled={selectedReservedBlocks.length === 0}
-              style={{
-                marginTop: "16px",
-                backgroundColor:
-                  selectedReservedBlocks.length > 0 ? "#33691E" : "", // Rojo cuando activo
-                transition: "all 0.3s ease",
-              }}
-              startIcon={<LockOpenIcon />} // Icono sugerido
-            >
-              Liberar bloques ({selectedReservedBlocks.length})
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
-      </Paper>
+                {/* Bloques horarios disponibles */}
+                <Grid item xs={12}>
+                  <Typography variant="h6">
+                    Bloques horarios disponibles
+                  </Typography>
+                  {bloquesHorarios.length === 0 ? (
+                    <Typography variant="body1">
+                      No hay bloques disponibles para la fecha seleccionada.
+                    </Typography>
+                  ) : (
+                    bloquesHorarios.map((bloque) => (
+                      <Tooltip
+                        key={bloque.bloque_id}
+                        title={
+                          bloque.estado === "reservado"
+                            ? bloque.id_profesor_reserva === idProfesor
+                              ? selectedReservedBlocks.includes(
+                                  bloque.bloque_id
+                                )
+                                ? "Click para deseleccionar" // Mensaje cuando ya está seleccionado para liberación
+                                : "Este bloque está reservado por usted. Click para liberarlo." // Mensaje inicial
+                              : "Este bloque ya está reservado por otro profesor."
+                            : bloque.estado === "superpuesto"
+                            ? "Este bloque está superpuesto con otro ya reservado."
+                            : selectedBloques.includes(bloque.bloque_id)
+                            ? "Click para deseleccionar"
+                            : "Click para seleccionar"
+                        }
+                        slotProps={{
+                          tooltip: {
+                            sx: {
+                              fontSize: "1.3rem", // Tamaño de fuente más grande
+                              maxWidth: "300px", // Ancho máximo del Tooltip
+                              backgroundColor: "rgba(0, 0, 0, 0.9)", // Fondo oscuro
+                              color: "#fff", // Texto blanco
+                              padding: "10px", // Espaciado interno
+                              borderRadius: "8px", // Bordes redondeados
+                            },
+                          },
+                        }}
+                        disableTouchListener={false} // Habilita el Tooltip en dispositivos táctiles
+                      >
+                        <span>
+                          <Button
+                            variant="contained"
+                            disabled={
+                              // Bloques reservados por otros profesores
+                              (bloque.estado === "reservado" &&
+                                bloque.id_profesor_reserva !== idProfesor) ||
+                              // Bloques superpuestos
+                              bloque.estado === "superpuesto"
+                              //  ||
+
+                              // Bloques ya seleccionados para liberación (evitar doble selección)
+                              //  (bloque.estado === "reservado" && selectedReservedBlocks.includes(bloque.bloque_id))
+                            }
+                            style={{
+                              backgroundColor: selectedBloques.includes(
+                                bloque.bloque_id
+                              )
+                                ? "#666666" // Fondo gris para bloques disponibles seleccionados
+                                : bloque.estado === "reservado"
+                                ? bloque.id_profesor_reserva === idProfesor
+                                  ? selectedReservedBlocks.includes(
+                                      bloque.bloque_id
+                                    )
+                                    ? "#33691E" // VERDE OSCURO cuando está seleccionado para liberación
+                                    : "#00cc66" // Verde original para mis reservas no seleccionadas
+                                  : "#ff4444" // Rojo para reservas de otros
+                                : bloque.estado === "superpuesto"
+                                ? "#ff8800" // Naranja para bloques superpuestos
+                                : "#1976d2", // Azul para bloques disponibles
+                              color: "white",
+                              margin: "5px",
+                            }}
+                            onClick={() => {
+                              if (
+                                bloque.estado === "reservado" &&
+                                bloque.id_profesor_reserva === idProfesor
+                              ) {
+                                setSelectedReservedBlocks((prev) =>
+                                  prev.includes(bloque.bloque_id)
+                                    ? prev.filter(
+                                        (id) => id !== bloque.bloque_id
+                                      )
+                                    : [...prev, bloque.bloque_id]
+                                );
+                              }
+
+                              // Manejo de bloques para nueva reserva (solo si no está reservado)
+                              if (bloque.estado !== "reservado") {
+                                setSelectedBloques((prev) =>
+                                  prev.includes(bloque.bloque_id)
+                                    ? prev.filter(
+                                        (id) => id !== bloque.bloque_id
+                                      )
+                                    : [...prev, bloque.bloque_id]
+                                );
+                              }
+                            }}
+                          >
+                            {bloque.descripcion}-{bloque.id_profesor_reserva}-
+                            {idProfesor}
+                          </Button>
+                        </span>
+                      </Tooltip>
+                    ))
+                  )}
+                </Grid>
+              </Grid>
+              <Grid
+                container
+                item
+                xs={12}
+                spacing={2}
+                alignItems="center"
+                sx={{ mt: 2 }}
+              >
+                {/* Botón de enviar */}
+                <Grid item xs={6}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={
+                      !selectedCurso ||
+                      !selectedAsignatura ||
+                      !selectedJornada ||
+                      !selectedEquipamiento ||
+                      selectedBloques.length === 0
+                    }
+                  >
+                    Enviar Solicitud
+                  </Button>
+                </Grid>
+                <Grid item xs={6}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleLiberarBloques}
+                    disabled={selectedReservedBlocks.length === 0}
+                    style={{
+                      marginTop: "16px",
+                      backgroundColor:
+                        selectedReservedBlocks.length > 0 ? "#33691E" : "", // Rojo cuando activo
+                      transition: "all 0.3s ease",
+                    }}
+                    startIcon={<LockOpenIcon />} // Icono sugerido
+                  >
+                    Liberar bloques ({selectedReservedBlocks.length})
+                  </Button>
+                </Grid>
+              </Grid>
+            </form>
+          </Paper>
         </Grid>
       </Grid>
 
