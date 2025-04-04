@@ -412,6 +412,7 @@ const getSolicitudesByProfesor = async (params, credentials, signal) => {
 };
 
 const createSolicitud = async (params,credentials, signal) => {
+  console.log("En api-docentes, createSolicitud : params==>", params)
   try {
     const response = await fetch("/api/CreaSolicitaEquipo", {
       method: "POST",
