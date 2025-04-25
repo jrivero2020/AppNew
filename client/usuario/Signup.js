@@ -54,7 +54,7 @@ export default function Signup() {
 
   const manejoCambiofRut = (name) => (event) => {
     let tvalue = FmtoRut(event.target.value);
-    if (fRut.length == 1 && tvalue == null) tvalue = "";
+    if (fRut.length === 1 && tvalue == null) tvalue = "";
 
     if (tvalue != null) {
       setfRut(tvalue);

@@ -2,7 +2,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import fs from "fs";
 import path from "path";
-
+import bcrypt from "bcrypt";
 import {
   docentes,
   parentescos,
@@ -573,9 +573,10 @@ const CreaSolicitaEquipo = async (req, res) => {
         req.body.jornada_id,
         req.body.id_equipamiento,
         req.body.fecha_solicitud,
-        JSON.stringify(req.body.bloques_ids),        
+        JSON.stringify(req.body.bloques_ids),     
+        req.body.pRol   
       ];
-      const MyQuery = `CALL colegio.SP_EliminarBloquesReserva(?,?,?,?,?);`;
+      const MyQuery = `CALL colegio.SP_EliminarBloquesReserva(?,?,?,?,?,?);`;
       console.log( "camposRep==>", camposRep)
       
       const idEquipamiento = await sequelize.query(MyQuery, {
@@ -643,6 +644,31 @@ const GetFeriados = async (req, res) => {
 };
 
 
+const getDataProfe = async (req, res) => {
+  const { rut } = req.params;
+  if (!rut) {
+    return res
+      .status(400)
+      .json({
+        error: "Se requieren el rut del funcionario",
+      });
+  }
+
+  try {
+    const dataCursos = await sequelize.query(
+      `CALL sp_getfuncionario(?)`,
+      {
+        replacements: [ rut ],
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    res.json(dataCursos);
+  } catch (err) {
+    return res.status(500).json({ error: "Error al obtener Datos del Funcionario" });
+  }
+};
+
 
 export default {
   docenteByID,
@@ -677,4 +703,5 @@ export default {
   getBloquesHorarios,
   EliminaReservaBloque,
   GetFeriados,
+  getDataProfe,
 };

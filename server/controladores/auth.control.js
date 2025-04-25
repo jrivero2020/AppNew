@@ -18,6 +18,7 @@ const signin = async (req, res) => {
     const user = {
       _id: usrFind.idUsuario,
       _rol: usrFind.rol,
+      _name: usrFind.nombres + ' ' + usrFind.apat + ' ' + usrFind.amat
     };
 
     const token = jwt.sign({ user }, jwtConfig.jwtSecret);

@@ -62,7 +62,7 @@ export const ListaNombresGrilla = ({
           alignItems: "center",
           justifyContent: "center",
           margin: "auto",
-          maxWidth: "55%",
+          maxWidth: "100%",
         }}
       >
         <Grid item xs={12}>

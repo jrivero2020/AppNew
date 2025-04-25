@@ -4,7 +4,7 @@ import { NoMatch } from "./assets/NoMatch";
 import LstUsuarios from "./usuario/LstUsuarios";
 import Signup from "./usuario/Signup";
 import SalidaUsr from "./auth/SignOut";
-import Inscripcion from "./usuario/Inscripcion";
+import Inscripcion from "./usuario/InscripcionNew"
 import MiddlewarePdf from "./core/MiddlewarePdf";
 import DocenteHoras from "./core/DocenteHoras";
 import VerFotoCompleta from "./core/VerFotoCompleta";

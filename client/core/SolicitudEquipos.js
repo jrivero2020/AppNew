@@ -30,6 +30,7 @@ import {
   liberarSolicitud,
   api_GetFeriados,
 } from "../docentes/api-docentes";
+
 import { AuthContext } from "./../core/AuthProvider";
 
 const SolicitudEquipos = () => {
@@ -53,6 +54,9 @@ const SolicitudEquipos = () => {
   const [feriados, setFeriados] = useState([]);
 
   const idProfesor = jwt.user._id;
+  const nombreProfesor = jwt.user._name;
+  const usrRol = jwt.user._rol;
+
   // const idProfesor =  26
   const abortController = new AbortController();
   const signal = abortController.signal;
@@ -112,6 +116,7 @@ const SolicitudEquipos = () => {
 
   const shouldDisableDate = (date) => {
     const day = date.day();
+    return false;
     return (
       date.isBefore(dayjs(), "day") ||
       day === 0 ||
@@ -213,6 +218,7 @@ const SolicitudEquipos = () => {
       bloques_ids: selectedReservedBlocks.map((bloque) => ({
         id_bloque: bloque,
       })),
+      pRol: usrRol
     };
 
     try {
@@ -258,9 +264,20 @@ const SolicitudEquipos = () => {
       setSnackbarOpen(true);
     }
   };
+  const selctEquipamiento = (id_equipo) => {
+    const equipoSel = equipamientos.find(
+      (equip) => equip.id_equipos === id_equipo
+    );
+    // const disponibles
+     setSelectedEquipamiento(id_equipo)
+    console.log("id_equipo***=>", id_equipo )
+    
+  };
+
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+     
       <Grid
         container
         justifyContent="center"
@@ -277,6 +294,12 @@ const SolicitudEquipos = () => {
               whiteSpace: "pre-line",
             }}
           >
+             <Typography sx={{
+                fontWeight: "bold",
+                color: "blue",
+                textAlign: "center", // Centra el texto dentro de Typography
+                mt: 1,
+              }}>Profesor : {nombreProfesor}</Typography>
             <Card sx={{ backgroundColor: "#E1E1E1" }}>
               <Box
                 sx={{
@@ -376,19 +399,6 @@ const SolicitudEquipos = () => {
                           },
                         }}
 
-                        /*
-                        style={{
-                          flex: 1,
-                          backgroundColor:
-                            selectedJornada === jornada.id
-                              ? "#006064"
-                              : "transparent",
-                          color:
-                            selectedJornada === jornada.id
-                              ? "white"
-                              : "#006064",
-                        }}
-                              */
                       >
                         {jornada.nombre}
                       </Button>
@@ -416,9 +426,8 @@ const SolicitudEquipos = () => {
                             : "outlined"
                         }
                         color="secondary"
-                        onClick={() =>
-                          setSelectedEquipamiento(equip.id_equipos)
-                        }
+                        onClick={() =>selctEquipamiento(equip.id_equipos)} // ojo pensar en dejar stock x equipos ya definidos
+                                                                           // para mostrar en seleccion de bloque la cantidad disponible
                         style={{
                           minWidth: "120px",
                           backgroundColor:
@@ -431,7 +440,7 @@ const SolicitudEquipos = () => {
                               : "#006064",
                         }}
                       >
-                        {equip.nombre}
+                        {equip.nombre} {cantidad}
                       </Button>
                     ))}
                   </Box>
@@ -449,14 +458,14 @@ const SolicitudEquipos = () => {
                           1,
                           Math.min(
                             e.target.value,
-                            selectedEquipamiento === "Tablet" ? 60 : 45
+                            selectedEquipamiento === 3 ? 60 : 45
                           )
-                        );
+                        );                        
                         setCantidad(value);
                       }}
                       inputProps={{
                         min: 1,
-                        max: selectedEquipamiento === "Tablet" ? 60 : 45, // Límite según el equipamiento
+                        max: selectedEquipamiento === 3 ? 60 : 45, // Límite según el equipamiento
                         style: { 
                           textAlign: 'center',
                           padding: '8px 5px'
@@ -530,35 +539,61 @@ const SolicitudEquipos = () => {
                   ) : (
                     bloquesHorarios.map((bloque) => (
                       <Tooltip
-                        key={bloque.bloque_id}
-                        title={
-                          bloque.estado === "reservado"
-                            ? bloque.id_profesor_reserva === idProfesor
-                              ? selectedReservedBlocks.includes(
-                                  bloque.bloque_id
-                                )
-                                ? "Click para deseleccionar" // Mensaje cuando ya está seleccionado para liberación
-                                : "Este bloque está reservado por usted. Click para liberarlo." // Mensaje inicial
-                              : "Este bloque ya está reservado por otro profesor."
-                            : bloque.estado === "superpuesto"
-                            ? "Este bloque está superpuesto con otro ya reservado."
-                            : selectedBloques.includes(bloque.bloque_id)
-                            ? "Click para deseleccionar"
-                            : "Click para seleccionar"
-                        }
-                        slotProps={{
-                          tooltip: {
-                            sx: {
-                              fontSize: "1.3rem", // Tamaño de fuente más grande
-                              maxWidth: "300px", // Ancho máximo del Tooltip
-                              backgroundColor: "rgba(0, 0, 0, 0.9)", // Fondo oscuro
-                              color: "#fff", // Texto blanco
-                              padding: "10px", // Espaciado interno
-                              borderRadius: "8px", // Bordes redondeados
-                            },
+                      key={bloque.bloque_id}
+                      title={
+                        <Box>
+                          {bloque.estado === "reservado" ? (
+                            (bloque.id_profesor_reserva === idProfesor || usrRol === 1) ? (
+                              selectedReservedBlocks.includes(bloque.bloque_id) ? (
+                                <Typography variant="body2">Click para deseleccionar</Typography>
+                              ) : (
+                                <>
+                                  <Typography variant="body2">
+                                    Este bloque está reservado por usted.
+                                  </Typography>
+                                  <Typography variant="body2">
+                                    Click para liberarlo.
+                                  </Typography>
+                                </>
+                              )
+                            ) : (
+                              <>
+                                <Typography variant="body2">
+                                  Bloque reservado por: {bloque.nombrereserva} {bloque.apatreserva}
+                                </Typography>
+                                <Typography variant="body2">
+                                  Equipos usados: {bloque.cantidad_ocupada}
+                                </Typography>
+                                <Typography variant="body2">
+                                  Equipos disponibles: {cantidad - bloque.cantidad_ocupada}
+                                </Typography>
+                              </>
+                            )
+                          ) : bloque.estado === "superpuesto" ? (
+                            <Typography variant="body2">
+                              Este bloque está superpuesto por: {bloque.nombreresuperp} {bloque.apatsuperp}
+                            </Typography>
+                          ) : selectedBloques.includes(bloque.bloque_id) ? (
+                            <Typography variant="body2">Click para deseleccionar</Typography>
+                          ) : (
+                            <Typography variant="body2">Click para seleccionar</Typography>
+                          )}
+                        </Box>
+                      }
+                      slotProps={{
+                        tooltip: {
+                          sx: {
+                            fontSize: "1rem",
+                            maxWidth: "320px",
+                            backgroundColor: "#2a2a2a",
+                            color: "#f1f1f1",
+                            padding: "12px",
+                            borderRadius: "10px",
+                            boxShadow: 3,
                           },
-                        }}
-                        disableTouchListener={false} // Habilita el Tooltip en dispositivos táctiles
+                        },
+                      }}
+                      disableTouchListener={false}
                       >
                         <span>
                           <Button
@@ -566,7 +601,7 @@ const SolicitudEquipos = () => {
                             disabled={
                               // Bloques reservados por otros profesores
                               (bloque.estado === "reservado" &&
-                                bloque.id_profesor_reserva !== idProfesor) ||
+                                bloque.id_profesor_reserva !== idProfesor && usrRol !== 1) ||
                               // Bloques superpuestos
                               bloque.estado === "superpuesto"
                               //  ||
@@ -580,7 +615,7 @@ const SolicitudEquipos = () => {
                               )
                                 ? "#666666" // Fondo gris para bloques disponibles seleccionados
                                 : bloque.estado === "reservado"
-                                ? bloque.id_profesor_reserva === idProfesor
+                                ? (bloque.id_profesor_reserva === idProfesor  || usrRol === 1 )
                                   ? selectedReservedBlocks.includes(
                                       bloque.bloque_id
                                     )
@@ -596,7 +631,7 @@ const SolicitudEquipos = () => {
                             onClick={() => {
                               if (
                                 bloque.estado === "reservado" &&
-                                bloque.id_profesor_reserva === idProfesor
+                                ( bloque.id_profesor_reserva === idProfesor  || usrRol === 1 )
                               ) {
                                 setSelectedReservedBlocks((prev) =>
                                   prev.includes(bloque.bloque_id)
@@ -619,7 +654,10 @@ const SolicitudEquipos = () => {
                               }
                             }}
                           >
-                            {bloque.descripcion}-{bloque.id_profesor_reserva}-
+                            {bloque.descripcion}
+                            {bloque.cantidad_ocupada > 0 ? `  (En uso=${bloque.cantidad_ocupada})` : ''}
+                            {bloque.cantidad_ocupada_superpuesta > 0 ? `  (En uso=${bloque.cantidad_ocupada_superpuesta})` : ''}
+                            -Pr={bloque.id_profesor_reserva}-Pa=
                             {idProfesor}
                           </Button>
                         </span>

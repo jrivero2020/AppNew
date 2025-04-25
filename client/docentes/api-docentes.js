@@ -226,6 +226,29 @@ const getBloquesHorarios = async (params, signal) => {
   }
 };
 
+const getDataProfe = async (params, signal) => {
+  try {
+    const response = await fetch("/getDataProfe/" + params.rut, {
+      method: "GET",
+      signal: signal,
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      try {
+        const errorData = JSON.parse(text); // Intenta parsear por si es JSON válido
+        throw new Error(errorData.message || "Error del servidor");
+      } catch {
+        throw new Error(`Error HTTP ${response.status}: ${text}`);
+      }
+    }
+    const data = await response.json();
+    return data[0];
+    
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
 const getcsvLibroMatriculas = async (credentials, signal) => {
   try {
     let response = await fetch("/CsvLibroMatricula", {
@@ -411,8 +434,8 @@ const getSolicitudesByProfesor = async (params, credentials, signal) => {
   }
 };
 
-const createSolicitud = async (params,credentials, signal) => {
-  console.log("En api-docentes, createSolicitud : params==>", params)
+const createSolicitud = async (params, credentials, signal) => {
+  console.log("En api-docentes, createSolicitud : params==>", params);
   try {
     const response = await fetch("/api/CreaSolicitaEquipo", {
       method: "POST",
@@ -434,8 +457,8 @@ const createSolicitud = async (params,credentials, signal) => {
   }
 };
 
-const liberarSolicitud = async (params,credentials, signal) => {
-  console.log("api-liberarSolicitud*** params=>", params); 
+const liberarSolicitud = async (params, credentials, signal) => {
+  console.log("api-liberarSolicitud*** params=>", params);
   try {
     const response = await fetch("/api/EliminaReservaBloque", {
       method: "POST",
@@ -461,14 +484,12 @@ const api_GetFeriados = async () => {
   try {
     const response = await fetch("/GetFeriados", { method: "GET" });
     const data = await response.json();
-    console.log( "api_GetFeriados  data=>", data)
+    console.log("api_GetFeriados  data=>", data);
     return Object.values(data[0]);
   } catch (err) {
     return { error: err.message, message: err.message };
   }
 };
-
-
 
 export {
   create,
@@ -501,4 +522,5 @@ export {
   createSolicitud,
   liberarSolicitud,
   api_GetFeriados,
+  getDataProfe,
 };

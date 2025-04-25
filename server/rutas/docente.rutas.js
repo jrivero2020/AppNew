@@ -114,5 +114,8 @@ router
   .get(docenteCtrl.GetFeriados);
 
   
+router
+.route("/getDataProfe/:rut")
+.get(docenteCtrl.getDataProfe);
 
 export default router;
