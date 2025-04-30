@@ -14,7 +14,7 @@ import { signin } from "./api-auth";
 import auth from "./auth-helper";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
-import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
+import { FormControl, InputLabel, OutlinedInput, Paper } from "@mui/material";
 import { Copyright } from "./../assets/js/CopyRight";
 import { AuthContext } from "./../core/AuthProvider";
 
@@ -106,73 +106,99 @@ export default function Signin(props) {
   }, [isAuthenticated, valores, navigate]);
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
+       <div style={{ paddingTop: "99px" }}>
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      
+      {/* Contenedor principal con Paper */}
+      <Paper
+        elevation={3}
+        sx={{
+          marginTop: { xs: 4, sm: 8 },
+          padding: { xs: 2, sm: 3 },
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
+          paddingTop: "88px"
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        
+        <Typography component="h1" variant="h5">
+          Ingreso
+        </Typography>
+  
+        {/* Formulario como componente de Paper */}
+        <Paper 
+          component="form" 
+          noValidate 
+          sx={{ 
+            mt: 3, 
+            width: "100%",
+            padding: { xs: 2, sm: 3 },
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
+            gap: 2
           }}
-          style={{ paddingTop: "88px" }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Ingreso
-          </Typography>
-          <Box component="form" noValidate sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  autoComplete="given-name"
-                  name="usuario"
-                  required
-                  fullWidth
-                  id="nombre_usuario"
-                  label="Nombre de Usuario"
-                  value={valores.name}
-                  onChange={handleChange("nombre_usuario")}
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                autoComplete="given-name"
+                name="usuario"
+                required
+                fullWidth
+                id="nombre_usuario"
+                label="Rut de Usuario"
+                value={valores.name}
+                onChange={handleChange("nombre_usuario")}
+                onFocus={msgErrorNull}
+                autoFocus
+              />
+            </Grid>
+  
+            <Grid item xs={12}>
+              <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="password">Clave</InputLabel>
+                <OutlinedInput
+                  id="password"
+                  type="password"
+                  value={valores.password}
+                  onChange={handleChange("password")}
                   onFocus={msgErrorNull}
-                  autoFocus
+                  label="Clave"
                 />
-              </Grid>
-
+              </FormControl>
+            </Grid>
+  
+            {valores.error && (
               <Grid item xs={12}>
-                <FormControl sx={{ m: 2, width: "45ch" }} variant="outlined">
-                  <InputLabel htmlFor="password">Clave </InputLabel>
-                  <OutlinedInput
-                    id="password"
-                    type="password"
-                    value={valores.password}
-                    onChange={handleChange("password")}
-                    onFocus={msgErrorNull}
-                    label="Clave"
-                  />
-                </FormControl>
-              </Grid>
-              {valores.error && (
-                <Typography component="p" color="error">
-                  <Icon color="error">error</Icon>
+                <Typography component="p" color="error" sx={{ display: "flex", alignItems: "center" }}>
+                  <Icon color="error" sx={{ mr: 1 }}>error</Icon>
                   {valores.error}
                 </Typography>
-              )}
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={clickSubmit}
-            >
-              Ingresar
-            </Button>
-          </Box>
-        </Box>
-        <Copyright sx={{ mt: 5 }} />
-      </Container>
-    </ThemeProvider>
+              </Grid>
+            )}
+          </Grid>
+  
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 2, mb: 2, py: 1.5 }}
+            onClick={clickSubmit}
+          >
+            Ingresar
+          </Button>
+        </Paper>
+      </Paper>
+      
+      <Copyright sx={{ mt: 3, mb: 2 }} />
+    </Container>
+    </div>
+  </ThemeProvider>
   );
 }

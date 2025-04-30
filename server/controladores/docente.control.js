@@ -117,6 +117,7 @@ const updateDocente = async (req, res) => {
     return res.status(500).json({ message: verErrorSequelize(e) });
   }
 };
+
 const deleteDocente = async (req, res) => {
   const { id } = req.params;
   let user = req.profile; // lo voy a ver
@@ -670,6 +671,40 @@ const getDataProfe = async (req, res) => {
 };
 
 
+const putDataProfe = async (req, res) => {
+  const {email, fono, funcion, password} =  req.body.dataProfe
+  const salt = bcrypt.genSaltSync(12);
+  const rut = req.body.rut
+  const passwordCrypt = bcrypt.hashSync(password, salt);
+
+  if (!rut) {
+    return res
+      .status(400)
+      .json({
+        error: "Se requieren el rut del funcionario",
+      });
+  }
+//  in pRut int, in pFono varchar(50), in pEmail varchar(50), in pFuncion varchar(50), in pPassword varchar(255)
+
+  try { 
+    console.log("try=>rut:",rut," fono:",fono,"  email:", email,"  funcion:",funcion,"  password:",password, "  passwordCrypt:", passwordCrypt )
+     await sequelize.query(
+      `CALL sp_actfuncionario(?,?,?,?,?)`,
+      {
+        replacements: [rut, fono, email, funcion, passwordCrypt],
+        type: sequelize.QueryTypes.UPDATE,
+      }
+    );
+    return res.status(200).json({
+      message: "Inscripción realizada",
+    });
+  } catch (err) {
+    console.log("err=>:", err)
+    return res.status(500).json({ error: "Error al inscribir Funcionario" });
+  }
+};
+
+
 export default {
   docenteByID,
   leerDocente,
@@ -704,4 +739,5 @@ export default {
   EliminaReservaBloque,
   GetFeriados,
   getDataProfe,
+  putDataProfe,
 };

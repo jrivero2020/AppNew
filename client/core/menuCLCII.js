@@ -74,7 +74,7 @@ function ResponsiveAppBar() {
             const filteredPages = results
               .filter((item) => item.datos.tipo === "menu")
               .sort((a, b) => a.id - b.id); // Ordenar por id en orden ascendente
-console.log("filteredPages=>", filteredPages)
+
             setActivePages(filteredPages);
 
             const NotifilteredPages = results
@@ -85,9 +85,7 @@ console.log("filteredPages=>", filteredPages)
           }
         }
       });
-    } else {
-      console.log("el obj no es vacio", activeImgLinks);
-    }
+    } 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

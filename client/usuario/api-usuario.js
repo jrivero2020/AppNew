@@ -52,7 +52,7 @@ const listar = async (signal) => {
 
 const leer = async (params, credential, signal) => {
   try {
-    encabezado.Authorization = "Baerer " + credential.t;
+    credential.Authorization = "Baerer " + credential.t;
     let response = await fetch("/usuario/" + params.userId, {
       method: "GET",
       signal: signal,

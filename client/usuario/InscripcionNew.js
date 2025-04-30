@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import {
   Paper,
   TextField,
   Button,
   Alert,
+  AlertTitle,
   Snackbar,
   Grid,
   IconButton,
@@ -14,7 +16,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import Tooltip from "@mui/material/Tooltip";
 import { FmtoRut, RutANumeros, validarRut } from "./../assets/js/FmtoRut";
-import { getDataProfe } from "./../docentes/api-docentes";
+import { getDataProfe, putDataProfe } from "./../docentes/api-docentes";
 import { CustomGridTitulo } from "./../assets/componentes/customGridPaper/customVerAlumnos";
 
 const Inscripcion = () => {
@@ -33,12 +35,17 @@ const Inscripcion = () => {
 
   const [dataProfe, setDataProfe] = useState(vProfe);
 
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
-  const [error, setError] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  //const [error, setError] = useState(false);
+  // ***********************************************************************
+  // const [snackbarOpen, setSnackbarOpen] = useState(false);
+  // const [snackbarMessage, setSnackbarMessage] = useState("");
+  // const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  // ***********************************************************************
+
+  const [snackbar, setSnackbar] = React.useState(null);
+  const handleCloseSnackbar = () => setSnackbar(null);
 
   const [showPassword, setShowPassword] = useState({
     password: false,
@@ -52,29 +59,42 @@ const Inscripcion = () => {
     setShowPassword({ ...showPassword, [field]: !showPassword[field] });
   };
 
+  const navigate = useNavigate();
   // Registro
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {    
     e.preventDefault();
+    const lRut = dataProfe.rut;
+    const rut = parseInt(RutANumeros(lRut), 10);
 
-    try {
-      const response = await fetch("/api/registerUser", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dataProfe }),
+    console.log("handlesubmit rut:", rut);
+    if (!validarRut(lRut)) {
+      setSnackbar({
+        children: "Rut ingresado erróneo",
+        severity: "error",
+        variant: "filled",
       });
-      const data = await response.json();
-
-      if (data.success) {
-        setMessage("Usuario registrado exitosamente.");
-        setError(false);
-        setErrors({});
-      } else {
-        setMessage(data.message || "Error al registrar el usuario.");
-        setError(true);
-      }
-    } catch (err) {
-      setMessage("Error al conectarse con el servidor.");
-      setError(true);
+      return;
+    }
+    try {
+      const bloquesData = await putDataProfe({ dataProfe, rut });
+      console.log("bloquesData:", bloquesData.message);
+      setSnackbar({
+        children: bloquesData.message + ", Redirigiendo...",
+        severity: "success",
+        variant: "filled",
+      });
+      setTimeout(() => {
+        navigate('/signin', {
+          replace: true, 
+          state: { registrationSuccess: true }
+        });
+      }, 3000);
+    } catch (error) {
+      setSnackbar({
+        children: "Error al grabar profes",
+        severity: "error",
+        variant: "filled",
+      });
     }
   };
 
@@ -91,12 +111,7 @@ const Inscripcion = () => {
   const handleChgRut = (event) => {
     let tvalue = FmtoRut(event.target.value);
     if (dataProfe.rut.length === 1 && tvalue === null) tvalue = "";
-    console.log("Solito el tvalue:", tvalue);
     if (tvalue != null) {
-      var rut = parseInt(RutANumeros(tvalue), 10);
-      var dv = tvalue.slice(-1).toUpperCase();
-      console.log("Rut:", rut, "  dv:", dv, "    tvalue:", tvalue);
-
       setDataProfe((prev) => ({ ...prev, rut: tvalue }));
     }
   };
@@ -105,9 +120,11 @@ const Inscripcion = () => {
     const lRut = dataProfe.rut;
     const rut = parseInt(RutANumeros(lRut), 10);
     if (!validarRut(lRut)) {
-      setSnackbarMessage("Rut ingresado erróneo");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
+      setSnackbar({
+        children: "Rut ingresado erróneo",
+        severity: "error",
+        variant: "filled",
+      });
       return;
     }
     try {
@@ -116,16 +133,16 @@ const Inscripcion = () => {
       const fmtoRut = FmtoRut(bloquesData[0].rut + bloquesData[0].dv);
       setDataProfe((prev) => ({ ...prev, rut: fmtoRut }));
     } catch (error) {
-      setSnackbarMessage("Error cargando  Data profes");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
+      setSnackbar({
+        children: "Error cargando Data profes",
+        severity: "error",
+        variant: "filled",
+      });
     }
   };
 
   // Cerrar Snackbar
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  // const handleCloseSnackbar = () => { setSnackbarOpen(false);  };
 
   const validatePasswords = (password2Value = dataProfe.password2) => {
     if (dataProfe.password && password2Value) {
@@ -159,6 +176,7 @@ const Inscripcion = () => {
       // Deshabilitar si alguno de los campos está vacío
       setIsSubmitDisabled(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataProfe.password, dataProfe.password2]);
 
   return (
@@ -187,7 +205,7 @@ const Inscripcion = () => {
             rowSpacing={2}
             sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}
           >
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 id="idfRutAp"
                 size="small"
@@ -218,7 +236,7 @@ const Inscripcion = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 id="ap_nombres"
                 size="small"
@@ -232,7 +250,7 @@ const Inscripcion = () => {
                 disabled={true}
               />
             </Grid>
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Ap. Paterno"
@@ -245,7 +263,7 @@ const Inscripcion = () => {
                 disabled={true}
               />
             </Grid>
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Ap. Materno"
@@ -266,7 +284,7 @@ const Inscripcion = () => {
             rowSpacing={2}
             sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}
           >
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Teléfono"
@@ -278,18 +296,18 @@ const Inscripcion = () => {
                 helperText={errors.fono}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                size="small"
-                label="Email"
-                variant="outlined"
-                fullWidth
-                value={dataProfe.email}
-                onChange={handleChange("email")}
-                error={!!errors.email}
-                helperText={errors.email}
-              />
-            </Grid>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
+                <TextField
+                  size="small"
+                  label="Email"
+                  variant="outlined"
+                  fullWidth
+                  value={dataProfe.email}
+                  onChange={handleChange("email")}
+                  error={!!errors.email}
+                  helperText={errors.email}
+                />
+              </Grid>
           </Grid>
           <Grid
             container
@@ -297,7 +315,7 @@ const Inscripcion = () => {
             rowSpacing={2}
             sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}
           >
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Función"
@@ -316,7 +334,7 @@ const Inscripcion = () => {
             rowSpacing={2}
             sx={{ margin: "auto", maxWidth: "95%", mt: 3 }}
           >
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Clave"
@@ -347,7 +365,7 @@ const Inscripcion = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <TextField
                 size="small"
                 label="Confirme Clave"
@@ -408,27 +426,17 @@ const Inscripcion = () => {
             </Grid>
           </Grid>
         </Paper>
-        {/* Snackbar para mensajes */}
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-          slotProps={{
-            root: {
-              // Solución definitiva para MUI v6
-              ownerState: undefined,
-              component: "div",
-            },
-          }}
-        >
-          <Alert
-            onClose={handleCloseSnackbar}
-            severity={snackbarSeverity}
-            sx={{ width: "100%" }}
-          >
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
+
+        {!!snackbar && (
+          <Snackbar open onClose={handleCloseSnackbar} autoHideDuration={4000}>
+            <Alert {...snackbar} onClose={handleCloseSnackbar}>
+              <AlertTitle>
+                {snackbar.severity === "success" ? "Éxito" : "Error"}
+              </AlertTitle>
+              {snackbar.children}
+            </Alert>
+          </Snackbar>
+        )}
       </div>
     </form>
   );

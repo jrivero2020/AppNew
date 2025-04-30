@@ -118,4 +118,10 @@ router
 .route("/getDataProfe/:rut")
 .get(docenteCtrl.getDataProfe);
 
+
+router
+.route("/putDataProfe")
+.put(docenteCtrl.putDataProfe);
+
+
 export default router;

@@ -2,36 +2,57 @@ import { usuarios } from "../modelos/usuario.js";
 import jwt from "jsonwebtoken";
 import { expressjwt } from "express-jwt";
 import { jwtConfig } from "../../config/config.js";
+import { sequelize } from "../bdatos/bdatos.js"
+
+import bcrypt from "bcrypt";
+
+const validaPass = async function (passwordIngresada, passwordGuardada) {
+  console.log("validaPass, passwordIngresada:",passwordIngresada,"   passwordGuardada:",passwordGuardada )
+  return await bcrypt.compare(passwordIngresada, passwordGuardada);
+};
 
 const signin = async (req, res) => {
   const { nombre_usuario, password } = req.body;
   try {
-    const usrFind = await usuarios.findOne({ where: { nombre_usuario } });
+//    const usrFind = await usuarios.findOne({ where: { nombre_usuario } });
+  const usrFind = await sequelize.query(
+      `CALL sp_getfuncionario(?)`,
+      {
+        replacements: [ nombre_usuario ],
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    console.log( "***usrFind:",usrFind[0]['0'])
+    const usrFindOk = usrFind[0]['0']
+console.log("usrFind==>:",usrFindOk, "  password:",password, "  PasswordGuardada:",usrFindOk.password)
     if (usrFind === null)
       return res.status(404).json({ message: "Usuario no existe" });
 
-    let valida = await usrFind.validaPassword(password);
+    //    let valida = await usrFind.validaPassword(password);
+    const valida = await validaPass(password, usrFindOk.password);
+
     if (!valida)
       return res.status(401).json({ message: "Usuario y clave no coinciden" });
 
     // Jwt
     const user = {
-      _id: usrFind.idUsuario,
+      _id: usrFind.rut,
       _rol: usrFind.rol,
-      _name: usrFind.nombres + ' ' + usrFind.apat + ' ' + usrFind.amat
+      _name: usrFind.nombres + " " + usrFind.apat + " " + usrFind.amat,
     };
 
     const token = jwt.sign({ user }, jwtConfig.jwtSecret);
     res.cookie("t", token, { expire: new Date() + 20 });
     // console.log( 'Token: ', token)
     req.profile = usrFind.dataValues;
-    // console.log("Enlogeo signin usrFind.dataValues==>", usrFind.dataValues)
+    // console.log("En logeo signin usrFind.dataValues==>", usrFind.dataValues)
     return res.json({ token, user });
   } catch (error) {
-    // console.log("El Error: ", error)
+     console.log("El Error==>: ", error)
     return res
       .status(400)
-      .json({ message: "*** signin No pude encontrar el registro***" });
+      .json({ message: "*** Usuario No Existe!!***" });
   }
 };
 
