@@ -37,16 +37,17 @@ console.log("usrFind==>:",usrFindOk, "  password:",password, "  PasswordGuardada
 
     // Jwt
     const user = {
-      _id: usrFind.rut,
-      _rol: usrFind.rol,
-      _name: usrFind.nombres + " " + usrFind.apat + " " + usrFind.amat,
+      _id: usrFindOk.rut,
+      _rol: usrFindOk.rol,
+      _name: usrFindOk.nombres + " " + usrFindOk.apat + " " + usrFindOk.amat,
     };
 
     const token = jwt.sign({ user }, jwtConfig.jwtSecret);
     res.cookie("t", token, { expire: new Date() + 20 });
     // console.log( 'Token: ', token)
-    req.profile = usrFind.dataValues;
-    // console.log("En logeo signin usrFind.dataValues==>", usrFind.dataValues)
+    req.profile = usrFindOk.dataValues;
+    console.log("En logeo signin usrFind.dataValues==>", usrFindOk.dataValues)
+    console.log("res.json token:", token, "  user:", user)
     return res.json({ token, user });
   } catch (error) {
      console.log("El Error==>: ", error)

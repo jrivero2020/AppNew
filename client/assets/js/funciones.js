@@ -44,7 +44,7 @@ const chkActivoRolAutentica = (data, isAuthenticated, jwtRol) => {
     const rolesPermitidos = new Set(
       autorizado.slice(1).split("").map(Number) // Extrae los números después de "A"
     );
-
+console.log("rolesPermitidos=>:", rolesPermitidos, " jwtRol=>:", jwtRol)
     return rolesPermitidos.has(jwtRol);
   }
 

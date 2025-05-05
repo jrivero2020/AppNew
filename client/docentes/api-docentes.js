@@ -405,7 +405,7 @@ const createSolicitud = async (params, credentials, signal) => {
   console.log("En api-docentes, createSolicitud : params==>", params);
   try {
     const response = await fetch("/api/CreaSolicitaEquipo", {
-      method: "POST",
+      method: "PUT",
       signal: signal,
       headers: {
         Accept: "application/json",

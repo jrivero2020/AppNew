@@ -515,20 +515,34 @@ const getBloquesHorarios = async (req, res) => {
 
 const CreaSolicitaEquipo = async (req, res) => {
   console.log( "** control CreaSolicitaEquipo ** req.body", req.body)
-  const bloquesString = JSON.stringify(req.body.bloques_seleccionados);
-  try {
-    const {id_profesor, id_curso,id_asignatura,id_jornada, id_equipamiento,fecha_solicitud,bloques_seleccionados,cantidad} = req.body
-    const camposRep = [
-      req.body.id_profesor,
-      req.body.id_curso,
-      req.body.id_asignatura,
-      req.body.id_jornada,
-      req.body.id_equipamiento,
-      req.body.fecha_solicitud,
-      bloquesString,
-      req.body.cantidad,
-      
-    ];
+  //const bloquesString = JSON.stringify(req.body.bloques_seleccionados);
+  const bloquesString = req.body.bloques_seleccionados;
+  
+    try {
+      const {
+        id_profesor, 
+        id_curso,
+        id_asignatura,
+        id_jornada, 
+        id_equipamiento,
+        fecha_solicitud,
+        bloques_seleccionados,
+        cantidad
+      } = req.body;
+  
+      // Convertir el array de objetos a un string JSON
+      const bloquesJSON = JSON.stringify(bloques_seleccionados);
+  
+      const camposRep = [
+        id_profesor,
+        id_curso,
+        id_asignatura,
+        id_jornada,
+        id_equipamiento,
+        fecha_solicitud,
+        bloquesJSON, // Usamos el string JSON
+        cantidad,
+      ];
     const MyQuery = `    
     CALL colegio.InsertarSolicitaEquipo(?,?,?,?,?,?,?,?,@new_id);
     

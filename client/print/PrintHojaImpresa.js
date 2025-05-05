@@ -67,7 +67,7 @@ function PrintHojaImpresa(props) {
             </Grid>
             <div style={{ display: "none" }}>
                 <div ref={componentRef}>
-                    <Box sx={{ paddingTop: "125px", paddingLeft: "158" }}>
+                    <Box sx={{ paddingTop: "135px", paddingLeft: "158" }}>
                         <Grid container direction="column" >
                             <Grid item>
                                 <Typography align="left" sx={{ mx: 0.5, fontSize: 22, ml: '88px' }}>
@@ -81,55 +81,55 @@ function PrintHojaImpresa(props) {
                                 justifyContent: "left",
                             }}
                             >
-                                <Grid item xs={12} sx={{ mt: "46px", ml: '67px' }} >
+                                <Grid item xs={12} sx={{ mt: "54px", ml: '60px' }} >
                                     <Typography align="left" sx={{ mx: 0.5, fontSize: 14, }} >
                                         <b>Resolución exenta
                                             <span style={{ letterSpacing: '26px' }}> </span>
                                             7701
-                                            <span style={{ letterSpacing: '41px' }}> </span>
+                                            <span style={{ letterSpacing: '43px' }}> </span>
                                             1985
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             9903-1
                                         </b>
                                     </Typography>
-                                    <Typography sx={{ mt: '56px' }}>
+                                    <Typography sx={{ mt: '61px' }}>
                                         &nbsp;&nbsp;{datoAlumno.nombres} {datoAlumno.apat}{" "}{datoAlumno.amat}
                                     </Typography>
-                                    <Typography sx={{ mt: '16px' }}>
+                                    <Typography sx={{ mt: '22px' }}>
                                         &nbsp;&nbsp;&nbsp;
-                                        <span style={{ letterSpacing: '32px' }}> </span>
+                                        <span style={{ letterSpacing: '30px' }}> </span>
                                         {FmtoRut(datoAlumno.rut + datoAlumno.dv)}
                                     </Typography>
-                                    <Typography sx={{ mt: '20px', ml: '116px' }}>
+                                    <Typography sx={{ mt: '21px', ml: '116px' }}>
                                         {datoAlumno.idmatricula}
                                         <span style={{ letterSpacing: '203px' }}> </span>
                                         &nbsp;&nbsp;{agno}
                                     </Typography>
-                                    <Typography sx={{ mt: '52px', ml: '103px' }}>
+                                    <Typography sx={{ mt: '50px', ml: '103px' }}>
                                         &nbsp;
                                         {datoAlumno.desc_grado}{" "} {datoAlumno.letra}
                                     </Typography>
-                                    <Typography sx={{ mt: '19px', ml: '93px' }}>
+                                    <Typography sx={{ mt: '26px', ml: '93px' }}>
                                         &nbsp;&nbsp;{Ensenanza}
                                     </Typography>
 
-                                    <Typography align="left" sx={{ mx: 0.5, fontSize: 14, mt: '63px', ml: '51px' }}>
+                                    <Typography align="left" sx={{ mx: 0.5, fontSize: 14, mt: '69px', ml: '51px' }}>
                                         los fines que estime pertinente
                                     </Typography>
 
 
-                                    <Typography align="left" sx={{ fontWeight: "bold", mx: 0.5, fontSize: 12, mt: '142px' }}>
+                                    <Typography align="left" sx={{ fontWeight: "bold", mx: 0.5, fontSize: 12, mt: '152px' }}>
                                         &nbsp;&nbsp;Cerrillos
                                         <span style={{ letterSpacing: '180px' }}> </span>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{TxtDiaHoy}
                                         <span style={{ letterSpacing: '98x' }}> </span>
                                         &nbsp;&nbsp;&nbsp;<TxtMesHoy />
-                                        <span style={{ letterSpacing: '95px' }}> </span>
+                                        <span style={{ letterSpacing: '97px' }}> </span>
                                         {mediano}
 
                                     </Typography>

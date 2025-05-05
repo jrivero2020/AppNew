@@ -96,7 +96,7 @@ router
 
 router
   .route("/api/CreaSolicitaEquipo")
-  .post(authCtrl.requireSignin, docenteCtrl.CreaSolicitaEquipo);
+  .put(authCtrl.requireSignin, docenteCtrl.CreaSolicitaEquipo);
 
   router
   .route("/api/EliminaReservaBloque")
