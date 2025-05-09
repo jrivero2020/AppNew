@@ -1,8 +1,8 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { NoMatch } from "./assets/NoMatch";
-import LstUsuarios from "./usuario/LstUsuarios";
-import Signup from "./usuario/Signup";
+// import LstUsuarios from "./usuario/LstUsuarios";
+// import Signup from "./usuario/Signup";
 import SalidaUsr from "./auth/SignOut";
 import Inscripcion from "./usuario/InscripcionNew"
 import MiddlewarePdf from "./core/MiddlewarePdf";
@@ -28,7 +28,7 @@ import FullFeaturedCrudGrid from "./assets/GrillaExamples/FullFeaturedCrudGrid";
 import PrincipalGui from "./core/InitOpcionII";
 import VerJSON from "./../client/core/VerJSON";
 import Gallery from "./../client/core/GaleriaFotos";
-import SeleccionEquipos from "./../client/core/SeleccionEquipos";
+// import SeleccionEquipos from "./../client/core/SeleccionEquipos";
 import SolicitudEquipos from  "./../client/core/SolicitudEquipos";
 const MainRouter = () => {
   return (
@@ -42,9 +42,9 @@ const MainRouter = () => {
             path="/FullFeaturedCrudGrid"
             element={<FullFeaturedCrudGrid />}
           />
-          <Route path="/Signup" element={<Signup />} />
+
           <Route path="/Gallery" element={<Gallery />} />
-          <Route path="/lstusuario" element={<LstUsuarios />} />
+
           <Route path="/SalidaUsr" element={<SalidaUsr />} />
           <Route path="/Inscripcion" element={<Inscripcion />} />
           <Route path="/Signin" element={<Signin />} />
@@ -64,14 +64,6 @@ const MainRouter = () => {
             element={
               <PrivateRoute>
                 <SolicitudEquipos />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/SeleccionEquipos"
-            element={
-              <PrivateRoute>
-                <SeleccionEquipos />
               </PrivateRoute>
             }
           />
