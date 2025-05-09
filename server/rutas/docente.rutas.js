@@ -43,8 +43,6 @@ router.param("Id", docenteCtrl.docenteByID);
 
 router.route("/getComunas").get(docenteCtrl.getComunas);
 
-router.route("/getCursos").get(docenteCtrl.getCursos);
-
 router.route("/getParentesco").get(docenteCtrl.getParentesco);
 
 router
@@ -81,5 +79,49 @@ router.route("/JsonGetNoticias").get(docenteCtrl.JsonGetNoticias);
 
 // Ruta para obtener imágenes por categoría
 router.route("/api/images").get(docenteCtrl.obtenerImagenesPorCategoria);
+
+// Ruta para CREAR SOLICITUD DE EQUIPOS
+router.route("/getCursos").get(docenteCtrl.getCursos);
+
+router.route("/getAsignaturas").get(docenteCtrl.getAsignaturas);
+
+// router.route("/getJornadas").get(docenteCtrl.getJornadas);
+
+router.route("/getEquipamiento").get(docenteCtrl.getEquipamiento);
+
+router
+  .route("/getBloquesHorarios/:jornada_id/:equipamiento_id/:fecha_solicitud")
+  .get(docenteCtrl.getBloquesHorarios);
+
+
+router
+  .route("/api/CreaSolicitaEquipo")
+  .put(authCtrl.requireSignin, docenteCtrl.CreaSolicitaEquipo);
+
+  router
+  .route("/api/EliminaReservaBloque")
+  .post(authCtrl.requireSignin, docenteCtrl.EliminaReservaBloque);
+
+
+
+
+router
+  .route("/api/profesor/:id_profesor")
+  .get(authCtrl.requireSignin, docenteCtrl.SolicitudEquipoProfe);
+
+  router
+  .route("/GetFeriados")
+  .get(docenteCtrl.GetFeriados);
+
+  
+router
+.route("/getDataProfe/:rut")
+.get(docenteCtrl.getDataProfe);
+
+
+router
+.route("/putDataProfe")
+.put(docenteCtrl.putDataProfe);
+
 
 export default router;
