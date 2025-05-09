@@ -17,6 +17,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import dayjs from "dayjs";
+import "dayjs/locale/es";
 import {
   getCursos,
   getAsignaturas,
@@ -28,6 +29,11 @@ import {
 } from "../docentes/api-docentes";
 
 import { AuthContext } from "./../core/AuthProvider";
+
+dayjs.extend(require("dayjs/plugin/weekday"));
+dayjs.extend(require("dayjs/plugin/isSameOrBefore"));
+
+
 
 const SolicitudEquipos = () => {
   const [cursos, setCursos] = useState([]);
