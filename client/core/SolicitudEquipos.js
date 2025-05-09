@@ -8,11 +8,7 @@ import {
   Typography,
   Tooltip,
   Snackbar,
-  Alert,
-  FormControl,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
+  Alert,  
   Paper,
   Box,
   Card,
@@ -265,9 +261,7 @@ const SolicitudEquipos = () => {
     }
   };
   const selctEquipamiento = (id_equipo) => {
-    const equipoSel = equipamientos.find(
-      (equip) => equip.id_equipos === id_equipo
-    );
+    // const equipoSel = equipamientos.find((equip) => equip.id_equipos === id_equipo);
     // const disponibles
      setSelectedEquipamiento(id_equipo)
     // console.log("id_equipo***=>", id_equipo )
