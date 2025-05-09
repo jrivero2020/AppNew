@@ -494,16 +494,16 @@ export const validateFormAlumno = (dataBuscaAl) => {
   const validateParentesco = (idParentesco, apFields, roleName) => {
     //   "al_idparentesco","ap","Apoderado"
 
-    console.log(
-      "dataBuscaAl[idParentesco]=",
-      idParentesco,
-      "valor:",
-      dataBuscaAl[idParentesco],
-      "apFields:",
-      apFields,
-      "roleName:",
-      roleName
-    );
+    // console.log(
+    //   "dataBuscaAl[idParentesco]=",
+    //   idParentesco,
+    //   "valor:",
+    //   dataBuscaAl[idParentesco],
+    //   "apFields:",
+    //   apFields,
+    //   "roleName:",
+    //   roleName
+    // );
 
     if (dataBuscaAl[idParentesco] in parentescoMap) {
       const { role, message } = parentescoMap[dataBuscaAl[idParentesco]];

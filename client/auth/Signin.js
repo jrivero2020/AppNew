@@ -95,7 +95,7 @@ export default function Signin(props) {
         });
         setIsAuthenticated(true);
         setIsJwtRol(data.user);
-        console.log("Reorno de endPoint data:", data, "  data.user:", data.user)
+        // console.log("Reorno de endPoint data:", data, "  data.user:", data.user)
         setJwt(auth.isAuthenticated());
       }
     });

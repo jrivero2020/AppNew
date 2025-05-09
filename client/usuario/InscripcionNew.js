@@ -66,7 +66,7 @@ const Inscripcion = () => {
     const lRut = dataProfe.rut;
     const rut = parseInt(RutANumeros(lRut), 10);
 
-    console.log("handlesubmit rut:", rut);
+    // console.log("handlesubmit rut:", rut);
     if (!validarRut(lRut)) {
       setSnackbar({
         children: "Rut ingresado erróneo",
@@ -77,7 +77,7 @@ const Inscripcion = () => {
     }
     try {
       const bloquesData = await putDataProfe({ dataProfe, rut });
-      console.log("bloquesData:", bloquesData.message);
+      // console.log("bloquesData:", bloquesData.message);
       setSnackbar({
         children: bloquesData.message + ", Redirigiendo...",
         severity: "success",

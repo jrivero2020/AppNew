@@ -181,7 +181,7 @@ const PaperBuscaAlumno = ({
   valorOk,
 }) => {
   return (
-    <Grid item xs={anchocol}>
+    <Grid item xs={12} md={6}>
       <Paper elevation={8} sx={{ pb: 3, pt: 2, backgroundColor: "#efebe9" }}>
         <Stack alignItems="center">
           <Typography

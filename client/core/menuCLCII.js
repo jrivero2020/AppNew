@@ -85,8 +85,7 @@ function ResponsiveAppBar() {
           }
         }
       });
-    } else {
-      console.log("el obj no es vacio", activeImgLinks);
+   
     }
   }, []);
 

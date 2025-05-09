@@ -7,7 +7,7 @@ import { sequelize } from "../bdatos/bdatos.js"
 import bcrypt from "bcrypt";
 
 const validaPass = async function (passwordIngresada, passwordGuardada) {
-  console.log("validaPass, passwordIngresada:",passwordIngresada,"   passwordGuardada:",passwordGuardada )
+  //console.log("validaPass, passwordIngresada:",passwordIngresada,"   passwordGuardada:",passwordGuardada )
   return await bcrypt.compare(passwordIngresada, passwordGuardada);
 };
 
@@ -23,9 +23,9 @@ const signin = async (req, res) => {
       }
     );
 
-    console.log( "***usrFind:",usrFind[0]['0'])
+    // console.log( "***usrFind:",usrFind[0]['0'])
     const usrFindOk = usrFind[0]['0']
-console.log("usrFind==>:",usrFindOk, "  password:",password, "  PasswordGuardada:",usrFindOk.password)
+//console.log("usrFind==>:",usrFindOk, "  password:",password, "  PasswordGuardada:",usrFindOk.password)
     if (usrFind === null)
       return res.status(404).json({ message: "Usuario no existe" });
 
@@ -46,11 +46,11 @@ console.log("usrFind==>:",usrFindOk, "  password:",password, "  PasswordGuardada
     res.cookie("t", token, { expire: new Date() + 20 });
     // console.log( 'Token: ', token)
     req.profile = usrFindOk.dataValues;
-    console.log("En logeo signin usrFind.dataValues==>", usrFindOk.dataValues)
-    console.log("res.json token:", token, "  user:", user)
+    // console.log("En logeo signin usrFind.dataValues==>", usrFindOk.dataValues)
+    //console.log("res.json token:", token, "  user:", user)
     return res.json({ token, user });
   } catch (error) {
-     console.log("El Error==>: ", error)
+     //console.log("El Error==>: ", error)
     return res
       .status(400)
       .json({ message: "*** Usuario No Existe!!***" });

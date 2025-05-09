@@ -39,7 +39,7 @@ const theme = createTheme({
 export const FFichaAlumno = ({ resultado, setResultado }) => {
   const [value, setvalue] = useState(0);
   const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
-  const { jwt } = useContext(AuthContext);
+  const { isJwtRol,jwt } = useContext(AuthContext);
   const [comunas, setComunas] = useState([]);
   const [parentescos, setParentescos] = useState([]);
   const [cursos, setCursos] = useState(null);
@@ -47,6 +47,9 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
   const [apDup, setApDup] = useState(null);
 
   const alNuevo = 1;
+  const jwtRol = isJwtRol ? isJwtRol._rol : 0;
+  const isAdminOrEdit = [1, 2].includes(jwtRol);
+
   const handleChangeTabs = (event, newValue) => {
     setvalue(newValue);
   };
@@ -193,10 +196,12 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
           <Button
             size="large"
             variant="contained"
+            disabled= {!isAdminOrEdit}            
             sx={{
               fontSize: "11px",
               mt: "10px",
               backgroundColor: "green", // Fondo verde
+              display: isAdminOrEdit ? "inline-flex" : "none",         
 
               "&:hover": {
                 // Estilo al pasar el mouse

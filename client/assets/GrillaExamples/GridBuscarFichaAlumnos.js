@@ -222,7 +222,7 @@ export const BuscaNombre = ({ resultado, setResultado }) => {
         alignItems: "center",
       }}
     >
-      <Grid item xs={6} md={3}>
+      <Grid item xs={12} md={6}>
         <TextField
           style={{ fontSize: "13px" }}
           size="small"
@@ -235,7 +235,7 @@ export const BuscaNombre = ({ resultado, setResultado }) => {
           inputProps={{ style: { fontSize: "13px" } }}
         />
       </Grid>
-      <Grid item xs={6} md={3}>
+      <Grid item xs={12} md={6}>
         <TextField
           size="small"
           label="Ap. Paterno"
@@ -247,7 +247,7 @@ export const BuscaNombre = ({ resultado, setResultado }) => {
           inputProps={{ style: { fontSize: "13px" } }}
         />
       </Grid>
-      <Grid item xs={6} md={3}>
+      <Grid item xs={12} md={6}>
         <TextField
           size="small"
           label="Ap. Materno"
@@ -259,7 +259,7 @@ export const BuscaNombre = ({ resultado, setResultado }) => {
           inputProps={{ style: { fontSize: "13px" } }}
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12} md={6}>
         <BotonBuscar
           label="Buscar"
           FBusca={fBuscaNombres}

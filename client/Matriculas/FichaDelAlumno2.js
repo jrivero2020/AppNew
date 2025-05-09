@@ -157,7 +157,7 @@ export default function FichaDelAlumno() {
           setverBtnBusca(false);
           setbtnBuscaNombres(true);
           ret = false;
-          console.log("Rut erroneo");
+          // console.log("Rut erroneo");
         }
       } else {
         ret = false;

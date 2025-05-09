@@ -402,7 +402,7 @@ const getSolicitudesByProfesor = async (params, credentials, signal) => {
 };
 
 const createSolicitud = async (params, credentials, signal) => {
-  console.log("En api-docentes, createSolicitud : params==>", params);
+  // console.log("En api-docentes, createSolicitud : params==>", params);
   try {
     const response = await fetch("/api/CreaSolicitaEquipo", {
       method: "PUT",
@@ -425,7 +425,7 @@ const createSolicitud = async (params, credentials, signal) => {
 };
 
 const liberarSolicitud = async (params, credentials, signal) => {
-  console.log("api-liberarSolicitud*** params=>", params);
+  // console.log("api-liberarSolicitud*** params=>", params);
   try {
     const response = await fetch("/api/EliminaReservaBloque", {
       method: "POST",
@@ -451,7 +451,7 @@ const api_GetFeriados = async () => {
   try {
     const response = await fetch("/GetFeriados", { method: "GET" });
     const data = await response.json();
-    console.log("api_GetFeriados  data=>", data);
+    // console.log("api_GetFeriados  data=>", data);
     return Object.values(data[0]);
   } catch (err) {
     return { error: err.message, message: err.message };

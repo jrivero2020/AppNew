@@ -71,7 +71,7 @@ const SolicitudEquipos = () => {
             getEquipamientos(),
             api_GetFeriados(),
           ]);
-        console.log("Dias feriados obtenidos===>", dferiados);
+        //console.log("Dias feriados obtenidos===>", dferiados);
         setCursos(cursosData);
         setAsignaturas(asignaturasData);
         setEquipamientos(equipamientosData);
@@ -92,7 +92,7 @@ const SolicitudEquipos = () => {
 
   // Cargar bloques horarios cuando se selecciona jornada, equipamiento y fecha
   useEffect(() => {
-    console.log("selectedEquipamiento==>", selectedEquipamiento);
+    //console.log("selectedEquipamiento==>", selectedEquipamiento);
     if (selectedJornada && selectedEquipamiento && selectedDate) {
       const fetchBloquesHorarios = async () => {
         try {
@@ -101,10 +101,10 @@ const SolicitudEquipos = () => {
             equipamiento_id: selectedEquipamiento,
             fecha_solicitud: selectedDate.format("YYYY-MM-DD"),
           });
-          console.log("bloquesData de bloques horarios==>", bloquesData);
+          //console.log("bloquesData de bloques horarios==>", bloquesData);
           setBloquesHorarios(bloquesData);
         } catch (error) {
-          console.error("Error cargando bloques horarios:", error);
+          // console.error("Error cargando bloques horarios:", error);
           setSnackbarMessage("Error cargando bloques horarios");
           setSnackbarSeverity("error");
           setSnackbarOpen(true);
@@ -174,7 +174,7 @@ const SolicitudEquipos = () => {
 
     try {
 
-      console.log("solicitudData ==>", solicitudData )
+      // console.log("solicitudData ==>", solicitudData )
       const data = await createSolicitud(
         solicitudData,
         { t: jwt.token },
@@ -197,7 +197,7 @@ const SolicitudEquipos = () => {
       });
       setBloquesHorarios(bloquesData);
     } catch (error) {
-      console.log("error==>", error);
+      // console.log("error==>", error);
       setSnackbarMessage("Error al enviar la solicitud");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
@@ -270,7 +270,7 @@ const SolicitudEquipos = () => {
     );
     // const disponibles
      setSelectedEquipamiento(id_equipo)
-    console.log("id_equipo***=>", id_equipo )
+    // console.log("id_equipo***=>", id_equipo )
     
   };
 
