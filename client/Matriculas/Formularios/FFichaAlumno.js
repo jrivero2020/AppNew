@@ -79,7 +79,7 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
       if (data && data.error) {
         return false;
       } else {
-        const cursosArray = Object.values(data[0]);
+        const cursosArray = Object.values(data);
         setCursos(cursosArray);
       }
     });

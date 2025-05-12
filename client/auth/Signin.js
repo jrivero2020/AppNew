@@ -171,6 +171,7 @@ export default function Signin(props) {
                   onChange={handleChange("password")}
                   onFocus={msgErrorNull}
                   label="Clave"
+                  autoComplete="new-password"
                 />
               </FormControl>
             </Grid>

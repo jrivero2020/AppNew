@@ -118,7 +118,7 @@ const SolicitudEquipos = () => {
 
   const shouldDisableDate = (date) => {
     const day = date.day();
-    return false;
+    //return false;
     return (
       date.isBefore(dayjs(), "day") ||
       day === 0 ||
