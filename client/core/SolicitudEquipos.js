@@ -299,7 +299,7 @@ const SolicitudEquipos = () => {
                 color: "blue",
                 textAlign: "center", // Centra el texto dentro de Typography
                 mt: 1,
-              }}>Profesor : {nombreProfesor}</Typography>
+              }}>Profesor/a : {nombreProfesor}</Typography>
             <Card sx={{ backgroundColor: "#E1E1E1" }}>
               <Box
                 sx={{
@@ -356,6 +356,52 @@ const SolicitudEquipos = () => {
                     ))}
                   </TextField>
                 </Grid>
+
+                {/* Input Nro alumnos */}
+                <Grid item xs={12} sm={6}>
+                   <TextField
+                      label="Nro.Alumnos"
+                      type="number"
+                      value={cantidad}
+                      onChange={(e) => {
+                        const value = Math.max(
+                          1,
+                          Math.min(e.target.value,45 )
+                        );                        
+                        setCantidad(value);
+                      }}
+                       inputProps={{
+                        min: 1,
+                        max: 45, // Límite según el equipamiento
+                        style: { textAlign: 'center',padding: '8px 25px' }
+                      }}
+                      >                        
+                      </TextField>
+                </Grid>
+                {/* Input actividad */}
+                <Grid item xs={12} sm={6}>
+                   <TextField
+                      label="Actividad"
+                      type="number"
+                      value={actividad}
+                      onChange={(e) => {
+                        const value = Math.max(
+                          1,
+                          Math.min(e.target.value,45 )
+                        );                        
+                        setActividad(e.target.value);
+                      }}
+                       inputProps={{
+                        min: 1,
+                        max: 45, // Límite según el equipamiento
+                        style: { textAlign: 'center',padding: '8px 25px' }
+                      }}
+                      >                        
+                      </TextField>
+                </Grid>
+
+
+{/***************************************************************************** */}                
 
                 {/* Selector de jornada */}
                 <Grid item xs={12}>
@@ -548,9 +594,16 @@ const SolicitudEquipos = () => {
                                 <Typography variant="body2">Click para deseleccionar</Typography>
                               ) : (
                                 <>
+                                 {usrRol === 1 ? (                                   
+                                  <Typography variant="body2">
+                                    Bloque reservado por: {bloque.nombrereserva} {bloque.apatreserva}
+                                  </Typography>
+                                 ) : (
                                   <Typography variant="body2">
                                     Este bloque está reservado por usted.
                                   </Typography>
+                                  )
+                                  }
                                   <Typography variant="body2">
                                     Click para liberarlo.
                                   </Typography>
@@ -564,9 +617,12 @@ const SolicitudEquipos = () => {
                                 <Typography variant="body2">
                                   Equipos usados: {bloque.cantidad_ocupada}
                                 </Typography>
+                                {/*
                                 <Typography variant="body2">
                                   Equipos disponibles: {cantidad - bloque.cantidad_ocupada}
                                 </Typography>
+                                */}
+
                               </>
                             )
                           ) : bloque.estado === "superpuesto" ? (
@@ -655,10 +711,9 @@ const SolicitudEquipos = () => {
                             }}
                           >
                             {bloque.descripcion}
-                            {bloque.cantidad_ocupada > 0 ? `  (En uso=${bloque.cantidad_ocupada})` : ''}
-                            {bloque.cantidad_ocupada_superpuesta > 0 ? `  (En uso=${bloque.cantidad_ocupada_superpuesta})` : ''}
-                            -Pr={bloque.id_profesor_reserva}-Pa=
-                            {idProfesor}
+                            {/* bloque.cantidad_ocupada > 0 ? `  (En uso=${bloque.cantidad_ocupada})` : ''}
+                            {bloque.cantidad_ocupada_superpuesta > 0 ? `  (En uso=${bloque.cantidad_ocupada_superpuesta})` : '' */}
+                            
                           </Button>
                         </span>
                       </Tooltip>
