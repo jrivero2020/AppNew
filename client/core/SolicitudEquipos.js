@@ -8,7 +8,7 @@ import {
   Typography,
   Tooltip,
   Snackbar,
-  Alert,  
+  Alert,
   Paper,
   Box,
   Card,
@@ -33,8 +33,6 @@ import { AuthContext } from "./../core/AuthProvider";
 dayjs.extend(require("dayjs/plugin/weekday"));
 dayjs.extend(require("dayjs/plugin/isSameOrBefore"));
 
-
-
 const SolicitudEquipos = () => {
   const [cursos, setCursos] = useState([]);
   const [asignaturas, setAsignaturas] = useState([]);
@@ -50,7 +48,8 @@ const SolicitudEquipos = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-  const [cantidad, setCantidad] = useState( 0 ); // Valor inicial de 0
+  const [cantidad, setCantidad] = useState(0); // Valor inicial de 0
+  const [actividad, setActividad] = useState("");
   const { jwt } = useContext(AuthContext);
   const [selectedReservedBlocks, setSelectedReservedBlocks] = useState([]);
   const [feriados, setFeriados] = useState([]);
@@ -134,32 +133,33 @@ const SolicitudEquipos = () => {
     const equipamientoSeleccionado = equipamientos.find(
       (equip) => equip.id_equipos === selectedEquipamiento
     );
-    let errorMsg = '';
-  
-  if (!equipamientoSeleccionado) {
-    errorMsg = 'Debe seleccionar un equipamiento válido';
-  } 
-  else if( selectedEquipamiento === 1)
-    setCantidad( equipamientoSeleccionado.cantidad );
-  else if ((selectedEquipamiento === 2 || selectedEquipamiento === 3)) {
-    // Validar solo para Chromebook (2) y Tablet (3)
-    const stock = equipamientoSeleccionado.cantidad;
-    
-    if (cantidad <= 0) {
-      errorMsg = `La cantidad mínima debe ser 1`;
-    } 
-    else if (cantidad > stock) {
-      errorMsg = `La cantidad excede el stock disponible (${stock})`;
-    }
-  }
+    let errorMsg = "";
 
-  // 3. Manejo de errores
-  if (errorMsg) {
-    setSnackbarMessage(errorMsg);
-    setSnackbarSeverity("error");
-    setSnackbarOpen(true);
-    return;
-  }
+    if (!equipamientoSeleccionado) {
+      errorMsg = "Debe seleccionar un equipamiento válido";
+    }
+    /*
+    } else if (selectedEquipamiento === 1)
+      setCantidad(equipamientoSeleccionado.cantidad);
+    else if (selectedEquipamiento === 2 || selectedEquipamiento === 3) {
+      // Validar solo para Chromebook (2) y Tablet (3)
+      // const stock = equipamientoSeleccionado.cantidad;
+
+      if (cantidad <= 0) {
+        errorMsg = `La cantidad mínima debe ser 1`;
+      } else if (cantidad > stock) {
+        errorMsg = `La cantidad excede el stock disponible (${stock})`;
+      }
+
+    }
+*/
+    // 3. Manejo de errores
+    if (errorMsg) {
+      setSnackbarMessage(errorMsg);
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
 
     const solicitudData = {
       id_profesor: idProfesor,
@@ -171,11 +171,11 @@ const SolicitudEquipos = () => {
       bloques_seleccionados: selectedBloques.map((bloque) => ({
         id_bloque: bloque,
       })),
-      cantidad: [1, 2, 3].includes(selectedEquipamiento) ? cantidad : null
+      cantidad: cantidad,
+      actividad: actividad,
     };
 
     try {
-
       // console.log("solicitudData ==>", solicitudData )
       const data = await createSolicitud(
         solicitudData,
@@ -220,7 +220,7 @@ const SolicitudEquipos = () => {
       bloques_ids: selectedReservedBlocks.map((bloque) => ({
         id_bloque: bloque,
       })),
-      pRol: usrRol
+      pRol: usrRol,
     };
 
     try {
@@ -269,15 +269,12 @@ const SolicitudEquipos = () => {
   const selctEquipamiento = (id_equipo) => {
     // const equipoSel = equipamientos.find((equip) => equip.id_equipos === id_equipo);
     // const disponibles
-     setSelectedEquipamiento(id_equipo)
+    setSelectedEquipamiento(id_equipo);
     // console.log("id_equipo***=>", id_equipo )
-    
   };
-
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-     
       <Grid
         container
         justifyContent="center"
@@ -294,12 +291,16 @@ const SolicitudEquipos = () => {
               whiteSpace: "pre-line",
             }}
           >
-             <Typography sx={{
+            <Typography
+              sx={{
                 fontWeight: "bold",
                 color: "blue",
                 textAlign: "center", // Centra el texto dentro de Typography
                 mt: 1,
-              }}>Profesor/a : {nombreProfesor}</Typography>
+              }}
+            >
+              Profesor/a : {nombreProfesor}
+            </Typography>
             <Card sx={{ backgroundColor: "#E1E1E1" }}>
               <Box
                 sx={{
@@ -359,57 +360,54 @@ const SolicitudEquipos = () => {
 
                 {/* Input Nro alumnos */}
                 <Grid item xs={12} sm={6}>
-                   <TextField
-                      label="Nro.Alumnos"
-                      type="number"
-                      value={cantidad}
-                      onChange={(e) => {
-                        const value = Math.max(
-                          1,
-                          Math.min(e.target.value,45 )
-                        );                        
-                        setCantidad(value);
-                      }}
-                       inputProps={{
-                        min: 1,
-                        max: 45, // Límite según el equipamiento
-                        style: { textAlign: 'center',padding: '8px 25px' }
-                      }}
-                      >                        
-                      </TextField>
+                  <TextField
+                    label="Nro.Alumnos"
+                    type="number"
+                    value={cantidad}
+                    onChange={(e) => {
+                      const value = Math.max(1, Math.min(e.target.value, 45));
+                      setCantidad(value);
+                    }}
+                    inputProps={{
+                      min: 1,
+                      max: 45, // Límite según el equipamiento
+                      style: { textAlign: "center", padding: "8px 25px" },
+                    }}
+                  ></TextField>
                 </Grid>
                 {/* Input actividad */}
                 <Grid item xs={12} sm={6}>
-                   <TextField
-                      label="Actividad"
-                      type="number"
-                      value={actividad}
-                      onChange={(e) => {
-                        const value = Math.max(
-                          1,
-                          Math.min(e.target.value,45 )
-                        );                        
-                        setActividad(e.target.value);
-                      }}
-                       inputProps={{
-                        min: 1,
-                        max: 45, // Límite según el equipamiento
-                        style: { textAlign: 'center',padding: '8px 25px' }
-                      }}
-                      >                        
-                      </TextField>
+                  <TextField
+                    style={{ fontSize: "13px" }}
+                    size="small"
+                    variant="outlined"
+                    fullWidth
+                    label="Actividad"
+                    type="text"
+                    value={actividad}
+                    onChange={(e) => {
+                      setActividad(e.target.value);
+                    }}
+                  ></TextField>
                 </Grid>
 
-
-{/***************************************************************************** */}                
+                {/***************************************************************************** */}
 
                 {/* Selector de jornada */}
                 <Grid item xs={12}>
-                  <Typography variant="subtitle1" gutterBottom align="center" sx={{ fontSize: {
-                    xs: "0.8rem",
-                    sm: "1.1rem",
-                    md: "1.5rem",
-                  },fontWeight: "bold"}}>
+                  <Typography
+                    variant="subtitle1"
+                    gutterBottom
+                    align="center"
+                    sx={{
+                      fontSize: {
+                        xs: "0.8rem",
+                        sm: "1.1rem",
+                        md: "1.5rem",
+                      },
+                      fontWeight: "bold",
+                    }}
+                  >
                     Seleccione Jornada
                   </Typography>
                   <Box display="flex" gap={1} mb={1} justifyContent="center">
@@ -444,7 +442,6 @@ const SolicitudEquipos = () => {
                                 : "rgba(25, 118, 210, 0.04)",
                           },
                         }}
-
                       >
                         {jornada.nombre}
                       </Button>
@@ -453,7 +450,12 @@ const SolicitudEquipos = () => {
                 </Grid>
                 {/* Selector de equipamiento */}
                 <Grid item xs={12}>
-                  <Typography variant="subtitle1" gutterBottom align="center" sx={{fontWeight: "bold"}}>
+                  <Typography
+                    variant="subtitle1"
+                    gutterBottom
+                    align="center"
+                    sx={{ fontWeight: "bold" }}
+                  >
                     Seleccione Equipamiento
                   </Typography>
                   <Box
@@ -472,8 +474,8 @@ const SolicitudEquipos = () => {
                             : "outlined"
                         }
                         color="secondary"
-                        onClick={() =>selctEquipamiento(equip.id_equipos)} // ojo pensar en dejar stock x equipos ya definidos
-                                                                           // para mostrar en seleccion de bloque la cantidad disponible
+                        onClick={() => selctEquipamiento(equip.id_equipos)} // ojo pensar en dejar stock x equipos ya definidos
+                        // para mostrar en seleccion de bloque la cantidad disponible
                         style={{
                           minWidth: "120px",
                           backgroundColor:
@@ -486,15 +488,19 @@ const SolicitudEquipos = () => {
                               : "#006064",
                         }}
                       >
-                        {equip.nombre} {cantidad}
+                        {equip.nombre}
                       </Button>
                     ))}
                   </Box>
                 </Grid>
 
-                {/* Campo de cantidad (solo para Chromebook y Tablet) */}
+                {/* Campo de cantidad (solo para Chromebook y Tablet) 
                 {(selectedEquipamiento === 2 || selectedEquipamiento === 3) && (
-                  <Grid item xs={12}  sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{ display: "flex", justifyContent: "center" }}
+                  >
                     <TextField
                       label="Cantidad"
                       type="number"
@@ -506,38 +512,38 @@ const SolicitudEquipos = () => {
                             e.target.value,
                             selectedEquipamiento === 3 ? 60 : 45
                           )
-                        );                        
+                        );
                         setCantidad(value);
                       }}
                       inputProps={{
                         min: 1,
                         max: selectedEquipamiento === 3 ? 60 : 45, // Límite según el equipamiento
-                        style: { 
-                          textAlign: 'center',
-                          padding: '8px 5px'
-                        }
+                        style: {
+                          textAlign: "center",
+                          padding: "8px 5px",
+                        },
                       }}
-                      
                       sx={{
-                        width: '80px',
-                        '& .MuiOutlinedInput-root': {
-                          padding: '0 !important'
+                        width: "80px",
+                        "& .MuiOutlinedInput-root": {
+                          padding: "0 !important",
                         },
-                        '& .MuiInputLabel-root': {
-                          transform: 'translate(50%, -50%) scale(0.75)',
-                          right: '50%',
-                          left: 'auto',
-                          top: '0px',
-                          position: 'absolute',
-                          originX: 'center'
+                        "& .MuiInputLabel-root": {
+                          transform: "translate(50%, -50%) scale(0.75)",
+                          right: "50%",
+                          left: "auto",
+                          top: "0px",
+                          position: "absolute",
+                          originX: "center",
                         },
-                        '& .MuiInputLabel-shrink': {
-                          transform: 'translate(50%, 0) scale(0.75)'
-                        }
+                        "& .MuiInputLabel-shrink": {
+                          transform: "translate(50%, 0) scale(0.75)",
+                        },
                       }}
                     />
                   </Grid>
                 )}
+                */}
                 {/* Selector de fecha */}
                 <Grid item xs={12}>
                   <Box
@@ -585,71 +591,106 @@ const SolicitudEquipos = () => {
                   ) : (
                     bloquesHorarios.map((bloque) => (
                       <Tooltip
-                      key={bloque.bloque_id}
-                      title={
-                        <Box>
-                          {bloque.estado === "reservado" ? (
-                            (bloque.id_profesor_reserva === idProfesor || usrRol === 1) ? (
-                              selectedReservedBlocks.includes(bloque.bloque_id) ? (
-                                <Typography variant="body2">Click para deseleccionar</Typography>
+                        key={bloque.bloque_id}
+                        title={
+                          <Box>
+                            {bloque.estado === "reservado" ? (
+                              bloque.id_profesor_reserva === idProfesor ||
+                              usrRol === 1 ? (
+                                selectedReservedBlocks.includes(
+                                  bloque.bloque_id
+                                ) ? (
+                                  <Typography variant="body2">
+                                    Click para deseleccionar
+                                  </Typography>
+                                ) : (
+                                  <>
+                                    {usrRol === 1 ? (
+                                      <>
+                                        <Typography variant="body2">
+                                          Bloque reservado por:{" "}
+                                          {bloque.nombrereserva}{" "}
+                                          {bloque.apatreserva}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          Nro.Alumnos: {bloque.cantidad_ocupada}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          Curso: {bloque.curso}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          Asignatura: {bloque.asignatura}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          Actividad: {bloque.actividad}
+                                        </Typography>
+                                      </>
+                                    ) : (
+                                      <Typography variant="body2">
+                                        Este bloque está reservado por usted.
+                                      </Typography>
+                                    )}
+                                    <Typography variant="body2">
+                                      Click para liberarlo.
+                                    </Typography>
+                                  </>
+                                )
                               ) : (
                                 <>
-                                 {usrRol === 1 ? (                                   
                                   <Typography variant="body2">
-                                    Bloque reservado por: {bloque.nombrereserva} {bloque.apatreserva}
+                                    Bloque reservado por: {bloque.nombrereserva}{" "}
+                                    {bloque.apatreserva}
                                   </Typography>
-                                 ) : (
                                   <Typography variant="body2">
-                                    Este bloque está reservado por usted.
+                                    Nro.Alumnos: {bloque.cantidad_ocupada}
                                   </Typography>
-                                  )
-                                  }
                                   <Typography variant="body2">
-                                    Click para liberarlo.
+                                    Curso: {bloque.curso}
                                   </Typography>
-                                </>
-                              )
-                            ) : (
-                              <>
-                                <Typography variant="body2">
-                                  Bloque reservado por: {bloque.nombrereserva} {bloque.apatreserva}
-                                </Typography>
-                                <Typography variant="body2">
-                                  Equipos usados: {bloque.cantidad_ocupada}
-                                </Typography>
-                                {/*
+                                  <Typography variant="body2">
+                                    Asignatura: {bloque.asignatura}
+                                  </Typography>
+                                  <Typography variant="body2">
+                                    Actividad: {bloque.actividad}
+                                  </Typography>
+
+                                  {/*
                                 <Typography variant="body2">
                                   Equipos disponibles: {cantidad - bloque.cantidad_ocupada}
                                 </Typography>
                                 */}
-
-                              </>
-                            )
-                          ) : bloque.estado === "superpuesto" ? (
-                            <Typography variant="body2">
-                              Este bloque está superpuesto por: {bloque.nombreresuperp} {bloque.apatsuperp}
-                            </Typography>
-                          ) : selectedBloques.includes(bloque.bloque_id) ? (
-                            <Typography variant="body2">Click para deseleccionar</Typography>
-                          ) : (
-                            <Typography variant="body2">Click para seleccionar</Typography>
-                          )}
-                        </Box>
-                      }
-                      slotProps={{
-                        tooltip: {
-                          sx: {
-                            fontSize: "1rem",
-                            maxWidth: "320px",
-                            backgroundColor: "#2a2a2a",
-                            color: "#f1f1f1",
-                            padding: "12px",
-                            borderRadius: "10px",
-                            boxShadow: 3,
+                                </>
+                              )
+                            ) : bloque.estado === "superpuesto" ? (
+                              <Typography variant="body2">
+                                Este bloque está superpuesto por:{" "}
+                                {bloque.nombreresuperp} {bloque.apatsuperp}
+                              </Typography>
+                            ) : selectedBloques.includes(bloque.bloque_id) ? (
+                              <Typography variant="body2">
+                                Click para deseleccionar
+                              </Typography>
+                            ) : (
+                              <Typography variant="body2">
+                                Click para seleccionar
+                              </Typography>
+                            )}
+                          </Box>
+                        }
+                        slotProps={{
+                          tooltip: {
+                            sx: {
+                              fontSize: "1rem",
+                              maxWidth: "520px",
+                              backgroundColor: "#1B5E20",
+                              color: "#f1f1f1",
+                              padding: "12px",
+                              borderRadius: "10px",
+                              boxShadow: 3,
+                            },
                           },
-                        },
-                      }}
-                      disableTouchListener={false}
+                        }}
+                        disableTouchListener={false}
                       >
                         <span>
                           <Button
@@ -657,7 +698,8 @@ const SolicitudEquipos = () => {
                             disabled={
                               // Bloques reservados por otros profesores
                               (bloque.estado === "reservado" &&
-                                bloque.id_profesor_reserva !== idProfesor && usrRol !== 1) ||
+                                bloque.id_profesor_reserva !== idProfesor &&
+                                usrRol !== 1) ||
                               // Bloques superpuestos
                               bloque.estado === "superpuesto"
                               //  ||
@@ -671,7 +713,8 @@ const SolicitudEquipos = () => {
                               )
                                 ? "#666666" // Fondo gris para bloques disponibles seleccionados
                                 : bloque.estado === "reservado"
-                                ? (bloque.id_profesor_reserva === idProfesor  || usrRol === 1 )
+                                ? bloque.id_profesor_reserva === idProfesor ||
+                                  usrRol === 1
                                   ? selectedReservedBlocks.includes(
                                       bloque.bloque_id
                                     )
@@ -687,7 +730,8 @@ const SolicitudEquipos = () => {
                             onClick={() => {
                               if (
                                 bloque.estado === "reservado" &&
-                                ( bloque.id_profesor_reserva === idProfesor  || usrRol === 1 )
+                                (bloque.id_profesor_reserva === idProfesor ||
+                                  usrRol === 1)
                               ) {
                                 setSelectedReservedBlocks((prev) =>
                                   prev.includes(bloque.bloque_id)
@@ -713,7 +757,6 @@ const SolicitudEquipos = () => {
                             {bloque.descripcion}
                             {/* bloque.cantidad_ocupada > 0 ? `  (En uso=${bloque.cantidad_ocupada})` : ''}
                             {bloque.cantidad_ocupada_superpuesta > 0 ? `  (En uso=${bloque.cantidad_ocupada_superpuesta})` : '' */}
-                            
                           </Button>
                         </span>
                       </Tooltip>

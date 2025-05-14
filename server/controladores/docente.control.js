@@ -527,7 +527,8 @@ const CreaSolicitaEquipo = async (req, res) => {
         id_equipamiento,
         fecha_solicitud,
         bloques_seleccionados,
-        cantidad
+        cantidad,
+        actividad
       } = req.body;
   
       // Convertir el array de objetos a un string JSON
@@ -542,10 +543,10 @@ const CreaSolicitaEquipo = async (req, res) => {
         fecha_solicitud,
         bloquesJSON, // Usamos el string JSON
         cantidad,
+        actividad
       ];
     const MyQuery = `    
-    CALL colegio.InsertarSolicitaEquipo(?,?,?,?,?,?,?,?,@new_id);
-    
+    CALL colegio.InsertarSolicitaEquipo(?,?,?,?,?,?,?,?,?,@new_id); 
     `;
     const idEquipamiento = await sequelize.query(MyQuery, {
       replacements: camposRep,
@@ -719,6 +720,35 @@ const putDataProfe = async (req, res) => {
 };
 
 
+const postCursosDiaAtencionProfe = async (req, res) => {
+
+  const { rut, cursos, horarios } = req.body;
+  if (!rut) {
+    return res
+      .status(400)
+      .json({
+        error: "Se requieren el rut del funcionario",
+      });
+  }
+
+  try { 
+     await sequelize.query(
+      `CALL sp_asignar_funcionario_cursos_horarios(?,?,?)`,
+      {
+        replacements: [rut, JSON.stringify(cursos || []),
+                JSON.stringify(horarios || [])],
+        type: sequelize.QueryTypes.INSERT,
+      }
+    );
+    return res.status(200).json({
+      message: "Actualización realizada",
+    });
+  } catch (err) {
+    console.log("err=>:", err)
+    return res.status(500).json({ error: "Error al inscribir Horarios Atención" });
+  }
+};
+
 export default {
   docenteByID,
   leerDocente,
@@ -754,4 +784,5 @@ export default {
   GetFeriados,
   getDataProfe,
   putDataProfe,
+  postCursosDiaAtencionProfe,
 };

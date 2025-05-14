@@ -482,8 +482,7 @@ const getDataProfe = async (params, signal) => {
   }
 };
 
-const putDataProfe = async (params) => {
-  
+const putDataProfe = async (params) => {  
   try {
     let response = await fetch("/putDataProfe", {
       method: "PUT",
@@ -501,6 +500,27 @@ const putDataProfe = async (params) => {
     return { error: 500, message: err.message };
   }
 };
+
+// POST /api/funcionarios/:rut/asignacion-completa
+const postCursosDiaAtencionProfes = async (params) => {  
+  try {
+    let response = await fetch("/postCursosDiaAtencionProfe", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+    });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
 
 export {
   create,
@@ -535,4 +555,5 @@ export {
   api_GetFeriados,
   getDataProfe,
   putDataProfe,
+  postCursosDiaAtencionProfes,
 };

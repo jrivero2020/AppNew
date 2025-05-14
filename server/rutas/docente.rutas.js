@@ -124,4 +124,8 @@ router
 .put(docenteCtrl.putDataProfe);
 
 
-export default router;
+router
+  .route("/postCursosDiaAtencionProfe")
+  .post(authCtrl.requireSignin, docenteCtrl.postCursosDiaAtencionProfe);
+
+  export default router;
