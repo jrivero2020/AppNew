@@ -749,6 +749,72 @@ const postCursosDiaAtencionProfe = async (req, res) => {
   }
 };
 
+
+const getDiasAtencion = async (req, res) => {
+  try {
+    const dataDias = await sequelize.query(`CALL sp_getDiasAtencion()`, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+
+    res.json(dataDias);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+
+const getCursosProfe = async (req, res) => {
+  const { rut } = req.params;
+  if (!rut) {
+    return res
+      .status(400)
+      .json({
+        error: "Se requieren el rut del funcionario",
+      });
+  }
+
+  try {
+    const dataHorario = await sequelize.query(
+      `CALL sp_getCursosProfe(?)`,
+      {
+        replacements: [ rut ],
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    res.json(dataHorario);
+  } catch (err) {
+    return res.status(500).json({ error: "Error al obtener Datos del Funcionario" });
+  }
+};
+
+const getHorarioProfe = async (req, res) => {
+  const { rut } = req.params;
+  if (!rut) {
+    return res
+      .status(400)
+      .json({
+        error: "Se requieren el rut del funcionario",
+      });
+  }
+
+  try {
+    const dataHorario = await sequelize.query(
+      `CALL sp_getProfeHorarios(?)`,
+      {
+        replacements: [ rut ],
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    res.json(dataHorario);
+  } catch (err) {
+    return res.status(500).json({ error: "Error al obtener Datos del Funcionario" });
+  }
+};
+
+
+
 export default {
   docenteByID,
   leerDocente,
@@ -785,4 +851,8 @@ export default {
   getDataProfe,
   putDataProfe,
   postCursosDiaAtencionProfe,
+  getDiasAtencion,
+  getHorarioProfe,
+  getCursosProfe,
+
 };

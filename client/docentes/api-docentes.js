@@ -522,6 +522,63 @@ const postCursosDiaAtencionProfes = async (params) => {
 };
 
 
+const getDiasAtencion = async () => {
+  try {
+    const response = await fetch("/getDiasAtencion", { method: "GET" });
+    const data = await response.json();
+    return Object.values(data[0]);
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
+
+const getCursosProfe = async (params, signal) => {
+  try {
+    const response = await fetch("/getCursosProfe/" + params.rut, {
+      method: "GET",
+      signal: signal,
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      try {
+        const errorData = JSON.parse(text); // Intenta parsear por si es JSON válido
+        throw new Error(errorData.message || "Error del servidor");
+      } catch {
+        throw new Error(`Error HTTP ${response.status}: ${text}`);
+      }
+    }
+    const data = await response.json();
+    return data[0];
+    
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
+const getHorarioProfe = async (params, signal) => {
+  try {
+    const response = await fetch("/getHorarioProfe/" + params.rut, {
+      method: "GET",
+      signal: signal,
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      try {
+        const errorData = JSON.parse(text); // Intenta parsear por si es JSON válido
+        throw new Error(errorData.message || "Error del servidor");
+      } catch {
+        throw new Error(`Error HTTP ${response.status}: ${text}`);
+      }
+    }
+    const data = await response.json();
+    return data[0];
+    
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
 export {
   create,
   leer,
@@ -556,4 +613,7 @@ export {
   getDataProfe,
   putDataProfe,
   postCursosDiaAtencionProfes,
+  getDiasAtencion,
+  getCursosProfe,
+  getHorarioProfe,
 };

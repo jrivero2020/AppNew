@@ -128,4 +128,12 @@ router
   .route("/postCursosDiaAtencionProfe")
   .post(authCtrl.requireSignin, docenteCtrl.postCursosDiaAtencionProfe);
 
+
+router.route("/getDiasAtencion").get(docenteCtrl.getDiasAtencion);
+
+router.route("/getHorarioProfe/:rut").get(docenteCtrl.getHorarioProfe);
+router.route("/getCursosProfe/:rut").get(docenteCtrl.getCursosProfe);
+
+
+
   export default router;

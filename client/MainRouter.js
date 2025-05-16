@@ -28,8 +28,8 @@ import FullFeaturedCrudGrid from "./assets/GrillaExamples/FullFeaturedCrudGrid";
 import PrincipalGui from "./core/InitOpcionII";
 import VerJSON from "./../client/core/VerJSON";
 import Gallery from "./../client/core/GaleriaFotos";
-// import {AsignacionCompleta} from "./core/HorariosCursosProfe";
-// import SeleccionEquipos from "./../client/core/SeleccionEquipos";
+import AsignacionCompleta from "./core/HorariosCursosProfe";
+//import SeleccionEquipos from "./../client/core/SeleccionEquipos";
 import SimceBasica from "./../client/Simce/SimceBasica"
 
 import SolicitudEquipos from  "./../client/core/SolicitudEquipos";
@@ -71,7 +71,7 @@ const MainRouter = () => {
               </PrivateRoute>
             }
           />
-          { /*
+
           <Route
             path="/HorariosCursosProfe"
             element={
@@ -80,7 +80,7 @@ const MainRouter = () => {
               </PrivateRoute>
             }
           />
-*/}
+
           <Route
             path="/CertAlumnoRegular"
             element={
