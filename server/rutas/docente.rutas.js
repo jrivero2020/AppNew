@@ -93,47 +93,32 @@ router
   .route("/getBloquesHorarios/:jornada_id/:equipamiento_id/:fecha_solicitud")
   .get(docenteCtrl.getBloquesHorarios);
 
-
 router
   .route("/api/CreaSolicitaEquipo")
   .put(authCtrl.requireSignin, docenteCtrl.CreaSolicitaEquipo);
 
-  router
+router
   .route("/api/EliminaReservaBloque")
   .post(authCtrl.requireSignin, docenteCtrl.EliminaReservaBloque);
-
-
-
 
 router
   .route("/api/profesor/:id_profesor")
   .get(authCtrl.requireSignin, docenteCtrl.SolicitudEquipoProfe);
 
-  router
-  .route("/GetFeriados")
-  .get(docenteCtrl.GetFeriados);
+router.route("/GetFeriados").get(docenteCtrl.GetFeriados);
 
-  
-router
-.route("/getDataProfe/:rut")
-.get(docenteCtrl.getDataProfe);
+router.route("/getDataProfe/:rut").get(docenteCtrl.getDataProfe);
 
-
-router
-.route("/putDataProfe")
-.put(docenteCtrl.putDataProfe);
-
+router.route("/putDataProfe").put(docenteCtrl.putDataProfe);
 
 router
   .route("/postCursosDiaAtencionProfe")
   .post(authCtrl.requireSignin, docenteCtrl.postCursosDiaAtencionProfe);
 
-
 router.route("/getDiasAtencion").get(docenteCtrl.getDiasAtencion);
 
 router.route("/getHorarioProfe/:rut").get(docenteCtrl.getHorarioProfe);
 router.route("/getCursosProfe/:rut").get(docenteCtrl.getCursosProfe);
+router.route("/getDataTodosProfe").get(docenteCtrl.getDataTodosProfe);
 
-
-
-  export default router;
+export default router;

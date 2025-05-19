@@ -817,13 +817,6 @@ const SolicitudEquipos = () => {
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        slotProps={{
-          root: {
-            // Solución definitiva para MUI v6
-            ownerState: undefined,
-            component: "div",
-          },
-        }}
       >
         <Alert
           onClose={handleCloseSnackbar}

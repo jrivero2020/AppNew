@@ -21,7 +21,7 @@ const webpackConfig = {
       {
         test: /\.(js|tsx|ts|jsx)?$/,
         exclude: /node_modules/,
-        use: ["babel-loader", 'react-hot-loader/webpack'],
+        use: ["babel-loader", "react-hot-loader/webpack"],
       },
       {
         test: /\.(ttf|eot|svg|gif|jpg|png|pdf)(\?[\s\S]+)?$/,
@@ -36,7 +36,11 @@ const webpackConfig = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /nnNO/,
+      contextRegExp: /@mui\/x-data-grid\/locales/,
+    }),
   ],
   devServer: {
     hot: true,

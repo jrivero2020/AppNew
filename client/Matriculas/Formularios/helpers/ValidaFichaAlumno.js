@@ -643,42 +643,6 @@ export const validateFormAlumno = (dataBuscaAl) => {
   if (error) {
     return error; // Detener el proceso si se encuentra un error
   }
-  // validación si los campos de padre o madre están vacíos y se ingresa nombres que ya existen en la b.datos
-  /*
-  const {
-    padre_rut,
-    padre_apat,
-    padre_amat,
-    padre_nombres,
-    madre_rut,
-    madre_apat,
-    madre_amat,
-    madre_nombres,
-  } = dataBuscaAl;
-  const cpadre = {
-    aprut: padre_rut,
-    apat: padre_apat,
-    amat: padre_amat,
-    nombres: padre_nombres,
-  };
-  const cmadre = {
-    aprut: madre_rut,
-    apat: madre_apat,
-    amat: madre_amat,
-    nombres: madre_nombres,
-  };
-  console.log(
-    "Voy a validar si exite ap con los mismos nombres cpadre=>",
-    cpadre,
-    " cmadre=>",
-    cmadre
-  );
-  const ResultPadre = await ConsultaApoderadoNombres(cpadre, apDup, setApDup);
-
-  // const ResultMadre = ConsultaApoderadoNombres(cmadre, apDup, setApDup);
-  console.log("ResultPadre:", ResultPadre);
-  console.log("ResultPadre apDup:", apDup);
-*/
 
   return "";
 };

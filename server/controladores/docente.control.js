@@ -433,7 +433,7 @@ const getDataApoderadoNombres = async (req, res) => {
         type: sequelize.QueryTypes.SELECT,
       }
     );
-    console.log("dataApoderados", dataApoderado);
+    //console.log("dataApoderados", dataApoderado);
     res.json(dataApoderado);
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -490,18 +490,16 @@ const getEquipamiento = async (req, res) => {
 const getBloquesHorarios = async (req, res) => {
   const { jornada_id, equipamiento_id, fecha_solicitud } = req.params;
   if (!jornada_id || !equipamiento_id || !fecha_solicitud) {
-    return res
-      .status(400)
-      .json({
-        error: "Se requieren jornada_id, equipamiento_id y fecha_solicitud",
-      });
+    return res.status(400).json({
+      error: "Se requieren jornada_id, equipamiento_id y fecha_solicitud",
+    });
   }
 
   try {
     const dataCursos = await sequelize.query(
       `CALL sp_getBloquehhDisponible(?,?,?)`,
       {
-        replacements: [ jornada_id, equipamiento_id, fecha_solicitud ],
+        replacements: [jornada_id, equipamiento_id, fecha_solicitud],
         type: sequelize.QueryTypes.SELECT,
       }
     );
@@ -512,39 +510,38 @@ const getBloquesHorarios = async (req, res) => {
   }
 };
 
-
 const CreaSolicitaEquipo = async (req, res) => {
-  console.log( "** control CreaSolicitaEquipo ** req.body", req.body)
+  //console.log("** control CreaSolicitaEquipo ** req.body", req.body);
   //const bloquesString = JSON.stringify(req.body.bloques_seleccionados);
   const bloquesString = req.body.bloques_seleccionados;
-  
-    try {
-      const {
-        id_profesor, 
-        id_curso,
-        id_asignatura,
-        id_jornada, 
-        id_equipamiento,
-        fecha_solicitud,
-        bloques_seleccionados,
-        cantidad,
-        actividad
-      } = req.body;
-  
-      // Convertir el array de objetos a un string JSON
-      const bloquesJSON = JSON.stringify(bloques_seleccionados);
-  
-      const camposRep = [
-        id_profesor,
-        id_curso,
-        id_asignatura,
-        id_jornada,
-        id_equipamiento,
-        fecha_solicitud,
-        bloquesJSON, // Usamos el string JSON
-        cantidad,
-        actividad
-      ];
+
+  try {
+    const {
+      id_profesor,
+      id_curso,
+      id_asignatura,
+      id_jornada,
+      id_equipamiento,
+      fecha_solicitud,
+      bloques_seleccionados,
+      cantidad,
+      actividad,
+    } = req.body;
+
+    // Convertir el array de objetos a un string JSON
+    const bloquesJSON = JSON.stringify(bloques_seleccionados);
+
+    const camposRep = [
+      id_profesor,
+      id_curso,
+      id_asignatura,
+      id_jornada,
+      id_equipamiento,
+      fecha_solicitud,
+      bloquesJSON, // Usamos el string JSON
+      cantidad,
+      actividad,
+    ];
     const MyQuery = `    
     CALL colegio.InsertarSolicitaEquipo(?,?,?,?,?,?,?,?,?,@new_id); 
     `;
@@ -552,7 +549,7 @@ const CreaSolicitaEquipo = async (req, res) => {
       replacements: camposRep,
       type: sequelize.QueryTypes.SELECT,
     });
-    const newId = idEquipamiento[0]['0'].new_id_solicitud;
+    const newId = idEquipamiento[0]["0"].new_id_solicitud;
     res.json(newId);
   } catch (err) {
     if (err.name === "SequelizeUniqueConstraintError") {
@@ -565,59 +562,56 @@ const CreaSolicitaEquipo = async (req, res) => {
     if (err.code === "ER_SIGNAL_EXCEPTION") {
       return res.status(409).json({
         message: "Error al crear la solicitud",
-        details:  err.message, // Mensaje detallado del error
+        details: err.message, // Mensaje detallado del error
         value: err.value, // El valor que causó el conflicto
       });
     }
-      // Mostrar un mensaje al usuario
+    // Mostrar un mensaje al usuario
     console.error("❌ Error en el backend:", err);
     res.status(500).json({ error: "Error en el servidor" });
     return res.status(500).json({ message: err.message });
   }
 };
 
-  const EliminaReservaBloque = async (req, res) => {
-    console.log( "** control EliminaReservaBloque ** req.body", req.body)
-//    const bloquesString = JSON.stringify(req.body.bloques_ids);
-//    const bloquesStringLimpio = bloquesString.replace(/\\"/g, '"');
-    const bloquesString = req.body.bloques_ids;
+const EliminaReservaBloque = async (req, res) => {
+  //console.log("** control EliminaReservaBloque ** req.body", req.body);
+  //    const bloquesString = JSON.stringify(req.body.bloques_ids);
+  //    const bloquesStringLimpio = bloquesString.replace(/\\"/g, '"');
+  const bloquesString = req.body.bloques_ids;
 
- 
-    try {      
-      const camposRep = [
-        req.body.id_profesor,
-        req.body.jornada_id,
-        req.body.id_equipamiento,
-        req.body.fecha_solicitud,
-        JSON.stringify(req.body.bloques_ids),     
-        req.body.pRol   
-      ];
-      const MyQuery = `CALL colegio.SP_EliminarBloquesReserva(?,?,?,?,?,?);`;
-      console.log( "camposRep==>", camposRep)
-      
-      const idEquipamiento = await sequelize.query(MyQuery, {
-        replacements: camposRep,
-        type: sequelize.QueryTypes.SELECT,
+  try {
+    const camposRep = [
+      req.body.id_profesor,
+      req.body.jornada_id,
+      req.body.id_equipamiento,
+      req.body.fecha_solicitud,
+      JSON.stringify(req.body.bloques_ids),
+      req.body.pRol,
+    ];
+    const MyQuery = `CALL colegio.SP_EliminarBloquesReserva(?,?,?,?,?,?);`;
+    //console.log("camposRep==>", camposRep);
+
+    const idEquipamiento = await sequelize.query(MyQuery, {
+      replacements: camposRep,
+      type: sequelize.QueryTypes.SELECT,
+    });
+    // console.log("*** SP_EliminarBloquesReserva** idEquipamiento=> ", idEquipamiento );
+    //      const newId = idEquipamiento[0]['0'].new_id_solicitud;
+    res.json("OK");
+  } catch (err) {
+    if (err.code === "ER_SIGNAL_EXCEPTION") {
+      return res.status(409).json({
+        message: "Error al eliminar reserva",
+        details: err.message, // Mensaje detallado del error
+        value: err.value, // El valor que causó el conflicto
       });
-      console.log("*** SP_EliminarBloquesReserva** idEquipamiento=> ", idEquipamiento)
-//      const newId = idEquipamiento[0]['0'].new_id_solicitud;
-      res.json('OK');
-    } catch (err) {
-     
-      if (err.code === "ER_SIGNAL_EXCEPTION") {
-        return res.status(409).json({
-          message: "Error al eliminar reserva",
-          details:  err.message, // Mensaje detallado del error
-          value: err.value, // El valor que causó el conflicto
-        });
-      }
-        // Mostrar un mensaje al usuario
-      console.error("❌ Error en el backend:", err);
-      res.status(500).json({ error: "Error en el servidor" });
-      return res.status(500).json({ message: err.message });
     }
-  };
-  
+    // Mostrar un mensaje al usuario
+    console.error("❌ Error en el backend:", err);
+    res.status(500).json({ error: "Error en el servidor" });
+    return res.status(500).json({ message: err.message });
+  }
+};
 
 const SolicitudEquipoProfe = async (req, res) => {
   try {
@@ -639,13 +633,12 @@ const SolicitudEquipoProfe = async (req, res) => {
         type: sequelize.QueryTypes.SELECT,
       }
     );
-    console.log("solicitudes=>", solicitudes);
+    // console.log("solicitudes=>", solicitudes);
     res.status(200).json(solicitudes);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 const GetFeriados = async (req, res) => {
   try {
@@ -659,84 +652,74 @@ const GetFeriados = async (req, res) => {
   }
 };
 
-
 const getDataProfe = async (req, res) => {
   const { rut } = req.params;
   if (!rut) {
-    return res
-      .status(400)
-      .json({
-        error: "Se requieren el rut del funcionario",
-      });
+    return res.status(400).json({
+      error: "Se requieren el rut del funcionario",
+    });
   }
 
   try {
-    const dataCursos = await sequelize.query(
-      `CALL sp_getfuncionario(?)`,
-      {
-        replacements: [ rut ],
-        type: sequelize.QueryTypes.SELECT,
-      }
-    );
+    const dataCursos = await sequelize.query(`CALL sp_getfuncionario(?)`, {
+      replacements: [rut],
+      type: sequelize.QueryTypes.SELECT,
+    });
 
     res.json(dataCursos);
   } catch (err) {
-    return res.status(500).json({ error: "Error al obtener Datos del Funcionario" });
+    return res
+      .status(500)
+      .json({ error: "Error al obtener Datos del Funcionario" });
   }
 };
 
-
 const putDataProfe = async (req, res) => {
-  const {email, fono, funcion, password} =  req.body.dataProfe
+  const { email, fono, funcion, password } = req.body.dataProfe;
   const salt = bcrypt.genSaltSync(12);
-  const rut = req.body.rut
+  const rut = req.body.rut;
   const passwordCrypt = bcrypt.hashSync(password, salt);
 
   if (!rut) {
-    return res
-      .status(400)
-      .json({
-        error: "Se requieren el rut del funcionario",
-      });
+    return res.status(400).json({
+      error: "Se requieren el rut del funcionario",
+    });
   }
-//  in pRut int, in pFono varchar(50), in pEmail varchar(50), in pFuncion varchar(50), in pPassword varchar(255)
+  //  in pRut int, in pFono varchar(50), in pEmail varchar(50), in pFuncion varchar(50), in pPassword varchar(255)
 
-  try { 
-    console.log("try=>rut:",rut," fono:",fono,"  email:", email,"  funcion:",funcion,"  password:",password, "  passwordCrypt:", passwordCrypt )
-     await sequelize.query(
-      `CALL sp_actfuncionario(?,?,?,?,?)`,
-      {
-        replacements: [rut, fono, email, funcion, passwordCrypt],
-        type: sequelize.QueryTypes.UPDATE,
-      }
-    );
+  try {
+    // console.log( "try=>rut:", rut, " fono:",  fono, "  email:",  email,  "  funcion:",  funcion, "  password:",  password, "  passwordCrypt:",  passwordCrypt    );
+    await sequelize.query(`CALL sp_actfuncionario(?,?,?,?,?)`, {
+      replacements: [rut, fono, email, funcion, passwordCrypt],
+      type: sequelize.QueryTypes.UPDATE,
+    });
     return res.status(200).json({
       message: "Inscripción realizada",
     });
   } catch (err) {
-    console.log("err=>:", err)
+    // console.log("err=>:", err);
     return res.status(500).json({ error: "Error al inscribir Funcionario" });
   }
 };
 
-
 const postCursosDiaAtencionProfe = async (req, res) => {
-
+  // console.log("Control req.body:", req.body);
   const { rut, cursos, horarios } = req.body;
   if (!rut) {
-    return res
-      .status(400)
-      .json({
-        error: "Se requieren el rut del funcionario",
-      });
+    return res.status(400).json({
+      error: "Se requieren el rut del funcionario",
+    });
   }
 
-  try { 
-     await sequelize.query(
+  try {
+    await sequelize.query(
       `CALL sp_asignar_funcionario_cursos_horarios(?,?,?)`,
       {
-        replacements: [rut, JSON.stringify(cursos || []),
-                JSON.stringify(horarios || [])],
+        replacements: [
+          rut,
+          JSON.stringify(cursos || []),
+          JSON.stringify(horarios || []),
+        ],
         type: sequelize.QueryTypes.INSERT,
       }
     );
@@ -744,11 +727,12 @@ const postCursosDiaAtencionProfe = async (req, res) => {
       message: "Actualización realizada",
     });
   } catch (err) {
-    console.log("err=>:", err)
-    return res.status(500).json({ error: "Error al inscribir Horarios Atención" });
+    //console.log("err=>:", err);
+    return res
+      .status(500)
+      .json({ error: "Error al inscribir Horarios Atención" });
   }
 };
-
 
 const getDiasAtencion = async (req, res) => {
   try {
@@ -762,58 +746,61 @@ const getDiasAtencion = async (req, res) => {
   }
 };
 
-
 const getCursosProfe = async (req, res) => {
   const { rut } = req.params;
   if (!rut) {
-    return res
-      .status(400)
-      .json({
-        error: "Se requieren el rut del funcionario",
-      });
+    return res.status(400).json({
+      error: "Se requieren el rut del funcionario",
+    });
   }
 
   try {
-    const dataHorario = await sequelize.query(
-      `CALL sp_getCursosProfe(?)`,
-      {
-        replacements: [ rut ],
-        type: sequelize.QueryTypes.SELECT,
-      }
-    );
+    const dataHorario = await sequelize.query(`CALL sp_getCursosProfe(?)`, {
+      replacements: [rut],
+      type: sequelize.QueryTypes.SELECT,
+    });
 
     res.json(dataHorario);
   } catch (err) {
-    return res.status(500).json({ error: "Error al obtener Datos del Funcionario" });
+    return res
+      .status(500)
+      .json({ error: "Error al obtener Datos del Funcionario" });
   }
 };
 
 const getHorarioProfe = async (req, res) => {
   const { rut } = req.params;
   if (!rut) {
-    return res
-      .status(400)
-      .json({
-        error: "Se requieren el rut del funcionario",
-      });
+    return res.status(400).json({
+      error: "Se requieren el rut del funcionario",
+    });
   }
 
   try {
-    const dataHorario = await sequelize.query(
-      `CALL sp_getProfeHorarios(?)`,
-      {
-        replacements: [ rut ],
-        type: sequelize.QueryTypes.SELECT,
-      }
-    );
+    const dataHorario = await sequelize.query(`CALL sp_getProfeHorarios(?)`, {
+      replacements: [rut],
+      type: sequelize.QueryTypes.SELECT,
+    });
 
     res.json(dataHorario);
   } catch (err) {
-    return res.status(500).json({ error: "Error al obtener Datos del Funcionario" });
+    return res
+      .status(500)
+      .json({ error: "Error al obtener Datos del Funcionario" });
   }
 };
 
+const getDataTodosProfe = async (req, res) => {
+  try {
+    const dataProfes = await sequelize.query(`CALL sp_getAllfuncionarios()`, {
+      type: sequelize.QueryTypes.SELECT,
+    });
 
+    res.json(dataProfes);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
 
 export default {
   docenteByID,
@@ -854,5 +841,5 @@ export default {
   getDiasAtencion,
   getHorarioProfe,
   getCursosProfe,
-
+  getDataTodosProfe,
 };

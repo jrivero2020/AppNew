@@ -4,7 +4,7 @@ import { NoMatch } from "./assets/NoMatch";
 // import LstUsuarios from "./usuario/LstUsuarios";
 // import Signup from "./usuario/Signup";
 import SalidaUsr from "./auth/SignOut";
-import Inscripcion from "./usuario/InscripcionNew"
+import Inscripcion from "./usuario/InscripcionNew";
 import MiddlewarePdf from "./core/MiddlewarePdf";
 import DocenteHoras from "./core/DocenteHoras";
 import VerFotoCompleta from "./core/VerFotoCompleta";
@@ -29,10 +29,12 @@ import PrincipalGui from "./core/InitOpcionII";
 import VerJSON from "./../client/core/VerJSON";
 import Gallery from "./../client/core/GaleriaFotos";
 import AsignacionCompleta from "./core/HorariosCursosProfe";
-//import SeleccionEquipos from "./../client/core/SeleccionEquipos";
-import SimceBasica from "./../client/Simce/SimceBasica"
+import AsignacionWrapper from "./core/asignaccionWrapper";
 
-import SolicitudEquipos from  "./../client/core/SolicitudEquipos";
+//import SeleccionEquipos from "./../client/core/SeleccionEquipos";
+import SimceBasica from "./../client/Simce/SimceBasica";
+
+import SolicitudEquipos from "./../client/core/SolicitudEquipos";
 const MainRouter = () => {
   return (
     <>
@@ -73,10 +75,10 @@ const MainRouter = () => {
           />
 
           <Route
-            path="/HorariosCursosProfe"
+            path="/AsignacionWrapper"
             element={
               <PrivateRoute>
-                <AsignacionCompleta />
+                <AsignacionWrapper />
               </PrivateRoute>
             }
           />

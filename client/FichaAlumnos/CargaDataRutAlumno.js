@@ -213,7 +213,7 @@ export const CargaDataFamiliaAp = ({
         //        setResultado({ ...resultado, [indFamilia[modeInterno]]: 1 }); // Ficha Cargada
 
         if (modeInterno >= 1 && modeInterno <= 4) {
-          console.log("Results de carga data de familia:==>", results);
+          // console.log("Results de carga data de familia:==>", results);
           updateDataBuscaAl(results);
         }
 

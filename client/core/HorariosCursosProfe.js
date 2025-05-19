@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+
 // import axios from 'axios';
 import {
   Container,
@@ -20,23 +22,39 @@ import {
   Alert,
   CircularProgress,
   IconButton,
+  useMediaQuery,
+  Snackbar,
 } from "@mui/material";
 import { Save, Delete, Add } from "@mui/icons-material";
+
+//import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+//import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+//import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
 import {
   getCursos,
   getDiasAtencion,
   getCursosProfe,
   getHorarioProfe,
+  postCursosDiaAtencionProfes,
 } from "../docentes/api-docentes";
 
 import { AuthContext } from "./AuthProvider";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-const AsignacionCompleta = () => {
+const AsignacionCompleta = ({
+  rutFuncionario: propRut,
+  nombreProfesor: propNombre,
+}) => {
   const [cursosDisponibles, setCursosDisponibles] = useState([]);
   const [cursosSeleccionados, setCursosSeleccionados] = useState([]);
   const [diasDisponibles, setDiasDisponibles] = useState([]);
   const [horarios, setHorarios] = useState([]);
+  const isSmallScreen = useMediaQuery("(max-width:720px)");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
   const [nuevoHorario, setNuevoHorario] = useState({
     id_dia: "",
     hora_desde: "",
@@ -45,11 +63,16 @@ const AsignacionCompleta = () => {
   const [loading, setLoading] = useState(true);
   const { jwt } = useContext(AuthContext);
 
-  const rutFuncionario = jwt.user._id;
-  const nombreProfesor = jwt.user._name;
+  //const rutFuncionario = jwt.user._id;
+  //const nombreProfesor = jwt.user._name;
+
+  const rutFuncionario = propRut || jwt.user._id;
+  const nombreProfesor = propNombre || jwt.user._name;
+
   const usrRol = jwt.user._rol;
   const abortController = new AbortController();
   const signal = abortController.signal;
+  const navigate = useNavigate();
   const themeLocal = createTheme({
     palette: {
       primary: {
@@ -64,9 +87,7 @@ const AsignacionCompleta = () => {
   });
   useEffect(() => {
     const fetchData = async () => {
-      console.log("Entrando en fetchData****");
       try {
-        console.log("Voy a promise.all");
         const [cursosAsignadosRes, horariosRes, cursosRes, diasRes] =
           await Promise.all([
             getCursosProfe({ rut: rutFuncionario }, signal),
@@ -75,18 +96,6 @@ const AsignacionCompleta = () => {
             getDiasAtencion(),
           ]);
 
-        console.log("Sali de promise.all");
-
-        console.log(
-          " cursosRes:",
-          cursosRes,
-          " diasRes:",
-          diasRes,
-          " cursosAsignadosRes:",
-          cursosAsignadosRes,
-          " horariosRes:",
-          horariosRes
-        );
         const cursosArray = Object.values(cursosAsignadosRes); // Convierte a array
         const horariosArray = Object.values(horariosRes); // Convierte a array
         setCursosDisponibles(cursosRes);
@@ -114,12 +123,6 @@ const AsignacionCompleta = () => {
             )
         );
 
-        console.log(
-          "horariosArray:",
-          horariosArray,
-          "  horariosUnicos:",
-          horariosUnicos
-        );
         setHorarios(
           horariosUnicos.map((h) => ({
             id_dia: h.id_dia,
@@ -151,6 +154,10 @@ const AsignacionCompleta = () => {
       [e.target.name]: e.target.value,
     });
   };
+  // Cerrar Snackbar
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
 
   const agregarHorario = () => {
     if (
@@ -175,17 +182,33 @@ const AsignacionCompleta = () => {
   };
 
   const guardarAsignacion = async () => {
+    const arrayFiltrado = cursosSeleccionados.filter((item) => item !== null);
+    const horarioFiltrado = horarios.filter((item) => item !== null);
+    if (horarioFiltrado.length === 0 && arrayFiltrado.length === 0) return;
+    console.log(
+      "cursosSeleccionados:",
+      arrayFiltrado,
+      "arrayFiltrado:",
+      horarioFiltrado
+    );
     try {
-      //      await axios.post(`/api/funcionarios/${rutFuncionario}/asignacion-completa`, {
-      //        cursos: cursosSeleccionados,
-      //        horarios: horarios
-      //      });
-      alert("Asignación guardada correctamente");
+      await postCursosDiaAtencionProfes(
+        {
+          rut: rutFuncionario,
+          cursos: arrayFiltrado,
+          horarios: horarioFiltrado,
+        },
+        { t: jwt.token }
+      );
+      setSnackbarMessage("Solicitud enviada correctamente");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
     } catch (error) {
-      console.error("Error:", error);
-      alert(
+      setSnackbarMessage(
         `Error al guardar: ${error.response?.data?.error || error.message}`
       );
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     }
   };
 
@@ -211,7 +234,7 @@ const AsignacionCompleta = () => {
           maxWidth="lg"
           rowSpacing={1}
           columnSpacing={2}
-          sx={{ mt: 12 }}
+          sx={{ mt: isSmallScreen ? 1 : 12 }}
         >
           <Typography
             sx={{
@@ -226,7 +249,7 @@ const AsignacionCompleta = () => {
           </Typography>
           <Card sx={{ mb: 4, justifyContent: "center", alignItems: "center" }}>
             <CardHeader
-              title="Cursos Asignados"
+              title="Profesor(a) Jefe(a) de "
               titleTypographyProps={{ variant: "h6" }}
               sx={{ bgcolor: "primary.main", color: "white" }}
             />
@@ -369,7 +392,7 @@ const AsignacionCompleta = () => {
                       </Button>
                     </Grid>
                   </Grid>
-                  {console.log("Horarios =>", horarios)}
+
                   {horarios.length > 0 ? (
                     <Table>
                       <TableHead>
@@ -432,7 +455,7 @@ const AsignacionCompleta = () => {
               </Card>
             </Grid>
           </Grid>
-          <Grid container justifyContent="center">
+          <Grid container justifyContent="center" spacing={4}>
             <Grid item>
               <Button
                 variant="contained"
@@ -447,8 +470,34 @@ const AsignacionCompleta = () => {
                 Guardar Asignación Cursos/Horario de Atención
               </Button>
             </Grid>
+            {(usrRol === 1 || usrRol === 2) && (
+              <Grid item>
+                <Button
+                  variant="outlined"
+                  color="success"
+                  onClick={() => navigate("/AsignacionWrapper")}
+                  sx={{ mb: 2 }}
+                >
+                  Volver
+                </Button>
+              </Grid>
+            )}
           </Grid>
         </Grid>
+        {/* Snackbar para mensajes */}
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+        >
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity={snackbarSeverity}
+            sx={{ width: "100%" }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </Container>
     </ThemeProvider>
   );

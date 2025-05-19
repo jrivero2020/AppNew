@@ -99,7 +99,6 @@ const remove = async (params, credential) => {
 };
 
 const getDatosCert = async (params, signal, credentials) => {
-  
   try {
     let response = await fetch("/AlumnosByRut/" + params.rut, {
       method: "GET",
@@ -458,7 +457,6 @@ const api_GetFeriados = async () => {
   }
 };
 
-
 const getDataProfe = async (params, signal) => {
   try {
     const response = await fetch("/getDataProfe/" + params.rut, {
@@ -476,13 +474,12 @@ const getDataProfe = async (params, signal) => {
     }
     const data = await response.json();
     return data[0];
-    
   } catch (err) {
     return { error: err.message, message: err.message };
   }
 };
 
-const putDataProfe = async (params) => {  
+const putDataProfe = async (params) => {
   try {
     let response = await fetch("/putDataProfe", {
       method: "PUT",
@@ -502,13 +499,15 @@ const putDataProfe = async (params) => {
 };
 
 // POST /api/funcionarios/:rut/asignacion-completa
-const postCursosDiaAtencionProfes = async (params) => {  
+const postCursosDiaAtencionProfes = async (params, credentials) => {
+  // console.log("En api,  JSON.stringify(params):", JSON.stringify(params));
   try {
     let response = await fetch("/postCursosDiaAtencionProfe", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
       },
       body: JSON.stringify(params),
     });
@@ -521,7 +520,6 @@ const postCursosDiaAtencionProfes = async (params) => {
   }
 };
 
-
 const getDiasAtencion = async () => {
   try {
     const response = await fetch("/getDiasAtencion", { method: "GET" });
@@ -531,7 +529,6 @@ const getDiasAtencion = async () => {
     return { error: err.message, message: err.message };
   }
 };
-
 
 const getCursosProfe = async (params, signal) => {
   try {
@@ -550,7 +547,6 @@ const getCursosProfe = async (params, signal) => {
     }
     const data = await response.json();
     return data[0];
-    
   } catch (err) {
     return { error: err.message, message: err.message };
   }
@@ -573,7 +569,27 @@ const getHorarioProfe = async (params, signal) => {
     }
     const data = await response.json();
     return data[0];
-    
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
+const getDataTodosProfe = async () => {
+  try {
+    const response = await fetch("/getDataTodosProfe/", {
+      method: "GET",
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      try {
+        const errorData = JSON.parse(text); // Intenta parsear por si es JSON válido
+        throw new Error(errorData.message || "Error del servidor");
+      } catch {
+        throw new Error(`Error HTTP ${response.status}: ${text}`);
+      }
+    }
+    const data = await response.json();
+    return data[0];
   } catch (err) {
     return { error: err.message, message: err.message };
   }
@@ -616,4 +632,5 @@ export {
   getDiasAtencion,
   getCursosProfe,
   getHorarioProfe,
+  getDataTodosProfe,
 };

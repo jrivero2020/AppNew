@@ -1,7 +1,5 @@
-// import { createTheme } from "@mui/material/";
 import { createTheme } from "@mui/material/styles";
 import { blue, red, green, pink } from "@mui/material/colors";
-import { esES as esESCore } from "@mui/material/locale";
 
 const theme = createTheme({
   palette: {
@@ -27,7 +25,6 @@ const theme = createTheme({
     protectedTitle: pink["400"],
     type: "light",
   },
-  esESCore,
 });
 
 export default theme;

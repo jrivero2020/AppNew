@@ -138,13 +138,6 @@ export default function FichaDelAlumno() {
     }
     if (campo !== "al_rut") {
       ret = validarCampo(campo, valores[campo]);
-      if (ret) {
-        console.log("Validado", ret);
-      } else {
-        console.log("no validado", ret);
-      }
-      //      (ret ? console.log("Validado", ret) : console.log("no validado", ret))
-      console.log("ret : ", ret);
     }
 
     //console.log("Se llama a actualizar validations");
@@ -212,7 +205,7 @@ export default function FichaDelAlumno() {
   //***************************************************/
   //* manejaCambioComunas
   const manejaCambioComunas = (event) => {
-    console.log("event.target.value:", event.target.value);
+    //console.log("event.target.value:", event.target.value);
     setSelectedComuna(event.target.value);
   };
   //***************************************************/
