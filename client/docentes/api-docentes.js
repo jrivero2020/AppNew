@@ -634,3 +634,54 @@ export {
   getHorarioProfe,
   getDataTodosProfe,
 };
+
+
+/*
+// server.js
+const express = require('express');
+const mysql = require('mysql2/promise');
+const cors = require('cors');
+
+const app = express();
+app.use(cors());
+
+const pool = mysql.createPool({
+  host: 'tu_host',
+  user: 'tu_usuario',
+  password: 'tu_contraseña',
+  database: 'tu_base_de_datos',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+app.get('/api/horarios-profesores', async (req, res) => {
+  try {
+    const [results] = await pool.query('CALL sp_horariosatencionprofe()');
+    res.json(results[0]); // Ajusta según la estructura que devuelve tu SP
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Error al obtener los horarios' });
+  }
+});
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Servidor API corriendo en puerto ${PORT}`);
+});
+
+
+*****************************************
+// Reemplaza la función fetchData con esto cuando tengas la API:
+const fetchData = async () => {
+  try {
+    const response = await axios.get('/api/horarios-profesores');
+    setHorarios(response.data);
+    setLoading(false);
+  } catch (err) {
+    setError('Error al cargar los horarios');
+    setLoading(false);
+  }
+};
+
+*/
