@@ -595,6 +595,27 @@ const getDataTodosProfe = async () => {
   }
 };
 
+const getHorarioAtencionProfe = async () => {
+  try {
+    const response = await fetch("/getHorarioAtencionProfe/", {
+      method: "GET",
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      try {
+        const errorData = JSON.parse(text); // Intenta parsear por si es JSON válido
+        throw new Error(errorData.message || "Error del servidor");
+      } catch {
+        throw new Error(`Error HTTP ${response.status}: ${text}`);
+      }
+    }
+    const data = await response.json();
+    return data[0];
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
 export {
   create,
   leer,
@@ -633,8 +654,8 @@ export {
   getCursosProfe,
   getHorarioProfe,
   getDataTodosProfe,
+  getHorarioAtencionProfe,
 };
-
 
 /*
 // server.js

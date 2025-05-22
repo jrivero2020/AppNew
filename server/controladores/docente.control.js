@@ -802,6 +802,21 @@ const getDataTodosProfe = async (req, res) => {
   }
 };
 
+const getHorarioAtencionProfe = async (req, res) => {
+  try {
+    const dataProfes = await sequelize.query(
+      `CALL sp_horariosatencionprofe()`,
+      {
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    res.json(dataProfes);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 export default {
   docenteByID,
   leerDocente,
@@ -842,4 +857,5 @@ export default {
   getHorarioProfe,
   getCursosProfe,
   getDataTodosProfe,
+  getHorarioAtencionProfe,
 };

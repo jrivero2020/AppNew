@@ -120,5 +120,8 @@ router.route("/getDiasAtencion").get(docenteCtrl.getDiasAtencion);
 router.route("/getHorarioProfe/:rut").get(docenteCtrl.getHorarioProfe);
 router.route("/getCursosProfe/:rut").get(docenteCtrl.getCursosProfe);
 router.route("/getDataTodosProfe").get(docenteCtrl.getDataTodosProfe);
+router
+  .route("/getHorarioAtencionProfe")
+  .get(docenteCtrl.getHorarioAtencionProfe);
 
 export default router;

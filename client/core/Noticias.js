@@ -72,7 +72,7 @@ export default function Noticias() {
             }}
           >
             {Noticias.map((noticia) => (
-              <Grid item key={noticia.datos.nro} xs={12} sm={6} md={4}>
+              <Grid item key={noticia.datos.nro} xs={12} md={6}>
                 {noticia.datos.modo === "img" && (
                   <>
                     <Card elevation={8}>

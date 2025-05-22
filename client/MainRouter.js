@@ -30,6 +30,7 @@ import VerJSON from "./../client/core/VerJSON";
 import Gallery from "./../client/core/GaleriaFotos";
 import AsignacionCompleta from "./core/HorariosCursosProfe";
 import AsignacionWrapper from "./core/asignaccionWrapper";
+import HorarioAtencionProfesores from "./core/horarioAtencion";
 
 //import SeleccionEquipos from "./../client/core/SeleccionEquipos";
 import SimceBasica from "./../client/Simce/SimceBasica";
@@ -62,6 +63,11 @@ const MainRouter = () => {
           <Route path="/VerFotoCompleta" element={<VerFotoCompleta />} />
 
           <Route path="/VerUtilesEscolares" element={<VerUtilesEscolares />} />
+          <Route
+            path="/HorarioAtencionProfesores"
+            element={<HorarioAtencionProfesores />}
+          />
+
           <Route path="/DocenteHoras" element={<DocenteHoras />} />
           <Route path="/VerJSON" element={<VerJSON />} />
 
