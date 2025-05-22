@@ -8,5 +8,6 @@ export const sequelize = new Sequelize(
   {
     host: mybdSql.host,
     dialect: mybdSql.dialect,
+    logging: false, // <- Aquí desactivas los logs SQL
   }
 );

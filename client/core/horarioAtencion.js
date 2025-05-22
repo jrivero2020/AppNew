@@ -85,7 +85,7 @@ const HorarioAtencionProfesores = () => {
       spacing={2}
       sx={{
         margin: "auto",
-        width: { xs: "100%", sm: "95%", md: "75%" }, // Más gradual
+        width: { xs: "100%", sm: "95%" }, // Más gradual
         mt: isSmallScreen ? 1 : 12, // Implementación directa
         px: { xs: 0.5, sm: 2 }, // Padding horizontal menor en móviles
         boxSizing: "border-box",
@@ -99,7 +99,7 @@ const HorarioAtencionProfesores = () => {
             px: { xs: 0.5, sm: 1 },
             pb: 2,
             backgroundColor: "#efebe9",
-            width: { xs: "100%", sm: "95%", md: "75%" }, // Aquí aplicamos los anchos específicos
+            width: { xs: "100%", sm: "95%" }, // Aquí aplicamos los anchos específicos
             margin: "0 auto",
           }}
         >
