@@ -82,10 +82,10 @@ export default function Noticias() {
                             src={pathImg + noticia.datos.src}
                             effect="blur"
                             style={{
-                              height: "115",
+                              height: "100",
                               display: "block",
                               margin: "0 auto",
-                              width: "100%",
+                              width: "90%",
                             }}
                             className={classes.imgBtn}
                           />
