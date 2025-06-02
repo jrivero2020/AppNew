@@ -29,7 +29,7 @@ const style = {
   overflowY: 'auto'
 };
 
-const HorariosModal = ({ open, onClose, horarios, fecha }) => {
+const HorariosModal = ({ open, onClose, horarios, fecha,nombreEq, nombreJor }) => {
     
   return (
     <Modal
@@ -43,7 +43,14 @@ const HorariosModal = ({ open, onClose, horarios, fecha }) => {
           <Typography id="modal-horarios-title" variant="h6" component="h2">
             Horarios Disponibles
           </Typography>
-           <Typography variant="subtitle1" sx={{ color: 'text.secondary' }}>
+           <Typography variant="subtitle1" sx={{ color: 'text.secondary' }}>            
+            Jornada: <strong>{nombreJor}</strong> 
+          </Typography>
+           <Typography variant="subtitle1" sx={{ color: 'text.secondary' }}>            
+            Equipamiento: <strong>{nombreEq}</strong>  {/* Aquí se muestra la fecha formateada */}
+          </Typography>
+
+           <Typography variant="subtitle1" sx={{ color: 'text.secondary' }}>            
             Fecha: <strong>{fecha}</strong>  {/* Aquí se muestra la fecha formateada */}
           </Typography>
           <IconButton onClick={onClose}>

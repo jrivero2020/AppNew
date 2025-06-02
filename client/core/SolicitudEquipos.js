@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
-import SaveAltTwoToneIcon from '@mui/icons-material/SaveAltTwoTone';
+import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
+import SaveAltTwoToneIcon from "@mui/icons-material/SaveAltTwoTone";
 import {
   TextField,
   MenuItem,
@@ -32,7 +32,7 @@ import {
 } from "../docentes/api-docentes";
 
 import { AuthContext } from "./../core/AuthProvider";
-import  HorariosModal  from "./VerResumenHorariosEquipos";
+import HorariosModal from "./VerResumenHorariosEquipos";
 
 dayjs.extend(require("dayjs/plugin/weekday"));
 dayjs.extend(require("dayjs/plugin/isSameOrBefore"));
@@ -57,13 +57,12 @@ const SolicitudEquipos = () => {
   const { jwt } = useContext(AuthContext);
   const [selectedReservedBlocks, setSelectedReservedBlocks] = useState([]);
   const [feriados, setFeriados] = useState([]);
-
+  const [nombreJornada, setNombreJornada] = useState("Jornada no definida");
+  const [nombreEquipo, setNombreEquipo] = useState("quipamiento no definido");
 
   const idProfesor = jwt.user._id;
   const nombreProfesor = jwt.user._name;
   const usrRol = jwt.user._rol;
-
-
   // const idProfesor =  26
   const abortController = new AbortController();
   const signal = abortController.signal;
@@ -108,7 +107,7 @@ const SolicitudEquipos = () => {
             equipamiento_id: selectedEquipamiento,
             fecha_solicitud: selectedDate.format("YYYY-MM-DD"),
           });
-          console.log("bloquesData de bloques horarios==>", bloquesData);
+          // console.log("bloquesData de bloques horarios==>", bloquesData);
           setBloquesHorarios(bloquesData);
         } catch (error) {
           // console.error("Error cargando bloques horarios:", error);
@@ -257,13 +256,27 @@ const SolicitudEquipos = () => {
       setSnackbarOpen(true);
     }
   };
-  const selctEquipamiento = (id_equipo) => {
-    // const equipoSel = equipamientos.find((equip) => equip.id_equipos === id_equipo);
-    // const disponibles
-    setSelectedEquipamiento(id_equipo);
-    // console.log("id_equipo***=>", id_equipo )
-  };
+
+//   const selctEquipamiento = (id_equipo) => {
+//     setSelectedEquipamiento(id_equipo);
+//   };
   const [modalOpen, setModalOpen] = useState(false);
+
+  const guardarEquipos = (ptrEquipo) => {
+    
+    const equiposSeleccionado = equipamientos.find((equipo) => equipo.id_equipos === ptrEquipo);
+    const nombreEquipos = equiposSeleccionado ? equiposSeleccionado.nombre: "Equipamiento no encontrado";
+    setNombreEquipo(nombreEquipos);
+     setSelectedEquipamiento(ptrEquipo);
+  };
+
+  const guardarJornada = (ptrJornada) => {
+    const jornadaSeleccionada = jornadas.find( (jornada) => jornada.id === ptrJornada );
+    const nombreJornada = jornadaSeleccionada? jornadaSeleccionada.nombre: "Jornada no encontrada";
+    setSelectedJornada(ptrJornada);
+    setNombreJornada(nombreJornada);
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <Grid
@@ -411,7 +424,7 @@ const SolicitudEquipos = () => {
                             : "outlined"
                         }
                         color="primary"
-                        onClick={() => setSelectedJornada(jornada.id)}
+                        onClick={() => guardarJornada(jornada.id)}
                         sx={{
                           minWidth: "120px", // Ancho fijo equivalente a ~10 caracteres
                           width: "120px", // Fuerza el ancho exacto
@@ -465,7 +478,7 @@ const SolicitudEquipos = () => {
                             : "outlined"
                         }
                         color="secondary"
-                        onClick={() => selctEquipamiento(equip.id_equipos)} // ojo pensar en dejar stock x equipos ya definidos
+                        onClick={() => guardarEquipos( equip.id_equipos)} // ojo pensar en dejar stock x equipos ya definidos
                         // para mostrar en seleccion de bloque la cantidad disponible
                         style={{
                           minWidth: "120px",
@@ -737,7 +750,6 @@ const SolicitudEquipos = () => {
                     color="secondary"
                     onClick={handleLiberarBloques}
                     disabled={selectedReservedBlocks.length === 0}
-                    
                     style={{
                       marginTop: "16px",
                       backgroundColor:
@@ -757,18 +769,21 @@ const SolicitudEquipos = () => {
                     disabled={bloquesHorarios.length === 0}
                     style={{
                       marginTop: "16px",
-                      backgroundColor: bloquesHorarios.length > 0 ? "#006064" : "transparent", 
+                      backgroundColor:
+                        bloquesHorarios.length > 0 ? "#006064" : "transparent",
                       color: bloquesHorarios.length > 0 ? "white" : "#006064",
                     }}
-                    startIcon={<CalendarMonthRoundedIcon />} 
+                    startIcon={<CalendarMonthRoundedIcon />}
                   >
-                    ver detalle 
+                    ver detalle
                   </Button>
                   <HorariosModal
                     open={modalOpen}
                     onClose={() => setModalOpen(false)}
                     horarios={bloquesHorarios}
-                    fecha={selectedDate.format('DD/MM/YYYY')}
+                    fecha={selectedDate.format("DD/MM/YYYY")}
+                    nombreEq={nombreEquipo}
+                    nombreJor={nombreJornada}
                   />
                 </Grid>
               </Grid>
