@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
+import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+import SaveAltTwoToneIcon from '@mui/icons-material/SaveAltTwoTone';
 import {
   TextField,
   MenuItem,
@@ -18,6 +20,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
+
 import {
   getCursos,
   getAsignaturas,
@@ -29,6 +32,7 @@ import {
 } from "../docentes/api-docentes";
 
 import { AuthContext } from "./../core/AuthProvider";
+import  HorariosModal  from "./VerResumenHorariosEquipos";
 
 dayjs.extend(require("dayjs/plugin/weekday"));
 dayjs.extend(require("dayjs/plugin/isSameOrBefore"));
@@ -54,9 +58,11 @@ const SolicitudEquipos = () => {
   const [selectedReservedBlocks, setSelectedReservedBlocks] = useState([]);
   const [feriados, setFeriados] = useState([]);
 
+
   const idProfesor = jwt.user._id;
   const nombreProfesor = jwt.user._name;
   const usrRol = jwt.user._rol;
+
 
   // const idProfesor =  26
   const abortController = new AbortController();
@@ -102,7 +108,7 @@ const SolicitudEquipos = () => {
             equipamiento_id: selectedEquipamiento,
             fecha_solicitud: selectedDate.format("YYYY-MM-DD"),
           });
-          //console.log("bloquesData de bloques horarios==>", bloquesData);
+          console.log("bloquesData de bloques horarios==>", bloquesData);
           setBloquesHorarios(bloquesData);
         } catch (error) {
           // console.error("Error cargando bloques horarios:", error);
@@ -138,21 +144,6 @@ const SolicitudEquipos = () => {
     if (!equipamientoSeleccionado) {
       errorMsg = "Debe seleccionar un equipamiento válido";
     }
-    /*
-    } else if (selectedEquipamiento === 1)
-      setCantidad(equipamientoSeleccionado.cantidad);
-    else if (selectedEquipamiento === 2 || selectedEquipamiento === 3) {
-      // Validar solo para Chromebook (2) y Tablet (3)
-      // const stock = equipamientoSeleccionado.cantidad;
-
-      if (cantidad <= 0) {
-        errorMsg = `La cantidad mínima debe ser 1`;
-      } else if (cantidad > stock) {
-        errorMsg = `La cantidad excede el stock disponible (${stock})`;
-      }
-
-    }
-*/
     // 3. Manejo de errores
     if (errorMsg) {
       setSnackbarMessage(errorMsg);
@@ -272,7 +263,7 @@ const SolicitudEquipos = () => {
     setSelectedEquipamiento(id_equipo);
     // console.log("id_equipo***=>", id_equipo )
   };
-
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <Grid
@@ -494,56 +485,6 @@ const SolicitudEquipos = () => {
                   </Box>
                 </Grid>
 
-                {/* Campo de cantidad (solo para Chromebook y Tablet) 
-                {(selectedEquipamiento === 2 || selectedEquipamiento === 3) && (
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "center" }}
-                  >
-                    <TextField
-                      label="Cantidad"
-                      type="number"
-                      value={cantidad}
-                      onChange={(e) => {
-                        const value = Math.max(
-                          1,
-                          Math.min(
-                            e.target.value,
-                            selectedEquipamiento === 3 ? 60 : 45
-                          )
-                        );
-                        setCantidad(value);
-                      }}
-                      inputProps={{
-                        min: 1,
-                        max: selectedEquipamiento === 3 ? 60 : 45, // Límite según el equipamiento
-                        style: {
-                          textAlign: "center",
-                          padding: "8px 5px",
-                        },
-                      }}
-                      sx={{
-                        width: "80px",
-                        "& .MuiOutlinedInput-root": {
-                          padding: "0 !important",
-                        },
-                        "& .MuiInputLabel-root": {
-                          transform: "translate(50%, -50%) scale(0.75)",
-                          right: "50%",
-                          left: "auto",
-                          top: "0px",
-                          position: "absolute",
-                          originX: "center",
-                        },
-                        "& .MuiInputLabel-shrink": {
-                          transform: "translate(50%, 0) scale(0.75)",
-                        },
-                      }}
-                    />
-                  </Grid>
-                )}
-                */}
                 {/* Selector de fecha */}
                 <Grid item xs={12}>
                   <Box
@@ -773,11 +714,12 @@ const SolicitudEquipos = () => {
                 sx={{ mt: 2 }}
               >
                 {/* Botón de enviar */}
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                   <Button
                     type="submit"
                     variant="contained"
                     color="primary"
+                    startIcon={<SaveAltTwoToneIcon />}
                     disabled={
                       !selectedCurso ||
                       !selectedAsignatura ||
@@ -789,12 +731,13 @@ const SolicitudEquipos = () => {
                     Enviar Solicitud
                   </Button>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                   <Button
                     variant="contained"
                     color="secondary"
                     onClick={handleLiberarBloques}
                     disabled={selectedReservedBlocks.length === 0}
+                    
                     style={{
                       marginTop: "16px",
                       backgroundColor:
@@ -805,6 +748,28 @@ const SolicitudEquipos = () => {
                   >
                     Liberar bloques ({selectedReservedBlocks.length})
                   </Button>
+                </Grid>
+                <Grid item xs={4}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => setModalOpen(true)}
+                    disabled={bloquesHorarios.length === 0}
+                    style={{
+                      marginTop: "16px",
+                      backgroundColor: bloquesHorarios.length > 0 ? "#006064" : "transparent", 
+                      color: bloquesHorarios.length > 0 ? "white" : "#006064",
+                    }}
+                    startIcon={<CalendarMonthRoundedIcon />} 
+                  >
+                    ver detalle 
+                  </Button>
+                  <HorariosModal
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    horarios={bloquesHorarios}
+                    fecha={selectedDate.format('DD/MM/YYYY')}
+                  />
                 </Grid>
               </Grid>
             </form>
