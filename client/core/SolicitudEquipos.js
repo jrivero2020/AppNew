@@ -87,7 +87,7 @@ const SolicitudEquipos = () => {
         ]);
         setFeriados(dferiados.map((f) => dayjs(f.diaferiado)));
       } catch (error) {
-        console.error("Error cargando datos:", error);
+        // console.error("Error cargando datos:", error);
         setSnackbarMessage("Error cargando datos iniciales");
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
@@ -122,12 +122,13 @@ const SolicitudEquipos = () => {
 
   const shouldDisableDate = (date) => {
     const day = date.day();
-    //return false;
+    const condicion =  day === 0 || day === 6 || feriados.some((feriado) => date.isSame(feriado, "day"))
+    if( usrRol === 1 ){
+      return( condicion )
+    } 
+    
     return (
-      date.isBefore(dayjs(), "day") ||
-      day === 0 ||
-      day === 6 ||
-      feriados.some((feriado) => date.isSame(feriado, "day"))
+      date.isBefore(dayjs(), "day") || condicion
     );
   };
 
