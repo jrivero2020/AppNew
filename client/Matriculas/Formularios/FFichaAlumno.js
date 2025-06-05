@@ -39,7 +39,7 @@ const theme = createTheme({
 export const FFichaAlumno = ({ resultado, setResultado }) => {
   const [value, setvalue] = useState(0);
   const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
-  const { isJwtRol,jwt } = useContext(AuthContext);
+  const { isJwtRol, jwt } = useContext(AuthContext);
   const [comunas, setComunas] = useState([]);
   const [parentescos, setParentescos] = useState([]);
   const [cursos, setCursos] = useState(null);
@@ -101,8 +101,9 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
     }
   }, [comunas, resultado, setDataBuscaAl, dataBuscaAl]);
 
-  if (!dataBuscaAl) {
-    return <div>Cargando datos del alumno...</div>;
+
+  if (!dataBuscaAl || !dataBuscaAl.al_rut) {
+    return <div>Cargando datos del alumno...</div>;  
   }
 
   return (
@@ -196,12 +197,12 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
           <Button
             size="large"
             variant="contained"
-            disabled= {!isAdminOrEdit}            
+            disabled={!isAdminOrEdit}
             sx={{
               fontSize: "11px",
               mt: "10px",
               backgroundColor: "green", // Fondo verde
-              display: isAdminOrEdit ? "inline-flex" : "none",         
+              display: isAdminOrEdit ? "inline-flex" : "none",
 
               "&:hover": {
                 // Estilo al pasar el mouse

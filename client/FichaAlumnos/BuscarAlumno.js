@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from "react";
 import { Grid, createTheme, ThemeProvider } from "@mui/material";
 
@@ -27,11 +28,14 @@ const theme = createTheme({
   },
 });
 
-export default function BuscarAlumno() {
+export default function BuscarAlumno({
+  ModoLLamada = 'interno',
+  onDatosListos = null,
+}) {
   const [snackbar, setSnackbar] = useState(null);
   // const handleCloseSnackbar = () => setSnackbar(null);
   const [resultado, setResultado] = useState(dataResultado);
-
+  const [datosEnviados, setDatosEnviados] = useState(false);
   const [alumnosGetApi, SetAlumnosGetApi] = useState([]);
   const gridBusca = [0, 3, 4]; // 0=init, 3=error,4=abort
   const alNuevo = 1;
@@ -103,6 +107,24 @@ export default function BuscarAlumno() {
     if (gridBusca.includes(resultado.result)) setDataBuscaAl(cFichaAlumno);
   }, [resultado.result, gridBusca, setDataBuscaAl]);
 
+  useEffect(() => {
+    if (
+      ModoLLamada === "Externo" &&
+      resultado.result === DataFichaCargada &&
+      onDatosListos &&
+      !datosEnviados &&
+      dataBuscaAl.al_rut
+    ) {
+
+      onDatosListos({ datosAlumno: dataBuscaAl, estado: resultado });
+      setDatosEnviados(true); // Evita re-envíos
+    }
+  }, [resultado.result, dataBuscaAl.al_rut]);
+
+  if (datosEnviados && ModoLLamada === "Externo") {
+    return null; // Oculta el componente
+  }
+
   return (
     <>
       {gridBusca.includes(resultado.result) && (
@@ -162,10 +184,10 @@ export default function BuscarAlumno() {
 
       {resultado.result === openGridAlumno &&
         ListaNombresGrilla({ alumnosGetApi, resultado, setResultado })}
-      {resultado.result === DataFichaCargada && (
+      { ModoLLamada === 'interno' && resultado.result === DataFichaCargada && (
         <FFichaAlumno resultado={resultado} setResultado={setResultado} />
       )}
-      {resultado.result === alNuevo && (
+      {ModoLLamada === 'interno' && resultado.result === alNuevo && (
         <FFichaAlumno resultado={resultado} setResultado={setResultado} />
       )}
 

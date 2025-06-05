@@ -14,10 +14,10 @@ import Mision from "./assets/data/mision";
 import CertAlumnoRegular from "./print/CertAlumnoRegular";
 import LabTabs from "./Matriculas/LabTabs";
 import VerUtilesEscolares from "./core/VerUtilesEscolares";
-import Alertas from "./assets/mensajes/Alertas";
-import Parent from "./Matriculas/Parent";
+// import Alertas from "./assets/mensajes/Alertas";
+// import Parent from "./Matriculas/Parent";
 import CompLibroMatricula from "./Matriculas/CompLibroMatriculas";
-import Pendiente from "./core/PagPendiente";
+//import Pendiente from "./core/PagPendiente";
 import Menu from "./core/menuCLCII";
 import PrivateRoute from "./auth/PrivateRoute";
 import { AuthProvider } from "./core/AuthProvider";
@@ -28,7 +28,7 @@ import FullFeaturedCrudGrid from "./assets/GrillaExamples/FullFeaturedCrudGrid";
 import PrincipalGui from "./core/InitOpcionII";
 import VerJSON from "./../client/core/VerJSON";
 import Gallery from "./../client/core/GaleriaFotos";
-import AsignacionCompleta from "./core/HorariosCursosProfe";
+// import AsignacionCompleta from "./core/HorariosCursosProfe";
 import AsignacionWrapper from "./core/asignaccionWrapper";
 import HorarioAtencionProfesores from "./core/horarioAtencion";
 
@@ -36,6 +36,8 @@ import HorarioAtencionProfesores from "./core/horarioAtencion";
 import SimceBasica from "./../client/Simce/SimceBasica";
 
 import SolicitudEquipos from "./../client/core/SolicitudEquipos";
+import PagoDataAlumno from "./core/Pagos/DatoAlumno";
+
 const MainRouter = () => {
   return (
     <>
@@ -115,10 +117,12 @@ const MainRouter = () => {
               </PrivateRoute>
             }
           />
+          {/*   <Route path="/Alertas" element={<Alertas />} /> }   */}
+          {/*   <Route path="/Parent" element={<Parent />} />       */}
+          {/*   <Route path="/Pendiente" element={<Pendiente />} /> */}
 
-          <Route path="/Alertas" element={<Alertas />} />
-          <Route path="/Parent" element={<Parent />} />
-          <Route path="/Pendiente" element={<Pendiente />} />
+          <Route path="/PagoDataAlumno" element={<PagoDataAlumno />} />
+
           <Route
             path="/CompLibroMatricula"
             element={
