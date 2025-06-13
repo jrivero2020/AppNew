@@ -816,6 +816,122 @@ const getHorarioAtencionProfe = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
+/* Libro de Pagos */
+
+const getDataPagoAlumno = async (req, res) => {
+  // console.log( "getDataPagoAlumno  req=>", req)
+
+  const { rut, agno } = req.params;
+  if (!rut) {
+    return res.status(400).json({ error: "Se requieren el rut del Alumno" });
+  }
+  try {
+    const results = await sequelize.query(`CALL sp_getLibroPagosRut(?,?)`, {
+      replacements: [rut, agno],
+      type: sequelize.QueryTypes.SELECT,
+    });
+    // console.log("results :", results)
+    res.json({
+      alumno: results[0], // Datos básicos
+      meses: results[1], // Lista de meses
+      totales: results[2], // Sumatorias
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Error al obtener Datos del Alumno" });
+  }
+};
+
+const postPagoMesAlumno = async (req, res) => {
+  console.log("postPagoMesAlumno => req.body:", req.body);
+  const { pagos, usrId } = req.body;
+  // Validar que req.body sea un arreglo
+  if (!Array.isArray(pagos)) {
+    return res.status(400).json({
+      error: "Se espera un arreglo de pagos",
+    });
+  }
+  if (!usrId) {
+    return res.status(400).json({
+      error: "Se requiere el identificador del usuario (usrId)",
+    });
+  }
+  // Validar campos requeridos en cada pago
+  for (const pago of pagos) {
+    const {
+      rut_alumno,
+      mes,
+      agno,
+      monto_esperado,
+      monto_transaccion,
+      metodo_pago,
+    } = pago;
+    if (
+      !rut_alumno ||
+      !mes ||
+      !agno ||
+      monto_esperado == null ||
+      monto_transaccion == null ||
+      !metodo_pago
+    ) {
+      return res.status(400).json({
+        error: `Faltan campos requeridos para el pago del mes ${mes}`,
+      });
+    }
+  }
+  try {
+    const queryResult = await sequelize.query(
+      `CALL sp_pagos_registrarpago(?, ?)`,
+      {
+        replacements: [JSON.stringify(pagos), usrId],
+        type: sequelize.QueryTypes.RAW,
+      }
+    );
+
+    // Log para depurar la estructura completa de la respuesta
+    console.log("Resultado completo de sequelize.query:", queryResult);
+
+    // Normalizar results como un arreglo
+
+    let results = Array.isArray(queryResult) ? queryResult : [];
+    if (results.length === 0) {
+      console.warn("No se recibieron resultados de la base de datos");
+    }
+
+    // Log para depurar los resultados procesados
+    console.log("Resultados procesados:", results);
+
+    // Verificar si results está vacío
+    if (results.length === 0) {
+      console.error("No se recibieron resultados válidos del stored procedure");
+      return res.status(500).json({
+        error: "No se recibieron datos del procedimiento almacenado",
+      });
+    }
+    // Verificar si hubo errores en los resultados
+    const hasErrors = results.some((r) => r.error !== null);
+    // console.log("valor de hasErrors:", hasErrors);
+
+    if (hasErrors) {
+      return res.status(400).json({
+        error: "Algunos pagos no se procesaron correctamente",
+        resultados: results,
+      });
+    }
+
+    const montoTotalCancelado = results[0]?.monto_total_cancelado || 0;
+
+    return res.status(200).json({
+      message: "Pagos registrados correctamente",
+      montoTotalCancelado,
+      resultados: results,
+    });
+  } catch (err) {
+    console.error("Error en postPagoMesAlumno:", err);
+    return res.status(500).json({
+      error: "Error al procesar los pagos: " + err.message,
+    });
+  }
+};
 
 export default {
   docenteByID,
@@ -858,4 +974,6 @@ export default {
   getCursosProfe,
   getDataTodosProfe,
   getHorarioAtencionProfe,
+  getDataPagoAlumno,
+  postPagoMesAlumno,
 };

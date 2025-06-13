@@ -36,7 +36,7 @@ import HorarioAtencionProfesores from "./core/horarioAtencion";
 import SimceBasica from "./../client/Simce/SimceBasica";
 
 import SolicitudEquipos from "./../client/core/SolicitudEquipos";
-import PagoDataAlumno from "./core/Pagos/DatoAlumno";
+import PagoDataAlumno from "./core/Pagos/PagoDataAlumno";
 
 const MainRouter = () => {
   return (
@@ -121,7 +121,14 @@ const MainRouter = () => {
           {/*   <Route path="/Parent" element={<Parent />} />       */}
           {/*   <Route path="/Pendiente" element={<Pendiente />} /> */}
 
-          <Route path="/PagoDataAlumno" element={<PagoDataAlumno />} />
+          <Route
+            path="/PagoDataAlumno"
+            element={
+              <PrivateRoute>
+                <PagoDataAlumno />
+              </PrivateRoute>
+            }
+          />
 
           <Route
             path="/CompLibroMatricula"

@@ -498,9 +498,8 @@ const putDataProfe = async (params) => {
   }
 };
 
-// POST /api/funcionarios/:rut/asignacion-completa
+
 const postCursosDiaAtencionProfes = async (params, credentials) => {
-  // console.log("En api,  JSON.stringify(params):", JSON.stringify(params));
   try {
     let response = await fetch("/postCursosDiaAtencionProfe", {
       method: "POST",
@@ -615,6 +614,61 @@ const getHorarioAtencionProfe = async () => {
     return { error: err.message, message: err.message };
   }
 };
+/*   proceso de libro de pago por alumnos*/
+const getDataPagoAlumno = async (params, credentials, signal) => {
+  console.log(" Params:", params)
+  const { rut, agno } = params
+  try {
+    const response = await fetch("/getDataPagoAlumno/" + rut + "/" + agno , {
+      method: "GET",
+      signal: signal,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },     
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      try {
+        const errorData = JSON.parse(text); // Intenta parsear por si es JSON válido
+        throw new Error(errorData.message || "Error del servidor");
+      } catch {
+        throw new Error(`Error HTTP ${response.status}: ${text}`);
+      }
+    }
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
+const postPagoMensualidadAlumno = async (params, credentials, signal) => {
+  try {
+    let response = await fetch("/postPagoMesAlumno", {
+      method: "POST",
+      signal: signal,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify(params),
+    });
+    console.log("en api despues de llamar al sp response=>", response)
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
+
+
+
 
 export {
   create,
@@ -629,7 +683,6 @@ export {
   getParentesco,
   getCursos,
   getAsignaturas,
-  // getJornadas,
   getEquipamientos,
   getBloquesHorarios,
   api_getAlumnosNombres,
@@ -655,4 +708,6 @@ export {
   getHorarioProfe,
   getDataTodosProfe,
   getHorarioAtencionProfe,
+  getDataPagoAlumno,
+  postPagoMensualidadAlumno,
 };

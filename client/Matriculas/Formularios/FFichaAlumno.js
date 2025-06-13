@@ -6,6 +6,7 @@ import {
   Tabs,
   Tab,
   Button,
+  Typography,
 } from "@mui/material";
 
 import { AuthContext } from "./../../core/AuthProvider";
@@ -101,9 +102,8 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
     }
   }, [comunas, resultado, setDataBuscaAl, dataBuscaAl]);
 
-
   if (!dataBuscaAl || !dataBuscaAl.al_rut) {
-    return <div>Cargando datos del alumno...</div>;  
+    return <div>Cargando datos del alumno...</div>;
   }
 
   return (
@@ -116,6 +116,7 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
         />
       </div>
       <Grid container spacing={2} sx={{ margin: "auto", maxWidth: "95%" }}>
+       
         <Grid item xs={12}>
           <Tabs
             value={value}

@@ -120,8 +120,13 @@ router.route("/getDiasAtencion").get(docenteCtrl.getDiasAtencion);
 router.route("/getHorarioProfe/:rut").get(docenteCtrl.getHorarioProfe);
 router.route("/getCursosProfe/:rut").get(docenteCtrl.getCursosProfe);
 router.route("/getDataTodosProfe").get(docenteCtrl.getDataTodosProfe);
+router.route("/getHorarioAtencionProfe").get(docenteCtrl.getHorarioAtencionProfe);
+
 router
-  .route("/getHorarioAtencionProfe")
-  .get(docenteCtrl.getHorarioAtencionProfe);
+  .route("/postPagoMesAlumno")
+  .post(authCtrl.requireSignin, docenteCtrl.postPagoMesAlumno);
+
+/* Libro de Pagos Alumnos */
+router.route("/getDataPagoAlumno/:rut/:agno").get(authCtrl.requireSignin, docenteCtrl.getDataPagoAlumno);
 
 export default router;

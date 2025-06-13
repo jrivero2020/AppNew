@@ -22,11 +22,18 @@ import { MsgMuestraError } from "./../../assets/dialogs/MuestraError";
 
 export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
   const { dataBuscaAl, setDataBuscaAl } = useContext(AuthContext);
-  const { jwt } = useContext(AuthContext);
+//  const { jwt } = useContext(AuthContext);
   const [errors, setErrors] = useState({});
-  const [snackbar, setSnackbar] = useState(null);
+  // const [snackbar, setSnackbar] = useState(null);
 
   const verRut = FmtoRut(dataBuscaAl.al_rut + dataBuscaAl.al_dv);
+const fechaMatricula = dataBuscaAl.al_fechamod
+const fechaM = new Date(fechaMatricula);
+
+// Opcionalmente, asegurarte de que sea tratada como local:
+const fechaLocal = new Date(fechaM.getTime() - fechaM.getTimezoneOffset() * 60000);
+
+const soloFechaM = fechaLocal.toLocaleDateString('es-CL'); // Ejemplo: "16-12-2024"
 
   const handleChange = useCallback(
     (name, curso) => (event) => {
@@ -481,6 +488,18 @@ export const DatosAlumno = ({ resultado, setResultado, cursos, comunas }) => {
                 onChange={handleChange("al_hnoscursos")}
               />
             </Grid>
+
+            <Grid item xs={12} sm={6} md={4} lg={3}>
+              <TextField
+                size="small"
+                label="Fecha de matrícula"
+                variant="outlined"
+                fullWidth
+                value={soloFechaM}
+                disabled={true}
+              />
+            </Grid>
+
           </Grid>
         </Paper>
       </Grid>
