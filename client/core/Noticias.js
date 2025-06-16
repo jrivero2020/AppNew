@@ -13,12 +13,22 @@ import {
 import { makeStyles } from "@mui/styles";
 import { AuthContext } from "./AuthProvider";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-
+import "react-lazy-load-image-component/src/effects/blur.css";
 const useStyles = makeStyles({
   imgBtn: {
     width: "100%",
     height: "100%",
     objectFit: "cover",
+    objectPosition: 'center center', // Centra la imagen
+    display: 'block',
+  },
+  imgContainer: {
+    width: "100%", // O un valor fijo como '300px'
+    height: "100%", // Altura fija para todas las imágenes
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden", // Evita que la imagen se desborde
+    margin: "0 auto",
   },
 });
 
@@ -72,12 +82,12 @@ export default function Noticias() {
             }}
           >
             {Noticias.map((noticia) => (
-              <Grid item key={noticia.datos.nro} xs={12} md={6}>
+              <Grid item key={noticia.datos.nro} xs={12} md={6} lg={4}>
                 {noticia.datos.modo === "img" && (
                   <>
                     <Card elevation={8}>
                       <CardActionArea>
-                        <CardMedia sx={{ mt: isMovil ? 0 : 1 }}>
+                        <CardMedia className={classes.imgContainer} sx={{ mt: isMovil ? 0 : 1 }}>
                           <LazyLoadImage
                             src={pathImg + noticia.datos.src}
                             effect="blur"
@@ -86,6 +96,8 @@ export default function Noticias() {
                               display: "block",
                               margin: "0 auto",
                               width: "90%",
+                              objectFit: "cover",
+                              objectPosition: "center bottom",
                             }}
                             className={classes.imgBtn}
                           />
