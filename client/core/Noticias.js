@@ -13,7 +13,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import { AuthContext } from "./AuthProvider";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
+
 const useStyles = makeStyles({
   imgBtn: {
     width: "100%",
