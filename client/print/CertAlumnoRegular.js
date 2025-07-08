@@ -16,7 +16,7 @@ import { AuthContext } from "./../core/AuthProvider";
 import Item from "../core/Item";
 import { FmtoRut, validarRut, QuitaPuntos } from "../assets/js/FmtoRut";
 // import ImprimeCertificado from "./ImprimeCertificado";
-import PrintHojaImpresa from "./PrintHojaImpresa";
+import PrintHojaImpresa from "./PrintHojaImpresa2";
 
 
 export default function CertAlumnoRegular() {
