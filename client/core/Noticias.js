@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Card,
@@ -8,8 +8,13 @@ import {
   Paper,
   Typography,
   useMediaQuery,
-  // useTheme,
+  Dialog,
+  DialogContent,
+  IconButton,
+  Fade,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+
 import { makeStyles } from "@mui/styles";
 import { AuthContext } from "./AuthProvider";
 import { LazyLoadImage } from "react-lazy-load-image-component";
@@ -19,8 +24,8 @@ const useStyles = makeStyles({
     width: "100%",
     height: "100%",
     objectFit: "cover",
-    objectPosition: 'center center', // Centra la imagen
-    display: 'block',
+    objectPosition: "center center", // Centra la imagen
+    display: "block",
   },
   imgContainer: {
     width: "100%", // O un valor fijo como '300px'
@@ -42,6 +47,22 @@ export default function Noticias() {
   const isMovil = isSmallScreen || isShortScreen;
   const classes = useStyles();
   const pathImg = "dist/images/links/";
+  const [openImg, setOpenImg] = useState(false);
+
+  // const handleOpenImg = () => setOpenImg(true);
+
+  const [selectedImg, setSelectedImg] = useState(null);
+
+  const handleOpenImg = (imgSrc) => {
+    setSelectedImg(imgSrc);
+    setOpenImg(true);
+  };
+
+  // const handleCloseImg = () => setOpenImg(false);
+  const handleCloseImg = () => {
+    setOpenImg(false);
+    setSelectedImg(null);
+  };
 
   const agregarEspacios = (cantidad) => {
     return "\u00A0".repeat(cantidad); // Espacio en blanco no rompible
@@ -86,8 +107,15 @@ export default function Noticias() {
                 {noticia.datos.modo === "img" && (
                   <>
                     <Card elevation={8}>
-                      <CardActionArea>
-                        <CardMedia className={classes.imgContainer} sx={{ mt: isMovil ? 0 : 1 }}>
+                      <CardActionArea
+                        onClick={() =>
+                          handleOpenImg(pathImg + noticia.datos.src)
+                        }
+                      >
+                        <CardMedia
+                          className={classes.imgContainer}
+                          sx={{ mt: isMovil ? 0 : 1 }}
+                        >
                           <LazyLoadImage
                             src={pathImg + noticia.datos.src}
                             effect="blur"
@@ -104,6 +132,52 @@ export default function Noticias() {
                         </CardMedia>
                       </CardActionArea>
                     </Card>
+
+                    <Dialog
+                      open={openImg}
+                      onClose={handleCloseImg}
+                      maxWidth="lg"
+                      fullWidth
+                      TransitionComponent={Fade}
+                      PaperProps={{
+                        sx: {
+                          position: "relative",
+                          backgroundColor: "black", // Fondo más pro para visualizar la imagen
+                        },
+                      }}
+                    >
+                      {/* Botón cerrar */}
+                      <IconButton
+                        onClick={handleCloseImg}
+                        sx={{
+                          position: "absolute",
+                          top: 8,
+                          right: 8,
+                          color: "white",
+                          backgroundColor: "rgba(0,0,0,0.4)",
+                          "&:hover": {
+                            backgroundColor: "rgba(255,255,255,0.2)",
+                          },
+                        }}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+
+                      {/* Contenido de la imagen */}
+                      <DialogContent sx={{ p: 0 }}>
+                        {selectedImg && (
+                          <img
+                            src={selectedImg}
+                            alt="Imagen ampliada"
+                            style={{
+                              width: "100%",
+                              height: "auto",
+                              objectFit: "contain",
+                            }}
+                          />
+                        )}
+                      </DialogContent>
+                    </Dialog>
                   </>
                 )}
 
