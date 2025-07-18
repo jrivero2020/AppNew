@@ -39,7 +39,15 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import BlockIcon from "@mui/icons-material/Block";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import { AuthContext } from "./../../core/AuthProvider";
-import { postPagoMensualidadAlumno } from "./../../docentes/api-docentes";
+import {
+  postPagoMensualidadAlumno,
+  getPagosConfigMontos,
+  UpsertPagosConfigMontos,
+  DeletePagosConfigMontos,
+} from "./../../docentes/api-docentes";
+
+const abortController = new AbortController();
+const signal = abortController.signal;
 
 // Estilos personalizados para celdas
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -85,6 +93,20 @@ const TotalRowCell = styled(TableCell)(({ theme }) => ({
   fontSize: "0.875rem",
 }));
 
+const fGetConfigMonto = async ({jwt}) => {    
+  try {
+//    const results = await getPagosConfigMontos({ t: jwt.token }, signal);
+//    const results = await UpsertPagosConfigMontos({agno:2024, monto:50000}, { t: jwt.token });
+    const results = await DeletePagosConfigMontos({id:2}, { t: jwt.token });
+//    console.log("Respuesta completa de UpsertPagosConfigMontos=>:", results);
+    console.log("Respuesta completa de DeletePagosConfigMontos=>:", results);
+  } catch (error) {
+    // console.error("Error al obtener Pagos config:", error);
+//    console.error("Error al actualizar Pagos Config:", error);
+    console.error("Error al eliminar Pagos Config:", error);
+  }
+};
+
 function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -100,6 +122,7 @@ function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
   });
   const [pagoEnSesion, setPagoEnSesion] = useState(0);
   const { jwt } = useContext(AuthContext);
+  const usrId = jwt.user._id;
 
   useEffect(() => {
     setPagos(
@@ -247,9 +270,6 @@ function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
 
   const handleGrabar = async () => {
     setLoading(true);
-    const abortController = new AbortController();
-    const signal = abortController.signal;
-    const usrId = jwt.user._id;
 
     const pagosAGrabar = pagos
       .filter((mes) => mes.monto_sesion > 0)
@@ -291,7 +311,8 @@ function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
         };
         resultadosMap.set(key, {
           ...existing,
-          monto_transaccion: existing.monto_transaccion + (r.monto_transaccion || 0),
+          monto_transaccion:
+            existing.monto_transaccion + (r.monto_transaccion || 0),
           monto_pagado: (r.monto_pagado || 0) + (r.monto_transaccion || 0),
           saldo_posterior: r.saldo_posterior,
           estado: r.estado,
@@ -309,14 +330,17 @@ function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
           if (pagoProcesado) {
             return {
               ...mes,
-              monto_pagado: mes.monto_pagado + (pagoProcesado.monto_pagado || pagoProcesado.monto_transaccion),
+              monto_pagado:
+                mes.monto_pagado +
+                (pagoProcesado.monto_pagado || pagoProcesado.monto_transaccion),
               monto_sesion: 0,
               saldo_pendiente: pagoProcesado.saldo_posterior,
               estado: pagoProcesado.estado,
               editable: pagoProcesado.estado !== "pagado",
             };
           } else if (pagoEnviado) {
-            const nuevoMontoPagado = mes.monto_pagado + pagoEnviado.monto_transaccion;
+            const nuevoMontoPagado =
+              mes.monto_pagado + pagoEnviado.monto_transaccion;
             const nuevoSaldoPendiente = mes.monto_base - nuevoMontoPagado;
             return {
               ...mes,
@@ -352,7 +376,8 @@ function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
       console.error("Error en handleGrabar:", error);
       setSnackbar({
         open: true,
-        message: error.response?.data?.error || "Error de conexión con el servidor",
+        message:
+          error.response?.data?.error || "Error de conexión con el servidor",
         severity: "error",
       });
       setOpenConfirm(false);
@@ -374,7 +399,7 @@ function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
   };
 
   return (
-    <Box sx={{ p: isMobile ? 1 : 3, mt:isMobile ? 0 :3 }}>
+    <Box sx={{ p: isMobile ? 1 : 3, mt: isMobile ? 0 : 3 }}>
       <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold" }}>
         Gestión de Pagos del Alumno
       </Typography>
@@ -606,7 +631,6 @@ function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
           color="secondary"
           onClick={() => setPagoData(null)}
           startIcon={<CancelIcon />}
-          
         >
           Otro Alumno
         </Button>
@@ -628,6 +652,15 @@ function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
           startIcon={<PaymentIcon />}
         >
           Registrar Pago
+        </Button>
+
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => fGetConfigMonto({jwt})}
+          startIcon={<PaymentIcon />}
+        >
+          GetConfigMonto
         </Button>
       </Box>
 
@@ -653,7 +686,11 @@ function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
           Confirmar Pago
         </DialogTitle>
         <DialogContent sx={{ mt: 2 }}>
-          <Typography id="confirm-dialog-description" variant="body1" gutterBottom>
+          <Typography
+            id="confirm-dialog-description"
+            variant="body1"
+            gutterBottom
+          >
             ¿Está seguro de registrar el siguiente pago?
           </Typography>
           <List>
@@ -672,7 +709,9 @@ function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
               </ListItemIcon>
               <ListItemText
                 primary="Método de pago"
-                secondary={metodoPago.charAt(0).toUpperCase() + metodoPago.slice(1)}
+                secondary={
+                  metodoPago.charAt(0).toUpperCase() + metodoPago.slice(1)
+                }
               />
             </ListItem>
             <ListItem>

@@ -17,6 +17,7 @@ import VerUtilesEscolares from "./core/VerUtilesEscolares";
 // import Alertas from "./assets/mensajes/Alertas";
 // import Parent from "./Matriculas/Parent";
 import CompLibroMatricula from "./Matriculas/CompLibroMatriculas";
+import DashBoardBecas from "./core/Pagos/DashBoardBecas"
 //import Pendiente from "./core/PagPendiente";
 import Menu from "./core/menuCLCII";
 import PrivateRoute from "./auth/PrivateRoute";
@@ -135,6 +136,14 @@ const MainRouter = () => {
             element={
               <PrivateRoute>
                 <CompLibroMatricula />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/DashBoardBecas"
+            element={
+              <PrivateRoute>
+                <DashBoardBecas />
               </PrivateRoute>
             }
           />

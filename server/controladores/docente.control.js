@@ -816,6 +816,8 @@ const getHorarioAtencionProfe = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
+
+
 /* Libro de Pagos */
 
 const getDataPagoAlumno = async (req, res) => {
@@ -933,6 +935,60 @@ const postPagoMesAlumno = async (req, res) => {
   }
 };
 
+const getPagosConfigMontos = async (req, res) => {
+  // console.log( "getPagosConfigMontos  req=>", req)
+  try {
+    const results = await sequelize.query(`CALL sp_Pagos_GetConfigMonto()`, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+    // console.log("results :", results)
+    res.json(results[0]);
+  } catch (err) {
+    return res.status(500).json({ error: "Error al obtener Montos Mensualidades" });
+  }
+};
+
+//UpsertPagosConfigMontos
+const UpsertPagosConfigMontos = async (req, res) => {
+  console.log( "UpsertPagosConfigMontos=>>", req.body)
+  const {agno, monto} = req.body
+
+  try {
+    const results = await sequelize.query(`CALL sp_Pagos_UpSertConfigMonto(?,?)`, 
+      {
+        replacements:[ agno, monto],
+      type: sequelize.QueryTypes.RAW,
+    });
+     return res.status(200).json({
+      message: "Montos configurados correctamente",
+      resultados: results,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Error al configurar Montos Anuales" });
+  }
+};
+
+
+//DeletePagosConfigMontos
+const DeletePagosConfigMontos = async (req, res) => {
+  console.log( "DeletePagosConfigMontos=>>", req.body)
+  const {id} = req.body
+
+  try {
+    const results = await sequelize.query(`CALL sp_Pagos_DeleteConfigMonto(?)`, 
+      {
+        replacements:[id],
+      type: sequelize.QueryTypes.DELETE,
+    });
+     return res.status(200).json({
+      message: "Monto Eliminado correctamente",
+      resultados: results,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Error al Eliminar Monto Anual" });
+  }
+};
+
 export default {
   docenteByID,
   leerDocente,
@@ -976,4 +1032,7 @@ export default {
   getHorarioAtencionProfe,
   getDataPagoAlumno,
   postPagoMesAlumno,
+  getPagosConfigMontos,
+  UpsertPagosConfigMontos,
+  DeletePagosConfigMontos
 };

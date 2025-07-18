@@ -128,5 +128,11 @@ router
 
 /* Libro de Pagos Alumnos */
 router.route("/getDataPagoAlumno/:rut/:agno").get(authCtrl.requireSignin, docenteCtrl.getDataPagoAlumno);
+router.route("/getPagosConfigMontos").get(authCtrl.requireSignin, docenteCtrl.getPagosConfigMontos);
+router.route("/UpsertPagosConfigMontos").post(authCtrl.requireSignin, docenteCtrl.UpsertPagosConfigMontos);
+router.route("/DeletePagosConfigMontos").post(authCtrl.requireSignin, docenteCtrl.DeletePagosConfigMontos);
+
+//DeletePagosConfigMontos
+
 
 export default router;

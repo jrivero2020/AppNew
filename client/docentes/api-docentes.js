@@ -614,6 +614,11 @@ const getHorarioAtencionProfe = async () => {
     return { error: err.message, message: err.message };
   }
 };
+
+
+// ************************************************************* //
+// CONFIGURACIÓN PAGOS ALUMNOS
+
 /*   proceso de libro de pago por alumnos*/
 const getDataPagoAlumno = async (params, credentials, signal) => {
   console.log(" Params:", params)
@@ -666,9 +671,73 @@ const postPagoMensualidadAlumno = async (params, credentials, signal) => {
   }
 };
 
+const getPagosConfigMontos = async (credentials, signal) => {
+  try {
+    const response = await fetch("/getPagosConfigMontos" , {
+      method: "GET",
+      signal: signal,
+      headers: {Authorization: "Bearer " + credentials.t,},     
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      try {
+        const errorData = JSON.parse(text); // Intenta parsear por si es JSON válido
+        throw new Error(errorData.message || "Error del servidor");
+      } catch {
+        throw new Error(`Error HTTP ${response.status}: ${text}`);
+      }
+    }
+     const data = await response.json();
+    return data[0];
 
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
 
+const UpsertPagosConfigMontos = async (params, credentials) => {
+  console.log("UpsertPagosConfigMontos=>", params )
+  const { agno, monto } = params;
+  try {
+    let response = await fetch("/UpsertPagosConfigMontos/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify({ agno, monto }),
+    });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
 
+const DeletePagosConfigMontos = async (params, credentials) => {
+  console.log("DeletePagosConfigMontos=>", params )
+  const { id } = params;
+  try {
+    let response = await fetch("/DeletePagosConfigMontos/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify({ id }),
+    });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
 
 export {
   create,
@@ -710,4 +779,7 @@ export {
   getHorarioAtencionProfe,
   getDataPagoAlumno,
   postPagoMensualidadAlumno,
+  getPagosConfigMontos,
+  UpsertPagosConfigMontos,
+  DeletePagosConfigMontos,  
 };

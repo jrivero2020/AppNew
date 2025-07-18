@@ -14,13 +14,14 @@ import {
 import { AuthContext } from "./AuthProvider";
 import { getDataTodosProfe } from "../docentes/api-docentes";
 import AsignacionCompleta from "./../core/HorariosCursosProfe";
-
+import { FmtoRut } from "../assets/js/FmtoRut";
 const AsignacionWrapper = () => {
   const location = useLocation();
   const { jwt } = useContext(AuthContext);
   const [funcionarios, setFuncionarios] = useState([]);
   const [selectedFuncionario, setSelectedFuncionario] = useState(null);
   const [loading, setLoading] = useState(true);
+  // const [rutFmto, setRutFmto] = useState("");
   const isSmallScreen = useMediaQuery("(max-width:720px)");
   const usrRol = jwt.user._rol;
   const esAdmin = usrRol === 1 || usrRol === 2;
@@ -183,7 +184,7 @@ const AsignacionWrapper = () => {
                             fontSize: { xs: "0.875rem", sm: "1rem" },
                           }}
                         >
-                          {funcionario.nombres}
+                          {FmtoRut(funcionario.rut + funcionario.dv)}   -   {funcionario.nombres}
                         </Typography>
                       </Box>
                     </MenuItem>
