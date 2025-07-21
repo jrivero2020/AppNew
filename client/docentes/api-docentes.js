@@ -498,7 +498,6 @@ const putDataProfe = async (params) => {
   }
 };
 
-
 const postCursosDiaAtencionProfes = async (params, credentials) => {
   try {
     let response = await fetch("/postCursosDiaAtencionProfe", {
@@ -615,23 +614,22 @@ const getHorarioAtencionProfe = async () => {
   }
 };
 
-
 // ************************************************************* //
 // CONFIGURACIÓN PAGOS ALUMNOS
 
 /*   proceso de libro de pago por alumnos*/
 const getDataPagoAlumno = async (params, credentials, signal) => {
-  console.log(" Params:", params)
-  const { rut, agno } = params
+  console.log(" Params:", params);
+  const { rut, agno } = params;
   try {
-    const response = await fetch("/getDataPagoAlumno/" + rut + "/" + agno , {
+    const response = await fetch("/getDataPagoAlumno/" + rut + "/" + agno, {
       method: "GET",
       signal: signal,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + credentials.t,
-      },     
+      },
     });
     if (!response.ok) {
       const text = await response.text();
@@ -661,7 +659,7 @@ const postPagoMensualidadAlumno = async (params, credentials, signal) => {
       },
       body: JSON.stringify(params),
     });
-    console.log("en api despues de llamar al sp response=>", response)
+    console.log("en api despues de llamar al sp response=>", response);
     if (!response.ok) {
       return { error: response.status, message: response.statusText };
     }
@@ -673,10 +671,10 @@ const postPagoMensualidadAlumno = async (params, credentials, signal) => {
 
 const getPagosConfigMontos = async (credentials, signal) => {
   try {
-    const response = await fetch("/getPagosConfigMontos" , {
+    const response = await fetch("/getPagosConfigMontos", {
       method: "GET",
       signal: signal,
-      headers: {Authorization: "Bearer " + credentials.t,},     
+      headers: { Authorization: "Bearer " + credentials.t },
     });
     if (!response.ok) {
       const text = await response.text();
@@ -687,17 +685,18 @@ const getPagosConfigMontos = async (credentials, signal) => {
         throw new Error(`Error HTTP ${response.status}: ${text}`);
       }
     }
-     const data = await response.json();
-    return data[0];
+    const data = await response.json();
 
+    return data;
   } catch (err) {
     return { error: err.message, message: err.message };
   }
 };
 
 const UpsertPagosConfigMontos = async (params, credentials) => {
-  console.log("UpsertPagosConfigMontos=>", params )
+  // console.log("UpsertPagosConfigMontos=>", params);
   const { agno, monto } = params;
+  // console.log("UpsertPagosConfigMontos agno:", agno, "  monto:", monto);
   try {
     let response = await fetch("/UpsertPagosConfigMontos/", {
       method: "POST",
@@ -718,8 +717,8 @@ const UpsertPagosConfigMontos = async (params, credentials) => {
 };
 
 const DeletePagosConfigMontos = async (params, credentials) => {
-  console.log("DeletePagosConfigMontos=>", params )
-  const { id } = params;
+  console.log("DeletePagosConfigMontos=>", params);
+  const id = params;
   try {
     let response = await fetch("/DeletePagosConfigMontos/", {
       method: "POST",
@@ -781,5 +780,5 @@ export {
   postPagoMensualidadAlumno,
   getPagosConfigMontos,
   UpsertPagosConfigMontos,
-  DeletePagosConfigMontos,  
+  DeletePagosConfigMontos,
 };

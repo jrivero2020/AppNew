@@ -10,16 +10,15 @@ import {
 import { Save, Add, Delete } from "@mui/icons-material";
 
 import {
-    getPagosConfigMontos,
+  getPagosConfigMontos,
   UpsertPagosConfigMontos,
   DeletePagosConfigMontos,
-} from './../../docentes/api-docentes';
+} from "./../../docentes/api-docentes";
 
 import { AuthContext } from "./../../core/AuthProvider";
-
+// confirmationmodal.js
 const abortController = new AbortController();
 const signal = abortController.signal;
-
 
 const PagosConfigMontoBox = () => {
   const [montos, setMontos] = useState([]);
@@ -33,21 +32,22 @@ const PagosConfigMontoBox = () => {
   const { jwt } = useContext(AuthContext);
   const usrId = jwt.user._id;
 
-//    const results = await getPagosConfigMontos({ t: jwt.token }, signal);
+  //    const results = await getPagosConfigMontos({ t: jwt.token }, signal);
 
   const fetchData = async () => {
     const data = await getPagosConfigMontos({ t: jwt.token }, signal);
-    console.log('Datos recibidos:', data); // Agrega esto para depurar
-const dataArray = data ? [{ ...data, monto: parseFloat(data.monto) }] : [];
+    //console.log("Datos recibidos:", Object.values(data)); // Agrega esto para depurar
+    // const dataArray = data ? [{ ...data, monto: parseFloat(data.monto) }] : [];
+    const dataArray = Object.values(data);
 
-    console.log( "dataArray=>", dataArray)
-    setMontos(dataArray); // Asegúrate de que sea un array    
-//    setMontos(data);
+    // console.log("dataArray=>", dataArray);
+    setMontos(dataArray); // Asegúrate de que sea un array
+    //    setMontos(data);
   };
 
   useEffect(() => {
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChange = (index, key, value) => {
@@ -59,10 +59,13 @@ const dataArray = data ? [{ ...data, monto: parseFloat(data.monto) }] : [];
   const handleSave = async (index) => {
     const item = montos[index];
     try {
-      await UpsertPagosConfigMontos(item.id, {
-        agno: item.agno,
-        monto: item.monto,
-      });
+      await UpsertPagosConfigMontos(
+        {
+          agno: item.agno,
+          monto: item.monto,
+        },
+        { t: jwt.token }
+      );
       setAlert({
         open: true,
         msg: "Actualizado correctamente.",
@@ -83,9 +86,13 @@ const dataArray = data ? [{ ...data, monto: parseFloat(data.monto) }] : [];
       });
       return;
     }
-
+    // console.log("handleAdd nuevo==>", nuevo);
     try {
-      await UpsertPagosConfigMontos(nuevo);
+      await UpsertPagosConfigMontos(
+        { agno: nuevo.agno, monto: nuevo.monto },
+        { t: jwt.token }
+      );
+      // console.log("results==>", results);
       setNuevo({ agno: "", monto: "" });
       setAlert({ open: true, msg: "Monto agregado.", severity: "success" });
       fetchData();
@@ -95,9 +102,10 @@ const dataArray = data ? [{ ...data, monto: parseFloat(data.monto) }] : [];
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("¿Estás seguro de eliminar este monto?")) return;
+    console.log("delete id:", id);
+    if (!window.confirm("¿Estás seguro de eliminar este monto?", id)) return;
     try {
-      await DeletePagosConfigMontos(id);
+      await DeletePagosConfigMontos(id, { t: jwt.token });
       setAlert({
         open: true,
         msg: "Eliminado correctamente.",
@@ -108,7 +116,7 @@ const dataArray = data ? [{ ...data, monto: parseFloat(data.monto) }] : [];
       setAlert({ open: true, msg: "Error al eliminar.", severity: "error" });
     }
   };
-// if (montos.length === 0) return <></>;
+  // if (montos.length === 0) return <></>;
 
   return (
     <Box
@@ -118,7 +126,7 @@ const dataArray = data ? [{ ...data, monto: parseFloat(data.monto) }] : [];
         borderRadius: 2,
         width: "100%",
         maxWidth: 400,
-        mt:10
+        mt: 10,
       }}
     >
       <Typography variant="h6" gutterBottom>
@@ -159,14 +167,14 @@ const dataArray = data ? [{ ...data, monto: parseFloat(data.monto) }] : [];
         </Typography>
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
           <TextField
-            label="Año"
+            label="Año nvo"
             type="number"
             value={nuevo.agno}
             onChange={(e) => setNuevo({ ...nuevo, agno: e.target.value })}
             size="small"
           />
           <TextField
-            label="Monto"
+            label="Monto nvo"
             type="number"
             value={nuevo.monto}
             onChange={(e) => setNuevo({ ...nuevo, monto: e.target.value })}
