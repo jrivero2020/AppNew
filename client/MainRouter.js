@@ -17,7 +17,7 @@ import VerUtilesEscolares from "./core/VerUtilesEscolares";
 // import Alertas from "./assets/mensajes/Alertas";
 // import Parent from "./Matriculas/Parent";
 import CompLibroMatricula from "./Matriculas/CompLibroMatriculas";
-import DashBoardBecas from "./core/Pagos/DashBoardBecas"
+import DashBoardBecas from "./core/Pagos/DashBoardBecas2"
 //import Pendiente from "./core/PagPendiente";
 import Menu from "./core/menuCLCII";
 import PrivateRoute from "./auth/PrivateRoute";
