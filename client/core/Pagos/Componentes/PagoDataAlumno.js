@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
-import BuscarAlumno from "../../FichaAlumnos/BuscarAlumno";
-import { AuthContext } from "../AuthProvider";
-import { getDataPagoAlumno } from "../../docentes/api-docentes";
+import BuscarAlumno from "../../../FichaAlumnos/BuscarAlumno";
+import { AuthContext } from "../../AuthProvider";
+import { getDataPagoAlumno } from "../../../docentes/api-docentes";
 import FichaPagosAlumno from "./FichaPagosAlumno"
 
 const abortController = new AbortController();

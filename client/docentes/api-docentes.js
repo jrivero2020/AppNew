@@ -679,7 +679,7 @@ const getPagosConfigMontos = async (credentials, signal) => {
     if (!response.ok) {
       const text = await response.text();
       try {
-        const errorData = JSON.parse(text); // Intenta parsear por si es JSON válido
+        const errorData = JSON.parse(text);
         throw new Error(errorData.message || "Error del servidor");
       } catch {
         throw new Error(`Error HTTP ${response.status}: ${text}`);
@@ -694,9 +694,7 @@ const getPagosConfigMontos = async (credentials, signal) => {
 };
 
 const UpsertPagosConfigMontos = async (params, credentials) => {
-  // console.log("UpsertPagosConfigMontos=>", params);
   const { agno, monto } = params;
-  // console.log("UpsertPagosConfigMontos agno:", agno, "  monto:", monto);
   try {
     let response = await fetch("/UpsertPagosConfigMontos/", {
       method: "POST",
@@ -737,6 +735,98 @@ const DeletePagosConfigMontos = async (params, credentials) => {
     return { error: 500, message: err.message };
   }
 };
+// *************************** Tipos de Beca *********************
+/*
+    const response = await fetch("/getHorarioProfe/" + params.rut, {
+
+params, credentials, signal
+  console.log(" Params:", params);
+  const { rut, agno } = params;
+  try {
+    const response = await fetch("/getDataPagoAlumno/" + rut + "/" + agno, {
+      method: "GET",
+      signal: signal,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+    });
+*/
+const getPagosTipoBeca = async (params, credentials, signal) => {   
+  try {
+    //console.log( "api-gettB  params=>", params)
+    const response = await fetch("/getPagosTipoBeca/" + params.agno, {
+      method: "GET",
+      signal: signal,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+    });
+    //console.log("despues de la api=>response: ", response)
+    if (!response.ok) {
+      const text = await response.text();
+      try {
+        const errorData = JSON.parse(text); // Intenta parsear por si es JSON válido
+        throw new Error(errorData.message || "Error del servidor");
+      } catch {
+        throw new Error(`Error HTTP ${response.status}: ${text}`);
+      }
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
+const UpsertPagosTipoBeca = async (params, credentials) => {
+  const {nombre,descripcion,agno,porcentaje,descuento, monto} = params  
+  
+  try {
+    let response = await fetch("/UpsertPagosTipoBeca/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify({ nombre,descripcion,agno,porcentaje,descuento, monto }),
+    });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+const DeletePagosTipoBeca = async (params, credentials) => {  
+  const {agno,nombre} = params
+  try {
+    let response = await fetch("/DeletePagosTipoBeca/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify({ agno,nombre }),
+    });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
+
 
 export {
   create,
@@ -781,4 +871,7 @@ export {
   getPagosConfigMontos,
   UpsertPagosConfigMontos,
   DeletePagosConfigMontos,
+  getPagosTipoBeca,
+  UpsertPagosTipoBeca,
+  DeletePagosTipoBeca,
 };

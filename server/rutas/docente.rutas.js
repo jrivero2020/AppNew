@@ -128,11 +128,16 @@ router
 
 /* Libro de Pagos Alumnos */
 router.route("/getDataPagoAlumno/:rut/:agno").get(authCtrl.requireSignin, docenteCtrl.getDataPagoAlumno);
+
+
 router.route("/getPagosConfigMontos").get(authCtrl.requireSignin, docenteCtrl.getPagosConfigMontos);
 router.route("/UpsertPagosConfigMontos").post(authCtrl.requireSignin, docenteCtrl.UpsertPagosConfigMontos);
 router.route("/DeletePagosConfigMontos").post(authCtrl.requireSignin, docenteCtrl.DeletePagosConfigMontos);
 
-//DeletePagosConfigMontos
+//sp_Pagos_GetTipoBecaAnio
+router.route("/getPagosTipoBeca/:agno").get(authCtrl.requireSignin, docenteCtrl.getPagosTipoBeca);
+router.route("/UpsertPagosTipoBeca").post(authCtrl.requireSignin, docenteCtrl.UpsertPagosTipoBeca);
+router.route("/DeletePagosTipoBeca").post(authCtrl.requireSignin, docenteCtrl.DeletePagosTipoBeca);
 
 
 export default router;

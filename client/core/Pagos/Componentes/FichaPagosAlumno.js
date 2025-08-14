@@ -38,13 +38,13 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import BlockIcon from "@mui/icons-material/Block";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-import { AuthContext } from "./../../core/AuthProvider";
+import { AuthContext } from "../../AuthProvider";
 import {
   postPagoMensualidadAlumno,
   getPagosConfigMontos,
   UpsertPagosConfigMontos,
   DeletePagosConfigMontos,
-} from "./../../docentes/api-docentes";
+} from "../../../docentes/api-docentes";
 
 const abortController = new AbortController();
 const signal = abortController.signal;

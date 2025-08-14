@@ -821,8 +821,6 @@ const getHorarioAtencionProfe = async (req, res) => {
 /* Libro de Pagos */
 
 const getDataPagoAlumno = async (req, res) => {
-  // console.log( "getDataPagoAlumno  req=>", req)
-
   const { rut, agno } = req.params;
   if (!rut) {
     return res.status(400).json({ error: "Se requieren el rut del Alumno" });
@@ -989,6 +987,66 @@ const DeletePagosConfigMontos = async (req, res) => {
   }
 };
 
+//***********************Tipos Beca ************************** */
+
+// docenteCtrl.getPagosTipoBeca);
+const getPagosTipoBeca = async (req, res) => {
+   // console.log( "CONTROL getPagosTipoBeca control req=>", req.params)
+
+  const agno =  req.params.agno
+  try {
+    const results = await sequelize.query(`CALL sp_Pagos_GetTipoBecaAnio(?)`, {
+      replacements:[agno],
+      type: sequelize.QueryTypes.SELECT,
+    });
+    // console.log("results :", results)
+    res.json(results[0]);
+  } catch (err) {
+    return res.status(500).json({ error: "Error al obtener Montos Mensualidades" });
+  }
+};
+
+// UpsertPagosTipoBeca);
+
+const UpsertPagosTipoBeca = async (req, res) => {
+  console.log( "UpsertPagosConfigMontos=>>", req.body)
+  const {nombre,descripcion,agno,porcentaje,descuento, monto} = req.body
+
+  try {
+    const results = await sequelize.query(`CALL sp_Pagos_UpSertTipoBeca(?,?,?,?,?,?)`, 
+      {
+        replacements:[ nombre,descripcion,agno,porcentaje,descuento, monto],
+      type: sequelize.QueryTypes.RAW,
+    });
+     return res.status(200).json({
+      message: "Tipo Beca configurados correctamente",
+      resultados: results,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Error al configurar Tipo Beca" });
+  }
+};
+
+// DeletePagosTipoBeca);
+const DeletePagosTipoBeca = async (req, res) => {
+  // console.log( "DeletePagosConfigMontos=>>", req.body.agno, "   ", req.body.nombre)
+  const {agno,nombre} = req.body
+
+  try {
+    const results = await sequelize.query(`CALL sp_Pagos_DeleteTipoBeca(?,?)`, 
+      {
+        replacements:[agno,nombre],
+      type: sequelize.QueryTypes.DELETE,
+    });
+     return res.status(200).json({
+      message: "Tipo beca Eliminado correctamente",
+      resultados: results,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Error al Eliminar tipo beca Anual" });
+  }
+};
+
 export default {
   docenteByID,
   leerDocente,
@@ -1034,5 +1092,8 @@ export default {
   postPagoMesAlumno,
   getPagosConfigMontos,
   UpsertPagosConfigMontos,
-  DeletePagosConfigMontos
+  DeletePagosConfigMontos,
+  getPagosTipoBeca,
+  UpsertPagosTipoBeca,
+  DeletePagosTipoBeca,
 };

@@ -17,7 +17,7 @@ import VerUtilesEscolares from "./core/VerUtilesEscolares";
 // import Alertas from "./assets/mensajes/Alertas";
 // import Parent from "./Matriculas/Parent";
 import CompLibroMatricula from "./Matriculas/CompLibroMatriculas";
-import DashBoardBecas from "./core/Pagos/DashBoardBecas2"
+import DashBoardBecas from "./core/Pagos/Componentes/DashBoardBecas"
 //import Pendiente from "./core/PagPendiente";
 import Menu from "./core/menuCLCII";
 import PrivateRoute from "./auth/PrivateRoute";
@@ -37,7 +37,7 @@ import HorarioAtencionProfesores from "./core/horarioAtencion";
 import SimceBasica from "./../client/Simce/SimceBasica";
 
 import SolicitudEquipos from "./../client/core/SolicitudEquipos";
-import PagoDataAlumno from "./core/Pagos/PagoDataAlumno";
+import PagoDataAlumno from "./core/Pagos/Componentes/PagoDataAlumno";
 
 const MainRouter = () => {
   return (
