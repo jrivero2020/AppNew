@@ -61,8 +61,8 @@ const computeMutation = (newRow, oldRow) => {
     ret += `Descripción de "${oldRow.descripcion || ''}" a "${newRow.descripcion || ''}"${salto}`;
   }
   if (newRow.porcentaje !== oldRow.porcentaje) {
-    ret += `Porcentaje de ${oldRow.porcentaje ? Number(oldRow.porcentaje).toFixed(3) + '%' : 'ninguno'} a ${
-      newRow.porcentaje ? Number(newRow.porcentaje).toFixed(3) + '%' : 'ninguno'
+    ret += `Porcentaje de ${oldRow.porcentaje ? Number(oldRow.porcentaje).toFixed(2) + '%' : 'ninguno'} a ${
+      newRow.porcentaje ? Number(newRow.porcentaje).toFixed(2) + '%' : 'ninguno'
     }${salto}`;
   }
   if (newRow.descuento !== oldRow.descuento) {
@@ -162,6 +162,10 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
   // Handle delete click
   // jrjr
   const handleDeleteClick = (id) => () => {
+    setDeleteDialog({ open: true, id });
+  };
+  /*
+  const handleDeleteClick = (id) => () => {
     // console.log('handleDeleteClick - id:', id, 'rows==>', JSON.stringify(rows, null, 2));
     setSnackbar({
       open: true,
@@ -187,14 +191,15 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
       ),
     });
   };
-
+*/
   // Confirm delete
+
   const confirmDelete = async (id) => {
-    // console.log('confirmDelete - received id:', id, 'rows==>', JSON.stringify(rowsRef.current, null, 2));
+    console.log('confirmDelete - id:', id, 'rows:', JSON.stringify(rowsRef.current, null, 2));
     const row = rowsRef.current.find((r) => String(r.id) === String(id));
-    // console.log('confirmDelete - id:', id, 'row:', JSON.stringify(row, null, 2));
     if (!row && !useIdForDelete) {
-      setSnackbar({ open: true, message: `No se encontró el registro con id ${id} en la lista`, severity: 'error' });
+      setSnackbar({ open: true, message: `No se encontró el registro con ID ${id}`, severity: 'error' });
+      setDeleteDialog({ open: false, id: null });
       return;
     }
     if (row && row.isNew) {
@@ -203,7 +208,7 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
       if (rowsRef.current.length <= paginationModel.page * paginationModel.pageSize) {
         setPaginationModel((prev) => ({ ...prev, page: Math.max(0, prev.page - 1) }));
       }
-      // console.log('confirmDelete - updated rows:', JSON.stringify(rowsRef.current.filter((r) => String(r.id) !== String(id)), null, 2), 'paginationModel:', paginationModel);
+      setDeleteDialog({ open: false, id: null });
       return;
     }
     try {
@@ -211,13 +216,15 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
       if (response.error) {
         throw new Error(response.message);
       }
+      setDeleteDialog({ open: false, id: null }); // Cerrar diálogo antes de actualizar
       setSnackbar({ open: true, message: 'Tipo de beca eliminado correctamente', severity: 'success' });
       await fetchTiposBeca(new AbortController().signal);
-      // console.log('confirmDelete - after fetchTiposBeca, rows:', JSON.stringify(rows, null, 2), 'paginationModel:', paginationModel);
     } catch (error) {
       setSnackbar({ open: true, message: error.message || 'Error al eliminar el tipo de beca', severity: 'error' });
+      setDeleteDialog({ open: false, id: null });
     }
   };
+
 
   // Handle cancel click
   const handleCancelClick = (id) => () => {
@@ -243,7 +250,7 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
     }
     const porcentajeStr = String(row.porcentaje ?? '').trim();
     if (porcentajeStr && !/^\d+(\.\d{1,3})?$/.test(porcentajeStr)) {
-      errors.porcentaje = 'El porcentaje debe ser un número decimal con hasta 3 decimales';
+      errors.porcentaje = 'El porcentaje debe ser un número decimal con hasta 2 decimales';
     } else if (porcentajeStr && (Number(porcentajeStr) < 0 || Number(porcentajeStr) > 100)) {
       errors.porcentaje = 'El porcentaje debe estar entre 0 y 100';
     }
@@ -311,41 +318,50 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
   };
 
   // Handle dialog confirmation
+  
   const handleNo = () => {
-    const { newRow, oldRow, resolve } = promiseArguments;
-    // console.log('handleNo - newRow:', newRow, 'oldRow:', oldRow);
-    if (newRow && newRow.isNew) {
-      setRows(rows.filter((row) => String(row.id) !== String(newRow.id)));
+    console.log('handleNo - promiseArguments:', promiseArguments, 'deleteDialog:', deleteDialog);
+    if (promiseArguments) {
+      const { oldRow, resolve, newRow } = promiseArguments;
+      if (newRow && newRow.isNew) {
+        setRows(rowsRef.current.filter((row) => String(row.id) !== String(newRow.id)));
+      }
+      resolve(oldRow);
+      setPromiseArguments(null);
     }
-    resolve(oldRow);
-    setPromiseArguments(null);
+    setDeleteDialog({ open: false, id: null });
   };
 
+
   const handleYes = async () => {
-    const { newRow, reject, resolve } = promiseArguments;
-    try {
-      const response = await UpsertPagosTipoBeca(
-        {
-          nombre: newRow.nombre.trim(),
-          descripcion: newRow.descripcion ? newRow.descripcion.trim() : null,
-          agno: parseInt(newRow.agno, 10),
-          porcentaje: newRow.porcentaje ? Number(newRow.porcentaje) : null,
-          descuento: newRow.descuento,
-          monto: newRow.monto,
-        },
-        credentials
-      );
-      if (response.error) {
-        throw new Error(response.message);
+    if (promiseArguments) {
+      const { newRow, reject, resolve } = promiseArguments;
+      try {
+        const response = await UpsertPagosTipoBeca(
+          {
+            nombre: newRow.nombre.trim(),
+            descripcion: newRow.descripcion ? newRow.descripcion.trim() : null,
+            agno: parseInt(newRow.agno, 10),
+            porcentaje: newRow.porcentaje ? Number(newRow.porcentaje) : null,
+            descuento: newRow.descuento,
+            monto: newRow.monto,
+          },
+          credentials
+        );
+        if (response.error) {
+          throw new Error(response.message);
+        }
+        setSnackbar({ open: true, message: 'Tipo de beca guardado correctamente', severity: 'success' });
+        resolve({ ...newRow, id: response.id || newRow.id, isNew: false });
+        await fetchTiposBeca(new AbortController().signal);
+      } catch (error) {
+        setSnackbar({ open: true, message: error.message || 'Error al guardar el tipo de beca', severity: 'error' });
+        reject(newRow);
+      } finally {
+        setPromiseArguments(null);
       }
-      setSnackbar({ open: true, message: 'Tipo de beca guardado correctamente', severity: 'success' });
-      resolve({ ...newRow, id: response.id || newRow.id, isNew: false });
-      setPromiseArguments(null);
-      await fetchTiposBeca(new AbortController().signal);
-    } catch (error) {
-      setSnackbar({ open: true, message: error.message || 'Error al guardar el tipo de beca', severity: 'error' });
-      reject(newRow);
-      setPromiseArguments(null);
+    } else if (deleteDialog.open) {
+      await confirmDelete(deleteDialog.id);
     }
   };
 
@@ -355,35 +371,62 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
 
   // Render confirm dialog
   // jrjr
+  
   const renderConfirmDialog = () => {
-    if (!promiseArguments) {
+    if (!promiseArguments && !deleteDialog.open) {
       return null;
     }
-    const { newRow, oldRow } = promiseArguments;
-    const mutation = computeMutation(newRow, oldRow);
+    const isDeleteDialog = deleteDialog.open;
+    const row = isDeleteDialog ? rowsRef.current.find((r) => String(r.id) === String(deleteDialog.id)) : null;
+     if (isDeleteDialog && !row && !useIdForDelete) {
+      setDeleteDialog({ open: false, id: null }); // Cerrar si el registro no existe
+      return null;
+    }
+    const message = isDeleteDialog
+      ? row
+        ? `¿Desea eliminar la beca "${row.nombre}"?`
+        : `¿Desea eliminar el registro con ID ${deleteDialog.id}?`
+      : promiseArguments
+      ? `¿Desea guardar los siguientes cambios?\n${computeMutation(promiseArguments.newRow, promiseArguments.oldRow)}`
+      : '';
+
     return (
       <Dialog
-        maxWidth="xs"
+        maxWidth="sm"
         TransitionProps={{ onEntered: handleEntered }}
-        open={!!promiseArguments}
+        open={promiseArguments || deleteDialog.open}
       >
-        <DialogTitle sx={{ backgroundColor: 'blue', color: 'white' }}>
-          ¿Está seguro?
+        <DialogTitle sx={{ backgroundColor: 'primary.main', color: 'white' }}>
+          {isDeleteDialog ? 'Confirmar Eliminación' : 'Confirmar Cambios'}
         </DialogTitle>
-        <DialogContent dividers style={{ whiteSpace: 'pre-line', fontFamily: 'Arial', fontSize: '18px' }}>
-          {`Presione 'Sí' para efectuar los cambios:\n${mutation}`}
+        <DialogContent dividers sx={{ fontFamily: 'Arial', fontSize: '16px', lineHeight: 1.5, p: 3 }}>
+          <Typography sx={{ whiteSpace: 'pre-line' }}>{message}</Typography>
         </DialogContent>
-        <DialogActions>
-          <Button ref={noButtonRef} onClick={handleNo} color="error" variant="contained">
+        <DialogActions sx={{ p: 2 }}>
+          <Button
+            onClick={handleNo}
+            color="error"
+            variant="contained"
+            size="large"
+            aria-label={isDeleteDialog ? 'Cancelar eliminación' : 'Cancelar cambios'}
+            ref={noButtonRef}
+          >
             No
           </Button>
-          <Button onClick={handleYes} color="success" variant="contained">
+          <Button
+            onClick={handleYes}
+            color="success"
+            variant="contained"
+            size="large"
+            aria-label={isDeleteDialog ? 'Confirmar eliminación' : 'Confirmar cambios'}
+          >
             Sí
           </Button>
         </DialogActions>
       </Dialog>
     );
   };
+
 
   // Memoize columns
   const columns = useMemo(
@@ -435,7 +478,7 @@ valueParser: (value) => {
         renderCell: (params) => {
           // console.log('renderCell porcentaje - params.value:', params.value, 'params.row:', params.row);
           const value = params.row.porcentaje;
-          return value != null ? `${Number(value).toFixed(3)}%` : '';
+          return value != null ? `${Number(value).toFixed(2)}%` : '';
         },
       },
       {
