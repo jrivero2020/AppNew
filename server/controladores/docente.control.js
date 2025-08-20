@@ -1047,6 +1047,44 @@ const DeletePagosTipoBeca = async (req, res) => {
   }
 };
 
+
+const getAlumnosBecas = async (req, res) => {
+  try {
+    const dataCurso = await sequelize.query(
+      `CALL colegio.sp_Pagos_GetAlumnosBecas( ?,?,?,? )`,
+      {
+        replacements: [req.params.pagno, req.params.pense, req.params.pgrado, req.params.pletra],
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+    res.json(dataCurso[0]);
+
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+
+const UpsertPagosBecaAlumno = async (req, res) => {
+  console.log( "UpsertPagosConfigMontos=>>", req.body)
+  const {rut,id_tipo_beca,porcentaje_asignado,monto_descuento,apagar,agno, configMonto} = req.body
+
+  try {
+    const results = await sequelize.query(`CALL sp_Pagos_UpSertBecaAlumno(?,?,?,?,?,?,?)`, 
+      {
+        replacements:[ rut,id_tipo_beca,porcentaje_asignado,monto_descuento,apagar,agno, configMonto],
+      type: sequelize.QueryTypes.RAW,
+    });
+     return res.status(200).json({
+      message: "Beca para alumno configurados correctamente",
+      resultados: results,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Error al grabar beca alumno" });
+  }
+};
+
+
 export default {
   docenteByID,
   leerDocente,
@@ -1096,4 +1134,6 @@ export default {
   getPagosTipoBeca,
   UpsertPagosTipoBeca,
   DeletePagosTipoBeca,
+  getAlumnosBecas,
+  UpsertPagosBecaAlumno
 };

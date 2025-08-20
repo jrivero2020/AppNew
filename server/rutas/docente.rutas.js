@@ -139,5 +139,14 @@ router.route("/getPagosTipoBeca/:agno").get(authCtrl.requireSignin, docenteCtrl.
 router.route("/UpsertPagosTipoBeca").post(authCtrl.requireSignin, docenteCtrl.UpsertPagosTipoBeca);
 router.route("/DeletePagosTipoBeca").post(authCtrl.requireSignin, docenteCtrl.DeletePagosTipoBeca);
 
+// Pagos Asignar Becas Alumnos
+
+//  "/getAlumnosBecas/" + pagno + "/" + pense + "/" + pgrado + "/" + pletra,
+
+router.route("/getAlumnosBecas/:pagno/:pense/:pgrado/:pletra").get(authCtrl.requireSignin, docenteCtrl.getAlumnosBecas);
+router.route("/UpsertPagosBecaAlumno").post(authCtrl.requireSignin, docenteCtrl.UpsertPagosBecaAlumno);
+
+
+
 
 export default router;

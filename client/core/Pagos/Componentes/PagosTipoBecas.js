@@ -5,8 +5,19 @@ from '../../../docentes/api-docentes';
       const processedData = dataArray
 
 */
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { DataGrid, GridRowModes, GridActionsCellItem, GridToolbarContainer } from '@mui/x-data-grid';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
+import {
+  DataGrid,
+  GridRowModes,
+  GridActionsCellItem,
+  GridToolbarContainer,
+} from "@mui/x-data-grid";
 import {
   Button,
   Box,
@@ -20,31 +31,49 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-} from '@mui/material';
-import { Add, Edit, Delete, Save, Cancel } from '@mui/icons-material';
-import { esES } from '@mui/x-data-grid/locales';
-import { getPagosTipoBeca, UpsertPagosTipoBeca, DeletePagosTipoBeca } from '../../../docentes/api-docentes';
+} from "@mui/material";
+import { Add, Edit, Delete, Save, Cancel } from "@mui/icons-material";
+import { esES } from "@mui/x-data-grid/locales";
+import {
+  getPagosTipoBeca,
+  UpsertPagosTipoBeca,
+  DeletePagosTipoBeca,
+} from "../../../docentes/api-docentes";
 
 function EditToolbar({ setRows, setRowModesModel, selectedYear }) {
   const handleClick = () => {
     if (!selectedYear) {
-      alert('Por favor, seleccione un año en Configuración de Montos primero.');
+      alert("Por favor, seleccione un año en Configuración de Montos primero.");
       return;
     }
     const id = `new-${Date.now()}`; // ID temporal para filas nuevas
     setRows((oldRows) => [
       ...oldRows,
-      { id, nombre: '', descripcion: '', agno: selectedYear, porcentaje: '', descuento: '', monto: '', isNew: true },
+      {
+        id,
+        nombre: "",
+        descripcion: "",
+        agno: selectedYear,
+        porcentaje: "",
+        descuento: "",
+        monto: "",
+        isNew: true,
+      },
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'nombre' },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "nombre" },
     }));
   };
 
   return (
     <GridToolbarContainer>
-      <Button color="primary" startIcon={<Add />} onClick={handleClick} disabled={!selectedYear}>
+      <Button
+        color="primary"
+        startIcon={<Add />}
+        onClick={handleClick}
+        disabled={!selectedYear}
+      >
         Agregar
       </Button>
     </GridToolbarContainer>
@@ -52,36 +81,58 @@ function EditToolbar({ setRows, setRowModesModel, selectedYear }) {
 }
 
 const computeMutation = (newRow, oldRow) => {
-  let ret = '';
-  let salto = '\n';
+  let ret = "";
+  let salto = "\n";
   if (newRow.nombre !== oldRow.nombre) {
-    ret += `Nombre de "${oldRow.nombre || ''}" a "${newRow.nombre || ''}"${salto}`;
+    ret += `Nombre de "${oldRow.nombre || ""}" a "${
+      newRow.nombre || ""
+    }"${salto}`;
   }
   if (newRow.descripcion !== oldRow.descripcion) {
-    ret += `Descripción de "${oldRow.descripcion || ''}" a "${newRow.descripcion || ''}"${salto}`;
+    ret += `Descripción de "${oldRow.descripcion || ""}" a "${
+      newRow.descripcion || ""
+    }"${salto}`;
   }
   if (newRow.porcentaje !== oldRow.porcentaje) {
-    ret += `Porcentaje de ${oldRow.porcentaje ? Number(oldRow.porcentaje).toFixed(2) + '%' : 'ninguno'} a ${
-      newRow.porcentaje ? Number(newRow.porcentaje).toFixed(2) + '%' : 'ninguno'
+    ret += `Porcentaje de ${
+      oldRow.porcentaje ? Number(oldRow.porcentaje).toFixed(2) + "%" : "ninguno"
+    } a ${
+      newRow.porcentaje ? Number(newRow.porcentaje).toFixed(2) + "%" : "ninguno"
     }${salto}`;
   }
   if (newRow.descuento !== oldRow.descuento) {
-    ret += `Descuento de $${Number(oldRow.descuento || 0).toLocaleString('es-CL')} a $${Number(newRow.descuento || 0).toLocaleString('es-CL')}${salto}`;
+    ret += `Descuento de $${Number(oldRow.descuento || 0).toLocaleString(
+      "es-CL"
+    )} a $${Number(newRow.descuento || 0).toLocaleString("es-CL")}${salto}`;
   }
   if (newRow.monto !== oldRow.monto) {
-    ret += `Monto de $${Number(oldRow.monto || 0).toLocaleString('es-CL')} a $${Number(newRow.monto || 0).toLocaleString('es-CL')}${salto}`;
+    ret += `Monto de $${Number(oldRow.monto || 0).toLocaleString(
+      "es-CL"
+    )} a $${Number(newRow.monto || 0).toLocaleString("es-CL")}${salto}`;
   }
   return ret;
 };
 
-const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
-  
+const PagosTipoBecas = ({
+  credentials,
+  selectedYear,
+  configMonto,
+  objBecas,
+  setObjBecas,
+}) => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info",
+  });
   const [rowModesModel, setRowModesModel] = useState({});
   const [promiseArguments, setPromiseArguments] = useState(null);
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
   const noButtonRef = useRef(null);
   const rowsRef = useRef(rows);
   const [deleteDialog, setDeleteDialog] = useState({ open: false, id: null });
@@ -104,36 +155,53 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
     fetchTiposBeca(controller.signal);
     return () => controller.abort();
   }, [selectedYear]);
-  
+
   const fetchTiposBeca = async (signal) => {
     setLoading(true);
     try {
-      const data = await getPagosTipoBeca({ agno: selectedYear }, credentials, signal);
+      const data = await getPagosTipoBeca(
+        { agno: selectedYear },
+        credentials,
+        signal
+      );
       // console.log('fetchTiposBeca - raw data:', data);
       if (data.error) {
         throw new Error(data.message);
       }
-      const dataArray = Object.values( data )
+      const dataArray = Object.values(data);
       const processedData = dataArray
         .filter((row) => row && row.id != null)
         .map((row) => ({
           id: row.id,
-          nombre: row.nombre ?? '',
-          descripcion: row.descripcion ?? '',
+          nombre: row.nombre ?? "",
+          descripcion: row.descripcion ?? "",
           agno: row.agno != null ? parseInt(row.agno) : selectedYear,
-          porcentaje: row.porcentaje != null ? Number(row.porcentaje) : '',
-          descuento: row.descuento != null ? Number(row.descuento) : '',
-          monto: row.monto != null ? Number(row.monto) : '',
+          porcentaje: row.porcentaje != null ? Number(row.porcentaje) : "",
+          descuento: row.descuento != null ? Number(row.descuento) : "",
+          monto: row.monto != null ? Number(row.monto) : "",
         }));
       // console.log('fetchTiposBeca - processed data:', processedData);
       setRows(processedData);
-      if (processedData.length <= paginationModel.page * paginationModel.pageSize) {
-        setPaginationModel((prev) => ({ ...prev, page: Math.max(0, Math.floor((processedData.length - 1) / prev.pageSize)) }));
+      if (
+        processedData.length <=
+        paginationModel.page * paginationModel.pageSize
+      ) {
+        setPaginationModel((prev) => ({
+          ...prev,
+          page: Math.max(
+            0,
+            Math.floor((processedData.length - 1) / prev.pageSize)
+          ),
+        }));
       }
       // console.log('fetchTiposBeca - updated rows:', processedData, 'paginationModel:', paginationModel);
     } catch (error) {
-      console.error('fetchTiposBeca - error:', error);
-      setSnackbar({ open: true, message: error.message || 'Error al cargar los tipos de beca', severity: 'error' });
+      console.error("fetchTiposBeca - error:", error);
+      setSnackbar({
+        open: true,
+        message: error.message || "Error al cargar los tipos de beca",
+        severity: "error",
+      });
       setRows([]);
     } finally {
       setLoading(false);
@@ -164,67 +232,83 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
   const handleDeleteClick = (id) => () => {
     setDeleteDialog({ open: true, id });
   };
-  /*
-  const handleDeleteClick = (id) => () => {
-    // console.log('handleDeleteClick - id:', id, 'rows==>', JSON.stringify(rows, null, 2));
-    setSnackbar({
-      open: true,
-      message: '¿Está seguro de eliminar este registro?',
-      severity: 'warning',
-      action: (
-        <Box>
-          <Button
-            sx={{ color: 'success.main' }}
-            onClick={() => confirmDelete(id)}
-            startIcon={<Delete />}
-          >
-            Confirmar
-          </Button>
-          <Button
-            sx={{ color: 'error.main' }}
-            onClick={() => setSnackbar({ open: false, message: '', severity: 'info', action: null })}
-            startIcon={<Cancel />}
-          >
-            Cancelar
-          </Button>
-        </Box>
-      ),
+/*  id: 0,
+    nombre: "",
+    porcentaje: 0,
+    descuento:0,
+    monto: 0,*/
+ const handleRowClick = (params) => {
+    setObjBecas({
+      id: params.row.id,
+      nombre: params.row.nombre,
+      porcentaje: params.row.porcentaje,
+      descuento: params.row.descuento,
+      monto: params.row.monto,
     });
   };
-*/
+
   // Confirm delete
 
   const confirmDelete = async (id) => {
-    console.log('confirmDelete - id:', id, 'rows:', JSON.stringify(rowsRef.current, null, 2));
+    console.log(
+      "confirmDelete - id:",
+      id,
+      "rows:",
+      JSON.stringify(rowsRef.current, null, 2)
+    );
     const row = rowsRef.current.find((r) => String(r.id) === String(id));
     if (!row && !useIdForDelete) {
-      setSnackbar({ open: true, message: `No se encontró el registro con ID ${id}`, severity: 'error' });
+      setSnackbar({
+        open: true,
+        message: `No se encontró el registro con ID ${id}`,
+        severity: "error",
+      });
       setDeleteDialog({ open: false, id: null });
       return;
     }
     if (row && row.isNew) {
       setRows(rowsRef.current.filter((r) => String(r.id) !== String(id)));
-      setSnackbar({ open: true, message: 'Fila cancelada correctamente', severity: 'success' });
-      if (rowsRef.current.length <= paginationModel.page * paginationModel.pageSize) {
-        setPaginationModel((prev) => ({ ...prev, page: Math.max(0, prev.page - 1) }));
+      setSnackbar({
+        open: true,
+        message: "Fila cancelada correctamente",
+        severity: "success",
+      });
+      if (
+        rowsRef.current.length <=
+        paginationModel.page * paginationModel.pageSize
+      ) {
+        setPaginationModel((prev) => ({
+          ...prev,
+          page: Math.max(0, prev.page - 1),
+        }));
       }
       setDeleteDialog({ open: false, id: null });
       return;
     }
     try {
-      const response = await DeletePagosTipoBeca(useIdForDelete ? { id } : { agno: row.agno, nombre: row.nombre }, credentials);
+      const response = await DeletePagosTipoBeca(
+        useIdForDelete ? { id } : { agno: row.agno, nombre: row.nombre },
+        credentials
+      );
       if (response.error) {
         throw new Error(response.message);
       }
       setDeleteDialog({ open: false, id: null }); // Cerrar diálogo antes de actualizar
-      setSnackbar({ open: true, message: 'Tipo de beca eliminado correctamente', severity: 'success' });
+      setSnackbar({
+        open: true,
+        message: "Tipo de beca eliminado correctamente",
+        severity: "success",
+      });
       await fetchTiposBeca(new AbortController().signal);
     } catch (error) {
-      setSnackbar({ open: true, message: error.message || 'Error al eliminar el tipo de beca', severity: 'error' });
+      setSnackbar({
+        open: true,
+        message: error.message || "Error al eliminar el tipo de beca",
+        severity: "error",
+      });
       setDeleteDialog({ open: false, id: null });
     }
   };
-
 
   // Handle cancel click
   const handleCancelClick = (id) => () => {
@@ -242,50 +326,58 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
   // Validate row data
   const validateRow = (row) => {
     const errors = {};
-    const nombreStr = String(row.nombre ?? '').trim();
+    const nombreStr = String(row.nombre ?? "").trim();
     if (!nombreStr || nombreStr.length === 0) {
-      errors.nombre = 'El nombre es obligatorio';
+      errors.nombre = "El nombre es obligatorio";
     } else if (nombreStr.length > 50) {
-      errors.nombre = 'El nombre no puede exceder los 50 caracteres';
+      errors.nombre = "El nombre no puede exceder los 50 caracteres";
     }
-    const porcentajeStr = String(row.porcentaje ?? '').trim();
+    const porcentajeStr = String(row.porcentaje ?? "").trim();
     if (porcentajeStr && !/^\d+(\.\d{1,3})?$/.test(porcentajeStr)) {
-      errors.porcentaje = 'El porcentaje debe ser un número decimal con hasta 2 decimales';
-    } else if (porcentajeStr && (Number(porcentajeStr) < 0 || Number(porcentajeStr) > 100)) {
-      errors.porcentaje = 'El porcentaje debe estar entre 0 y 100';
+      errors.porcentaje =
+        "El porcentaje debe ser un número decimal con hasta 2 decimales";
+    } else if (
+      porcentajeStr &&
+      (Number(porcentajeStr) < 0 || Number(porcentajeStr) > 100)
+    ) {
+      errors.porcentaje = "El porcentaje debe estar entre 0 y 100";
     }
     if (row.agno !== selectedYear) {
-      errors.agno = 'El año debe coincidir con el seleccionado';
+      errors.agno = "El año debe coincidir con el seleccionado";
     }
     if (porcentajeStr && !configMonto) {
-      errors.porcentaje = 'No hay monto configurado para el año seleccionado';
+      errors.porcentaje = "No hay monto configurado para el año seleccionado";
     }
     return errors;
   };
 
   // Process row update
   const processRowUpdate = useCallback(
-    (newRow, oldRow) =>      
+    (newRow, oldRow) =>
       new Promise((resolve, reject) => {
         if (!configMonto) {
-      setSnackbar({
-        open: true,
-        message: 'Debe configurar el monto base primero',
-        severity: 'error'
-      });
-      return Promise.reject(oldRow);
-    }
- // Validación inicial de parámetros
-        console.log('newRow en processRowUpdate:', newRow); // Verifica qué contiene newRow
+          setSnackbar({
+            open: true,
+            message: "Debe configurar el monto base primero",
+            severity: "error",
+          });
+          return Promise.reject(oldRow);
+        }
+        // Validación inicial de parámetros
+        console.log("newRow en processRowUpdate:", newRow); // Verifica qué contiene newRow
         const errors = validateRow(newRow);
         if (Object.keys(errors).length > 0) {
-           console.log('en processRowUpdate error :', errors);
-          setSnackbar({ open: true, message: errors.nombre || errors.porcentaje || errors.agno, severity: 'error' });
+          console.log("en processRowUpdate error :", errors);
+          setSnackbar({
+            open: true,
+            message: errors.nombre || errors.porcentaje || errors.agno,
+            severity: "error",
+          });
           reject(oldRow);
           return;
         }
         // Calculate descuento and monto based on porcentaje and configMonto
-           console.log('en processRowUpdate Calculando descuentos...');
+        console.log("en processRowUpdate Calculando descuentos...");
         let updatedRow = { ...newRow };
         if (newRow.porcentaje && configMonto) {
           const porcentaje = Number(newRow.porcentaje);
@@ -313,25 +405,35 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
 
   // Handle process row update error
   const handleProcessRowUpdateError = (error) => {
-    console.error('Error al procesar la actualización de la fila:', error);
-    setSnackbar({ open: true, message: 'Error al procesar los cambios', severity: 'error' });
+    console.error("Error al procesar la actualización de la fila:", error);
+    setSnackbar({
+      open: true,
+      message: "Error al procesar los cambios",
+      severity: "error",
+    });
   };
 
   // Handle dialog confirmation
-  
+
   const handleNo = () => {
-    console.log('handleNo - promiseArguments:', promiseArguments, 'deleteDialog:', deleteDialog);
+    console.log(
+      "handleNo - promiseArguments:",
+      promiseArguments,
+      "deleteDialog:",
+      deleteDialog
+    );
     if (promiseArguments) {
       const { oldRow, resolve, newRow } = promiseArguments;
       if (newRow && newRow.isNew) {
-        setRows(rowsRef.current.filter((row) => String(row.id) !== String(newRow.id)));
+        setRows(
+          rowsRef.current.filter((row) => String(row.id) !== String(newRow.id))
+        );
       }
       resolve(oldRow);
       setPromiseArguments(null);
     }
     setDeleteDialog({ open: false, id: null });
   };
-
 
   const handleYes = async () => {
     if (promiseArguments) {
@@ -351,11 +453,19 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
         if (response.error) {
           throw new Error(response.message);
         }
-        setSnackbar({ open: true, message: 'Tipo de beca guardado correctamente', severity: 'success' });
+        setSnackbar({
+          open: true,
+          message: "Tipo de beca guardado correctamente",
+          severity: "success",
+        });
         resolve({ ...newRow, id: response.id || newRow.id, isNew: false });
         await fetchTiposBeca(new AbortController().signal);
       } catch (error) {
-        setSnackbar({ open: true, message: error.message || 'Error al guardar el tipo de beca', severity: 'error' });
+        setSnackbar({
+          open: true,
+          message: error.message || "Error al guardar el tipo de beca",
+          severity: "error",
+        });
         reject(newRow);
       } finally {
         setPromiseArguments(null);
@@ -371,14 +481,16 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
 
   // Render confirm dialog
   // jrjr
-  
+
   const renderConfirmDialog = () => {
     if (!promiseArguments && !deleteDialog.open) {
       return null;
     }
     const isDeleteDialog = deleteDialog.open;
-    const row = isDeleteDialog ? rowsRef.current.find((r) => String(r.id) === String(deleteDialog.id)) : null;
-     if (isDeleteDialog && !row && !useIdForDelete) {
+    const row = isDeleteDialog
+      ? rowsRef.current.find((r) => String(r.id) === String(deleteDialog.id))
+      : null;
+    if (isDeleteDialog && !row && !useIdForDelete) {
       setDeleteDialog({ open: false, id: null }); // Cerrar si el registro no existe
       return null;
     }
@@ -387,8 +499,11 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
         ? `¿Desea eliminar la beca "${row.nombre}"?`
         : `¿Desea eliminar el registro con ID ${deleteDialog.id}?`
       : promiseArguments
-      ? `¿Desea guardar los siguientes cambios?\n${computeMutation(promiseArguments.newRow, promiseArguments.oldRow)}`
-      : '';
+      ? `¿Desea guardar los siguientes cambios?\n${computeMutation(
+          promiseArguments.newRow,
+          promiseArguments.oldRow
+        )}`
+      : "";
 
     return (
       <Dialog
@@ -396,11 +511,14 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
         TransitionProps={{ onEntered: handleEntered }}
         open={promiseArguments || deleteDialog.open}
       >
-        <DialogTitle sx={{ backgroundColor: 'primary.main', color: 'white' }}>
-          {isDeleteDialog ? 'Confirmar Eliminación' : 'Confirmar Cambios'}
+        <DialogTitle sx={{ backgroundColor: "primary.main", color: "white" }}>
+          {isDeleteDialog ? "Confirmar Eliminación" : "Confirmar Cambios"}
         </DialogTitle>
-        <DialogContent dividers sx={{ fontFamily: 'Arial', fontSize: '16px', lineHeight: 1.5, p: 3 }}>
-          <Typography sx={{ whiteSpace: 'pre-line' }}>{message}</Typography>
+        <DialogContent
+          dividers
+          sx={{ fontFamily: "Arial", fontSize: "16px", lineHeight: 1.5, p: 3 }}
+        >
+          <Typography sx={{ whiteSpace: "pre-line" }}>{message}</Typography>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
           <Button
@@ -408,7 +526,9 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
             color="error"
             variant="contained"
             size="large"
-            aria-label={isDeleteDialog ? 'Cancelar eliminación' : 'Cancelar cambios'}
+            aria-label={
+              isDeleteDialog ? "Cancelar eliminación" : "Cancelar cambios"
+            }
             ref={noButtonRef}
           >
             No
@@ -418,7 +538,9 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
             color="success"
             variant="contained"
             size="large"
-            aria-label={isDeleteDialog ? 'Confirmar eliminación' : 'Confirmar cambios'}
+            aria-label={
+              isDeleteDialog ? "Confirmar eliminación" : "Confirmar cambios"
+            }
           >
             Sí
           </Button>
@@ -427,97 +549,100 @@ const PagosTipoBecas = ({ credentials, selectedYear, configMonto }) => {
     );
   };
 
-
   // Memoize columns
   const columns = useMemo(
     () => [
       {
-        field: 'nombre',
-        headerName: 'Nombre',
+        field: "nombre",
+        headerName: "Nombre",
         width: 150,
         editable: true,
-        type: 'string',
+        type: "string",
         valueGetter: (value, row) => {
           // console.log('valueGetter nombre - value:', value, 'row:', row);
-          return row.nombre ?? '';
+          return row.nombre ?? "";
         },
       },
       {
-        field: 'descripcion',
-        headerName: 'Descripción',
+        field: "descripcion",
+        headerName: "Descripción",
         width: 200,
         editable: true,
-        type: 'string',
+        type: "string",
         valueGetter: (value, row) => {
           // console.log('valueGetter descripcion - value:', value, 'row:', row);
-          return row.descripcion ?? '';
+          return row.descripcion ?? "";
         },
         renderCell: (params) => {
           // console.log('renderCell descripcion - params.value:', params.value, 'params.row:', params.row);
-          return params.value || 'Sin descripción';
+          return params.value || "Sin descripción";
         },
       },
       {
-        field: 'porcentaje',
-        headerName: 'Porcentaje (%)',
+        field: "porcentaje",
+        headerName: "Porcentaje (%)",
         width: 120,
         editable: true,
-        type: 'number',
+        type: "number",
         valueGetter: (value, row) => {
           // console.log('valueGetter porcentaje - value:', value, 'row:', row);
           return row.porcentaje != null ? Number(row.porcentaje) : null;
         },
         // valueParser: (value) => {
         // return value != null && value !== '' ? Number(value) : null;
-valueParser: (value) => {
-  if (value == null || value === '') return null;
-  // Reemplaza comas por puntos para el parseo numérico
-  const normalizedValue = String(value).replace(',', '.');
-  return Number(normalizedValue);
-  },
+        valueParser: (value) => {
+          if (value == null || value === "") return null;
+          // Reemplaza comas por puntos para el parseo numérico
+          const normalizedValue = String(value).replace(",", ".");
+          return Number(normalizedValue);
+        },
         renderCell: (params) => {
           // console.log('renderCell porcentaje - params.value:', params.value, 'params.row:', params.row);
           const value = params.row.porcentaje;
-          return value != null ? `${Number(value).toFixed(2)}%` : '';
+          return value != null ? `${Number(value).toFixed(2)}%` : "";
         },
       },
       {
-        field: 'descuento',
-        headerName: 'Descuento (CLP)',
+        field: "descuento",
+        headerName: "Descuento (CLP)",
         width: 120,
         editable: false, // Calculated field
-        type: 'number',
+        type: "number",
         valueGetter: (value, row) => {
           // console.log('valueGetter descuento - value:', value, 'row:', row);
-          return row.descuento ?? '';
+          return row.descuento ?? "";
         },
         renderCell: (params) => {
           // console.log('renderCell descuento - params.value:', params.value, 'params.row:', params.row);
           const value = params.row.descuento;
-          return value != null && value !== '' ? `$${Number(value).toLocaleString('es-CL')}` : '';
+          return value != null && value !== ""
+            ? `$${Number(value).toLocaleString("es-CL")}`
+            : "";
         },
       },
       {
-        field: 'monto',
-        headerName: 'Monto (CLP)',
+        field: "monto",
+        headerName: "Monto (CLP)",
         width: 120,
         editable: false, // Calculated field
-        type: 'number',
+        type: "number",
         valueGetter: (value, row) => {
           // console.log('valueGetter monto - value:', value, 'row:', row);
-          return row.monto ?? '';
+          return row.monto ?? "";
         },
         renderCell: (params) => {
           // console.log('renderCell monto - params.value:', params.value, 'params.row:', params.row);
           const value = params.row.monto;
-          return value != null && value !== '' ? `$${Number(value).toLocaleString('es-CL')}` : '';
+          return value != null && value !== ""
+            ? `$${Number(value).toLocaleString("es-CL")}`
+            : "";
         },
       },
       {
-        field: 'actions',
-        headerName: 'Acciones',
+        field: "actions",
+        headerName: "Acciones",
         width: 150,
-        type: 'actions',
+        type: "actions",
         getActions: ({ id }) => {
           const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
           if (isInEditMode) {
@@ -525,7 +650,7 @@ valueParser: (value) => {
               <GridActionsCellItem
                 icon={<Save />}
                 label="Save"
-                sx={{ color: 'primary.main' }}
+                sx={{ color: "primary.main" }}
                 onClick={handleSaveClick(id)}
               />,
               <GridActionsCellItem
@@ -556,16 +681,22 @@ valueParser: (value) => {
     [rowModesModel]
   );
 
-if (!selectedYear || !configMonto) {
+  if (!selectedYear || !configMonto) {
     return (
       <Card sx={{ maxWidth: 900, boxShadow: 3, p: 3 }}>
         <CardContent>
           <Alert severity="warning" sx={{ mb: 2 }}>
             <AlertTitle>Configuración requerida</AlertTitle>
             {!selectedYear && !configMonto ? (
-              <>Por favor seleccione una fila de año monto <strong>Configuración de Montos</strong></>
+              <>
+                Por favor seleccione una fila de año monto{" "}
+                <strong>Configuración de Montos</strong>
+              </>
             ) : (
-              <>Por favor configure el monto base primero en <strong>Configuración de Montos</strong></>
+              <>
+                Por favor configure el monto base primero en{" "}
+                <strong>Configuración de Montos</strong>
+              </>
             )}
           </Alert>
         </CardContent>
@@ -576,10 +707,18 @@ if (!selectedYear || !configMonto) {
   return (
     <Card sx={{ maxWidth: 900, boxShadow: 3 }}>
       <CardContent>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h6">Configuración de Tipos de Beca {selectedYear ? `(${selectedYear})` : ''}</Typography>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
+          <Typography variant="h6">
+            Configuración de Tipos de Beca{" "}
+            {selectedYear ? `(${selectedYear})` : ""}
+          </Typography>
         </Box>
-        <div style={{ height: 400, width: '100%' }}>
+        <div style={{ height: 400, width: "100%" }}>
           {renderConfirmDialog()}
           <DataGrid
             rows={rows}
@@ -593,49 +732,76 @@ if (!selectedYear || !configMonto) {
             pageSizeOptions={[10]}
             paginationModel={paginationModel}
             onPaginationModelChange={setPaginationModel}
+            onRowClick={handleRowClick}
             rowHeight={36}
             localeText={{
               ...esES.components.MuiDataGrid.defaultProps.localeText,
-              noRowsLabel: selectedYear ? 'No hay tipos de beca' : 'Seleccione un año en Configuración de Montos',
+              noRowsLabel: selectedYear
+                ? "No hay tipos de beca"
+                : "Seleccione un año en Configuración de Montos",
             }}
             loading={loading}
             slots={{ toolbar: EditToolbar }}
             slotProps={{ toolbar: { setRows, setRowModesModel, selectedYear } }}
             sx={{
-              '& .MuiDataGrid-row:hover': { cursor: 'pointer' },
-              '& .MuiDataGrid-row.Mui-selected': { backgroundColor: '#e3f2fd' },
-              '& .MuiDataGrid-cell': {
-                padding: '4px',
+              "& .MuiDataGrid-row:hover": { cursor: "pointer" },
+              "& .MuiDataGrid-row.Mui-selected": { backgroundColor: "#e3f2fd" },
+              "& .MuiDataGrid-cell": {
+                padding: "4px",
               },
             }}
-            disableSelectionOnClick={loading || rows.length === 0 || !selectedYear}
+            disableSelectionOnClick={
+              loading || rows.length === 0 || !selectedYear
+            }
           />
           <Snackbar
             open={snackbar.open}
             autoHideDuration={snackbar.action ? null : 4000}
-            onClose={() => setSnackbar({ open: false, message: '', severity: 'info', action: null })}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            onClose={() =>
+              setSnackbar({
+                open: false,
+                message: "",
+                severity: "info",
+                action: null,
+              })
+            }
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
           >
             {snackbar.action ? (
               <Alert
                 severity={snackbar.severity}
-                sx={{ width: '100%', backgroundColor: 'white', color: 'black' }}
+                sx={{ width: "100%", backgroundColor: "white", color: "black" }}
                 action={snackbar.action}
               >
-                <AlertTitle>{snackbar.severity === 'success' ? 'Éxito' : snackbar.severity === 'error' ? 'Error' : 'Advertencia'}</AlertTitle>
+                <AlertTitle>
+                  {snackbar.severity === "success"
+                    ? "Éxito"
+                    : snackbar.severity === "error"
+                    ? "Error"
+                    : "Advertencia"}
+                </AlertTitle>
                 {snackbar.message}
               </Alert>
             ) : (
               <Alert
-                onClose={() => setSnackbar({ open: false, message: '', severity: 'info', action: null })}
+                onClose={() =>
+                  setSnackbar({
+                    open: false,
+                    message: "",
+                    severity: "info",
+                    action: null,
+                  })
+                }
                 severity={snackbar.severity}
-                sx={{ width: '100%' }}
+                sx={{ width: "100%" }}
               >
-                <AlertTitle>{snackbar.severity === 'success' ? 'Éxito' : 'Error'}</AlertTitle>
+                <AlertTitle>
+                  {snackbar.severity === "success" ? "Éxito" : "Error"}
+                </AlertTitle>
                 {snackbar.message}
               </Alert>
             )}
-          </Snackbar>
+          </Snackbar>      
         </div>
       </CardContent>
     </Card>

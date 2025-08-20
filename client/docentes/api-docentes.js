@@ -805,6 +805,7 @@ const UpsertPagosTipoBeca = async (params, credentials) => {
     return { error: 500, message: err.message };
   }
 };
+
 const DeletePagosTipoBeca = async (params, credentials) => {  
   const {agno,nombre} = params
   try {
@@ -816,6 +817,50 @@ const DeletePagosTipoBeca = async (params, credentials) => {
         Authorization: "Bearer " + credentials.t,
       },
       body: JSON.stringify({ agno,nombre }),
+    });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
+
+const api_getAlumnosBecas = async (params, credentials, signal) => {
+  try {
+    const pagno = params.pagno;
+    const pense = params.pense;
+    const pgrado = params.pgrado;
+    const pletra = params.pletra;
+    let response = await fetch(
+      "/getAlumnosBecas/" + pagno + "/" + pense + "/" + pgrado + "/" + pletra,
+      {
+        method: "GET",
+        signal: signal,
+        headers: { Authorization: "Bearer " + credentials.t },
+      }
+    );
+
+    return await response.json();
+  } catch (err) {
+    return { error: err.message, message: err.message };
+  }
+};
+
+
+const api_asignarBecaAlumnos = async (params, credentials) => {
+  const {rut,id_tipo_beca,porcentaje_asignado,monto_descuento,apagar,agno, configMonto} = params  
+  try {
+    let response = await fetch("/UpsertPagosBecaAlumno/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify({rut,id_tipo_beca,porcentaje_asignado,monto_descuento,apagar,agno, configMonto }),
     });
     if (!response.ok) {
       return { error: response.status, message: response.statusText };
@@ -874,4 +919,6 @@ export {
   getPagosTipoBeca,
   UpsertPagosTipoBeca,
   DeletePagosTipoBeca,
+  api_getAlumnosBecas,
+  api_asignarBecaAlumnos
 };
