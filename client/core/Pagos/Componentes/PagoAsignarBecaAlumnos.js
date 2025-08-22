@@ -167,6 +167,7 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
           apagar: row.apagar != null ? Number(row.apagar) : '',
         }));
       setAlumnos(processedData);
+      alumnosRef.current = processedData; // Actualizar ref
       if (processedData.length <= paginationModel.page * paginationModel.pageSize) {
         setPaginationModel((prev) => ({ ...prev, page: Math.max(0, Math.floor((processedData.length - 1) / prev.pageSize)) }));
       }
@@ -262,7 +263,20 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
         message: `Monto de descuento actualizado a $${Number(montoStr).toLocaleString('es-CL')} para ${newRow.nombres} ${newRow.apat}`,
         severity: 'success',
       });
-      return { ...newRow, montodescuento: Number(montoStr), apagar: configMonto ? configMonto - Number(montoStr) : 0 };
+      // Actualizar estado local para reflejar id_tipo_beca y mostrar ícono Delete
+      const updatedRow = {
+        ...newRow,
+        id_tipo_beca: selectedBeca.id,
+        nombre: selectedBeca.nombre,
+        porcentaje_asignado: selectedBeca.porcentaje != null ? Number(selectedBeca.porcentaje).toFixed(2) : '',
+        montodescuento: Number(montoStr),
+        apagar: configMonto ? configMonto - Number(montoStr) : 0,
+      };
+      setAlumnos((prev) =>
+        prev.map((r) => (r.id === newRow.id ? updatedRow : r))
+      );
+      alumnosRef.current = alumnos; // Actualizar ref
+      return updatedRow;
     } catch (error) {
       console.error('processRowUpdate - error:', error);
       setSnackbar({ open: true, message: error.message || 'Error al actualizar el monto de descuento', severity: 'error' });
@@ -321,6 +335,23 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
         message: `Beca "${selectedBeca.nombre}" asignada a ${alumno.nombres} ${alumno.apat}`,
         severity: 'success',
       });
+      // Actualizar estado local para reflejar id_tipo_beca
+      setAlumnos((prev) =>
+        prev.map((r) =>
+          r.id === alumno.id
+            ? {
+                ...r,
+                id_tipo_beca: selectedBeca.id,
+                nombre: selectedBeca.nombre,
+                porcentaje_asignado: selectedBeca.porcentaje != null ? Number(selectedBeca.porcentaje).toFixed(2) : '',
+                montodescuento: montoDescuento,
+                apagar: selectedBeca.monto != null ? Number(selectedBeca.monto) : (montoDescuento && configMonto ? configMonto - montoDescuento : ''),
+              }
+            : r
+        )
+      );
+      alumnosRef.current = alumnos; // Actualizar ref
+      await fetchAlumnos(new AbortController().signal); // Sincronizar con backend
     } catch (error) {
       console.error('confirmApplyBeca - error:', error);
       setSnackbar({ open: true, message: error.message || 'Error al asignar la beca', severity: 'error' });
@@ -411,7 +442,6 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
       }
     } else if (action === 'asignar') {
       await confirmApplyBeca(alumno);
-      await fetchAlumnos(new AbortController().signal);
     } else if (action === 'eliminar') {
       try {
         const response = await api_eliminarBecaAlumno(
@@ -426,7 +456,23 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
           throw new Error(response.message);
         }
         setSnackbar({ open: true, message: `Beca eliminada de ${alumno.nombres} ${alumno.apat}`, severity: 'success' });
-        await fetchAlumnos(new AbortController().signal);
+        // Actualizar estado local para reflejar eliminación
+        setAlumnos((prev) =>
+          prev.map((r) =>
+            r.id === alumno.id
+              ? {
+                  ...r,
+                  id_tipo_beca: null,
+                  nombre: 'Sin beca',
+                  porcentaje_asignado: '',
+                  montodescuento: '',
+                  apagar: '',
+                }
+              : r
+          )
+        );
+        alumnosRef.current = alumnos; // Actualizar ref
+        await fetchAlumnos(new AbortController().signal); // Sincronizar con backend
       } catch (error) {
         console.error('confirmDeleteBeca - error:', error);
         setSnackbar({ open: true, message: error.message || 'Error al eliminar la beca', severity: 'error' });
