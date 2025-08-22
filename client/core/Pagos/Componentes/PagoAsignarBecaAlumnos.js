@@ -17,12 +17,13 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  IconButton,
 } from '@mui/material';
 import { esES } from '@mui/x-data-grid/locales';
-import { getCursos, api_getAlumnosBecas, api_asignarBecaAlumnos } from "../../../docentes/api-docentes";
+import { CheckBox, Delete, Edit } from '@mui/icons-material';
+import { getCursos, api_getAlumnosBecas, api_asignarBecaAlumnos, api_eliminarBecaAlumno } from "../../../docentes/api-docentes";
 
-function Toolbar({ selectedYear, selectedBeca, cursos, selectedCurso, setSelectedCurso }) {
-  // Validar props
+function Toolbar({ selectedYear, selectedBeca, cursos, selectedCurso, setSelectedCurso, showSelectAll, handleSelectAll }) {
   if (!selectedBeca) {
     console.warn('Toolbar - selectedBeca es null o undefined');
     return null;
@@ -54,6 +55,18 @@ function Toolbar({ selectedYear, selectedBeca, cursos, selectedCurso, setSelecte
           ))}
         </Select>
       </FormControl>
+      {showSelectAll && (
+        <Button
+          color="primary"
+          variant="contained"
+          startIcon={<CheckBox />}
+          onClick={handleSelectAll}
+          aria-label="Aplicar beca a todos"
+          sx={{ ml: 2 }}
+        >
+          Aplicar a Todos
+        </Button>
+      )}
     </GridToolbarContainer>
   );
 }
@@ -64,10 +77,14 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
   const [alumnos, setAlumnos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
-  const [confirmDialog, setConfirmDialog] = useState({ open: false, alumno: null });
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 47 });
+  const [confirmDialog, setConfirmDialog] = useState({ open: false, alumno: null, action: '' });
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
   const noButtonRef = useRef(null);
   const alumnosRef = useRef(alumnos);
+  const gridRef = useRef(null);
+
+  const showSelectAll = selectedCurso && (selectedCurso.cod_ense === 10 || (selectedCurso.cod_ense === 110 && selectedCurso.cod_grado === 1)) && selectedBeca;
+  const isDescuentoEditable = selectedBeca && (selectedBeca.descuento == null || Number(selectedBeca.descuento) <= 0 || selectedBeca.descuento === '');
 
   useEffect(() => {
     console.log('AsignarBecaAlumnos - Props:', { selectedYear, configMonto, selectedBeca });
@@ -128,25 +145,25 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
         credentials,
         signal
       );
-
+      console.log('fetchAlumnos - raw data:', JSON.stringify(data, null, 2));
       if (data.error) {
         throw new Error(data.message);
       }
-      const dataArray = Object.values(data)
-            console.log('fetchAlumnos - raw dataArray:', dataArray);
+      const dataArray = Object.values(data);
+      console.log('fetchAlumnos - raw dataArray:', dataArray);
       const processedData = dataArray
         .filter((row) => row && row.rut != null)
         .map((row) => ({
-          id: row.rut, // Usar rut como ID único
+          id: row.rut,
           rut: row.rut ?? '',
           dv: row.dv ?? '',
           nombres: row.nombres ?? '',
           apat: row.apat ?? '',
           amat: row.amat ?? '',
           id_tipo_beca: row.id_tipo_beca ?? null,
-          porcentaje_asignado: row.porcentaje_asignado != null ? Number(row.porcentaje_asignado) : '',
+          porcentaje_asignado: row.porcentaje_asignado != null ? Number(row.porcentaje_asignado).toFixed(2) : '',
           montodescuento: row.montodescuento != null ? Number(row.montodescuento) : '',
-          nombre: row.nombre != null ? row.nombre:'Sin beca',
+          nombre: row.nombre != null ? row.nombre : 'Sin beca',
           apagar: row.apagar != null ? Number(row.apagar) : '',
         }));
       setAlumnos(processedData);
@@ -172,7 +189,7 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
     if (beca.nombre === 'Kinder' && !(selectedCurso?.cod_ense === 10 && selectedCurso?.cod_grado === 5)) {
       return 'La beca "Kinder" solo se aplica a cursos de Kinder';
     }
-    if (beca.nombre === 'Básica' && !(selectedCurso?.cod_ense !== 110 && selectedCurso?.cod_grado === 1)) {
+    if (beca.nombre === 'Básica' && !(selectedCurso?.cod_ense === 110 && selectedCurso?.cod_grado === 1)) {
       return 'La beca "Básica" solo se aplica a cursos 1er Básico';
     }
     return null;
@@ -192,28 +209,106 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
       setSnackbar({ open: true, message: error, severity: 'error' });
       return;
     }
-    console.log('handleDoubleClick - alumno:', params.row, 'selectedBeca:', selectedBeca);
-    setConfirmDialog({ open: true, alumno: params.row });
+    if (isDescuentoEditable) {
+      setSnackbar({ open: true, message: 'Para esta beca, edite el monto de descuento en la columna correspondiente', severity: 'warning' });
+      return;
+    }
+    setConfirmDialog({ open: true, alumno: params.row, action: 'asignar' });
   };
 
-  const confirmApplyBeca = async () => {
-    const { alumno } = confirmDialog;
+  const handleEditMonto = (id) => {
+    console.log('handleEditMonto - id:', id);
+    if (gridRef.current) {
+      gridRef.current.startCellEditMode({ id, field: 'montodescuento' });
+    }
+  };
+
+  const processRowUpdate = async (newRow, oldRow) => {
+    console.log('processRowUpdate - newRow:', newRow, 'oldRow:', oldRow);
+    const montoStr = String(newRow.montodescuento ?? '').trim();
+    const errors = {};
+    if (!montoStr) {
+      errors.montodescuento = 'Debe ingresar un monto de descuento';
+    } else if (!/^\d+$/.test(montoStr)) {
+      errors.montodescuento = 'El monto de descuento debe ser un número entero';
+    } else if (Number(montoStr) <= 0) {
+      errors.montodescuento = 'El monto de descuento debe ser mayor a 0';
+    } else if (configMonto && Number(montoStr) > configMonto) {
+      errors.montodescuento = 'El monto de descuento no puede exceder el monto base';
+    }
+    if (Object.keys(errors).length > 0) {
+      setSnackbar({ open: true, message: errors.montodescuento, severity: 'error' });
+      throw new Error(errors.montodescuento);
+    }
+    try {
+      const response = await api_asignarBecaAlumnos(
+        {
+          rut: newRow.rut,
+          id_tipo_beca: selectedBeca.id,
+          porcentaje_asignado: selectedBeca.porcentaje != null ? Number(selectedBeca.porcentaje).toFixed(2) : null,
+          monto_descuento: Number(montoStr),
+          apagar: configMonto ? configMonto - Number(montoStr) : 0,
+          agno: selectedYear,
+          configMonto,
+        },
+        credentials
+      );
+      console.log('processRowUpdate - response:', response);
+      if (response.error) {
+        throw new Error(response.message);
+      }
+      setSnackbar({
+        open: true,
+        message: `Monto de descuento actualizado a $${Number(montoStr).toLocaleString('es-CL')} para ${newRow.nombres} ${newRow.apat}`,
+        severity: 'success',
+      });
+      return { ...newRow, montodescuento: Number(montoStr), apagar: configMonto ? configMonto - Number(montoStr) : 0 };
+    } catch (error) {
+      console.error('processRowUpdate - error:', error);
+      setSnackbar({ open: true, message: error.message || 'Error al actualizar el monto de descuento', severity: 'error' });
+      throw error;
+    }
+  };
+
+  const handleProcessRowUpdateError = (error) => {
+    console.error('handleProcessRowUpdateError - error:', error);
+    setSnackbar({ open: true, message: error.message || 'Error al actualizar el monto', severity: 'error' });
+  };
+
+  const handleSelectAll = () => {
+    if (!selectedBeca) {
+      setSnackbar({ open: true, message: 'Seleccione un tipo de beca primero', severity: 'error' });
+      return;
+    }
+    if (!selectedCurso) {
+      setSnackbar({ open: true, message: 'Seleccione un curso primero', severity: 'error' });
+      return;
+    }
+    setConfirmDialog({ open: true, alumno: null, action: 'select_all' });
+  };
+
+  const handleDeleteBeca = (alumno) => {
+    if (!alumno.id_tipo_beca) {
+      setSnackbar({ open: true, message: 'El alumno no tiene una beca asignada', severity: 'warning' });
+      return;
+    }
+    setConfirmDialog({ open: true, alumno, action: 'eliminar' });
+  };
+
+  const confirmApplyBeca = async (alumno) => {
     if (!alumno || !selectedBeca) return;
 
-    let porcentaje_asignado = selectedBeca.porcentaje != null && selectedBeca.porcentaje !== 0 ? Number(selectedBeca.porcentaje) : null;
-    let monto_descuento = selectedBeca.descuento != null && selectedBeca.descuento !== 0 ? Number(selectedBeca.descuento): 0;
-    let apagar = selectedBeca.monto != null && selectedBeca.monto !== 0 ? Number(selectedBeca.monto): 0;
-
     try {
+      const montoDescuento = selectedBeca.descuento != null && Number(selectedBeca.descuento) > 0 ? Number(selectedBeca.descuento) : null;
       const response = await api_asignarBecaAlumnos(
         {
           rut: alumno.rut,
           id_tipo_beca: selectedBeca.id,
-          porcentaje_asignado,
-          monto_descuento,
-          apagar,
+          porcentaje_asignado: selectedBeca.porcentaje != null ? Number(selectedBeca.porcentaje).toFixed(2) : null,
+          monto_descuento: montoDescuento,
+          apagar: selectedBeca.monto != null ? Number(selectedBeca.monto) : (montoDescuento && configMonto ? configMonto - montoDescuento : null),
           agno: selectedYear,
-          configMonto
+          configMonto,
         },
         credentials
       );
@@ -221,55 +316,28 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
       if (response.error) {
         throw new Error(response.message);
       }
-      setSnackbar({ open: true, message: `Beca "${selectedBeca.nombre}" asignada a ${alumno.nombres} ${alumno.apat}`, severity: 'success' });
-      await fetchAlumnos(new AbortController().signal);
+      setSnackbar({
+        open: true,
+        message: `Beca "${selectedBeca.nombre}" asignada a ${alumno.nombres} ${alumno.apat}`,
+        severity: 'success',
+      });
     } catch (error) {
       console.error('confirmApplyBeca - error:', error);
       setSnackbar({ open: true, message: error.message || 'Error al asignar la beca', severity: 'error' });
-    } finally {
-      setConfirmDialog({ open: false, alumno: null });
     }
-  };
-
-  const handleCloseDialog = () => {
-    setConfirmDialog({ open: false, alumno: null });
-  };
-
-  const handleEntered = () => {
-    noButtonRef.current?.focus();
-  };
-
-  const processRowUpdate = (newRow, oldRow) => {
-    if (!selectedBeca || (selectedBeca.porcentaje != null && selectedBeca.porcentaje !== 0)) {
-      return oldRow; // Solo editable si porcentaje es null/0
-    }
-    const errors = {};
-    const montoStr = String(newRow.montodescuento ?? '').trim();
-    if (montoStr && !/^\d+$/.test(montoStr)) {
-      errors.montodescuento = 'El monto de descuento debe ser un número entero';
-    } else if (montoStr && Number(montoStr) < 0) {
-      errors.montodescuento = 'El monto de descuento no puede ser negativo';
-    } else if (montoStr && configMonto && Number(montoStr) > configMonto) {
-      errors.montodescuento = 'El monto de descuento no puede exceder el monto base';
-    }
-    if (Object.keys(errors).length > 0) {
-      setSnackbar({ open: true, message: errors.montodescuento, severity: 'error' });
-      return oldRow;
-    }
-    return {
-      ...newRow,
-      montodescuento: montoStr ? Number(montoStr) : '',
-      apagar: montoStr && configMonto ? configMonto - Number(montoStr) : '',
-    };
-  };
-
-  const handleProcessRowUpdateError = (error) => {
-    setSnackbar({ open: true, message: 'Error al procesar los cambios', severity: 'error' });
   };
 
   const renderConfirmDialog = () => {
-    if (!confirmDialog.open || !confirmDialog.alumno || !selectedBeca) return null;
-    const message = `¿Desea asignar la beca "${selectedBeca.nombre}" a ${confirmDialog.alumno.nombres} ${confirmDialog.alumno.apat}?`;
+    if (!confirmDialog.open) return null;
+    const { action, alumno } = confirmDialog;
+    let message = '';
+    if (action === 'select_all') {
+      message = `¿Desea asignar la beca "${selectedBeca?.nombre}" a todos los alumnos del curso?`;
+    } else if (action === 'asignar') {
+      message = `¿Desea asignar la beca "${selectedBeca?.nombre}" a ${alumno.nombres} ${alumno.apat}?`;
+    } else if (action === 'eliminar') {
+      message = `¿Desea eliminar la beca de ${alumno.nombres} ${alumno.apat}?`;
+    }
 
     return (
       <Dialog
@@ -278,7 +346,7 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
         open={confirmDialog.open}
       >
         <DialogTitle sx={{ backgroundColor: 'primary.main', color: 'white' }}>
-          Confirmar Asignación de Beca
+          Confirmar Acción
         </DialogTitle>
         <DialogContent dividers sx={{ fontFamily: 'Arial', fontSize: '16px', lineHeight: 1.5, p: 3 }}>
           <Typography sx={{ whiteSpace: 'pre-line' }}>{message}</Typography>
@@ -289,23 +357,90 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
             color="error"
             variant="contained"
             size="large"
-            aria-label="Cancelar asignación"
+            aria-label="Cancelar acción"
             ref={noButtonRef}
           >
             No
           </Button>
           <Button
-            onClick={confirmApplyBeca}
+            onClick={confirmAction}
             color="success"
             variant="contained"
             size="large"
-            aria-label="Confirmar asignación"
+            aria-label="Confirmar acción"
           >
             Sí
           </Button>
         </DialogActions>
       </Dialog>
     );
+  };
+
+  const confirmAction = async () => {
+    const { action, alumno } = confirmDialog;
+    if (action === 'select_all') {
+      setLoading(true);
+      try {
+        for (const a of alumnosRef.current) {
+          const error = validateBeca(a, selectedBeca);
+          if (error) {
+            setSnackbar({ open: true, message: error, severity: 'error' });
+            continue;
+          }
+          const montoDescuento = selectedBeca.descuento != null && Number(selectedBeca.descuento) > 0 ? Number(selectedBeca.descuento) : null;
+          await api_asignarBecaAlumnos(
+            {
+              rut: a.rut,
+              id_tipo_beca: selectedBeca.id,
+              porcentaje_asignado: selectedBeca.porcentaje != null ? Number(selectedBeca.porcentaje).toFixed(2) : null,
+              monto_descuento: montoDescuento,
+              apagar: selectedBeca.monto != null ? Number(selectedBeca.monto) : (montoDescuento && configMonto ? configMonto - montoDescuento : null),
+              agno: selectedYear,
+              configMonto,
+            },
+            credentials
+          );
+        }
+        setSnackbar({ open: true, message: 'Beca asignada a todos los alumnos del curso', severity: 'success' });
+        await fetchAlumnos(new AbortController().signal);
+      } catch (error) {
+        console.error('confirmSelectAll - error:', error);
+        setSnackbar({ open: true, message: error.message || 'Error al asignar becas a todos', severity: 'error' });
+      } finally {
+        setLoading(false);
+      }
+    } else if (action === 'asignar') {
+      await confirmApplyBeca(alumno);
+      await fetchAlumnos(new AbortController().signal);
+    } else if (action === 'eliminar') {
+      try {
+        const response = await api_eliminarBecaAlumno(
+          {
+            rut: alumno.rut,
+            agno: selectedYear,
+          },
+          credentials
+        );
+        console.log('confirmDeleteBeca - response:', response);
+        if (response.error) {
+          throw new Error(response.message);
+        }
+        setSnackbar({ open: true, message: `Beca eliminada de ${alumno.nombres} ${alumno.apat}`, severity: 'success' });
+        await fetchAlumnos(new AbortController().signal);
+      } catch (error) {
+        console.error('confirmDeleteBeca - error:', error);
+        setSnackbar({ open: true, message: error.message || 'Error al eliminar la beca', severity: 'error' });
+      }
+    }
+    setConfirmDialog({ open: false, alumno: null, action: '' });
+  };
+
+  const handleCloseDialog = () => {
+    setConfirmDialog({ open: false, alumno: null, action: '' });
+  };
+
+  const handleEntered = () => {
+    noButtonRef.current?.focus();
   };
 
   const columns = useMemo(
@@ -346,7 +481,6 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
         width: 150,
         valueGetter: (value, row) => {
           if (!row.id_tipo_beca) return 'Sin beca';
-          //if (selectedBeca && row.id_tipo_beca === selectedBeca.id) return selectedBeca.nombre;
           return row.nombre;
         },
       },
@@ -354,38 +488,73 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
         field: 'montodescuento',
         headerName: 'Descuento (CLP)',
         width: 120,
-        editable: selectedBeca && (selectedBeca.porcentaje == null || selectedBeca.porcentaje === 0),
         type: 'number',
         align: 'center',
         headerAlign: 'center',
+        editable: isDescuentoEditable,
         valueGetter: (value, row) => row.montodescuento ?? '',
         renderCell: (params) => {
           const value = params.row.montodescuento;
+          console.log('renderCell montodescuento - params:', params);
           return value != null && value !== '' ? `$${Number(value).toLocaleString('es-CL')}` : '';
         },
       },
+      {
+        field: 'actions',
+        headerName: 'Acciones',
+        width: 150,
+        type: 'actions',
+        getActions: ({ row }) => {
+          const showEdit = isDescuentoEditable;
+          const showDelete = row.id_tipo_beca != null;
+
+          return [
+            showEdit ? (
+              <IconButton
+                key="edit"
+                onClick={() => handleEditMonto(row.id)}
+                color="primary"
+                aria-label="Editar monto de descuento"
+                title="Editar monto de descuento"
+              >
+                <Edit />
+              </IconButton>
+            ) : null,
+            showDelete ? (
+              <IconButton
+                key="delete"
+                onClick={() => handleDeleteBeca(row)}
+                color="error"
+                aria-label="Eliminar beca"
+                title="Eliminar beca"
+              >
+                <Delete />
+              </IconButton>
+            ) : null,
+          ].filter(Boolean);
+        },
+      },
     ],
-    [selectedBeca]
+    [isDescuentoEditable]
   );
 
   return (
-    <Card sx={{ maxWidth: '100%', boxShadow: 3, m: 2, borderRadius: 2 }}>
+    <Card sx={{ maxWidth: '100%', boxShadow: 3, m: 2, borderRadius: 2, mx: 'auto' }}>
       <CardContent sx={{ p: 3 }}>
         <Box display="flex" flexDirection="column" mb={2}>
           <Typography variant="h6" gutterBottom>
             Asignar Becas a Alumnos {selectedYear ? `(${selectedYear})` : ''}
-            {selectedBeca.nombre ? '     Beca seleccionada:' + selectedBeca.nombre + ' con $ ' + selectedBeca.descuento + ' de descuento' :'' }
+            {selectedBeca?.nombre ? `     Beca seleccionada: ${selectedBeca.nombre} con $ ${selectedBeca.descuento ?? '0'} de descuento` : ''}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Seleccione un curso y haga doble click en un alumno para asignar la beca seleccionada.
+            Seleccione un curso y haga doble click en un alumno para asignar la beca seleccionada. Para becas con monto editable, haga clic en el ícono de editar y modifique el monto en la columna Descuento.
           </Typography>
         </Box>
-        <div style={{ height: 400, width: '100%' }}>
+        <Box sx={{ height: 400, width: '100%', mx: 'auto', mt: 5 }}>
           {renderConfirmDialog()}
           <DataGrid
             rows={alumnos}
             columns={columns}
-            editMode="row"
             processRowUpdate={processRowUpdate}
             onProcessRowUpdateError={handleProcessRowUpdateError}
             onRowDoubleClick={handleDoubleClick}
@@ -400,10 +569,11 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
             loading={loading}
             slots={{ toolbar: Toolbar }}
             slotProps={{
-              toolbar: { selectedYear, selectedBeca, cursos, selectedCurso, setSelectedCurso },
+              toolbar: { selectedYear, selectedBeca, cursos, selectedCurso, setSelectedCurso, showSelectAll, handleSelectAll },
             }}
             disableRowSelectionOnClick
             disableSelectionOnClick={loading || alumnos.length === 0 || !selectedCurso}
+            apiRef={gridRef}
             sx={{
               '& .MuiDataGrid-row:hover': { backgroundColor: '#f5f5f5' },
               '& .MuiDataGrid-row.Mui-selected': { backgroundColor: '#bbdefb' },
@@ -426,7 +596,7 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
               {snackbar.message}
             </Alert>
           </Snackbar>
-        </div>
+        </Box>
       </CardContent>
     </Card>
   );

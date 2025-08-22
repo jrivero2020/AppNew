@@ -871,6 +871,27 @@ const api_asignarBecaAlumnos = async (params, credentials) => {
   }
 };
 
+// apiDocentes.api_eliminarBecaAlumno
+const api_eliminarBecaAlumno = async (params, credentials) => {  
+  const {rut,agno} = params
+  try {
+    let response = await fetch("/DeleteAlumnosBecas/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify({ rut,agno }),
+    });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
 
 
 export {
@@ -920,5 +941,6 @@ export {
   UpsertPagosTipoBeca,
   DeletePagosTipoBeca,
   api_getAlumnosBecas,
-  api_asignarBecaAlumnos
+  api_asignarBecaAlumnos,
+  api_eliminarBecaAlumno
 };

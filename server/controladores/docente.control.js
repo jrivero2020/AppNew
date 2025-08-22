@@ -1084,6 +1084,24 @@ const UpsertPagosBecaAlumno = async (req, res) => {
   }
 };
 
+const DeleteAlumnosBecas = async (req, res) => {
+  // console.log( "DeletePagosConfigMontos=>>", req.body.agno, "   ", req.body.nombre)
+  const {rut,agno} = req.body
+
+  try {
+    const results = await sequelize.query(`CALL sp_Pagos_DeleteAlumnosBecas(?,?)`, 
+      {
+        replacements:[rut,agno],
+      type: sequelize.QueryTypes.DELETE,
+    });
+     return res.status(200).json({
+      message: "Tipo beca Eliminado correctamente",
+      resultados: results,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Error al Eliminar beca de alumno" });
+  }
+};
 
 export default {
   docenteByID,
@@ -1135,5 +1153,6 @@ export default {
   UpsertPagosTipoBeca,
   DeletePagosTipoBeca,
   getAlumnosBecas,
-  UpsertPagosBecaAlumno
+  UpsertPagosBecaAlumno,
+  DeleteAlumnosBecas
 };

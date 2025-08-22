@@ -145,6 +145,7 @@ router.route("/DeletePagosTipoBeca").post(authCtrl.requireSignin, docenteCtrl.De
 
 router.route("/getAlumnosBecas/:pagno/:pense/:pgrado/:pletra").get(authCtrl.requireSignin, docenteCtrl.getAlumnosBecas);
 router.route("/UpsertPagosBecaAlumno").post(authCtrl.requireSignin, docenteCtrl.UpsertPagosBecaAlumno);
+router.route("/DeleteAlumnosBecas").post(authCtrl.requireSignin, docenteCtrl.DeleteAlumnosBecas);
 
 
 
