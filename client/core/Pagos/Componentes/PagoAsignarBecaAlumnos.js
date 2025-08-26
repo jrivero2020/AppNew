@@ -18,12 +18,14 @@ import {
   Select,
   MenuItem,
   IconButton,
+  Chip,
+  Paper
 } from '@mui/material';
 import { esES } from '@mui/x-data-grid/locales';
-import { CheckBox, Delete, Edit } from '@mui/icons-material';
+import { CheckBox, Delete, Edit, ExpandLess, ExpandMore } from '@mui/icons-material';
 import { getCursos, api_getAlumnosBecas, api_asignarBecaAlumnos, api_eliminarBecaAlumno } from "../../../docentes/api-docentes";
 
-function Toolbar({ selectedYear, selectedBeca, cursos, selectedCurso, setSelectedCurso, showSelectAll, handleSelectAll }) {
+function Toolbar({ selectedYear, selectedBeca, cursos, selectedCurso, setSelectedCurso, showSelectAll, handleSelectAll, onCursoSelect, compactView, onToggleCompactView }) {
   if (!selectedBeca) {
     console.warn('Toolbar - selectedBeca es null o undefined');
     return null;
@@ -33,19 +35,22 @@ function Toolbar({ selectedYear, selectedBeca, cursos, selectedCurso, setSelecte
     return null;
   }
 
+  const handleCursoChange = (e) => {
+    const curso = cursos.find((c) => c.id_curso === e.target.value) || null;
+    // console.log('Toolbar - Curso seleccionado:', curso);
+    setSelectedCurso(curso);
+    onCursoSelect(!!e.target.value);
+  };
+
   return (
-    <GridToolbarContainer sx={{ mb: 2 }}>
-      <FormControl sx={{ minWidth: 200, mr: 2 }}>
+    <GridToolbarContainer sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
+      <FormControl sx={{ minWidth: 200 }}>
         <InputLabel id="curso-select-label">Curso</InputLabel>
         <Select
           labelId="curso-select-label"
           value={selectedCurso ? selectedCurso.id_curso : ''}
           label="Curso"
-          onChange={(e) => {
-            const curso = cursos.find((c) => c.id_curso === e.target.value) || null;
-            console.log('Toolbar - Curso seleccionado:', curso);
-            setSelectedCurso(curso);
-          }}
+          onChange={handleCursoChange}
         >
           <MenuItem value=""><em>Seleccione un curso</em></MenuItem>
           {cursos.map((curso) => (
@@ -55,6 +60,21 @@ function Toolbar({ selectedYear, selectedBeca, cursos, selectedCurso, setSelecte
           ))}
         </Select>
       </FormControl>
+      
+      {/* Información de beca seleccionada */}
+      {selectedBeca.id > 0 && (
+        <Paper elevation={1} sx={{ p: 1.5, display: 'flex', flexDirection: 'column', minWidth: 250, background: 'linear-gradient(45deg, #e3f2fd 30%, #bbdefb 90%)' }}>
+          <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+            Beca Seleccionada:
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
+            <Chip label={selectedBeca.nombre} color="primary" size="small" />
+            <Typography variant="body2">
+              {selectedBeca.porcentaje > 0 ? `${selectedBeca.porcentaje}%` : `$${selectedBeca.descuento?.toLocaleString('es-CL')}`}
+            </Typography>
+          </Box>
+        </Paper>
+      )}
       {showSelectAll && (
         <Button
           color="primary"
@@ -62,7 +82,7 @@ function Toolbar({ selectedYear, selectedBeca, cursos, selectedCurso, setSelecte
           startIcon={<CheckBox />}
           onClick={handleSelectAll}
           aria-label="Aplicar beca a todos"
-          sx={{ ml: 2 }}
+          sx={{ ml: 'auto' }}
         >
           Aplicar a Todos
         </Button>
@@ -71,7 +91,8 @@ function Toolbar({ selectedYear, selectedBeca, cursos, selectedCurso, setSelecte
   );
 }
 
-const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBeca }) => {
+const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBeca, onCursoSelect, compactView, onToggleCompactView }) => {
+
   const [cursos, setCursos] = useState([]);
   const [selectedCurso, setSelectedCurso] = useState(null);
   const [alumnos, setAlumnos] = useState([]);
@@ -87,7 +108,7 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
   const isDescuentoEditable = selectedBeca && (selectedBeca.descuento == null || Number(selectedBeca.descuento) <= 0 || selectedBeca.descuento === '');
 
   useEffect(() => {
-    console.log('AsignarBecaAlumnos - Props:', { selectedYear, configMonto, selectedBeca });
+    // console.log('AsignarBecaAlumnos - Props:', { selectedYear, configMonto, selectedBeca });
     alumnosRef.current = alumnos;
   }, [alumnos, selectedYear, configMonto, selectedBeca]);
 
@@ -118,7 +139,7 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
     setLoading(true);
     try {
       const data = await getCursos({}, credentials, signal);
-      console.log('fetchCursos - raw data:', JSON.stringify(data, null, 2));
+      // // console.log('fetchCursos - raw data:', JSON.stringify(data, null, 2));
       if (data.error) {
         throw new Error(data.message);
       }
@@ -145,12 +166,12 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
         credentials,
         signal
       );
-      console.log('fetchAlumnos - raw data:', JSON.stringify(data, null, 2));
+      // // console.log('fetchAlumnos - raw data:', JSON.stringify(data, null, 2));
       if (data.error) {
         throw new Error(data.message);
       }
       const dataArray = Object.values(data);
-      console.log('fetchAlumnos - raw dataArray:', dataArray);
+      // // console.log('fetchAlumnos - raw dataArray:', dataArray);
       const processedData = dataArray
         .filter((row) => row && row.rut != null)
         .map((row) => ({
@@ -167,7 +188,7 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
           apagar: row.apagar != null ? Number(row.apagar) : '',
         }));
       setAlumnos(processedData);
-      alumnosRef.current = processedData; // Actualizar ref
+      alumnosRef.current = processedData;
       if (processedData.length <= paginationModel.page * paginationModel.pageSize) {
         setPaginationModel((prev) => ({ ...prev, page: Math.max(0, Math.floor((processedData.length - 1) / prev.pageSize)) }));
       }
@@ -217,15 +238,26 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
     setConfirmDialog({ open: true, alumno: params.row, action: 'asignar' });
   };
 
-  const handleEditMonto = (id) => {
-    console.log('handleEditMonto - id:', id);
-    if (gridRef.current) {
-      gridRef.current.startCellEditMode({ id, field: 'montodescuento' });
-    }
-  };
+  // const handleEditMonto = (id) => {
+  //   // console.log('handleEditMonto - id:', id);
+  //   if (gridRef.current) {
+  //     gridRef.current.startCellEditMode({ id, field: 'montodescuento' });
+  //   }
+  // };
+
+const handleEditMonto = (id) => {
+  // console.log('handleEditMonto - id:', id);
+  if (gridRef.current && gridRef.current.startCellEditMode) {
+    gridRef.current.startCellEditMode({ id, field: 'montodescuento' });
+  }
+};
+
+
+
+
 
   const processRowUpdate = async (newRow, oldRow) => {
-    console.log('processRowUpdate - newRow:', newRow, 'oldRow:', oldRow);
+    // console.log('processRowUpdate - newRow:', newRow, 'oldRow:', oldRow);
     const montoStr = String(newRow.montodescuento ?? '').trim();
     const errors = {};
     if (!montoStr) {
@@ -254,7 +286,7 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
         },
         credentials
       );
-      console.log('processRowUpdate - response:', response);
+      // console.log('processRowUpdate - response:', response);
       if (response.error) {
         throw new Error(response.message);
       }
@@ -263,7 +295,6 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
         message: `Monto de descuento actualizado a $${Number(montoStr).toLocaleString('es-CL')} para ${newRow.nombres} ${newRow.apat}`,
         severity: 'success',
       });
-      // Actualizar estado local para reflejar id_tipo_beca y mostrar ícono Delete
       const updatedRow = {
         ...newRow,
         id_tipo_beca: selectedBeca.id,
@@ -275,7 +306,7 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
       setAlumnos((prev) =>
         prev.map((r) => (r.id === newRow.id ? updatedRow : r))
       );
-      alumnosRef.current = alumnos; // Actualizar ref
+      alumnosRef.current = alumnos;
       return updatedRow;
     } catch (error) {
       console.error('processRowUpdate - error:', error);
@@ -326,7 +357,7 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
         },
         credentials
       );
-      console.log('confirmApplyBeca - response:', response);
+      // console.log('confirmApplyBeca - response:', response);
       if (response.error) {
         throw new Error(response.message);
       }
@@ -335,7 +366,6 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
         message: `Beca "${selectedBeca.nombre}" asignada a ${alumno.nombres} ${alumno.apat}`,
         severity: 'success',
       });
-      // Actualizar estado local para reflejar id_tipo_beca
       setAlumnos((prev) =>
         prev.map((r) =>
           r.id === alumno.id
@@ -350,8 +380,8 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
             : r
         )
       );
-      alumnosRef.current = alumnos; // Actualizar ref
-      await fetchAlumnos(new AbortController().signal); // Sincronizar con backend
+      alumnosRef.current = alumnos;
+      await fetchAlumnos(new AbortController().signal);
     } catch (error) {
       console.error('confirmApplyBeca - error:', error);
       setSnackbar({ open: true, message: error.message || 'Error al asignar la beca', severity: 'error' });
@@ -451,12 +481,11 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
           },
           credentials
         );
-        console.log('confirmDeleteBeca - response:', response);
+        // console.log('confirmDeleteBeca - response:', response);
         if (response.error) {
           throw new Error(response.message);
         }
         setSnackbar({ open: true, message: `Beca eliminada de ${alumno.nombres} ${alumno.apat}`, severity: 'success' });
-        // Actualizar estado local para reflejar eliminación
         setAlumnos((prev) =>
           prev.map((r) =>
             r.id === alumno.id
@@ -471,8 +500,8 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
               : r
           )
         );
-        alumnosRef.current = alumnos; // Actualizar ref
-        await fetchAlumnos(new AbortController().signal); // Sincronizar con backend
+        alumnosRef.current = alumnos;
+        await fetchAlumnos(new AbortController().signal);
       } catch (error) {
         console.error('confirmDeleteBeca - error:', error);
         setSnackbar({ open: true, message: error.message || 'Error al eliminar la beca', severity: 'error' });
@@ -489,6 +518,7 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
     noButtonRef.current?.focus();
   };
 
+  // Definición de columnas para el DataGrid
   const columns = useMemo(
     () => [
       {
@@ -541,7 +571,6 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
         valueGetter: (value, row) => row.montodescuento ?? '',
         renderCell: (params) => {
           const value = params.row.montodescuento;
-          console.log('renderCell montodescuento - params:', params);
           return value != null && value !== '' ? `$${Number(value).toLocaleString('es-CL')}` : '';
         },
       },
@@ -584,19 +613,30 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
     [isDescuentoEditable]
   );
 
+ 
   return (
-    <Card sx={{ maxWidth: '100%', boxShadow: 3, m: 2, borderRadius: 2, mx: 'auto' }}>
+    <Card sx={{ 
+      maxWidth: '100%', 
+      boxShadow: 3, 
+      borderRadius: 2,
+      transition: 'all 0.4s ease',
+      transform: compactView ? 'translateY(-180px) scale(0.95)' : 'none', // Ajustado para posición más alta
+      zIndex: compactView ? 1000 : 1,
+      mx: 'auto',
+      marginTop: compactView ? '0' : '20px' // Aseguramos que en vista normal tenga espacio
+    }}>
       <CardContent sx={{ p: 3 }}>
         <Box display="flex" flexDirection="column" mb={2}>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" gutterBottom color="primary">
+            <i className="fas fa-user-graduate" style={{ marginRight: '10px' }}></i>
             Asignar Becas a Alumnos {selectedYear ? `(${selectedYear})` : ''}
-            {selectedBeca?.nombre ? `     Beca seleccionada: ${selectedBeca.nombre} con $ ${selectedBeca.descuento ?? '0'} de descuento` : ''}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Seleccione un curso y haga doble click en un alumno para asignar la beca seleccionada. Para becas con monto editable, haga clic en el ícono de editar y modifique el monto en la columna Descuento.
+            Seleccione un curso y haga doble click en un alumno para asignar la beca seleccionada.
           </Typography>
         </Box>
-        <Box sx={{ height: 400, width: '100%', mx: 'auto', mt: 5 }}>
+        
+        <Box sx={{ height: 715, width: '100%' }}>
           {renderConfirmDialog()}
           <DataGrid
             rows={alumnos}
@@ -604,7 +644,7 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
             processRowUpdate={processRowUpdate}
             onProcessRowUpdateError={handleProcessRowUpdateError}
             onRowDoubleClick={handleDoubleClick}
-            pageSizeOptions={[10]}
+            pageSizeOptions={[50]}
             paginationModel={paginationModel}
             onPaginationModelChange={setPaginationModel}
             rowHeight={36}
@@ -613,9 +653,25 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
               noRowsLabel: selectedCurso ? 'No hay alumnos' : 'Seleccione un curso',
             }}
             loading={loading}
-            slots={{ toolbar: Toolbar }}
+            slots={{ toolbar: (props) => (
+              <Toolbar 
+                {...props} 
+                onCursoSelect={onCursoSelect} 
+                compactView={compactView}
+              />
+            ) }}
             slotProps={{
-              toolbar: { selectedYear, selectedBeca, cursos, selectedCurso, setSelectedCurso, showSelectAll, handleSelectAll },
+              toolbar: { 
+                selectedYear, 
+                selectedBeca, 
+                cursos, 
+                selectedCurso, 
+                setSelectedCurso, 
+                showSelectAll, 
+                handleSelectAll,
+                onCursoSelect,
+                compactView
+              },
             }}
             disableRowSelectionOnClick
             disableSelectionOnClick={loading || alumnos.length === 0 || !selectedCurso}
@@ -625,8 +681,15 @@ const AsignarBecaAlumnos = ({ credentials, selectedYear, configMonto, selectedBe
               '& .MuiDataGrid-row.Mui-selected': { backgroundColor: '#bbdefb' },
               '& .MuiDataGrid-cell': { padding: '4px', fontSize: '14px' },
               '& .MuiDataGrid-columnHeader': { fontSize: '14px', fontWeight: 'bold' },
+              '& .MuiDataGrid-toolbarContainer': {
+                backgroundColor: '#f8f9fa',
+                padding: '10px',
+                borderRadius: '8px 8px 0 0',
+                borderBottom: '1px solid #e0e0e0'
+              }
             }}
           />
+          
           <Snackbar
             open={snackbar.open}
             autoHideDuration={3000}

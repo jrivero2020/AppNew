@@ -31,6 +31,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Chip,
 } from "@mui/material";
 import { Add, Edit, Delete, Save, Cancel } from "@mui/icons-material";
 import { esES } from "@mui/x-data-grid/locales";
@@ -164,7 +165,7 @@ const PagosTipoBecas = ({
         credentials,
         signal
       );
-      // console.log('fetchTiposBeca - raw data:', data);
+      // // console.log('fetchTiposBeca - raw data:', data);
       if (data.error) {
         throw new Error(data.message);
       }
@@ -180,7 +181,7 @@ const PagosTipoBecas = ({
           descuento: row.descuento != null ? Number(row.descuento) : "",
           monto: row.monto != null ? Number(row.monto) : "",
         }));
-      // console.log('fetchTiposBeca - processed data:', processedData);
+      // // console.log('fetchTiposBeca - processed data:', processedData);
       setRows(processedData);
       if (
         processedData.length <=
@@ -194,7 +195,7 @@ const PagosTipoBecas = ({
           ),
         }));
       }
-      // console.log('fetchTiposBeca - updated rows:', processedData, 'paginationModel:', paginationModel);
+      // // console.log('fetchTiposBeca - updated rows:', processedData, 'paginationModel:', paginationModel);
     } catch (error) {
       console.error("fetchTiposBeca - error:", error);
       setSnackbar({
@@ -217,13 +218,13 @@ const PagosTipoBecas = ({
 
   // Handle edit click
   const handleEditClick = (id) => () => {
-    // console.log('handleEditClick - id:', id);
+    // // console.log('handleEditClick - id:', id);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
   // Handle save click
   const handleSaveClick = (id) => () => {
-    // console.log('handleSaveClick - id:', id);
+    // // console.log('handleSaveClick - id:', id);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
@@ -250,12 +251,7 @@ const PagosTipoBecas = ({
   // Confirm delete
 
   const confirmDelete = async (id) => {
-    console.log(
-      "confirmDelete - id:",
-      id,
-      "rows:",
-      JSON.stringify(rowsRef.current, null, 2)
-    );
+    // // console.log("confirmDelete - id:", id, "rows:", JSON.stringify(rowsRef.current, null, 2)    );
     const row = rowsRef.current.find((r) => String(r.id) === String(id));
     if (!row && !useIdForDelete) {
       setSnackbar({
@@ -312,7 +308,7 @@ const PagosTipoBecas = ({
 
   // Handle cancel click
   const handleCancelClick = (id) => () => {
-    // console.log('handleCancelClick - id:', id);
+    // // console.log('handleCancelClick - id:', id);
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
@@ -364,10 +360,10 @@ const PagosTipoBecas = ({
           return Promise.reject(oldRow);
         }
         // Validación inicial de parámetros
-        console.log("newRow en processRowUpdate:", newRow); // Verifica qué contiene newRow
+        // // console.log("newRow en processRowUpdate:", newRow); // Verifica qué contiene newRow
         const errors = validateRow(newRow);
         if (Object.keys(errors).length > 0) {
-          console.log("en processRowUpdate error :", errors);
+          // // console.log("en processRowUpdate error :", errors);
           setSnackbar({
             open: true,
             message: errors.nombre || errors.porcentaje || errors.agno,
@@ -377,17 +373,27 @@ const PagosTipoBecas = ({
           return;
         }
         // Calculate descuento and monto based on porcentaje and configMonto
-        console.log("en processRowUpdate Calculando descuentos...");
+        // console.log("en processRowUpdate Calculando descuentos...");        
         let updatedRow = { ...newRow };
-        if (newRow.porcentaje && configMonto) {
-          const porcentaje = Number(newRow.porcentaje);
-          updatedRow.descuento = Math.round(configMonto * (porcentaje / 100));
-          updatedRow.monto = configMonto - updatedRow.descuento;
+
+//        if (newRow.porcentaje && configMonto) {
+//          const porcentaje = Number(newRow.porcentaje);
+//          updatedRow.descuento = Math.round(configMonto * (porcentaje / 100));
+//          updatedRow.monto = configMonto - updatedRow.descuento;
+        if (updatedRow.monto >= 0  && configMonto) {
+          console.log( "processRowUpdate updatedRow.monto=>",updatedRow.monto)
+          const descuento = configMonto - updatedRow.monto;
+          const descuentoStr = ((descuento * 100) / configMonto).toFixed(2)
+          const porcentaje = parseFloat(descuentoStr);
+          // newRow.porcentaje = porcentaje;
+          updatedRow.porcentaje = porcentaje;
+          updatedRow.descuento = descuento;
+
         } else {
           updatedRow.descuento = null;
           updatedRow.monto = null;
         }
-        // console.log('processRowUpdate - updatedRow:', updatedRow);
+        // // console.log('processRowUpdate - updatedRow:', updatedRow);
         const mutation = computeMutation(updatedRow, oldRow);
         if (mutation) {
           setPromiseArguments({ resolve, reject, newRow: updatedRow, oldRow });
@@ -416,12 +422,7 @@ const PagosTipoBecas = ({
   // Handle dialog confirmation
 
   const handleNo = () => {
-    console.log(
-      "handleNo - promiseArguments:",
-      promiseArguments,
-      "deleteDialog:",
-      deleteDialog
-    );
+    // console.log("handleNo - promiseArguments:",promiseArguments,"deleteDialog:", deleteDialog );
     if (promiseArguments) {
       const { oldRow, resolve, newRow } = promiseArguments;
       if (newRow && newRow.isNew) {
@@ -483,13 +484,14 @@ const PagosTipoBecas = ({
   // jrjr
 
   const renderConfirmDialog = () => {
-    if (!promiseArguments && !deleteDialog.open) {
-      return null;
-    }
-    const isDeleteDialog = deleteDialog.open;
-    const row = isDeleteDialog
-      ? rowsRef.current.find((r) => String(r.id) === String(deleteDialog.id))
-      : null;
+     const shouldOpenDialog = Boolean(promiseArguments) || Boolean(deleteDialog.open);
+  
+  if (!shouldOpenDialog) {
+    return null;
+  }
+    const isDeleteDialog = Boolean(deleteDialog.open);
+    const row = isDeleteDialog ? rowsRef.current.find((r) => String(r.id) === String(deleteDialog.id)) : null;    
+
     if (isDeleteDialog && !row && !useIdForDelete) {
       setDeleteDialog({ open: false, id: null }); // Cerrar si el registro no existe
       return null;
@@ -508,8 +510,8 @@ const PagosTipoBecas = ({
     return (
       <Dialog
         maxWidth="sm"
-        TransitionProps={{ onEntered: handleEntered }}
-        open={promiseArguments || deleteDialog.open}
+        TransitionProps={{ onEntered: handleEntered }}        
+        open={shouldOpenDialog}
       >
         <DialogTitle sx={{ backgroundColor: "primary.main", color: "white" }}>
           {isDeleteDialog ? "Confirmar Eliminación" : "Confirmar Cambios"}
@@ -559,7 +561,7 @@ const PagosTipoBecas = ({
         editable: true,
         type: "string",
         valueGetter: (value, row) => {
-          // console.log('valueGetter nombre - value:', value, 'row:', row);
+          // // console.log('valueGetter nombre - value:', value, 'row:', row);
           return row.nombre ?? "";
         },
       },
@@ -570,11 +572,11 @@ const PagosTipoBecas = ({
         editable: true,
         type: "string",
         valueGetter: (value, row) => {
-          // console.log('valueGetter descripcion - value:', value, 'row:', row);
+          // // console.log('valueGetter descripcion - value:', value, 'row:', row);
           return row.descripcion ?? "";
         },
         renderCell: (params) => {
-          // console.log('renderCell descripcion - params.value:', params.value, 'params.row:', params.row);
+          // // console.log('renderCell descripcion - params.value:', params.value, 'params.row:', params.row);
           return params.value || "Sin descripción";
         },
       },
@@ -582,10 +584,10 @@ const PagosTipoBecas = ({
         field: "porcentaje",
         headerName: "Porcentaje (%)",
         width: 120,
-        editable: true,
+        editable: false,
         type: "number",
         valueGetter: (value, row) => {
-          // console.log('valueGetter porcentaje - value:', value, 'row:', row);
+          // // console.log('valueGetter porcentaje - value:', value, 'row:', row);
           return row.porcentaje != null ? Number(row.porcentaje) : null;
         },
         // valueParser: (value) => {
@@ -597,7 +599,7 @@ const PagosTipoBecas = ({
           return Number(normalizedValue);
         },
         renderCell: (params) => {
-          // console.log('renderCell porcentaje - params.value:', params.value, 'params.row:', params.row);
+          // // console.log('renderCell porcentaje - params.value:', params.value, 'params.row:', params.row);
           const value = params.row.porcentaje;
           return value != null ? `${Number(value).toFixed(2)}%` : "";
         },
@@ -609,11 +611,11 @@ const PagosTipoBecas = ({
         editable: false, // Calculated field
         type: "number",
         valueGetter: (value, row) => {
-          // console.log('valueGetter descuento - value:', value, 'row:', row);
+          // // console.log('valueGetter descuento - value:', value, 'row:', row);
           return row.descuento ?? "";
         },
         renderCell: (params) => {
-          // console.log('renderCell descuento - params.value:', params.value, 'params.row:', params.row);
+          // // console.log('renderCell descuento - params.value:', params.value, 'params.row:', params.row);
           const value = params.row.descuento;
           return value != null && value !== ""
             ? `$${Number(value).toLocaleString("es-CL")}`
@@ -624,14 +626,14 @@ const PagosTipoBecas = ({
         field: "monto",
         headerName: "Monto (CLP)",
         width: 120,
-        editable: false, // Calculated field
+        editable: true, // now not Calculated field
         type: "number",
         valueGetter: (value, row) => {
-          // console.log('valueGetter monto - value:', value, 'row:', row);
+          // // console.log('valueGetter monto - value:', value, 'row:', row);
           return row.monto ?? "";
         },
         renderCell: (params) => {
-          // console.log('renderCell monto - params.value:', params.value, 'params.row:', params.row);
+          // // console.log('renderCell monto - params.value:', params.value, 'params.row:', params.row);
           const value = params.row.monto;
           return value != null && value !== ""
             ? `$${Number(value).toLocaleString("es-CL")}`
@@ -713,11 +715,35 @@ const PagosTipoBecas = ({
           alignItems="center"
           mb={2}
         >
-          <Typography variant="h6">
-            Configuración de Tipos de Beca{" "}
-            {selectedYear ? `(${selectedYear})` : ""}
-          </Typography>
+          <Box>
+            <Typography variant="h6">
+              Configuración de Tipos de Beca{" "}
+              {selectedYear ? `(${selectedYear})` : ""}
+            </Typography>
+            {objBecas.id > 0 && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                <Typography variant="body2" color="primary" fontWeight="medium">
+                  Beca seleccionada:
+                </Typography>
+                <Chip 
+                  label={objBecas.nombre} 
+                  color="primary" 
+                  size="small" 
+                  variant="outlined"
+                />
+                <Typography variant="body2">
+                  {objBecas.porcentaje > 0 ? `${objBecas.porcentaje}%` : `$${objBecas.descuento?.toLocaleString('es-CL')}`}
+                </Typography>
+              </Box>
+            )}
+          </Box>
+          {selectedYear && configMonto && (
+            <Typography variant="body2" color="text.secondary">
+              Monto base: ${configMonto.toLocaleString('es-CL')}
+            </Typography>
+          )}
         </Box>
+        
         <div style={{ height: 400, width: "100%" }}>
           {renderConfirmDialog()}
           <DataGrid
@@ -754,6 +780,7 @@ const PagosTipoBecas = ({
               loading || rows.length === 0 || !selectedYear
             }
           />
+          
           <Snackbar
             open={snackbar.open}
             autoHideDuration={snackbar.action ? null : 4000}
