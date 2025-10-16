@@ -279,9 +279,9 @@ const api_NroMatriculas = async (credentials, signal) => {
 
 const api_GetAlumnosCurso = async (params, credentials, signal) => {
   try {
-    const ense = params.ense;
-    const grado = params.grado;
-    const letra = params.letra;
+    const ense   = params.ense;
+    const grado  = params.grado;
+    const letra  = params.letra;
     let response = await fetch(
       "/getAlumnosCurso/" + ense + "/" + grado + "/" + letra,
       {

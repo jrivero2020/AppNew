@@ -966,12 +966,10 @@ const UpsertPagosConfigMontos = async (req, res) => {
   }
 };
 
-
 //DeletePagosConfigMontos
 const DeletePagosConfigMontos = async (req, res) => {
   console.log( "DeletePagosConfigMontos=>>", req.body)
   const {id} = req.body
-
   try {
     const results = await sequelize.query(`CALL sp_Pagos_DeleteConfigMonto(?)`, 
       {
@@ -988,11 +986,9 @@ const DeletePagosConfigMontos = async (req, res) => {
 };
 
 //***********************Tipos Beca ************************** */
-
 // docenteCtrl.getPagosTipoBeca);
 const getPagosTipoBeca = async (req, res) => {
    // console.log( "CONTROL getPagosTipoBeca control req=>", req.params)
-
   const agno =  req.params.agno
   try {
     const results = await sequelize.query(`CALL sp_Pagos_GetTipoBecaAnio(?)`, {
@@ -1007,11 +1003,9 @@ const getPagosTipoBeca = async (req, res) => {
 };
 
 // UpsertPagosTipoBeca);
-
 const UpsertPagosTipoBeca = async (req, res) => {
   console.log( "UpsertPagosConfigMontos=>>", req.body)
   const {nombre,descripcion,agno,porcentaje,descuento, monto} = req.body
-
   try {
     const results = await sequelize.query(`CALL sp_Pagos_UpSertTipoBeca(?,?,?,?,?,?)`, 
       {
@@ -1031,7 +1025,6 @@ const UpsertPagosTipoBeca = async (req, res) => {
 const DeletePagosTipoBeca = async (req, res) => {
   // console.log( "DeletePagosConfigMontos=>>", req.body.agno, "   ", req.body.nombre)
   const {agno,nombre} = req.body
-
   try {
     const results = await sequelize.query(`CALL sp_Pagos_DeleteTipoBeca(?,?)`, 
       {
@@ -1046,7 +1039,6 @@ const DeletePagosTipoBeca = async (req, res) => {
     return res.status(500).json({ error: "Error al Eliminar tipo beca Anual" });
   }
 };
-
 
 const getAlumnosBecas = async (req, res) => {
   try {
@@ -1064,9 +1056,8 @@ const getAlumnosBecas = async (req, res) => {
   }
 };
 
-
 const UpsertPagosBecaAlumno = async (req, res) => {
-  console.log( "UpsertPagosConfigMontos=>>", req.body)
+  console.log( "UpsertPagosBecaAlumno=>>", req.body)
   const {rut,id_tipo_beca,porcentaje_asignado,monto_descuento,apagar,agno, configMonto} = req.body
 
   try {
@@ -1087,7 +1078,6 @@ const UpsertPagosBecaAlumno = async (req, res) => {
 const DeleteAlumnosBecas = async (req, res) => {
   // console.log( "DeletePagosConfigMontos=>>", req.body.agno, "   ", req.body.nombre)
   const {rut,agno} = req.body
-
   try {
     const results = await sequelize.query(`CALL sp_Pagos_DeleteAlumnosBecas(?,?)`, 
       {
