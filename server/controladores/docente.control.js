@@ -970,6 +970,7 @@ const UpsertPagosConfigMontos = async (req, res) => {
 const DeletePagosConfigMontos = async (req, res) => {
   console.log( "DeletePagosConfigMontos=>>", req.body)
   const {id} = req.body
+  console.log( "DeletePagosConfigMontos id =>>", id)
   try {
     const results = await sequelize.query(`CALL sp_Pagos_DeleteConfigMonto(?)`, 
       {

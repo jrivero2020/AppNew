@@ -41,8 +41,6 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import { AuthContext } from "../../AuthProvider";
 import {
   postPagoMensualidadAlumno,
-  getPagosConfigMontos,
-  UpsertPagosConfigMontos,
   DeletePagosConfigMontos,
 } from "../../../docentes/api-docentes";
 
@@ -92,20 +90,6 @@ const TotalRowCell = styled(TableCell)(({ theme }) => ({
   fontWeight: "bold",
   fontSize: "0.875rem",
 }));
-
-const fGetConfigMonto = async ({jwt}) => {    
-  try {
-//    const results = await getPagosConfigMontos({ t: jwt.token }, signal);
-//    const results = await UpsertPagosConfigMontos({agno:2024, monto:50000}, { t: jwt.token });
-    const results = await DeletePagosConfigMontos({id:2}, { t: jwt.token });
-//    console.log("Respuesta completa de UpsertPagosConfigMontos=>:", results);
-    console.log("Respuesta completa de DeletePagosConfigMontos=>:", results);
-  } catch (error) {
-    // console.error("Error al obtener Pagos config:", error);
-//    console.error("Error al actualizar Pagos Config:", error);
-    console.error("Error al eliminar Pagos Config:", error);
-  }
-};
 
 function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
   const theme = useTheme();
@@ -610,6 +594,7 @@ function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
                 <MenuItem value="efectivo">Efectivo</MenuItem>
                 <MenuItem value="transferencia">Transferencia</MenuItem>
                 <MenuItem value="tarjeta">Tarjeta</MenuItem>
+                <MenuItem value="WebPay">WebPay</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -654,14 +639,6 @@ function FichaPagosAlumno({ alumno, meses, pago, setPagoData }) {
           Registrar Pago
         </Button>
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => fGetConfigMonto({jwt})}
-          startIcon={<PaymentIcon />}
-        >
-          GetConfigMonto
-        </Button>
       </Box>
 
       <Dialog
