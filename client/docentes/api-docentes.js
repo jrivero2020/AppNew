@@ -827,7 +827,6 @@ const DeletePagosTipoBeca = async (params, credentials) => {
   }
 };
 
-
 const api_getAlumnosBecas = async (params, credentials, signal) => {
   try {
     const pagno = params.pagno;
@@ -848,7 +847,6 @@ const api_getAlumnosBecas = async (params, credentials, signal) => {
     return { error: err.message, message: err.message };
   }
 };
-
 
 const api_asignarBecaAlumnos = async (params, credentials) => {
   const {rut,id_tipo_beca,porcentaje_asignado,monto_descuento,apagar,agno, configMonto} = params  

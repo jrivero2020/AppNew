@@ -16,6 +16,9 @@ import {
   IconButton,
   useMediaQuery,
   useTheme,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { LazyLoadImage } from "react-lazy-load-image-component";
@@ -25,7 +28,6 @@ import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 
 // Categorías disponibles
 const categories = [
@@ -38,54 +40,25 @@ const categories = [
   { id: "mesdelmar", name: "Mes del Mar" },
 ];
 
+// Años disponibles
+const availableYears = ["2024", "2025", "2026"];
+
 const useStyles = makeStyles({
-  imgBtn: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-  fullscreenContainer: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.9)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 9999,
-    overflow: "auto",
-  },
-  fullscreenImage: {
-    maxWidth: "90%",
-    maxHeight: "90%",
-    borderRadius: "8px",
-    transition: "transform 0.2s ease",
-  },
-  controlsContainer: {
-    position: "fixed",
-    bottom: "20px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    display: "flex",
-    gap: "20px", // Más separación entre los botones
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    padding: "12px 24px", // Más padding para mayor tamaño
-    borderRadius: "8px",
-    zIndex: 10000,
-  },
-  controlButton: {
-    color: "white",
-    fontSize: "32px", // Iconos más grandes
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
+  // ... (mantener todos los estilos existentes)
+  yearSelector: {
+    minWidth: 120,
+    marginLeft: "16px",
+    backgroundColor: "white",
+    borderRadius: "4px",
+    "& .MuiSelect-select": {
+      padding: "8px 12px",
     },
   },
 });
 
 const Gallery = () => {
   const [selectedCategory, setSelectedCategory] = useState("colegio");
+  const [selectedYear, setSelectedYear] = useState("2025"); // Año por defecto
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -94,9 +67,9 @@ const Gallery = () => {
   const [zoomLevel, setZoomLevel] = useState(1);
   const classes = useStyles();
   const theme = useTheme();
-  const isMediumScreen = useMediaQuery(theme.breakpoints.up("md")); // Detectar pantallas medianas en adelante
+  const isMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
 
-  // Obtener imágenes de la categoría seleccionada
+  // Obtener imágenes de la categoría y año seleccionados
   useEffect(() => {
     const fetchImages = async () => {
       setLoading(true);
@@ -104,7 +77,7 @@ const Gallery = () => {
 
       try {
         const response = await fetch(
-          `/api/images?category=${selectedCategory}`
+          `/api/images?category=${selectedCategory}&year=${selectedYear}`
         );
         if (!response.ok) {
           throw new Error("Error al cargar las imágenes");
@@ -119,11 +92,19 @@ const Gallery = () => {
     };
 
     fetchImages();
-  }, [selectedCategory]);
+  }, [selectedCategory, selectedYear]); // ← Agregar selectedYear como dependencia
 
   // Cambiar de categoría
   const handleCategoryChange = (event, newValue) => {
     setSelectedCategory(newValue);
+    setSelectedImage(null);
+    setIsFullscreen(false);
+    setZoomLevel(1);
+  };
+
+  // Cambiar de año
+  const handleYearChange = (event) => {
+    setSelectedYear(event.target.value);
     setSelectedImage(null);
     setIsFullscreen(false);
     setZoomLevel(1);
@@ -138,11 +119,10 @@ const Gallery = () => {
   const handleImageClick = (imgUrl) => {
     setSelectedImage(imgUrl);
     setIsFullscreen(true);
-    // Aplicar un zoom de 1.5 en pantallas medianas en adelante
     if (isMediumScreen) {
-      setZoomLevel(1.5); // Siempre 1.5 en pantallas medianas o más grandes
+      setZoomLevel(1.5);
     } else {
-      setZoomLevel(1); // Sin zoom adicional en pantallas pequeñas
+      setZoomLevel(1);
     }
   };
 
@@ -155,29 +135,26 @@ const Gallery = () => {
 
   // Aumentar el zoom
   const handleZoomIn = () => {
-    setZoomLevel((prevZoom) => Math.min(prevZoom + 0.25, 5)); // Zoom máximo de 5x
+    setZoomLevel((prevZoom) => Math.min(prevZoom + 0.25, 5));
   };
 
   // Disminuir el zoom
   const handleZoomOut = () => {
-    setZoomLevel((prevZoom) => Math.max(prevZoom - 0.25, 0.25)); // Zoom mínimo de 0.25x
+    setZoomLevel((prevZoom) => Math.max(prevZoom - 0.25, 0.25));
   };
 
   // Manejar el zoom con la rueda del ratón
   const handleWheelZoom = (event) => {
-    // event.preventDefault();
     event.stopPropagation();
-
     if (event.deltaY < 0) {
-      // Rueda hacia arriba (zoom in)
       handleZoomIn();
     } else {
-      // Rueda hacia abajo (zoom out)
       handleZoomOut();
     }
   };
+
   const agregarEspacios = (cantidad) => {
-    return "\u00A0".repeat(cantidad); // Espacio en blanco no rompible
+    return "\u00A0".repeat(cantidad);
   };
 
   const isSmallScreen = useMediaQuery("(max-width:720px)");
@@ -194,15 +171,15 @@ const Gallery = () => {
   };
 
   const handleMenuItemClick = (categoryId) => {
-    handleCategoryChange(null, categoryId); // Llama al manejador de cambio de categoría
+    handleCategoryChange(null, categoryId);
     handleMenuClose();
   };
+
   return (
     <div
       style={{
         paddingTop: isMovil ? 0.5 : 80,
       }}
-      // sx={{ overflowX: "auto" }}
     >
       {/* Barra de navegación */}
       <AppBar
@@ -212,92 +189,168 @@ const Gallery = () => {
         {isSmallScreen ? (
           // Pantalla pequeña: Mostrar botón de menú hamburguesa
           <Toolbar>
-            <Typography
-              variant="body1"
-              sx={{
-                ml: 1,
-                lineHeight: "1",
-                fontSize: {
-                  xs: "0.6rem",
-                  sm: "0.8rem",
-                  md: "1.1rem",
-                },
-              }}
-            >
-              Menú Galería {agregarEspacios(3)}
-            </Typography>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              onClick={handleMenuOpen}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-            >
-              {categories.map((category) => (
-                <MenuItem
-                  key={category.id}
-                  onClick={() => handleMenuItemClick(category.id)}
-                  selected={selectedCategory === category.id}
-                >
-                  {category.name}
-                </MenuItem>
-              ))}
-            </Menu>
-          </Toolbar>
+  <Box sx={{ 
+    display: 'flex', 
+    alignItems: 'center', 
+    width: '100%',
+    gap: 1 // Poca separación entre elementos
+  }}>
+    <Typography
+      variant="body1"
+      sx={{
+        lineHeight: "1",
+        fontSize: {
+          xs: "0.6rem",
+          sm: "0.8rem",
+          md: "1.1rem",
+        },
+        whiteSpace: 'nowrap'
+      }}
+    >
+      Menú Galería
+    </Typography>
+
+    {/* Selector de año en móvil */}
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+      <Typography 
+        variant="body2" 
+        sx={{ 
+          color: 'white',
+          fontSize: {
+            xs: "0.5rem",
+            sm: "0.6rem",
+          },
+          whiteSpace: 'nowrap'
+        }}
+      >
+        Seleccione año:
+      </Typography>
+      <FormControl size="small" className={classes.yearSelector}>
+        <Select
+          value={selectedYear}
+          onChange={handleYearChange}
+          displayEmpty
+        >
+          {availableYears.map((year) => (
+            <MenuItem key={year} value={year}>
+              {year}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
+
+    <IconButton
+      edge="start"
+      color="inherit"
+      aria-label="menu"
+      onClick={handleMenuOpen}
+      sx={{ marginLeft: "auto" }}
+    >
+      <MenuIcon />
+    </IconButton>
+    <Menu
+      anchorEl={anchorEl}
+      open={Boolean(anchorEl)}
+      onClose={handleMenuClose}
+    >
+      {categories.map((category) => (
+        <MenuItem
+          key={category.id}
+          onClick={() => handleMenuItemClick(category.id)}
+          selected={selectedCategory === category.id}
+        >
+          {category.name}
+        </MenuItem>
+      ))}
+    </Menu>
+  </Box>
+</Toolbar>
         ) : (
           <>
             <Toolbar>
-              <Typography
-                variant="h6"
-                component="div"
+              <Box
                 sx={{
-                  flexGrow: 1,
-                  textAlign: "center",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   width: "100%",
-                  lineHeight: "1",
-                  fontSize: {
-                    xs: "0.6rem",
-                    sm: "0.8rem",
-                    md: "1.1rem",
-                  },
-                  fontWeight: "bold", // Negrita para parecerse al título del CardHeader, }}
+                  gap: 2, // Menor separación entre elementos
                 }}
               >
-                Galería Fotos
-              </Typography>
-            </Toolbar>
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{
+                    lineHeight: "1",
+                    fontSize: {
+                      xs: "0.6rem",
+                      sm: "0.8rem",
+                      md: "1.1rem",
+                    },
+                    fontWeight: "bold",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Galería Fotos
+                </Typography>
 
+                {/* Selector de año en desktop */}
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "white",
+                      fontSize: {
+                        xs: "0.6rem",
+                        sm: "0.7rem",
+                        md: "0.8rem",
+                      },
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Seleccione año:
+                  </Typography>
+                  <FormControl size="small" className={classes.yearSelector}>
+                    <Select
+                      value={selectedYear}
+                      onChange={handleYearChange}
+                      displayEmpty
+                    >
+                      {availableYears.map((year) => (
+                        <MenuItem key={year} value={year}>
+                          {year}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+              </Box>
+            </Toolbar>
             <Tabs
               value={selectedCategory}
               onChange={handleCategoryChange}
               variant="scrollable"
               scrollButtons="auto"
               sx={{
-                backgroundColor: "primary.dark", // Fondo más oscuro para las pestañas
+                backgroundColor: "primary.dark",
                 "& .MuiTab-root": {
-                  color: "white", // Color del texto de las pestañas no seleccionadas
-                  opacity: 0.5, // Opacidad para las pestañas no seleccionadas
+                  color: "white",
+                  opacity: 0.5,
                   "&.Mui-selected": {
-                    color: "white", // Color del texto de la pestaña seleccionada
-                    opacity: 1, // Opacidad completa para la pestaña seleccionada
-                    fontWeight: "bold", // Texto en negrita para la pestaña seleccionada
+                    color: "white",
+                    opacity: 1,
+                    fontWeight: "bold",
                   },
                   "&:hover": {
-                    opacity: 1, // Opacidad completa al hacer hover
+                    opacity: 1,
                   },
                 },
                 "& .MuiTabs-indicator": {
-                  backgroundColor: "secondary.main", // Color del indicador de la pestaña seleccionada
+                  backgroundColor: "secondary.main",
                 },
-
                 "& .MuiTabs-flexContainer": {
-                  flexWrap: "nowrap", // Evita el wrapping de las pestañas
+                  flexWrap: "nowrap",
                 },
               }}
             >
@@ -326,9 +379,8 @@ const Gallery = () => {
         )}
       </AppBar>
 
-      {/* Contenido de la galería (oculto en pantalla completa) */}
+      {/* El resto del componente se mantiene igual */}
       <Box sx={{ marginTop: isMovil ? "1rem" : "6.2rem" }}>
-        {/* Ajustar el margen superior (128px ≈ 8rem) */}
         {!isFullscreen && (
           <Grid container spacing={2} sx={{ padding: isMovil ? 0 : 2 }}>
             {loading ? (
@@ -369,12 +421,13 @@ const Gallery = () => {
               ))
             ) : (
               <Typography variant="body1" sx={{ padding: 2 }}>
-                No hay imágenes disponibles en esta categoría.
+                No hay imágenes disponibles en esta categoría y año.
               </Typography>
             )}
           </Grid>
         )}
-        {/* Pantalla completa con la imagen seleccionada */}
+
+        {/* Pantalla completa (mantener igual) */}
         {isFullscreen && (
           <Box
             className={classes.fullscreenContainer}
@@ -388,7 +441,6 @@ const Gallery = () => {
               style={{ transform: `scale(${zoomLevel})` }}
               onClick={handleCloseFullscreen}
             />
-            {/* Controles de zoom y cerrar */}
             <Box className={classes.controlsContainer}>
               <IconButton
                 onClick={handleZoomOut}
@@ -415,7 +467,7 @@ const Gallery = () => {
           </Box>
         )}
       </Box>
-      {/* Mensaje de error */}
+
       <Snackbar
         open={!!error}
         autoHideDuration={6000}

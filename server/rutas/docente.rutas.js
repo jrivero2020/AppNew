@@ -78,7 +78,7 @@ router
 router.route("/JsonGetNoticias").get(docenteCtrl.JsonGetNoticias);
 
 // Ruta para obtener imágenes por categoría
-router.route("/api/images").get(docenteCtrl.obtenerImagenesPorCategoria);
+router.route("/api/images").get(docenteCtrl.obtenerImagenesPorCategoriaYAnio);
 
 // Ruta para CREAR SOLICITUD DE EQUIPOS
 router.route("/getCursos").get(docenteCtrl.getCursos);

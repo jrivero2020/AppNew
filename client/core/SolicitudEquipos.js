@@ -178,11 +178,10 @@ const SolicitudEquipos = () => {
       }
       setSelectedBloques([]);
       setSelectedReservedBlocks([]);
-
       setSnackbarMessage("Solicitud enviada correctamente");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
-
+      
       const bloquesData = await getBloquesHorarios({
         jornada_id: selectedJornada,
         equipamiento_id: selectedEquipamiento,
