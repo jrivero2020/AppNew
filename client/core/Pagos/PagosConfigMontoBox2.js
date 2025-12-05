@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { usePagosConfig } from './hooks/usePagosConfig';
 import { useDashboard } from './context/dashboardContext';
 import ConfigMontoUI from './ui/ConfigMontoUI';
 
-const PagosConfigMontoBox = () => {
+const PagosConfigMontoBox = ({jwt}) => {
   const { handleYearChange } = useDashboard();
   const { montos, nuevo, loading, handleSave, handleAdd, handleDelete, handleChange, setNuevo } = usePagosConfig();
 
@@ -18,6 +18,7 @@ const PagosConfigMontoBox = () => {
       onChange={handleChange}
       onNuevoChange={setNuevo}
       onYearSelect={handleYearChange}
+      jwt={jwt}
     />
   );
 };
