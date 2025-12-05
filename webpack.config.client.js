@@ -16,6 +16,18 @@ const webpackConfig = {
     filename: "bundle.js",
     publicPath: "/dist/",
   },
+  devServer: {
+    hot: true,
+    static: {
+      watch: {
+        ignored: ["**/System Volume Information", "**/node_modules"],
+      },
+    },
+  },
+  watchOptions: {
+    ignored: ["**/System Volume Information"], // Ignora 'System Volume Information'
+  },
+
   module: {
     rules: [
       {
