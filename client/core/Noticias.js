@@ -97,16 +97,29 @@ export default function Noticias() {
             spacing={3}
             sx={{
               margin: "auto",
-              maxWidth: "98%",
+              maxWidth: "100%",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
             {Noticias.map((noticia) => (
-              <Grid item key={noticia.datos.nro} xs={12} md={6} lg={4}>
+              <Grid item key={noticia.datos.nro} xs={12} md={6} lg={4}  sx={{
+                  display: "flex",
+                  justifyContent: "center", // Centra horizontalmente
+                  alignItems: "center", // Centra verticalmente
+                }}>
+                
                 {noticia.datos.modo === "img" && (
                   <>
-                    <Card elevation={8}>
+                    <Card
+                      elevation={8}
+                      sx={{
+                        width: "120%", // Card 20% más ancho
+                        maxWidth: "120%",
+                        margin: "0 auto", // Centra el card horizontalmente
+                        overflow: "hidden", // Mantiene todo dentro
+                      }}
+                    >
                       <CardActionArea
                         onClick={() =>
                           handleOpenImg(pathImg + noticia.datos.src)
@@ -180,7 +193,6 @@ export default function Noticias() {
                     </Dialog>
                   </>
                 )}
-
                 {noticia.datos.modo === "txt" && (
                   <Paper
                     elevation={10}

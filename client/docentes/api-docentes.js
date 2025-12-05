@@ -735,24 +735,7 @@ const DeletePagosConfigMontos = async (params, credentials) => {
     return { error: 500, message: err.message };
   }
 };
-// *************************** Tipos de Beca *********************
-/*
-    const response = await fetch("/getHorarioProfe/" + params.rut, {
 
-params, credentials, signal
-  console.log(" Params:", params);
-  const { rut, agno } = params;
-  try {
-    const response = await fetch("/getDataPagoAlumno/" + rut + "/" + agno, {
-      method: "GET",
-      signal: signal,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + credentials.t,
-      },
-    });
-*/
 const getPagosTipoBeca = async (params, credentials, signal) => {   
   try {
     //console.log( "api-gettB  params=>", params)
@@ -891,6 +874,75 @@ const api_eliminarBecaAlumno = async (params, credentials) => {
   }
 };
 
+const Api_UpsertPagosAlumnosRezagados = async (params, credentials) => {
+  const {rut_alumno,mes_inicio,agno,monto_mes_inicio,monto_mensualidad, monto_anual} = params  
+  
+  try {
+    let response = await fetch("/UpsertPagosAlumnosRezagados/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify({rut_alumno,mes_inicio,agno,monto_mes_inicio,monto_mensualidad, monto_anual}),
+    });
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
+// api-docentes.js
+const Api_GetPagoAlumnoRezagado = async (params, credentials) => {
+  const { rut_alumno, agno } = params;  
+  
+  try {
+    let response = await fetch("/GetPagoAlumnoRezagado/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify({ rut_alumno, agno }),
+    });
+    
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
+
+// api-docentes.js
+ const Api_DeletePagoAlumnoRezagado = async (params, credentials) => {
+  const { rut_alumno, agno } = params;  
+  
+  try {
+    let response = await fetch("/DeletePagoAlumnoRezagado/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify({ rut_alumno, agno }),
+    });
+    
+    if (!response.ok) {
+      return { error: response.status, message: response.statusText };
+    }
+    return await response.json();
+  } catch (err) {
+    return { error: 500, message: err.message };
+  }
+};
 
 export {
   create,
@@ -940,5 +992,9 @@ export {
   DeletePagosTipoBeca,
   api_getAlumnosBecas,
   api_asignarBecaAlumnos,
-  api_eliminarBecaAlumno
+  api_eliminarBecaAlumno,
+  Api_UpsertPagosAlumnosRezagados,
+  Api_GetPagoAlumnoRezagado,
+  Api_DeletePagoAlumnoRezagado,
+
 };

@@ -1173,6 +1173,75 @@ const DeleteAlumnosBecas = async (req, res) => {
   }
 };
 
+// UpsertPagosAlumnosRezagados
+
+const UpsertPagosAlumnosRezagados = async (req, res) => {
+  console.log( "UpsertPagosAlumnosRezagados=>>", req.body)
+  const {rut_alumno,mes_inicio,agno,monto_mes_inicio,monto_mensualidad, monto_anual} = req.body
+
+  try {
+    const results = await sequelize.query(`CALL sp_Pagos_upsertAlumnoRezagado(?,?,?,?,?,?)`, 
+      {
+        replacements:[ rut_alumno,mes_inicio,agno,monto_mes_inicio,monto_mensualidad, monto_anual],
+      type: sequelize.QueryTypes.RAW,
+    });
+     return res.status(200).json({
+      message: "Mes de Inicio configurado correctamente",
+      resultados: results,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Error al Mes de Inicio" });
+  }
+};
+
+const GetPagoAlumnoRezagado = async (req, res) => {
+  const { rut_alumno, agno } = req.body;
+
+  try {
+    const results = await sequelize.query(`CALL sp_Pagos_VerificarAlumnoRezagado(?,?)`, 
+      {
+        replacements: [rut_alumno, agno],
+        type: sequelize.QueryTypes.RAW,
+      });
+    
+    return res.status(200).json({
+      resultados: results,
+    });
+  } catch (err) {
+    console.error("Error en GetPagoAlumnoRezagado:", err);
+    return res.status(500).json({ 
+      error: "Error al verificar alumno rezagado",
+      detalles: err.message 
+    });
+  }
+};
+
+const DeletePagoAlumnoRezagado = async (req, res) => {
+  const { rut_alumno, agno } = req.body;
+
+  try {
+    const results = await sequelize.query(`CALL sp_Pagos_EliminarAlumnoRezagado(?,?)`, 
+      {
+        replacements: [rut_alumno, agno],
+        type: sequelize.QueryTypes.RAW,
+      });
+    
+    return res.status(200).json({
+      message: "Configuración eliminada correctamente",
+      resultados: results,
+    });
+  } catch (err) {
+    console.error("Error en DeletePagoAlumnoRezagado:", err);
+    return res.status(500).json({ 
+      error: "Error al eliminar configuración",
+      detalles: err.message 
+    });
+  }
+};
+// router.route("/GetPagoAlumnoRezagado").post(authCtrl.requireSignin, docenteCtrl.GetPagoAlumnoRezagado);
+// router.route("/DeletePagoAlumnoRezagado").post(authCtrl.requireSignin, docenteCtrl.DeletePagoAlumnoRezagado);
+
+
 export default {
   docenteByID,
   leerDocente,
@@ -1225,5 +1294,9 @@ export default {
   DeletePagosTipoBeca,
   getAlumnosBecas,
   UpsertPagosBecaAlumno,
-  DeleteAlumnosBecas
+  DeleteAlumnosBecas,
+  UpsertPagosAlumnosRezagados,
+  GetPagoAlumnoRezagado,
+  DeletePagoAlumnoRezagado,
+
 };

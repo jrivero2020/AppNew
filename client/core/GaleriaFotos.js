@@ -43,6 +43,7 @@ const categories = [
 // Años disponibles
 const availableYears = ["2024", "2025", "2026"];
 
+
 const useStyles = makeStyles({
   // ... (mantener todos los estilos existentes)
   yearSelector: {
