@@ -122,19 +122,38 @@ const SolicitudEquipos = () => {
 
   const shouldDisableDate = (date) => {
     const day = date.day();
+    // Definir el día de hoy para la comparación
+    // const today = dayjs();
     const condicion =  day === 0 || day === 6 || feriados.some((feriado) => date.isSame(feriado, "day"))
+    // const esHoy = date.isSame(today, "day");
+    
     if( usrRol === 1 ){
       return( condicion )
     } 
     
     return (
-      date.isBefore(dayjs(), "day") || condicion
+      // date.isBefore(dayjs(), "day") || 
+      condicion 
+      // || esHoy
     );
   };
 
   // Manejar envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
+// Validar que la fecha sea al menos mañana
+  const hoy = dayjs().startOf('day'); // Fecha de hoy a las 00:00
+  const fechaSeleccionada = selectedDate.startOf('day'); // Fecha seleccionada a las 00:00
+
+// Validar que solicitud sea > al día de hoy
+ // Comparar si la fecha seleccionada es hoy o anterior
+  if ( usrRol !== 1 && (fechaSeleccionada.isSame(hoy) || fechaSeleccionada.isBefore(hoy))) {
+    setSnackbarMessage("Solicitud debe hacerse a lo menos con un día de anticipación");
+    setSnackbarSeverity("error");
+    setSnackbarOpen(true);
+    return; // Detener el envío
+  }
+
     // Validar stock disponible
     const equipamientoSeleccionado = equipamientos.find(
       (equip) => equip.id_equipos === selectedEquipamiento
@@ -525,6 +544,7 @@ const SolicitudEquipos = () => {
                       <StaticDatePicker
                         displayStaticWrapperAs="desktop"
                         value={selectedDate}
+                        // defaultValue={dayjs().add(1, 'day')}  // Mostrar mañana por defecto
                         onChange={(newDate) => setSelectedDate(newDate)}
                         shouldDisableDate={shouldDisableDate}
                         views={["day"]}
@@ -738,7 +758,8 @@ const SolicitudEquipos = () => {
                       !selectedAsignatura ||
                       !selectedJornada ||
                       !selectedEquipamiento ||
-                      selectedBloques.length === 0
+                      selectedBloques.length === 0 ||
+                      (selectedDate && dayjs(selectedDate).isSameOrBefore(dayjs(), 'day') && usrRol !== 1)
                     }
                   >
                     Enviar Solicitud

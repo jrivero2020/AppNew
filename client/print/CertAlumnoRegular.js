@@ -15,7 +15,7 @@ import { AuthContext } from "./../core/AuthProvider";
 
 import Item from "../core/Item";
 import { FmtoRut, validarRut, QuitaPuntos } from "../assets/js/FmtoRut";
-// import ImprimeCertificado from "./ImprimeCertificado";
+import ImprimeCertificado from "./ImprimeCertificado";
 import PrintHojaImpresa from "./PrintHojaImpresa2";
 
 
@@ -177,6 +177,7 @@ export default function CertAlumnoRegular() {
         {valores.open ? (
           <Card style={{ maxWidth: "90%", margin: "auto" }}>
             <PrintHojaImpresa data={valores} />
+             <ImprimeCertificado data={valores} />     
           </Card>
         ) : null}
       </Grid>
