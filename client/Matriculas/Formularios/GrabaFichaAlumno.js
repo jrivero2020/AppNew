@@ -26,15 +26,17 @@ export const GrabarAlumno = ({
 
   // console.log("antes de validate ", dataBuscaAl);
   validateAndCleanData();
-
   //console.log("dataBuscaAl sin nulos =>", dataBuscaAl);
 
+  // console.log("jwt:=>", jwt, "jwt.user._id", jwt.user._id)
   const validaForm = validateFormAlumno(dataBuscaAl);
 
   if (validaForm.length === 0) {
+    
+
     api_CreaModificaAlumno(
       { al_rut: dataBuscaAl.al_rut, resul: resultado.result },
-      { t: jwt.token },
+      { t: jwt.token, usrId:jwt.user._id},
       dataBuscaAl
     )
       .then((data) => {

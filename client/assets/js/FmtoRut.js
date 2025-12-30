@@ -41,7 +41,7 @@ const validarRut = (rut) => {
   // console.log(" en validarRut el rut es : ", rut);
   const rutnulos = [
     11111111, 22222222, 33333333, 44444444, 55555555, 66666666, 77777777,
-    88888888, 99999999,
+    88888888, 
   ];
   rut = rut.replace(/[.-]/g, ""); // Elimina los puntos y guión
   rut = rut.replace(/[^\dkK]/g, ""); // Eliminar caracteres no numéricos excepto K/k

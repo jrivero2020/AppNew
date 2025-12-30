@@ -313,6 +313,7 @@ const api_CreaModificaAlumno = async (params, credentials, alumno) => {
   try {
     const al_rut = params.al_rut;
     const result = params.resul;
+    const usrId = credentials.usrId
 
     let response = await fetch("/UpdateInsertAlumno/" + al_rut, {
       method: "PUT",
@@ -321,7 +322,7 @@ const api_CreaModificaAlumno = async (params, credentials, alumno) => {
         "Content-Type": "application/json",
         Authorization: "Bearer " + credentials.t,
       },
-      body: JSON.stringify({ alumno, result }),
+      body: JSON.stringify({ alumno, result,usrId }),
     });
     if (!response.ok) {
       // console.log("api_CreaModificaAlumno ===> !response.ok valor de response:==>", response );
