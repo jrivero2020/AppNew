@@ -25,7 +25,7 @@ const obtenerImagenesPorCategoria = async (req, res) => {
 // Método para obtener imágenes por categoría y año
 const obtenerImagenesPorCategoriaYAnio = async (req, res) => {
   const { category, year } = req.query; // Obtener la categoría y año desde el frontend
-  
+
   if (!category) {
     return res.status(400).json({ error: "La categoría es requerida" });
   }
@@ -46,35 +46,34 @@ const obtenerImagenesPorCategoriaYAnio = async (req, res) => {
   );
 */
 
- // Caso especial para la categoría "Colegio" - no usa año
-  if (category.toLowerCase() === 'colegio') {
+  // Caso especial para la categoría "Colegio" - no usa año
+  if (category.toLowerCase() === "colegio") {
     categoryFolder = path.join(
       process.cwd(),
       "dist",
       "images",
       "fotos",
-      category  // ← Sin año para Colegio
+      category // ← Sin año para Colegio
     );
     imageUrlBase = `/dist/images/fotos/${category}/`;
-  } else {  // Ruta de la carpeta de imágenes con la nueva estructura: dist/images/fotos/año/categoria
-   categoryFolder = path.join(
-    process.cwd(),
-    "dist",
-    "images",
-    "fotos",
-    year,    // ← Nuevo nivel de directorio para el año
-    category
-  )
-   imageUrlBase = `/dist/images/fotos/${year}/${category}/`;
-}
-  ;
-
-// Verificar si la carpeta existe
+  } else {
+    // Ruta de la carpeta de imágenes con la nueva estructura: dist/images/fotos/año/categoria
+    categoryFolder = path.join(
+      process.cwd(),
+      "dist",
+      "images",
+      "fotos",
+      year, // ← Nuevo nivel de directorio para el año
+      category
+    );
+    imageUrlBase = `/dist/images/fotos/${year}/${category}/`;
+  }
+  // Verificar si la carpeta existe
   if (!fs.existsSync(categoryFolder)) {
     return res.status(200).json([]); // Devolver array vacío si no hay imágenes para ese año/categoría
   }
 
- // Leer los archivos de la carpeta
+  // Leer los archivos de la carpeta
   fs.readdir(categoryFolder, (error, files) => {
     if (error) {
       // Si hay error al leer, devolver array vacío en lugar de error 500
@@ -83,31 +82,30 @@ const obtenerImagenesPorCategoriaYAnio = async (req, res) => {
     }
 
     // Filtrar solo archivos de imagen (opcional, para mayor seguridad)
-    const imageFiles = files.filter(file => 
+    const imageFiles = files.filter((file) =>
       /\.(jpg|jpeg|png|gif|webp)$/i.test(file)
     );
 
     // Crear un array con las rutas de las imágenes
-   // Crear un array con las rutas de las imágenes
+    // Crear un array con las rutas de las imágenes
     const images = imageFiles.map((file) => ({
-      id: category.toLowerCase() === 'colegio' 
-        ? `colegio-${file}`  // ID sin año para Colegio
-        : `${year}-${category}-${file}`, // ID con año para otras categorías
+      id:
+        category.toLowerCase() === "colegio"
+          ? `colegio-${file}` // ID sin año para Colegio
+          : `${year}-${category}-${file}`, // ID con año para otras categorías
       url: imageUrlBase + file, // Usar la base de URL correspondiente
       title: file.split(".")[0],
-      year: category.toLowerCase() === 'colegio' ? 'todos' : year, // Indicar 'todos' para Colegio
-      category: category
+      year: category.toLowerCase() === "colegio" ? "todos" : year, // Indicar 'todos' para Colegio
+      category: category,
     }));
-
 
     // Devolver las imágenes al frontend
     res.status(200).json(images);
   });
 };
 
-
-  // Leer los archivos de la carpeta
-  /*
+// Leer los archivos de la carpeta
+/*
   fs.readdir(categoryFolder, (error, files) => {
     if (error) {
       return res.status(500).json({ error: "Error al leer la carpeta" });
@@ -340,7 +338,7 @@ const getDataAlumnoNombres = async (req, res) => {
 // SP_csvLibroMatricula
 const CsvLibroMatricula = async (req, res) => {
   try {
-    const dataLibro = await sequelize.query(`CALL sp_LibroAsistencia()`, {
+    const dataLibro = await sequelize.query(`CALL SP_csvLibroMatricula()`, {
       type: sequelize.QueryTypes.SELECT,
     });
 
@@ -398,8 +396,8 @@ const CreaAlumnoRut = async (req, res) => {
     const rutAl = req.params.rutAl;
     const resul = req.body.result;
     const body = req.body.alumno;
-    const usrId = req.body.usrId
-//     console.log(" ****body**** =>", body, "*********Resul =>", resul, "usrId:=>", usrId);
+    const usrId = req.body.usrId;
+    //     console.log(" ****body**** =>", body, "*********Resul =>", resul, "usrId:=>", usrId);
     const camposRep = [
       body.al_rut,
       body.al_dv,
@@ -898,7 +896,6 @@ const getHorarioAtencionProfe = async (req, res) => {
   }
 };
 
-
 /* Libro de Pagos */
 
 const getDataPagoAlumno = async (req, res) => {
@@ -1023,42 +1020,50 @@ const getPagosConfigMontos = async (req, res) => {
     // console.log("results :", results)
     res.json(results[0]);
   } catch (err) {
-    return res.status(500).json({ error: "Error al obtener Montos Mensualidades" });
+    return res
+      .status(500)
+      .json({ error: "Error al obtener Montos Mensualidades" });
   }
 };
 
 //UpsertPagosConfigMontos
 const UpsertPagosConfigMontos = async (req, res) => {
-  console.log( "UpsertPagosConfigMontos=>>", req.body)
-  const {agno, monto} = req.body
+  console.log("UpsertPagosConfigMontos=>>", req.body);
+  const { agno, monto } = req.body;
 
   try {
-    const results = await sequelize.query(`CALL sp_Pagos_UpSertConfigMonto(?,?)`, 
+    const results = await sequelize.query(
+      `CALL sp_Pagos_UpSertConfigMonto(?,?)`,
       {
-        replacements:[ agno, monto],
-      type: sequelize.QueryTypes.RAW,
-    });
-     return res.status(200).json({
+        replacements: [agno, monto],
+        type: sequelize.QueryTypes.RAW,
+      }
+    );
+    return res.status(200).json({
       message: "Montos configurados correctamente",
       resultados: results,
     });
   } catch (err) {
-    return res.status(500).json({ error: "Error al configurar Montos Anuales" });
+    return res
+      .status(500)
+      .json({ error: "Error al configurar Montos Anuales" });
   }
 };
 
 //DeletePagosConfigMontos
 const DeletePagosConfigMontos = async (req, res) => {
-  console.log( "DeletePagosConfigMontos=>>", req.body)
-  const {id} = req.body
-  console.log( "DeletePagosConfigMontos id =>>", id)
+  console.log("DeletePagosConfigMontos=>>", req.body);
+  const { id } = req.body;
+  console.log("DeletePagosConfigMontos id =>>", id);
   try {
-    const results = await sequelize.query(`CALL sp_Pagos_DeleteConfigMonto(?)`, 
+    const results = await sequelize.query(
+      `CALL sp_Pagos_DeleteConfigMonto(?)`,
       {
-        replacements:[id],
-      type: sequelize.QueryTypes.DELETE,
-    });
-     return res.status(200).json({
+        replacements: [id],
+        type: sequelize.QueryTypes.DELETE,
+      }
+    );
+    return res.status(200).json({
       message: "Monto Eliminado correctamente",
       resultados: results,
     });
@@ -1070,31 +1075,35 @@ const DeletePagosConfigMontos = async (req, res) => {
 //***********************Tipos Beca ************************** */
 // docenteCtrl.getPagosTipoBeca);
 const getPagosTipoBeca = async (req, res) => {
-   // console.log( "CONTROL getPagosTipoBeca control req=>", req.params)
-  const agno =  req.params.agno
+  // console.log( "CONTROL getPagosTipoBeca control req=>", req.params)
+  const agno = req.params.agno;
   try {
     const results = await sequelize.query(`CALL sp_Pagos_GetTipoBecaAnio(?)`, {
-      replacements:[agno],
+      replacements: [agno],
       type: sequelize.QueryTypes.SELECT,
     });
     // console.log("results :", results)
     res.json(results[0]);
   } catch (err) {
-    return res.status(500).json({ error: "Error al obtener Montos Mensualidades" });
+    return res
+      .status(500)
+      .json({ error: "Error al obtener Montos Mensualidades" });
   }
 };
 
 // UpsertPagosTipoBeca);
 const UpsertPagosTipoBeca = async (req, res) => {
-  console.log( "UpsertPagosConfigMontos=>>", req.body)
-  const {nombre,descripcion,agno,porcentaje,descuento, monto} = req.body
+  console.log("UpsertPagosConfigMontos=>>", req.body);
+  const { nombre, descripcion, agno, porcentaje, descuento, monto } = req.body;
   try {
-    const results = await sequelize.query(`CALL sp_Pagos_UpSertTipoBeca(?,?,?,?,?,?)`, 
+    const results = await sequelize.query(
+      `CALL sp_Pagos_UpSertTipoBeca(?,?,?,?,?,?)`,
       {
-        replacements:[ nombre,descripcion,agno,porcentaje,descuento, monto],
-      type: sequelize.QueryTypes.RAW,
-    });
-     return res.status(200).json({
+        replacements: [nombre, descripcion, agno, porcentaje, descuento, monto],
+        type: sequelize.QueryTypes.RAW,
+      }
+    );
+    return res.status(200).json({
       message: "Tipo Beca configurados correctamente",
       resultados: results,
     });
@@ -1106,14 +1115,13 @@ const UpsertPagosTipoBeca = async (req, res) => {
 // DeletePagosTipoBeca);
 const DeletePagosTipoBeca = async (req, res) => {
   // console.log( "DeletePagosConfigMontos=>>", req.body.agno, "   ", req.body.nombre)
-  const {agno,nombre} = req.body
+  const { agno, nombre } = req.body;
   try {
-    const results = await sequelize.query(`CALL sp_Pagos_DeleteTipoBeca(?,?)`, 
-      {
-        replacements:[agno,nombre],
+    const results = await sequelize.query(`CALL sp_Pagos_DeleteTipoBeca(?,?)`, {
+      replacements: [agno, nombre],
       type: sequelize.QueryTypes.DELETE,
     });
-     return res.status(200).json({
+    return res.status(200).json({
       message: "Tipo beca Eliminado correctamente",
       resultados: results,
     });
@@ -1127,28 +1135,50 @@ const getAlumnosBecas = async (req, res) => {
     const dataCurso = await sequelize.query(
       `CALL colegio.sp_Pagos_GetAlumnosBecas( ?,?,?,? )`,
       {
-        replacements: [req.params.pagno, req.params.pense, req.params.pgrado, req.params.pletra],
+        replacements: [
+          req.params.pagno,
+          req.params.pense,
+          req.params.pgrado,
+          req.params.pletra,
+        ],
         type: sequelize.QueryTypes.SELECT,
       }
     );
     res.json(dataCurso[0]);
-
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 };
 
 const UpsertPagosBecaAlumno = async (req, res) => {
-  console.log( "UpsertPagosBecaAlumno=>>", req.body)
-  const {rut,id_tipo_beca,porcentaje_asignado,monto_descuento,apagar,agno, configMonto} = req.body
+  console.log("UpsertPagosBecaAlumno=>>", req.body);
+  const {
+    rut,
+    id_tipo_beca,
+    porcentaje_asignado,
+    monto_descuento,
+    apagar,
+    agno,
+    configMonto,
+  } = req.body;
 
   try {
-    const results = await sequelize.query(`CALL sp_Pagos_UpSertBecaAlumno(?,?,?,?,?,?,?)`, 
+    const results = await sequelize.query(
+      `CALL sp_Pagos_UpSertBecaAlumno(?,?,?,?,?,?,?)`,
       {
-        replacements:[ rut,id_tipo_beca,porcentaje_asignado,monto_descuento,apagar,agno, configMonto],
-      type: sequelize.QueryTypes.RAW,
-    });
-     return res.status(200).json({
+        replacements: [
+          rut,
+          id_tipo_beca,
+          porcentaje_asignado,
+          monto_descuento,
+          apagar,
+          agno,
+          configMonto,
+        ],
+        type: sequelize.QueryTypes.RAW,
+      }
+    );
+    return res.status(200).json({
       message: "Beca para alumno configurados correctamente",
       resultados: results,
     });
@@ -1159,14 +1189,16 @@ const UpsertPagosBecaAlumno = async (req, res) => {
 
 const DeleteAlumnosBecas = async (req, res) => {
   // console.log( "DeletePagosConfigMontos=>>", req.body.agno, "   ", req.body.nombre)
-  const {rut,agno} = req.body
+  const { rut, agno } = req.body;
   try {
-    const results = await sequelize.query(`CALL sp_Pagos_DeleteAlumnosBecas(?,?)`, 
+    const results = await sequelize.query(
+      `CALL sp_Pagos_DeleteAlumnosBecas(?,?)`,
       {
-        replacements:[rut,agno],
-      type: sequelize.QueryTypes.DELETE,
-    });
-     return res.status(200).json({
+        replacements: [rut, agno],
+        type: sequelize.QueryTypes.DELETE,
+      }
+    );
+    return res.status(200).json({
       message: "Tipo beca Eliminado correctamente",
       resultados: results,
     });
@@ -1178,16 +1210,32 @@ const DeleteAlumnosBecas = async (req, res) => {
 // UpsertPagosAlumnosRezagados
 
 const UpsertPagosAlumnosRezagados = async (req, res) => {
-  console.log( "UpsertPagosAlumnosRezagados=>>", req.body)
-  const {rut_alumno,mes_inicio,agno,monto_mes_inicio,monto_mensualidad, monto_anual} = req.body
+  console.log("UpsertPagosAlumnosRezagados=>>", req.body);
+  const {
+    rut_alumno,
+    mes_inicio,
+    agno,
+    monto_mes_inicio,
+    monto_mensualidad,
+    monto_anual,
+  } = req.body;
 
   try {
-    const results = await sequelize.query(`CALL sp_Pagos_upsertAlumnoRezagado(?,?,?,?,?,?)`, 
+    const results = await sequelize.query(
+      `CALL sp_Pagos_upsertAlumnoRezagado(?,?,?,?,?,?)`,
       {
-        replacements:[ rut_alumno,mes_inicio,agno,monto_mes_inicio,monto_mensualidad, monto_anual],
-      type: sequelize.QueryTypes.RAW,
-    });
-     return res.status(200).json({
+        replacements: [
+          rut_alumno,
+          mes_inicio,
+          agno,
+          monto_mes_inicio,
+          monto_mensualidad,
+          monto_anual,
+        ],
+        type: sequelize.QueryTypes.RAW,
+      }
+    );
+    return res.status(200).json({
       message: "Mes de Inicio configurado correctamente",
       resultados: results,
     });
@@ -1200,20 +1248,22 @@ const GetPagoAlumnoRezagado = async (req, res) => {
   const { rut_alumno, agno } = req.body;
 
   try {
-    const results = await sequelize.query(`CALL sp_Pagos_VerificarAlumnoRezagado(?,?)`, 
+    const results = await sequelize.query(
+      `CALL sp_Pagos_VerificarAlumnoRezagado(?,?)`,
       {
         replacements: [rut_alumno, agno],
         type: sequelize.QueryTypes.RAW,
-      });
-    
+      }
+    );
+
     return res.status(200).json({
       resultados: results,
     });
   } catch (err) {
     console.error("Error en GetPagoAlumnoRezagado:", err);
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: "Error al verificar alumno rezagado",
-      detalles: err.message 
+      detalles: err.message,
     });
   }
 };
@@ -1222,27 +1272,28 @@ const DeletePagoAlumnoRezagado = async (req, res) => {
   const { rut_alumno, agno } = req.body;
 
   try {
-    const results = await sequelize.query(`CALL sp_Pagos_EliminarAlumnoRezagado(?,?)`, 
+    const results = await sequelize.query(
+      `CALL sp_Pagos_EliminarAlumnoRezagado(?,?)`,
       {
         replacements: [rut_alumno, agno],
         type: sequelize.QueryTypes.RAW,
-      });
-    
+      }
+    );
+
     return res.status(200).json({
       message: "Configuración eliminada correctamente",
       resultados: results,
     });
   } catch (err) {
     console.error("Error en DeletePagoAlumnoRezagado:", err);
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: "Error al eliminar configuración",
-      detalles: err.message 
+      detalles: err.message,
     });
   }
 };
 // router.route("/GetPagoAlumnoRezagado").post(authCtrl.requireSignin, docenteCtrl.GetPagoAlumnoRezagado);
 // router.route("/DeletePagoAlumnoRezagado").post(authCtrl.requireSignin, docenteCtrl.DeletePagoAlumnoRezagado);
-
 
 export default {
   docenteByID,
@@ -1300,5 +1351,4 @@ export default {
   UpsertPagosAlumnosRezagados,
   GetPagoAlumnoRezagado,
   DeletePagoAlumnoRezagado,
-
 };
