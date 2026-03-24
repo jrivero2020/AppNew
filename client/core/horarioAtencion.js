@@ -29,7 +29,7 @@ const HorarioAtencionProfesores = () => {
     2: "Básica",
     3: "Media",
     4: "Media y Básica",
-    5: "Otros",
+    5: "PIE",
   };
 
   // Función para simular la llamada a la API (debes reemplazar esto)
@@ -37,7 +37,7 @@ const HorarioAtencionProfesores = () => {
   const fetchHorariosProfe = async () => {
     try {
       const data = await getHorarioAtencionProfe();
-      console.log("HHprofe data=>:, Object.values(data)", Object.values(data));
+     // console.log("HHprofe data=>:, Object.values(data)", Object.values(data));
       setHorarios(Object.values(data));
       setLoading(false);
     } catch (err) {

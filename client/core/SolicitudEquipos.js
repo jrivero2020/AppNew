@@ -11,6 +11,7 @@ import {
   Tooltip,
   Snackbar,
   Alert,
+  AlertTitle,
   Paper,
   Box,
   Card,
@@ -52,6 +53,8 @@ const SolicitudEquipos = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarTitulo, setSnackbarTitulo] = useState("ATENCIÓN");
+
   const [cantidad, setCantidad] = useState(0); // Valor inicial de 0
   const [actividad, setActividad] = useState("");
   const { jwt } = useContext(AuthContext);
@@ -86,6 +89,9 @@ const SolicitudEquipos = () => {
           { id: 2, nombre: "Tarde" },
         ]);
         setFeriados(dferiados.map((f) => dayjs(f.diaferiado)));
+        if (usrRol !== 1) {
+          msgInit();
+        }
       } catch (error) {
         // console.error("Error cargando datos:", error);
         setSnackbarMessage("Error cargando datos iniciales");
@@ -94,7 +100,8 @@ const SolicitudEquipos = () => {
       }
     };
     fetchData();
-  }, []);
+  
+  }, [usrRol]);
 
   // Cargar bloques horarios cuando se selecciona jornada, equipamiento y fecha
   useEffect(() => {
@@ -123,40 +130,64 @@ const SolicitudEquipos = () => {
   const shouldDisableDate = (date) => {
     const day = date.day();
     // Definir el día de hoy para la comparación
-    // const today = dayjs();
-    const condicion =  day === 0 || day === 6 || feriados.some((feriado) => date.isSame(feriado, "day"))
-    // const esHoy = date.isSame(today, "day");
-    
-    if( usrRol === 1 ){
-      return( condicion )
-    } 
-    
-    return (
-      // date.isBefore(dayjs(), "day") || 
-      condicion 
-      // || esHoy
-    );
+    const today = dayjs();
+    const condicion =
+      day === 0 ||
+      day === 6 ||
+      feriados.some((feriado) => date.isSame(feriado, "day"));
+    const esHoy = date.isSame(today, "day");
+    const retornar = date.isBefore(dayjs(), "day") || condicion || esHoy;
+    if (usrRol === 1) {
+      return condicion;
+    }
+
+    return retornar;
+    // date.isBefore(dayjs(), "day") || condicion || esHoy
+  };
+
+  const fsetFecha = (newDate) => {
+    const hoy = dayjs().startOf("day"); // Fecha de hoy a las 00:00
+    // const fechaSeleccionada = selectedDate.startOf('day'); // Fecha seleccionada a las 00:00
+    // console.log( "Parametro: newDate", newDate, '   Hoy: ', hoy, '   fechaSeleccionada: ', fechaSeleccionada)
+    // console.log( "Parametro: newDate.isSame(hoy)", newDate.isSame(hoy), '   Hoy: ', hoy.isSame(hoy), '   fechaSeleccionada: ', fechaSeleccionada.isSame(hoy))
+
+    // esHoy = date.isSame(today, "day");
+    if (usrRol !== 1 && (newDate.isSame(hoy) || newDate.isBefore(hoy))) {
+      setSnackbarMessage(
+        "Solicitud debe hacerse a lo menos con un día de anticipación",
+      );
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return; // Detener el envío
+    }
+
+    setSelectedDate(newDate);
   };
 
   // Manejar envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-// Validar que la fecha sea al menos mañana
-  const hoy = dayjs().startOf('day'); // Fecha de hoy a las 00:00
-  const fechaSeleccionada = selectedDate.startOf('day'); // Fecha seleccionada a las 00:00
+    // Validar que la fecha sea al menos mañana
+    const hoy = dayjs().startOf("day"); // Fecha de hoy a las 00:00
+    const fechaSeleccionada = selectedDate.startOf("day"); // Fecha seleccionada a las 00:00
 
-// Validar que solicitud sea > al día de hoy
- // Comparar si la fecha seleccionada es hoy o anterior
-  if ( usrRol !== 1 && (fechaSeleccionada.isSame(hoy) || fechaSeleccionada.isBefore(hoy))) {
-    setSnackbarMessage("Solicitud debe hacerse a lo menos con un día de anticipación");
-    setSnackbarSeverity("error");
-    setSnackbarOpen(true);
-    return; // Detener el envío
-  }
+    // Validar que solicitud sea > al día de hoy
+    // Comparar si la fecha seleccionada es hoy o anterior
+    if (
+      usrRol !== 1 &&
+      (fechaSeleccionada.isSame(hoy) || fechaSeleccionada.isBefore(hoy))
+    ) {
+      setSnackbarMessage(
+        "Solicitud debe hacerse a lo menos con un día de anticipación",
+      );
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return; // Detener el envío
+    }
 
     // Validar stock disponible
     const equipamientoSeleccionado = equipamientos.find(
-      (equip) => equip.id_equipos === selectedEquipamiento
+      (equip) => equip.id_equipos === selectedEquipamiento,
     );
     let errorMsg = "";
 
@@ -190,7 +221,7 @@ const SolicitudEquipos = () => {
       const data = await createSolicitud(
         solicitudData,
         { t: jwt.token },
-        signal
+        signal,
       );
       if (data?.error) {
         throw new Error(data.error);
@@ -200,7 +231,7 @@ const SolicitudEquipos = () => {
       setSnackbarMessage("Solicitud enviada correctamente");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
-      
+
       const bloquesData = await getBloquesHorarios({
         jornada_id: selectedJornada,
         equipamiento_id: selectedEquipamiento,
@@ -213,6 +244,14 @@ const SolicitudEquipos = () => {
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
+  };
+
+  const msgInit = () => {
+    setSnackbarMessage(
+      "La Solicitud debe hacerse a lo menos con un día de anticipación",
+    );
+    setSnackbarSeverity("warning");
+    setSnackbarOpen(true);
   };
 
   // Cerrar Snackbar
@@ -237,14 +276,14 @@ const SolicitudEquipos = () => {
         prevBloques.map((bloque) =>
           selectedReservedBlocks.includes(bloque.bloque_id)
             ? { ...bloque, estado: "disponible", id_profesor_reserva: null }
-            : bloque
-        )
+            : bloque,
+        ),
       );
 
       const data = await liberarSolicitud(
         desbloquear,
         { t: jwt.token },
-        signal
+        signal,
       );
       if (data?.error) {
         throw new Error(data.error);
@@ -276,22 +315,29 @@ const SolicitudEquipos = () => {
     }
   };
 
-//   const selctEquipamiento = (id_equipo) => {
-//     setSelectedEquipamiento(id_equipo);
-//   };
+  //   const selctEquipamiento = (id_equipo) => {
+  //     setSelectedEquipamiento(id_equipo);
+  //   };
   const [modalOpen, setModalOpen] = useState(false);
 
   const guardarEquipos = (ptrEquipo) => {
-    
-    const equiposSeleccionado = equipamientos.find((equipo) => equipo.id_equipos === ptrEquipo);
-    const nombreEquipos = equiposSeleccionado ? equiposSeleccionado.nombre: "Equipamiento no encontrado";
+    const equiposSeleccionado = equipamientos.find(
+      (equipo) => equipo.id_equipos === ptrEquipo,
+    );
+    const nombreEquipos = equiposSeleccionado
+      ? equiposSeleccionado.nombre
+      : "Equipamiento no encontrado";
     setNombreEquipo(nombreEquipos);
-     setSelectedEquipamiento(ptrEquipo);
+    setSelectedEquipamiento(ptrEquipo);
   };
 
   const guardarJornada = (ptrJornada) => {
-    const jornadaSeleccionada = jornadas.find( (jornada) => jornada.id === ptrJornada );
-    const nombreJornada = jornadaSeleccionada? jornadaSeleccionada.nombre: "Jornada no encontrada";
+    const jornadaSeleccionada = jornadas.find(
+      (jornada) => jornada.id === ptrJornada,
+    );
+    const nombreJornada = jornadaSeleccionada
+      ? jornadaSeleccionada.nombre
+      : "Jornada no encontrada";
     setSelectedJornada(ptrJornada);
     setNombreJornada(nombreJornada);
   };
@@ -497,7 +543,7 @@ const SolicitudEquipos = () => {
                             : "outlined"
                         }
                         color="secondary"
-                        onClick={() => guardarEquipos( equip.id_equipos)} // ojo pensar en dejar stock x equipos ya definidos
+                        onClick={() => guardarEquipos(equip.id_equipos)} // ojo pensar en dejar stock x equipos ya definidos
                         // para mostrar en seleccion de bloque la cantidad disponible
                         style={{
                           minWidth: "120px",
@@ -545,7 +591,8 @@ const SolicitudEquipos = () => {
                         displayStaticWrapperAs="desktop"
                         value={selectedDate}
                         // defaultValue={dayjs().add(1, 'day')}  // Mostrar mañana por defecto
-                        onChange={(newDate) => setSelectedDate(newDate)}
+                        // onChange={(newDate) => setSelectedDate(newDate)}
+                        onChange={(newDate) => fsetFecha(newDate)}
                         shouldDisableDate={shouldDisableDate}
                         views={["day"]}
                       />
@@ -572,7 +619,7 @@ const SolicitudEquipos = () => {
                               bloque.id_profesor_reserva === idProfesor ||
                               usrRol === 1 ? (
                                 selectedReservedBlocks.includes(
-                                  bloque.bloque_id
+                                  bloque.bloque_id,
                                 ) ? (
                                   <Typography variant="body2">
                                     Click para deseleccionar
@@ -683,21 +730,21 @@ const SolicitudEquipos = () => {
                             }
                             style={{
                               backgroundColor: selectedBloques.includes(
-                                bloque.bloque_id
+                                bloque.bloque_id,
                               )
                                 ? "#666666" // Fondo gris para bloques disponibles seleccionados
                                 : bloque.estado === "reservado"
-                                ? bloque.id_profesor_reserva === idProfesor ||
-                                  usrRol === 1
-                                  ? selectedReservedBlocks.includes(
-                                      bloque.bloque_id
-                                    )
-                                    ? "#33691E" // VERDE OSCURO cuando está seleccionado para liberación
-                                    : "#00cc66" // Verde original para mis reservas no seleccionadas
-                                  : "#ff4444" // Rojo para reservas de otros
-                                : bloque.estado === "superpuesto"
-                                ? "#ff8800" // Naranja para bloques superpuestos
-                                : "#1976d2", // Azul para bloques disponibles
+                                  ? bloque.id_profesor_reserva === idProfesor ||
+                                    usrRol === 1
+                                    ? selectedReservedBlocks.includes(
+                                        bloque.bloque_id,
+                                      )
+                                      ? "#33691E" // VERDE OSCURO cuando está seleccionado para liberación
+                                      : "#00cc66" // Verde original para mis reservas no seleccionadas
+                                    : "#ff4444" // Rojo para reservas de otros
+                                  : bloque.estado === "superpuesto"
+                                    ? "#ff8800" // Naranja para bloques superpuestos
+                                    : "#1976d2", // Azul para bloques disponibles
                               color: "white",
                               margin: "5px",
                             }}
@@ -710,9 +757,9 @@ const SolicitudEquipos = () => {
                                 setSelectedReservedBlocks((prev) =>
                                   prev.includes(bloque.bloque_id)
                                     ? prev.filter(
-                                        (id) => id !== bloque.bloque_id
+                                        (id) => id !== bloque.bloque_id,
                                       )
-                                    : [...prev, bloque.bloque_id]
+                                    : [...prev, bloque.bloque_id],
                                 );
                               }
 
@@ -721,9 +768,9 @@ const SolicitudEquipos = () => {
                                 setSelectedBloques((prev) =>
                                   prev.includes(bloque.bloque_id)
                                     ? prev.filter(
-                                        (id) => id !== bloque.bloque_id
+                                        (id) => id !== bloque.bloque_id,
                                       )
-                                    : [...prev, bloque.bloque_id]
+                                    : [...prev, bloque.bloque_id],
                                 );
                               }
                             }}
@@ -759,7 +806,9 @@ const SolicitudEquipos = () => {
                       !selectedJornada ||
                       !selectedEquipamiento ||
                       selectedBloques.length === 0 ||
-                      (selectedDate && dayjs(selectedDate).isSameOrBefore(dayjs(), 'day') && usrRol !== 1)
+                      (selectedDate &&
+                        dayjs(selectedDate).isSameOrBefore(dayjs(), "day") &&
+                        usrRol !== 1)
                     }
                   >
                     Enviar Solicitud
@@ -822,8 +871,11 @@ const SolicitudEquipos = () => {
         <Alert
           onClose={handleCloseSnackbar}
           severity={snackbarSeverity}
+          variant={"filled"}
           sx={{ width: "100%" }}
         >
+          <AlertTitle> {snackbarTitulo}</AlertTitle>
+
           {snackbarMessage}
         </Alert>
       </Snackbar>
