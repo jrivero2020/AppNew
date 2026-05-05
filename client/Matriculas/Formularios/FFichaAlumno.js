@@ -110,7 +110,7 @@ export const FFichaAlumno = ({ resultado, setResultado }) => {
     <ThemeProvider theme={theme}>
       <div style={{ paddingTop: "68px" }}>
         <CustomGridTitulo
-          titulo={"FICHA INDIVIDUAL DEL ALUMNO"}
+          titulo={"FICHA INDIVIDUAL DEL ALUMNO     (NºMatrícula:" + dataBuscaAl.al_nro_matricula+")"}
           color={"#FFFFFF"}
           backGround={"#1976d2"}
         />
