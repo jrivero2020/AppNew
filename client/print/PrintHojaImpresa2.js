@@ -90,7 +90,7 @@ function PrintHojaImpresa(props) {
               fontWeight: "bold",
               textAlign: "left",
               position: "absolute",
-              top: "34mm",
+              top: "49mm", // antes 34mm
               left: "83mm", // 25mm + 48mm
             }}
           >
@@ -103,7 +103,7 @@ function PrintHojaImpresa(props) {
               fontWeight: "bold",
               fontSize: 14,
               position: "absolute",
-              top: "55mm",
+              top: "71mm", // antes 55mm
               left: "76mm", // 23mm + 48mm
             }}
           >
@@ -116,7 +116,7 @@ function PrintHojaImpresa(props) {
               fontWeight: "bold",
               fontSize: 14,
               position: "absolute",
-              top: "55mm",
+               top: "71mm", // antes 55mm
               left: "115mm", // 62mm + 48mm
             }}
           >
@@ -129,7 +129,7 @@ function PrintHojaImpresa(props) {
               fontWeight: "bold",
               fontSize: 14,
               position: "absolute",
-              top: "55mm",
+               top: "71mm", // antes 55mm
               left: "138mm", // 85mm + 48mm
             }}
           >
@@ -142,8 +142,8 @@ function PrintHojaImpresa(props) {
               fontWeight: "bold",
               fontSize: 14,
               position: "absolute",
-              top: "55mm",
-              left: "185mm", // 132mm + 48mm
+               top: "71mm", // antes 55mm
+              left: "187mm", // 132mm + 48mm
             }}
           >
             9903-1
@@ -154,7 +154,7 @@ function PrintHojaImpresa(props) {
             sx={{
               fontSize: 18,
               position: "absolute",
-              top: "76mm",
+              top: "93mm", //antes 76
               left: "76mm", // 23mm + 48mm
             }}
           >
@@ -166,7 +166,7 @@ function PrintHojaImpresa(props) {
             sx={{
               fontSize: 18,
               position: "absolute",
-              top: "88mm",
+              top: "105mm",// antes 88
               left: "89mm", // 33mm + 48mm
             }}
           >
@@ -178,7 +178,7 @@ function PrintHojaImpresa(props) {
             sx={{
               fontSize: 14,
               position: "absolute",
-              top: "100mm",
+              top: "118mm", // antes 100
               left: "106mm", // 48mm + 48mm
             }}
           >
@@ -190,7 +190,7 @@ function PrintHojaImpresa(props) {
             sx={{
               fontSize: 14,
               position: "absolute",
-              top: "100mm",
+              top: "118mm", // antes 100
               left: "166mm", // 113mm + 48mm
             }}
           >
@@ -202,7 +202,7 @@ function PrintHojaImpresa(props) {
             sx={{
               fontSize: 14,
               position: "absolute",
-              top: "119mm",
+              top: "141mm", //"119mm"
               left: "100mm", // 47mm + 48mm
             }}
           >
@@ -214,7 +214,7 @@ function PrintHojaImpresa(props) {
             sx={{
               fontSize: 14,
               position: "absolute",
-              top: "131mm",
+              top: "153mm", //"131mm",
               left: "98mm", // 45mm + 48mm
             }}
           >
@@ -226,7 +226,7 @@ function PrintHojaImpresa(props) {
             sx={{
               fontSize: 14,
               position: "absolute",
-              top: "154mm",
+              top: "175mm",//"154mm",
               left: "86mm", // 33mm + 48mm
             }}
           >
@@ -239,7 +239,7 @@ function PrintHojaImpresa(props) {
               fontWeight: "bold",
               fontSize: 12,
               position: "absolute",
-              top: "198mm",
+              top: "213mm",//"198mm",
               left: "77mm", // 24mm + 48mm
             }}
           >
@@ -252,7 +252,7 @@ function PrintHojaImpresa(props) {
               fontWeight: "bold",
               fontSize: 12,
               position: "absolute",
-              top: "198mm",
+              top: "213mm",
               left: "133mm", // 78mm + 48mm
             }}
           >
@@ -265,8 +265,8 @@ function PrintHojaImpresa(props) {
               fontWeight: "bold",
               fontSize: 12,
               position: "absolute",
-              top: "198mm",
-              left: "144mm", // 92mm + 48mm
+              top: "213mm",
+              left: "148mm", // 92mm + 48mm
             }}
           >
             {TxtMesHoy()}
@@ -278,8 +278,8 @@ function PrintHojaImpresa(props) {
               fontWeight: "bold",
               fontSize: 12,
               position: "absolute",
-              top: "198mm",
-              left: "183mm", // 130mm + 48mm
+              top: "213mm",
+              left: "190mm", // 130mm + 48mm
             }}
           >
             {mediano}
