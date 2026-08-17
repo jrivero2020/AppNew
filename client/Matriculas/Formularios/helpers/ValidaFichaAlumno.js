@@ -5,15 +5,16 @@ import { cFichaAlumnoOrdenada } from "./../../../Matriculas/matriculasCampos";
 
 const validarNroFono = (numero) => {
   // Expresión regular para celular chileno
-  const regexCelular = /^(?:\+56|56|0)?9\d{8}$/;
-
+  // const regexCelular = /^(?:\+56|56|0)?9\d{8}$/;
+// 222553655
   // Expresión regular para teléfono fijo chileno
-  const regexFijo =
-    /^(?:\+56|56|0)?(2|3[2-5]|4[1-5]|5[1-8]|6[1-3]|7[1-2]|9[5-7])\d{6,7}$/;
-
+  // const regexFijo =  /^(?:\+?56|0)?(?:2\d{8}|(?:3[2-5]|4[1-5]|5[1-8]|6[1-5]|7[1-5])\d{7})$/ ;
   // Limpiamos el número de espacios y guiones
-  const numeroLimpio = numero.replace(/[-\s]/g, "");
-
+  const nroFono = /^(?:\+?56)?(?:9\d{8}|2\d{8}|(?:3[2-5]|4[1-5]|5[1-8]|6[1-5]|7[1-5])\d{7})$/ ;
+  // const numeroLimpio = numero.replace(/[-\s]/g, "");
+  const numeroLimpio =numero.replace(/[^\d+]/g, "");
+  return( nroFono.test(numeroLimpio))
+  /*
   // Validamos contra ambos formatos
   if (regexCelular.test(numeroLimpio)) {
     return true;
@@ -22,6 +23,8 @@ const validarNroFono = (numero) => {
   } else {
     return false;
   }
+    */
+
 };
 
 const validarEmail = (email) => {
