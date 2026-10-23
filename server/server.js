@@ -1,6 +1,14 @@
 import { config } from "./../config/config.js";
 import app from "./express";
 import { sequelize } from "./bdatos/bdatos.js";
+const cloudinary = require('cloudinary').v2;
+
+// 1. Configuración obligatoria de Cloudinary al inicio del archivo
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 async function main() {
   try {

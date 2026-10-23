@@ -4,6 +4,7 @@ export default ({ markup, css }) => {
         <head>
             <meta charset="utf-8">
             <meta name="viewport" content="initial-scale=1, width=device-width" />
+            <meta http-equiv="Content-Security-Policy" content="default-src 'self' http://localhost:* https://localhost:*; img-src 'self' data: https://res.cloudinary.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
             <title>Colegio Los Conquistadores Cerrillos</title>
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">

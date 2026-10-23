@@ -85,6 +85,7 @@ const Gallery = () => {
         }
         const data = await response.json();
         setImages(data);
+        console.log('data=>',data)
       } catch (error) {
         setError("No se pudieron cargar las imágenes. Inténtalo de nuevo.");
       } finally {
@@ -152,10 +153,6 @@ const Gallery = () => {
     } else {
       handleZoomOut();
     }
-  };
-
-  const agregarEspacios = (cantidad) => {
-    return "\u00A0".repeat(cantidad);
   };
 
   const isSmallScreen = useMediaQuery("(max-width:720px)");

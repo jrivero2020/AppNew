@@ -1,6 +1,6 @@
 
-import fs from "fs";
-import path from "path";
+// import fs from "fs";
+// import path from "path";
 import bcrypt from "bcrypt";
 import {
   docentes,
@@ -10,7 +10,7 @@ import {
 
 import { verErrorSequelize } from "../helpers/sequelizeErrores.js";
 import { sequelize } from "../bdatos/bdatos.js";
-
+const cloudinary = require('cloudinary').v2;
 
 // Método para obtener imágenes por categoría y año
 const obtenerImagenesPorCategoriaYAnio = async (req, res) => {
@@ -20,89 +20,69 @@ const obtenerImagenesPorCategoriaYAnio = async (req, res) => {
     return res.status(400).json({ error: "La categoría es requerida" });
   }
 
-  if (!year) {
+  if (!year && category.toLowerCase() !== "colegio") {
     return res.status(400).json({ error: "El año es requerido" });
   }
-  let categoryFolder;
-  let imageUrlBase;
 
-  // Caso especial para la categoría "Colegio" - no usa año
-  if (category.toLowerCase() === "colegio") {
-    categoryFolder = path.join(
-      process.cwd(),
-      "dist",
-      "images",
-      "fotos",
-      category // ← Sin año para Colegio
-    );
-    imageUrlBase = `/dist/images/fotos/${category}/`;
-  } else {
-    // Ruta de la carpeta de imágenes con la nueva estructura: dist/images/fotos/año/categoria
-    categoryFolder = path.join(
-      process.cwd(),
-      "dist",
-      "images",
-      "fotos",
-      year, // ← Nuevo nivel de directorio para el año
-      category
-    );
-    imageUrlBase = `/dist/images/fotos/${year}/${category}/`;
-  }
-  // Verificar si la carpeta existe
-  if (!fs.existsSync(categoryFolder)) {
-    return res.status(200).json([]); // Devolver array vacío si no hay imágenes para ese año/categoría
-  }
+  try {
+    let folderPath;
 
-  // Leer los archivos de la carpeta
-  fs.readdir(categoryFolder, (error, files) => {
-    if (error) {
-      // Si hay error al leer, devolver array vacío en lugar de error 500
-      console.log(`No se encontraron imágenes en: ${categoryFolder}`);
-      return res.status(200).json([]);
+    // Estructura de carpetas que creaste en Cloudinary:
+    // - Para "colegio": fotos/colegio
+    // - Para el resto: fotos/año/categoria (ej: fotos/2024/fiestaprimavera)
+    if (category.toLowerCase() === "colegio") {
+      folderPath = `images/fotos/colegio`;
+    } else {
+      folderPath = `images/fotos/${year}/${category}`;
     }
-
-    // Filtrar solo archivos de imagen (opcional, para mayor seguridad)
-    const imageFiles = files.filter((file) =>
-      /\.(jpg|jpeg|png|gif|webp)$/i.test(file)
-    );
-
-    // Crear un array con las rutas de las imágenes
-    // Crear un array con las rutas de las imágenes
-    const images = imageFiles.map((file) => ({
-      id:
-        category.toLowerCase() === "colegio"
-          ? `colegio-${file}` // ID sin año para Colegio
-          : `${year}-${category}-${file}`, // ID con año para otras categorías
-      url: imageUrlBase + file, // Usar la base de URL correspondiente
-      title: file.split(".")[0],
-      year: category.toLowerCase() === "colegio" ? "todos" : year, // Indicar 'todos' para Colegio
-      category: category,
-    }));
-
-    // Devolver las imágenes al frontend
-    res.status(200).json(images);
-  });
-};
-
-// Leer los archivos de la carpeta
-/*
-  fs.readdir(categoryFolder, (error, files) => {
-    if (error) {
-      return res.status(500).json({ error: "Error al leer la carpeta" });
-    }
-
-    // Crear un array con las rutas de las imágenes
-    const images = files.map((file) => ({
-      id: file, // Nombre del archivo como ID
-      url: `/dist/images/fotos/${category}/${file}`, // Ruta para acceder a la imagen
-      title: file.split(".")[0], // Título (nombre del archivo sin extensión)
-    }));
-
-    // Devolver las imágenes al frontend
-    res.status(200).json(images);
-  });
-};
+console.log('folderPath=', folderPath)
+    // Usamos api.resources para listar de forma rápida y directa la carpeta en la nube
+    /*
+    const resultado = await cloudinary.api.resources({
+      type: 'upload',
+      prefix: folderPath, // Filtra directamente por la ruta de la carpeta
+      max_results: 100,
+      sort_by: [{ public_id: 'desc' }]
+    });
 */
+
+const resultado = await cloudinary.search
+      .expression(`folder:${folderPath}`)
+      .sort_by('created_at', 'desc')
+      .max_results(100)
+      .execute();
+
+console.log('resultado===>:', resultado)
+    if (!resultado.resources || resultado.resources.length === 0) {
+      console.log(`No se encontraron imágenes en: ${folderPath}`);
+      return res.status(200).json([]); // Devuelve array vacío si no hay fotos
+    }
+
+    // Mapear los resultados al formato exacto que tu componente de React espera
+    const images = resultado.resources.map((file) => {
+      const fileName = file.public_id.split('/').pop(); 
+
+      return {
+        id:
+          category.toLowerCase() === "colegio"
+            ? `colegio-${file.public_id}` 
+            : `${year}-${category}-${file.public_id}`,
+        url: file.secure_url, // URL segura y directa provista por Cloudinary
+        title: fileName,
+        year: category.toLowerCase() === "colegio" ? "todos" : year,
+        category: category,
+      };
+    });
+console.log('images==>:',images)
+    // Devolver el JSON limpio al frontend
+    return res.status(200).json(images);
+
+  } catch (error) {
+    console.error(`Error al obtener imágenes en Cloudinary para ${category}/${year}:`, error);
+    // Devolvemos array vacío para evitar que la aplicación se caiga si ocurre un fallo de red
+    return res.status(200).json([]);
+  }
+};
 
 const listaDocente = async (req, res) => {
   try {
@@ -1301,7 +1281,6 @@ export default {
   getDatosFamilia,
   getDataApoderadoNombres,
   JsonGetNoticias,
-  // obtenerImagenesPorCategoria,
   obtenerImagenesPorCategoriaYAnio,
   CreaSolicitaEquipo,
   SolicitudEquipoProfe,
