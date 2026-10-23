@@ -1,26 +1,16 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable import/no-anonymous-default-export */
+
 import fs from "fs";
 import path from "path";
 import bcrypt from "bcrypt";
 import {
   docentes,
   parentescos,
-  comunas,
-  alumnos,
+  comunas,  
 } from "../modelos/modeloCole.js";
 
 import { verErrorSequelize } from "../helpers/sequelizeErrores.js";
 import { sequelize } from "../bdatos/bdatos.js";
 
-// Método para obtener imágenes por categoría
-/*
-const obtenerImagenesPorCategoria = async (req, res) => {
-  const { category } = req.query; // Obtener la categoría desde el frontend
-  if (!category) {
-    return res.status(400).json({ error: "La categoría es requerida" });
-  }
-*/
 
 // Método para obtener imágenes por categoría y año
 const obtenerImagenesPorCategoriaYAnio = async (req, res) => {
@@ -35,16 +25,6 @@ const obtenerImagenesPorCategoriaYAnio = async (req, res) => {
   }
   let categoryFolder;
   let imageUrlBase;
-  // Ruta de la carpeta de imágenes
-  /*
-  const categoryFolder = path.join(
-    process.cwd(),
-    "dist",
-    "images",
-    "fotos",
-    category
-  );
-*/
 
   // Caso especial para la categoría "Colegio" - no usa año
   if (category.toLowerCase() === "colegio") {
