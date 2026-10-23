@@ -14,16 +14,55 @@ const validarNroFono = (numero) => {
   // const numeroLimpio = numero.replace(/[-\s]/g, "");
   const numeroLimpio =numero.replace(/[^\d+]/g, "");
   return( nroFono.test(numeroLimpio))
-  /*
-  // Validamos contra ambos formatos
-  if (regexCelular.test(numeroLimpio)) {
-    return true;
-  } else if (regexFijo.test(numeroLimpio)) {
-    return true;
-  } else {
-    return false;
+
+
+  /* 
+
+ * Valida un número telefónico de Chile (Fijo o Móvil)
+ * @param {string} telefono - Cadena a validar (ej: "+56 9 1234-5678", "(032) 212.3456")
+ * @returns {object} Objeto con el resultado de la validación y el número limpio
+ 
+function validarTelefonoChileno(telefono) {
+  if (typeof telefono !== 'string') {
+    return { valido: false, numeroLimpio: '', mensaje: 'El parámetro debe ser un texto' };
   }
-    */
+
+  // 1. Limpieza: Mantiene solo dígitos (\d) y el signo '+' al inicio si existe
+  // Remueve puntos, guiones, espacios, paréntesis, etc.
+  const numeroLimpio = telefono.trim().replace(/(?!^\+)[^\d]/g, '');
+
+  // 2. Regex Unificada (Fijos RM, Fijos Regiones y Móviles)
+  const regexChile = /^(?:\+?56)?(?:9\d{8}|2\d{8}|(?:3[2-5]|4[1-5]|5[1-8]|6[1-5]|7[1-5])\d{7})$/;
+
+  // 3. Validación
+  const esValido = regexChile.test(numeroLimpio);
+
+  return {
+    valido: esValido,
+    numeroLimpio: esValido ? numeroLimpio : null,
+    mensaje: esValido ? 'Número chileno válido' : 'Número chileno inválido'
+  };
+}
+
+// ==========================================
+// Ejemplos de uso:
+// ==========================================
+
+console.log(validarTelefonoChileno("+56 9 1234-5678"));
+// { valido: true, numeroLimpio: "+56912345678", mensaje: "Número chileno válido" }
+
+console.log(validarTelefonoChileno("(02) 2 123 4567")); 
+// Nota: Elimina el '0' previo si está mal formateado y valida los 9 dígitos
+console.log(validarTelefonoChileno("+56 (32) 212-3456"));
+// { valido: true, numeroLimpio: "+56322123456", mensaje: "Número chileno válido" }
+
+console.log(validarTelefonoChileno("9 8765 4321"));
+// { valido: true, numeroLimpio: "987654321", mensaje: "Número chileno válido" }
+
+console.log(validarTelefonoChileno("+56 9 1234 567")); // Le falta 1 dígito
+// { valido: false, numeroLimpio: null, mensaje: "Número chileno inválido" }
+
+  */
 
 };
 
@@ -649,3 +688,308 @@ export const validateFormAlumno = (dataBuscaAl) => {
 
   return "";
 };
+
+/* Pensar en implementar
+
+import DOMPurify from "dompurify";
+import { validarRut } from "./../../../assets/js/FmtoRut";
+import { cFichaAlumnoOrdenada } from "./../../../Matriculas/matriculasCampos";
+
+// ==========================================
+// 1. FUNCIONES AUXILIARES Y VALIDACIONES BASE
+// ==========================================
+
+export const validarNroFono = (numero) => {
+  if (!numero || typeof numero !== "string") return false;
+  // Mantiene solo dígitos y el '+'
+  const numeroLimpio = numero.replace(/[^\d+]/g, "");
+  // Regex oficial teléfonos Chile (Móviles, Fijos Santiago y Fijos Regiones)
+  const regexFonoChile = /^(?:\+?56)?(?:9\d{8}|2\d{8}|(?:3[2-5]|4[1-5]|5[1-8]|6[1-5]|7[1-5])\d{7})$/;
+  return regexFonoChile.test(numeroLimpio);
+};
+
+export const validarEmail = (email) => {
+  const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
+  if (!regexEmail.test(email)) return false;
+
+  const dominio = email.split("@")[1];
+  const tld = dominio?.split(".").pop();
+  return tld && tld.length >= 2 && tld.length <= 63;
+};
+
+const esFalsyDefinida = (value) => value === 0 || value === "" || value === null || value === undefined;
+
+// ==========================================
+// 2. CONFIGURACIÓN DECLARATIVA DE REGLAS
+// ==========================================
+
+const FICHAS = [
+  "(I.- Del Alumno)",
+  "(II.- Del Apoderado)",
+  "(III.- Familiares)"
+];
+
+/**
+ * Diccionario de reglas por campo.
+ * Tipos admitidos: 'texto' (req + min 3), 'select' (req !== 0/vacio), 'fono', 'email', 'custom'
+ 
+const REGLAS_CAMPOS = {
+  // --- SECCIÓN I: ALUMNO ---
+  al_nombres:   { tipo: "texto",  label: "El nombre alumno", ficha: 0 },
+  al_apat:      { tipo: "texto",  label: "El apellido paterno alumno", ficha: 0 },
+  al_amat:      { tipo: "texto",  label: "El apellido materno alumno", ficha: 0 },
+  al_domicilio: { tipo: "texto",  label: "El domicilio alumno", ficha: 0 },
+  al_idcurso:   { tipo: "select", msj: "Debe seleccionar un curso de la lista para el alumno", ficha: 0 },
+  al_id_comuna: { tipo: "select", msj: "Debe seleccionar una comuna de la lista para el alumno", ficha: 0 },
+  al_cur_repe:  { tipo: "select", msj: "Debe seleccionar cursos repetidos (Sí o No) del alumno", ficha: 0 },
+  al_idvivecon: { tipo: "select", msj: "Debe seleccionar con quien vive el alumno", ficha: 0 },
+  al_enfermo:   { tipo: "select", msj: "Debe seleccionar si tiene o no enfermedad el alumno", ficha: 0 },
+  al_genero:    { tipo: "select", msj: "Debe seleccionar sexo de alumno", ficha: 0 },
+  al_f_nac:     { tipo: "custom", fn: (val, curso) => validaFechaAlumno(val, curso) },
+
+  // --- SECCIÓN II: APODERADO TITULAR ---
+  ap_nombres:   { tipo: "texto",  label: "Nombre apoderado", ficha: 1 },
+  ap_apat:      { tipo: "texto",  label: "Apellido paterno apoderado", ficha: 1 },
+  ap_amat:      { tipo: "texto",  label: "Apellido materno apoderado", ficha: 1 },
+  ap_domicilio: { tipo: "texto",  label: "El domicilio apoderado", ficha: 1 },
+  ap_id_comuna: { tipo: "select", msj: "Debe seleccionar una comuna de la lista para el apoderado", ficha: 1 },
+  al_idparentesco: { tipo: "select", msj: "Debe seleccionar Parentesco del apoderado", ficha: 1 },
+  ap_fono1:      { tipo: "fono",   label: "Teléfono 1 de apoderado", requerido: true, ficha: 1 },
+  ap_fono2:      { tipo: "fono",   label: "Nro de teléfono 2 de apoderado", requerido: false, ficha: 1 },
+  ap_emergencia: { tipo: "fono",   label: "Nro de teléfono emergencia de apoderado", requerido: false, ficha: 1 },
+  ap_email:      { tipo: "email",  label: "Correo apoderado", ficha: 1 },
+
+  // --- SECCIÓN II: APODERADO SUPLENTE ---
+  apsu_nombres:   { tipo: "texto",  label: "Nombre Apod.Suplente", ficha: 1 },
+  apsu_apat:      { tipo: "texto",  label: "Apellido paterno Apod.Suplente", ficha: 1 },
+  apsu_amat:      { tipo: "texto",  label: "Apellido materno Apod.Suplente", ficha: 1 },
+  apsu_domicilio: { tipo: "texto",  label: "El domicilio Apod.Suplente", ficha: 1 },
+  apsu_id_comuna: { tipo: "select", msj: "Debe seleccionar una comuna de la lista para el Apod.Suplente", ficha: 1 },
+  al_idparentescosupl: { tipo: "select", msj: "Debe seleccionar Parentesco del Apod.Suplente", ficha: 1 },
+  apsu_fono1:      { tipo: "fono",   label: "Teléfono 1 Apod.Suplente", requerido: true, ficha: 1 },
+  apsu_fono2:      { tipo: "fono",   label: "Nro de teléfono 2 Apod.Suplente", requerido: false, ficha: 1 },
+  apsu_emergencia: { tipo: "fono",   label: "Nro de teléfono emergencia Apod.Suplente", requerido: false, ficha: 1 },
+  apsu_email:      { tipo: "email",  label: "Correo Apod.Suplente", ficha: 1 },
+
+  // --- SECCIÓN III: PADRES Y FAMILIA ---
+  madre_nombres: { tipo: "texto",  label: "Nombre madre", ficha: 2 },
+  madre_apat:    { tipo: "texto",  label: "Apellido paterno madre", ficha: 2 },
+  madre_amat:    { tipo: "texto",  label: "Apellido materno madre", ficha: 2 },
+  padre_nombres: { tipo: "texto",  label: "Nombre padre", ficha: 2 },
+  padre_apat:    { tipo: "texto",  label: "Apellido paterno padre", ficha: 2 },
+  mpadre_amat:   { tipo: "texto",  label: "Apellido materno padre", ficha: 2 },
+  al_ingresogrupofamiliar: { tipo: "select", msj: "Ingreso del grupo familiar es necesario.", ficha: 2 },
+  al_vivienda:        { tipo: "select", msj: "Debe seleccionar tipo de vivienda", ficha: 2 },
+  al_evaluareligion:  { tipo: "select", msj: "Debe seleccionar si evalúa religión", ficha: 2 },
+};
+
+// ==========================================
+// 3. VALIDADOR DE UN SOLO CAMPO
+// ==========================================
+
+export const ValidaFichaAlumno = (name, value, curso) => {
+  const camposExcluidosDeSanitizacion = [
+    "al_idcurso", "al_id_comuna", "al_canthnos", "al_cur_repe"
+  ];
+
+  // Sanitización XSS
+  if (!camposExcluidosDeSanitizacion.includes(name)) {
+    const strValue = String(value ?? "");
+    const sanitizedInput = DOMPurify.sanitize(strValue, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+    if (strValue !== sanitizedInput) {
+      return `Intento de contenido malicioso detectado!!, name = ${name} value = ${value}`;
+    }
+  }
+
+  const regla = REGLAS_CAMPOS[name];
+  if (!regla) return ""; // Si el campo no tiene regla definida, pasa sin error
+
+  const sufijoFicha = FICHAS[regla.ficha] || "";
+  const valStr = String(value ?? "").trim();
+
+  // Evaluador genérico según el tipo de regla
+  switch (regla.tipo) {
+    case "texto":
+      if (!valStr) return `${regla.label} es obligatorio.${sufijoFicha}`;
+      if (valStr.length < 3) return `${regla.label} debe tener al menos 3 caracteres.${sufijoFicha}`;
+      break;
+
+    case "select":
+      if (value === "" || value === 0 || value === null || value === undefined) {
+        return `${regla.msj}${sufijoFicha}`;
+      }
+      break;
+
+    case "fono":
+      if (regla.requerido && !valStr) {
+        return `${regla.label} es obligatorio.${sufijoFicha}`;
+      }
+      if (valStr && !validarNroFono(valStr)) {
+        return `${regla.label} es inválido${sufijoFicha}`;
+      }
+      break;
+
+    case "email":
+      if (valStr && !validarEmail(valStr)) {
+        return `${regla.label} no es válido${sufijoFicha}`;
+      }
+      break;
+
+    case "custom":
+      if (typeof regla.fn === "function") {
+        return regla.fn(value, curso) || "";
+      }
+      break;
+  }
+
+  return "";
+};
+
+// ==========================================
+// 4. VALIDADOR DE FECHAS
+// ==========================================
+
+export const validaFechaAlumno = (fecha, curso, anioMatricula = 2025) => {
+  try {
+    if (!fecha) return "La fecha de nacimiento es requerida";
+
+    const convertirFecha = (strFecha) => {
+      if (/^\d{2}-\d{2}-\d{4}$/.test(strFecha)) {
+        const [dia, mes, anio] = strFecha.split("-").map(Number);
+        return new Date(anio, mes - 1, dia);
+      } else if (/^\d{4}-\d{2}-\d{2}$/.test(strFecha)) {
+        const [anio, mes, dia] = strFecha.split("-").map(Number);
+        return new Date(anio, mes - 1, dia);
+      }
+      throw new Error("Formato de fecha no válido");
+    };
+
+    convertirFecha(fecha);
+    return "";
+  } catch (e) {
+    return e.message;
+  }
+};
+
+// ==========================================
+// 5. VALIDADOR GENERAL DEL FORMULARIO
+// ==========================================
+
+export const validateFormAlumno = (dataBuscaAl) => {
+  const camposExcluidos = [
+    "al_activo", "al_agno_matricula", "al_cod_ense", "al_cod_grado",
+    "al_fecharetiro", "al_fincorpora", "al_id_alumno", "al_letra",
+    "al_motivoretiro", "al_nro_matricula", "ap_parentesco", "ap_sexo",
+    "apsu_parentesco", "al_idmadre", "al_idpadre", "al_idapoderado", "al_idapoderadosupl"
+  ];
+
+  const parentescoMap = {
+    1: { role: "padre", message: "El Padre" },
+    2: { role: "madre", message: "La Madre" }
+  };
+
+  const validarFormatoRut = (campoRut, campoDv, nombreCampo) => {
+    const rut = `${dataBuscaAl[campoRut]}-${dataBuscaAl[campoDv]}`;
+    if (!validarRut(rut)) {
+      return `El RUT de ${nombreCampo} no es válido. Rut : ${rut}`;
+    }
+    return null;
+  };
+
+  const validateParentesco = (idParentesco, apFields, roleName) => {
+    const parentescoVal = dataBuscaAl[idParentesco];
+    if (parentescoVal in parentescoMap) {
+      const { role, message } = parentescoMap[parentescoVal];
+
+      if (dataBuscaAl[`${apFields}_rut`] !== dataBuscaAl[`${role}_rut`]) {
+        return `${message} debe tener el mismo rut que el ${roleName} cuando parentesco="${message.substring(3)}"!`;
+      }
+
+      if (
+        dataBuscaAl[`${apFields}_nombres`] !== dataBuscaAl[`${role}_nombres`] ||
+        dataBuscaAl[`${apFields}_apat`] !== dataBuscaAl[`${role}_apat`] ||
+        dataBuscaAl[`${apFields}_amat`] !== dataBuscaAl[`${role}_amat`]
+      ) {
+        return `${message} se debe llamar igual que ${roleName} cuando parentesco="${message.substring(3)}"!`;
+      }
+    }
+    return null;
+  };
+
+  const sonNombresIguales = (person1, person2) =>
+    dataBuscaAl[`${person1}_nombres`] === dataBuscaAl[`${person2}_nombres`] &&
+    dataBuscaAl[`${person1}_apat`] === dataBuscaAl[`${person2}_apat`] &&
+    dataBuscaAl[`${person1}_amat`] === dataBuscaAl[`${person2}_amat`];
+
+  // 1. Validar RUTs obligatorios de apoderados
+  const errorRutAp = validarFormatoRut("ap_rut", "ap_dv", "Apoderado");
+  if (errorRutAp) return errorRutAp;
+
+  const errorRutApsu = validarFormatoRut("apsu_rut", "apsu_dv", "Apoderado suplente");
+  if (errorRutApsu) return errorRutApsu;
+
+  // 2. Reglas de coexistencia de Padres
+  if (esFalsyDefinida(dataBuscaAl["padre_rut"]) && esFalsyDefinida(dataBuscaAl["madre_rut"])) {
+    return "Debe ingresar Rut de la Madre o el Padre, No se permite ambos padres sin Rut!";
+  }
+
+  if (dataBuscaAl["ap_rut"] === dataBuscaAl["apsu_rut"]) {
+    return 'El apoderado "Suplente" no puede tener el mismo Rut del Apoderado "Titular"!';
+  }
+
+  if (!esFalsyDefinida(dataBuscaAl["padre_rut"])) {
+    const error = validarFormatoRut("padre_rut", "padre_dv", "Padre");
+    if (error) return error;
+  }
+
+  if (!esFalsyDefinida(dataBuscaAl["madre_rut"])) {
+    const error = validarFormatoRut("madre_rut", "madre_dv", "Madre");
+    if (error) return error;
+  }
+
+  if (!esFalsyDefinida(dataBuscaAl["padre_rut"]) && !esFalsyDefinida(dataBuscaAl["madre_rut"])) {
+    if (dataBuscaAl["madre_rut"] === dataBuscaAl["padre_rut"]) {
+      return 'La "Madre" no puede tener el mismo Rut que el "Padre"!';
+    }
+  }
+
+  if (
+    !esFalsyDefinida(dataBuscaAl["al_idparentesco"]) &&
+    !esFalsyDefinida(dataBuscaAl["al_idparentescosupl"]) &&
+    dataBuscaAl["ap_rut"] !== dataBuscaAl["apsu_rut"]
+  ) {
+    if (dataBuscaAl["al_idparentescosupl"] === dataBuscaAl["al_idparentesco"]) {
+      return "El Apoderado y el suplente, no pueden tener el mismo parentesco!";
+    }
+  }
+
+  // 3. Validar todo el formulario según el orden del array de campos
+  const clavesFiltradas = cFichaAlumnoOrdenada.filter((key) => !camposExcluidos.includes(key));
+
+  for (const key of clavesFiltradas) {
+    if (Object.prototype.hasOwnProperty.call(dataBuscaAl, key)) {
+      const valor = dataBuscaAl[key];
+      const error = ValidaFichaAlumno(key, valor, dataBuscaAl.al_idcurso);
+      if (error) return error; // Se detiene al encontrar el primer error
+    }
+  }
+
+  // 4. Validaciones cruzadas de nombres y coincidencia de RUTs con parentesco
+  if (sonNombresIguales("ap", "apsu")) {
+    return "El Apoderado y el suplente, no se pueden llamar iguales!";
+  }
+
+  if (sonNombresIguales("madre", "padre")) {
+    return "Los padres no se pueden llamar iguales!";
+  }
+
+  const apoderadoError = validateParentesco("al_idparentesco", "ap", "Apoderado");
+  if (apoderadoError) return apoderadoError;
+
+  const suplenteError = validateParentesco("al_idparentescosupl", "apsu", "Apoderado Suplente");
+  if (suplenteError) return suplenteError;
+
+  return "";
+};
+
+*/
