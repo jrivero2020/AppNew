@@ -12,9 +12,10 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { makeStyles } from "@mui/styles";
 import { AuthContext } from "./AuthProvider";
 import { chkActivoRolAutentica } from "./../assets/js/funciones";
-import { Box, CardHeader } from "@mui/material";
+import { CardHeader } from "@mui/material";
 import Footer from "../core/PieDePagina";
-import Noticias from "./Noticias";
+import NoticiasV2 from "./NoticiasV2";
+import HeroCarousel from "./principalGuiCarrusel.js";
 
 const useStyles = makeStyles({
   imgBtn: {
@@ -31,7 +32,7 @@ const useStyles = makeStyles({
 });
 
 export default function BasicGrid() {
-  const { isAuthenticated, isJwtRol, activeImgLinks } = useContext(AuthContext);
+  const { isAuthenticated, isJwtRol, activeImgLinks, Noticias } =  useContext(AuthContext);
   const jwtRol = isJwtRol ? isJwtRol._rol : 0;
 
   const [imgActivaLinks, setImgActivaLinks] = useState([]);
@@ -39,7 +40,7 @@ export default function BasicGrid() {
   const classes = useStyles();
   const navigate = useNavigate();
   const pathImg = "dist/images/links/";
-  const backgroundFondo = "dist/images/fotos/portada/Principal_gui.jpg";
+  // const backgroundFondo = "dist/images/fotos/portada/Principal_gui.jpg";
 
   const isSmallScreen = useMediaQuery("(max-width:500px)");
   // const isLargeScreen = useMediaQuery("(min-width: 2040px)");
@@ -47,7 +48,6 @@ export default function BasicGrid() {
   const abrirPaginaExterna = (url) => {
     window.open("https://" + url, "_blank");
   };
-
   useEffect(() => {
     if (activeImgLinks.length > 0) {
       // Filtrar solo los registros con "tipo" igual a "opccgi"
@@ -55,11 +55,13 @@ export default function BasicGrid() {
         .filter((item) => item.datos.tipo === "opccgi")
         .sort((a, b) => a.id - b.id); // Ordenar por id en orden ascendente
 
-      setImgActivaLinks(filteredPages);
-      setLoading(false);
+        setImgActivaLinks(filteredPages);
+        setLoading(false);
+    
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeImgLinks]);
+
 
   if (loading) return <p></p>;
 
@@ -78,33 +80,10 @@ export default function BasicGrid() {
               alignItems: "center",
             }}
           >
-            <Box
-              sx={{
-                width: "80%",
-                height: "48%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                overflow: "hidden",
-                position: "relative",
-                "@media (max-width: 720px)": {
-                  height: "30%", // Cambiar el tamaño en pantallas móviles
-                },
-              }}
-            >
-              <img
-                src={backgroundFondo}
-                alt="Img.Fondo"
-                style={{
-                  objectFit: "cover",
-                  objectPosition: "center",
-                  width: "100%",
-                  height: "100%",
-                }}
-              />
-            </Box>
+            <HeroCarousel />
           </div>
-          <Noticias />
+          {/* <Noticias />  */}
+          <NoticiasV2/>
 
           <Card sx={{ backgroundColor: "#E1E1E1" }}>
             <CardHeader
@@ -168,7 +147,7 @@ export default function BasicGrid() {
                           }
                           if (ImagenLnk.datos.llamada.link) {
                             abrirPaginaExterna(
-                              ImagenLnk.datos.llamada.link.url
+                              ImagenLnk.datos.llamada.link.url,
                             );
                           }
                         }}
@@ -223,7 +202,7 @@ export default function BasicGrid() {
                         </CardActionArea>
                       </Card>
                     </Grid>
-                  )
+                  ),
               )}
               <Grid item sm={12}>
                 <Footer sx={{ mt: 5 }} />

@@ -44,18 +44,69 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
 // app.use(helmet());
+// console.log("🔥 CARGANDO CONFIGURACIÓN DE HELMET NUEVA CON SWIPER");
+/*
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      // 💡 Aquí permitimos imágenes de tu propio sitio, data URIs y Cloudinary
-      imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
+       imgSrc: ["'self'", "data:", "https://res.cloudinary.com", "https://images.unsplash.com"],
       scriptSrc: ["'self'", "'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net"],
+      styleSrcElem: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
     },
   })
 );
+*/
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      // 1. Equivalente a default-src 'self' http://localhost:* https://localhost:*
+      defaultSrc: [
+        "'self'", 
+        "http://localhost:*", 
+        "https://localhost:*"
+      ],
+      
+      // 2. Equivalente a img-src 'self' data: https://res.cloudinary.com
+      imgSrc: [
+        "'self'", 
+        "data:", 
+        "https://res.cloudinary.com", 
+        "https://images.unsplash.com" // (Si usas Unsplash en algún lado)
+      ],
+      
+      // 3. Equivalente a script-src 'self' 'unsafe-inline' 'unsafe-eval'
+      scriptSrc: [
+        "'self'", 
+        "'unsafe-inline'", 
+        "'unsafe-eval'"
+      ],
+      
+      // 4. Equivalente a style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net
+      styleSrc: [
+        "'self'", 
+        "'unsafe-inline'", 
+        "https://fonts.googleapis.com", 
+        "https://cdn.jsdelivr.net"
+      ],
+      styleSrcElem: [
+        "'self'", 
+        "'unsafe-inline'", 
+        "https://fonts.googleapis.com", 
+        "https://cdn.jsdelivr.net"
+      ],
+      
+      // 5. Equivalente a font-src 'self' https://fonts.gstatic.com
+      fontSrc: [
+        "'self'", 
+        "https://fonts.gstatic.com"
+      ],
+    },
+  })
+);
+
 
 app.use(cors());
 app.use("/dist", express.static(path.join(CURRENT_WORKING_DIR, "/dist")));

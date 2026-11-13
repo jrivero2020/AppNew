@@ -69,7 +69,7 @@ export default function Noticias() {
   };
 
   if (Noticias.length === 0) return <></>;
-
+console.log("Noticias===>>", Noticias)
   return (
     <>
       {Noticias.length !== 0 && (

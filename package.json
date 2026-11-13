@@ -46,7 +46,8 @@
     "react-router": "^6.10.0",
     "react-router-dom": "^6.10.0",
     "react-to-print": "^2.14.13",
-    "sequelize": "^6.31.0"
+    "sequelize": "^6.31.0",
+    "swiper": "^14.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.10",

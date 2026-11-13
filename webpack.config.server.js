@@ -25,10 +25,10 @@ const config = {
                 test: /\.(ttf|eot|svg|gif|jpg|png|pdf)(\?[\s\S]+)?$/,
                 use: 'file-loader'
             },
-            {
-                test: /\.css$/i,
-                use: ["style-loader", "css-loader",],
-              },
+           {
+        test: /\.css$/i,
+        use: "ignore-loader", // 👈 Ignora por completo los archivos CSS en el backend
+      },
         ]
     }
 }

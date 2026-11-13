@@ -1,16 +1,10 @@
-
-// import fs from "fs";
-// import path from "path";
 import bcrypt from "bcrypt";
-import {
-  docentes,
-  parentescos,
-  comunas,  
-} from "../modelos/modeloCole.js";
+import { docentes, parentescos, comunas } from "../modelos/modeloCole.js";
 
 import { verErrorSequelize } from "../helpers/sequelizeErrores.js";
 import { sequelize } from "../bdatos/bdatos.js";
-const cloudinary = require('cloudinary').v2;
+
+const cloudinary = require("cloudinary").v2;
 
 // Método para obtener imágenes por categoría y año
 const obtenerImagenesPorCategoriaYAnio = async (req, res) => {
@@ -31,11 +25,11 @@ const obtenerImagenesPorCategoriaYAnio = async (req, res) => {
     // - Para "colegio": fotos/colegio
     // - Para el resto: fotos/año/categoria (ej: fotos/2024/fiestaprimavera)
     if (category.toLowerCase() === "colegio") {
-      folderPath = `images/fotos/colegio`;
+      folderPath = `images/fotos/portada`;
     } else {
       folderPath = `images/fotos/${year}/${category}`;
     }
-console.log('folderPath=', folderPath)
+    console.log("folderPath=", folderPath);
     // Usamos api.resources para listar de forma rápida y directa la carpeta en la nube
     /*
     const resultado = await cloudinary.api.resources({
@@ -46,13 +40,12 @@ console.log('folderPath=', folderPath)
     });
 */
 
-const resultado = await cloudinary.search
+    const resultado = await cloudinary.search
       .expression(`folder:${folderPath}`)
-      .sort_by('created_at', 'desc')
+      .sort_by("created_at", "desc")
       .max_results(100)
       .execute();
 
-console.log('resultado===>:', resultado)
     if (!resultado.resources || resultado.resources.length === 0) {
       console.log(`No se encontraron imágenes en: ${folderPath}`);
       return res.status(200).json([]); // Devuelve array vacío si no hay fotos
@@ -60,12 +53,12 @@ console.log('resultado===>:', resultado)
 
     // Mapear los resultados al formato exacto que tu componente de React espera
     const images = resultado.resources.map((file) => {
-      const fileName = file.public_id.split('/').pop(); 
+      const fileName = file.public_id.split("/").pop();
 
       return {
         id:
           category.toLowerCase() === "colegio"
-            ? `colegio-${file.public_id}` 
+            ? `colegio-${file.public_id}`
             : `${year}-${category}-${file.public_id}`,
         url: file.secure_url, // URL segura y directa provista por Cloudinary
         title: fileName,
@@ -73,13 +66,68 @@ console.log('resultado===>:', resultado)
         category: category,
       };
     });
-console.log('images==>:',images)
+    console.log("images==>:", images);
     // Devolver el JSON limpio al frontend
     return res.status(200).json(images);
-
   } catch (error) {
-    console.error(`Error al obtener imágenes en Cloudinary para ${category}/${year}:`, error);
+    console.error(
+      `Error al obtener imágenes en Cloudinary para ${category}/${year}:`,
+      error,
+    );
     // Devolvemos array vacío para evitar que la aplicación se caiga si ocurre un fallo de red
+    return res.status(200).json([]);
+  }
+};
+//********************************************************** */
+// Fotos carrusel
+//********************************************************** */
+const obtenerFotosCarrusel = async (req, res) => {
+  const { archivosP, carpeta } = req.query; // Recibimos el array de nombres y la carpeta opcional
+  let archivos =
+    typeof archivosP === "string" ? archivosP.split(",") : archivosP;
+  // console.log("Valor de archivos ====>>>", archivos)
+  // Validación: Si no vienen archivos, o no es un array, o está vacío
+  if (!archivos || !Array.isArray(archivos) || archivos.length === 0) {
+    console.log(" !archivos || no es array || length===0");
+    return res
+      .status(400)
+      .json({ error: "Debes enviar un array con los nombres de los archivos" });
+  }
+
+  try {
+    // Ruta base por defecto. Si no se envía carpeta, usamos la de portadas
+    const folderPath = carpeta; // (Antes era esa x defecto ) || 'images/fotos/portada';
+    // console.log('folderPath=', folderPath);
+
+    // Mapeamos los nombres de archivo a URLs completas de Cloudinary
+    const images = archivos.map((nombreArchivo, index) => {
+      // Generamos la URL con optimización automática
+      const url = cloudinary.url(`${folderPath}/${nombreArchivo}`, {
+        secure: true,
+        transformation: [
+          { width: 1920, crop: "limit" },
+          { quality: "auto", fetch_format: "auto" },
+        ],
+      });
+
+      return {
+        id: `carrusel-${index}-${nombreArchivo}`, // ID único para React
+        url: url, // URL generada por Cloudinary
+        title: nombreArchivo, // Nombre del archivo original
+        category: "carrusel",
+      };
+    });
+
+    // console.log("images==>:", images);
+
+    // Devolver el JSON limpio al frontend
+    return res.status(200).json(images);
+  } catch (error) {
+    console.error(
+      `Error generando URLs del carrusel para la carpeta ${carpeta || "images/fotos/portada"}:`,
+      error,
+    );
+    // Devolvemos array vacío para evitar que la aplicación se caiga
     return res.status(200).json([]);
   }
 };
@@ -178,7 +226,7 @@ const listaMatricula = async (req, res) => {
       {
         replacements: [rutAl],
         type: sequelize.QueryTypes.SELECT,
-      }
+      },
     );
     res.json(dataMatricula);
   } catch (err) {
@@ -194,7 +242,7 @@ const getDatosFamilia = async (req, res) => {
       {
         replacements: [rutAl],
         type: sequelize.QueryTypes.SELECT,
-      }
+      },
     );
     res.json(dataMatricula);
   } catch (err) {
@@ -210,7 +258,7 @@ const listaAlumnosByRut = async (req, res) => {
       {
         replacements: [rutAl],
         type: sequelize.QueryTypes.SELECT,
-      }
+      },
     );
     res.json(dataCertificado);
   } catch (err) {
@@ -286,7 +334,7 @@ const getDataAlumnoNombres = async (req, res) => {
       {
         replacements: [nomAl, apPatAl, apMatAl],
         type: sequelize.QueryTypes.SELECT,
-      }
+      },
     );
     // console.log("dataAlumos", dataAlumos);
     res.json(dataAlumos);
@@ -327,7 +375,7 @@ const getAlumnosCurso = async (req, res) => {
       {
         replacements: [req.params.ense, req.params.grado, req.params.letra],
         type: sequelize.QueryTypes.SELECT,
-      }
+      },
     );
 
     res.json(dataCurso);
@@ -342,7 +390,7 @@ const JsonInitOpcion = async (req, res) => {
       `CALL colegio.sp_getDataJsonInitOpcion()`,
       {
         type: sequelize.QueryTypes.SELECT,
-      }
+      },
     );
     res.send(JSON.stringify(dataJson));
   } catch (err) {
@@ -470,7 +518,7 @@ const getDataApoderadoNombres = async (req, res) => {
       {
         replacements: [nomAp, apPatAp, apMatAp],
         type: sequelize.QueryTypes.SELECT,
-      }
+      },
     );
     //console.log("dataApoderados", dataApoderado);
     res.json(dataApoderado);
@@ -540,7 +588,7 @@ const getBloquesHorarios = async (req, res) => {
       {
         replacements: [jornada_id, equipamiento_id, fecha_solicitud],
         type: sequelize.QueryTypes.SELECT,
-      }
+      },
     );
 
     res.json(dataCursos);
@@ -670,7 +718,7 @@ const SolicitudEquipoProfe = async (req, res) => {
           id_equipamiento: id_equipamiento || null,
         },
         type: sequelize.QueryTypes.SELECT,
-      }
+      },
     );
     // console.log("solicitudes=>", solicitudes);
     res.status(200).json(solicitudes);
@@ -760,7 +808,7 @@ const postCursosDiaAtencionProfe = async (req, res) => {
           JSON.stringify(horarios || []),
         ],
         type: sequelize.QueryTypes.INSERT,
-      }
+      },
     );
     return res.status(200).json({
       message: "Actualización realizada",
@@ -847,7 +895,7 @@ const getHorarioAtencionProfe = async (req, res) => {
       `CALL sp_horariosatencionprofe()`,
       {
         type: sequelize.QueryTypes.SELECT,
-      }
+      },
     );
 
     res.json(dataProfes);
@@ -922,7 +970,7 @@ const postPagoMesAlumno = async (req, res) => {
       {
         replacements: [JSON.stringify(pagos), usrId],
         type: sequelize.QueryTypes.RAW,
-      }
+      },
     );
 
     // Log para depurar la estructura completa de la respuesta
@@ -997,7 +1045,7 @@ const UpsertPagosConfigMontos = async (req, res) => {
       {
         replacements: [agno, monto],
         type: sequelize.QueryTypes.RAW,
-      }
+      },
     );
     return res.status(200).json({
       message: "Montos configurados correctamente",
@@ -1021,7 +1069,7 @@ const DeletePagosConfigMontos = async (req, res) => {
       {
         replacements: [id],
         type: sequelize.QueryTypes.DELETE,
-      }
+      },
     );
     return res.status(200).json({
       message: "Monto Eliminado correctamente",
@@ -1061,7 +1109,7 @@ const UpsertPagosTipoBeca = async (req, res) => {
       {
         replacements: [nombre, descripcion, agno, porcentaje, descuento, monto],
         type: sequelize.QueryTypes.RAW,
-      }
+      },
     );
     return res.status(200).json({
       message: "Tipo Beca configurados correctamente",
@@ -1102,7 +1150,7 @@ const getAlumnosBecas = async (req, res) => {
           req.params.pletra,
         ],
         type: sequelize.QueryTypes.SELECT,
-      }
+      },
     );
     res.json(dataCurso[0]);
   } catch (err) {
@@ -1136,7 +1184,7 @@ const UpsertPagosBecaAlumno = async (req, res) => {
           configMonto,
         ],
         type: sequelize.QueryTypes.RAW,
-      }
+      },
     );
     return res.status(200).json({
       message: "Beca para alumno configurados correctamente",
@@ -1156,7 +1204,7 @@ const DeleteAlumnosBecas = async (req, res) => {
       {
         replacements: [rut, agno],
         type: sequelize.QueryTypes.DELETE,
-      }
+      },
     );
     return res.status(200).json({
       message: "Tipo beca Eliminado correctamente",
@@ -1193,7 +1241,7 @@ const UpsertPagosAlumnosRezagados = async (req, res) => {
           monto_anual,
         ],
         type: sequelize.QueryTypes.RAW,
-      }
+      },
     );
     return res.status(200).json({
       message: "Mes de Inicio configurado correctamente",
@@ -1213,7 +1261,7 @@ const GetPagoAlumnoRezagado = async (req, res) => {
       {
         replacements: [rut_alumno, agno],
         type: sequelize.QueryTypes.RAW,
-      }
+      },
     );
 
     return res.status(200).json({
@@ -1237,7 +1285,7 @@ const DeletePagoAlumnoRezagado = async (req, res) => {
       {
         replacements: [rut_alumno, agno],
         type: sequelize.QueryTypes.RAW,
-      }
+      },
     );
 
     return res.status(200).json({
@@ -1310,4 +1358,5 @@ export default {
   UpsertPagosAlumnosRezagados,
   GetPagoAlumnoRezagado,
   DeletePagoAlumnoRezagado,
+  obtenerFotosCarrusel,
 };

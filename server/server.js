@@ -16,7 +16,7 @@ async function main() {
     console.log("Conectado a Mysql");
   } catch (error) {
     console.error("Error en SQL :", error);
-  }
+  } 
 
   try {
     // Iniciando servidor de express
