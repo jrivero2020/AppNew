@@ -4,6 +4,7 @@
 const chkActivoRolAutentica = (data, isAuthenticated, jwtRol) => {  // let ret = false;
   
   const objeto = data.datos;
+  // console.log("chkActivoRolAutentica data:", data, '  isAuthenticated:', isAuthenticated, ' jwtRol:',jwtRol )
 
   if (!objeto || objeto.activo !== 1) return false;
   if (jwtRol === 1) return true; // Admin siempre tiene acceso.
@@ -15,7 +16,10 @@ const chkActivoRolAutentica = (data, isAuthenticated, jwtRol) => {  // let ret =
   if (autorizado === "A" && isAuthenticated) return true; // Cualquier autenticado puede acceder.
 
   if (autorizado.startsWith("A")) {
-    if (!isAuthenticated) return false; // Si requiere autenticación y no está autenticado, denegar acceso.
+    if (!isAuthenticated){
+      // console.log('Se requiere autenticación y no está autenticado, denegar acceso.')
+      return false; // Si requiere autenticación y no está autenticado, denegar acceso.
+    } 
 
     const rolesPermitidos = new Set(
       autorizado.slice(1).split("").map(Number) // Extrae los números después de "A"
@@ -35,10 +39,6 @@ const chkActivoRolAutentica = (data, isAuthenticated, jwtRol) => {  // let ret =
   }
 
   return false;
-
-
-
-
 
 };
 export { chkActivoRolAutentica };

@@ -79,7 +79,7 @@ const NoticiaCard = ({ noticia }) => {
                   Haga clic para ver el comunicado completo.
                </Typography>
             )}
-
+{ /*
             <Button 
               variant={esUrgente ? "contained" : "outlined"} 
               color={esUrgente ? "error" : "primary"}
@@ -89,6 +89,34 @@ const NoticiaCard = ({ noticia }) => {
             >
               Ver Detalle
             </Button>
+*/}
+ <Box 
+            sx={{ 
+              mt: 'auto', 
+              borderRadius: 2, 
+              textTransform: 'none', 
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 1,
+              py: 1,
+              px: 2,
+              // Estilos que imitan al Button de MUI
+              border: esUrgente ? 'none' : '1px solid #1976d2',
+              backgroundColor: esUrgente ? '#D32F2F' : 'transparent',
+              color: esUrgente ? 'white' : '#1976d2',
+              transition: 'background-color 0.3s',
+              '&:hover': {
+                backgroundColor: esUrgente ? '#b71c1c' : 'rgba(25, 118, 210, 0.08)',
+              }
+            }}
+          >
+            <VisibilityIcon fontSize="small" />
+            <Typography variant="button" sx={{ fontWeight: 'bold' }}>
+              Ver Detalle
+            </Typography>
+          </Box>
           </CardContent>
         </CardActionArea>
       </Card>

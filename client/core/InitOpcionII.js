@@ -12,11 +12,11 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { makeStyles } from "@mui/styles";
 import { AuthContext } from "./AuthProvider";
 import { chkActivoRolAutentica } from "./../assets/js/funciones";
-import { CardHeader } from "@mui/material";
+import { Box, CardHeader } from "@mui/material";
 import Footer from "../core/PieDePagina";
 import NoticiasV2 from "./NoticiasV2";
 import HeroCarousel from "./principalGuiCarrusel.js";
-
+import DocumentSection from "./DocumentSection";
 const useStyles = makeStyles({
   imgBtn: {
     width: "100%",
@@ -32,7 +32,8 @@ const useStyles = makeStyles({
 });
 
 export default function BasicGrid() {
-  const { isAuthenticated, isJwtRol, activeImgLinks, Noticias } =  useContext(AuthContext);
+  const { isAuthenticated, isJwtRol, activeImgLinks, Noticias } =
+    useContext(AuthContext);
   const jwtRol = isJwtRol ? isJwtRol._rol : 0;
 
   const [imgActivaLinks, setImgActivaLinks] = useState([]);
@@ -55,13 +56,11 @@ export default function BasicGrid() {
         .filter((item) => item.datos.tipo === "opccgi")
         .sort((a, b) => a.id - b.id); // Ordenar por id en orden ascendente
 
-        setImgActivaLinks(filteredPages);
-        setLoading(false);
-    
+      setImgActivaLinks(filteredPages);
+      setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeImgLinks]);
-
 
   if (loading) return <p></p>;
 
@@ -82,9 +81,13 @@ export default function BasicGrid() {
           >
             <HeroCarousel />
           </div>
-          {/* <Noticias />  */}
-          <NoticiasV2/>
-
+          <Box sx={{ backgroundColor: "#F4F6F8", py: 4, minHeight: "100vh" }}>
+            {/* <Noticias />  */}
+            <NoticiasV2 />
+            {/* Sección de Tarjetas Categorizadas */}
+            <DocumentSection datosJson={imgActivaLinks} />
+          </Box>
+          { /*
           <Card sx={{ backgroundColor: "#E1E1E1" }}>
             <CardHeader
               sx={{
@@ -110,6 +113,7 @@ export default function BasicGrid() {
             />
             <CardContent></CardContent>
           </Card>
+
 
           <Container maxWidth="false" sx={{ backgroundColor: "#E1E1E1" }}>
             <Grid
@@ -209,6 +213,7 @@ export default function BasicGrid() {
               </Grid>
             </Grid>
           </Container>
+          */}
         </>
       )}
     </div>

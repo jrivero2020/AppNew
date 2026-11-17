@@ -20,7 +20,12 @@ const [slides, setSlides] = useState([]);
       'salacompuprueba',
       'SalaCompu1',
       'IMG-20240524-WA0004_resultado',
-      'IMG_20240912_153909237_AE_resultado'
+      'IMG_20240912_153909237_AE_resultado',
+      'IMG_20240726_124641_resultado.webp',
+      'IMG_20240726_104526_resultado.webp',
+      'DSC_8032.webp',
+      'DSC_7981.webp',
+      'DSC_7994.webp',
     ];
 
        const textosCarrusel = [
@@ -28,26 +33,31 @@ const [slides, setSlides] = useState([]);
             title: '50 Años Formando Líderes',
             subtitle: 'Celebramos medio siglo de excelencia académica y compromiso con nuestra comunidad.',
             buttonText: 'Ver Historia',
+            buttonStatus: true
           },
           {
             title: 'Matrículas 2027, Pronto en Diciembre',
             subtitle: 'Asegura el futuro de tu hijo en un ambiente de innovación y valores.',
             buttonText: 'Pronto',
+            buttonStatus: false,
           },
           {
-            title: 'Nuevo Horario de Atención',
-            subtitle: 'Estimados apoderados, revise el nuevo horario de atención de profesores para este semestre.',
+            title: 'Horario de Atención',
+            subtitle: 'Estimados apoderados, revise el horario de atención de profesores para este período.',
             buttonText: 'Ver Horarios',
+            buttonStatus: true,
           },
           {
             title: 'Reglamento Interno de Convivencia',
             subtitle: 'Estimados apoderados, conozca el reglamento de convivencia de nuestro colegio .',
             buttonText: 'Ver Reglamento',
+            buttonStatus: true,
           },
           {
             title: 'Reglamento Interno de Convivencia de Pre Básica',
             subtitle: 'Estimados apoderados, revise el reglamento de convivencia de Educación Parvularia.',
             buttonText: 'Ver Manual',
+            buttonStatus: true,
           }
         ];    
 
@@ -175,7 +185,8 @@ const [slides, setSlides] = useState([]);
 
                 <Button 
                   variant="contained" 
-                  size="large"
+                  size="large" 
+                  disabled={slide.buttonStatus === false}
                   sx={{
                     backgroundColor: '#FFC107',
                     color: '#000000',
