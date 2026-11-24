@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import {
   Box,
   Grid,
@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import DocumentCard from "./DocumentCard";
+import { AuthContext } from "./AuthProvider";
 
 // Importamos los íconos
 import {
@@ -19,6 +20,7 @@ import {
   Folder as FolderIcon,
 } from "@mui/icons-material";
 
+  
 // Función auxiliar para asignar un ícono según la categoría
 const getIconByCategory = (categoria) => {
   const cat = categoria.toLowerCase();
@@ -34,6 +36,7 @@ const getIconByCategory = (categoria) => {
 };
 
 const DocumentSection = ({ datosJson }) => {
+  
   // Estado para el modal del PDF
   const [pdfUrl, setPdfUrl] = useState(null);
   
@@ -46,12 +49,12 @@ const DocumentSection = ({ datosJson }) => {
 
   if (opccgiFiltradas.length === 0) return null;
 
-  console.log("opccgiFiltradas====>>>>>", opccgiFiltradas);
+  
 
   // 2. Agrupar por categoría
   const agrupadas = opccgiFiltradas.reduce((acc, item) => {
     const categoria = item.categoria || "Otros";
-    console.log("categoria==>", categoria, '  acc=>:', acc, '  item:', item)
+
     if (!acc[categoria]) {
       acc[categoria] = [];
     }
@@ -99,7 +102,8 @@ const DocumentSection = ({ datosJson }) => {
       </Box>
 
       {/* Iterar sobre las categorías agrupadas */}
-      {Object.keys(agrupadas).map((categoria, index) => (
+      {Object.keys(agrupadas).map((categoria, index) => (        
+          
         <Box key={`${categoria}-${index}`} sx={{ mb: 8 }}>
           <Typography
             variant="h5"
@@ -117,6 +121,7 @@ const DocumentSection = ({ datosJson }) => {
 
           <Grid container spacing={3} justifyContent="center">
             {agrupadas[categoria].map((item, index) => (
+             
               <Grid
                 item
                 xs={12}
@@ -128,9 +133,11 @@ const DocumentSection = ({ datosJson }) => {
                 <DocumentCard
                   title={item.titulo}
                   description={item.texto}
-                  icon={getIconByCategory(categoria)}
+                  icon={item.foto}
+                  imageUrl={`https://res.cloudinary.com/spfxq8uo/image/upload/c_fill,w_400,h_120,g_auto/q_auto,f_auto/${item.foto}`}
                   onClick={() => handleCardClick(item)}
                 />
+                {/*  icon={getIconByCategory(categoria)} */}
               </Grid>
             ))}
           </Grid>

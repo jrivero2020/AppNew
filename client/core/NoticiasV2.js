@@ -38,7 +38,7 @@ const NoticiasV2 = () => {
     .slice(0, 3);
 
   if (noticiasFiltradas.length === 0) return null;
-console.log("Noticias Filtradas****=>", noticiasFiltradas)
+  // console.log("Noticias Filtradas****=>", noticiasFiltradas);
   return (
     <Box sx={{ py: 4, mb: 4 }}>
       {/* Título de la sección */}
@@ -62,7 +62,7 @@ console.log("Noticias Filtradas****=>", noticiasFiltradas)
 
       {/* Grilla de 3 columnas en PC, 1 en móvil */}
       <Grid container spacing={4} justifyContent="center">
-        {noticiasFiltradas.map((noticia,index) => (
+        {noticiasFiltradas.map((noticia, index) => (
           <Grid item xs={12} md={4} key={`${noticia.nro}-${index}`}>
             <NoticiaCard noticia={noticia} />
           </Grid>

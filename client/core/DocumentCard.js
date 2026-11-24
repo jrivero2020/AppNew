@@ -1,8 +1,7 @@
 import React from 'react';
 import { Card, CardActionArea,  Box, Typography } from '@mui/material';
 import { Description as DescriptionIcon } from '@mui/icons-material';
-
-const DocumentCard = ({ title, description, icon, onClick }) => {
+const DocumentCard = ({ title, description, icon, imageUrl, onClick}) => {
   return (
     <Card
       sx={{

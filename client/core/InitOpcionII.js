@@ -81,13 +81,13 @@ export default function BasicGrid() {
           >
             <HeroCarousel />
           </div>
-          <Box sx={{ backgroundColor: "#F4F6F8", py: 4, minHeight: "100vh" }}>
-            {/* <Noticias />  */}
-            <NoticiasV2 />
-            {/* Sección de Tarjetas Categorizadas */}
+          {/* <Noticias />  */}
+          <NoticiasV2 />
+          {/* Sección de Tarjetas Categorizadas */}
+
             <DocumentSection datosJson={imgActivaLinks} />
-          </Box>
-          { /*
+
+          {/*
           <Card sx={{ backgroundColor: "#E1E1E1" }}>
             <CardHeader
               sx={{
